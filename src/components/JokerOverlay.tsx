@@ -11,6 +11,7 @@ interface JokerComboStep {
   reps: number;
   exerciseName: string;
   eachLeg?: boolean;
+  imagePath?: string;
 }
 
 interface JokerOverlayProps {
@@ -18,7 +19,6 @@ interface JokerOverlayProps {
   challenge: JokerChallenge | null;
   onDismiss: () => void;
   jokerComboList?: JokerComboStep[];
-  jokerImagePath?: string;
   /** Gender used to resolve per-exercise illustrations. If omitted, reads from
    * useOnboarding() (matching the ExerciseCard / WorkoutSetupPage pattern). */
   gender?: WorkoutGender;
@@ -35,7 +35,6 @@ export function JokerOverlay({
   challenge,
   onDismiss,
   jokerComboList,
-  jokerImagePath,
   gender: genderProp,
 }: JokerOverlayProps) {
   // Prefer the explicit gender prop; fall back to onboarding (ExerciseCard pattern).
@@ -231,18 +230,6 @@ export function JokerOverlay({
                       ))}
                     </div>
                   </div>
-                  {jokerImagePath && (
-                    <img
-                      src={jokerImagePath}
-                      alt="Joker illustration"
-                      className="w-full max-w-[180px] mx-auto mb-3 rounded-xl"
-                      style={{
-                        objectFit: "contain",
-                        padding: "12px",
-                        background: "oklch(0.16 0.015 260)",
-                      }}
-                    />
-                  )}
                   {jokerComboList!.map((step, i) => (
                     <div
                       key={`${step.exerciseName}-${i}`}
@@ -404,7 +391,7 @@ function OverlayMiniIllustration({
   gender: WorkoutGender;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const src = resolveExerciseIllustration(step.exerciseName, gender);
+  const src = step.imagePath ?? resolveExerciseIllustration(step.exerciseName, gender);
 
   return (
     <div

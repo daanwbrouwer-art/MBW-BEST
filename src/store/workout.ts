@@ -25,6 +25,9 @@ export interface LocalCard {
   holdSeconds?: number;
   specialInstruction?: string;
   imagePath?: string;
+  /** True when no accurate illustration exists for this exercise yet —
+   * render an "Illustration coming soon" placeholder instead of a photo. */
+  illustrationComingSoon?: boolean;
   deckCategory?: string;
   /** Set only when this card's exercise, as actually resolved into the
    * deck (post equipment-substitution), genuinely requires a piece of
@@ -36,6 +39,7 @@ export interface LocalCard {
     reps: number;
     exerciseName: string;
     eachLeg?: boolean;
+    imagePath?: string;
   }>;
 }
 
@@ -51,12 +55,14 @@ export interface LocalSessionCard {
     holdSeconds?: number;
     specialInstruction?: string;
     imagePath?: string;
+    illustrationComingSoon?: boolean;
     deckCategory?: string;
     requiresEquipment?: keyof EquipmentProfile;
     jokerComboList?: Array<{
       reps: number;
       exerciseName: string;
       eachLeg?: boolean;
+      imagePath?: string;
     }>;
   };
   reps: number;
@@ -203,6 +209,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
             holdSeconds: nextRaw.holdSeconds,
             specialInstruction: nextRaw.specialInstruction,
             imagePath: nextRaw.imagePath,
+            illustrationComingSoon: nextRaw.illustrationComingSoon,
             jokerComboList: nextRaw.jokerComboList,
             deckCategory: nextRaw.deckCategory,
             requiresEquipment: resolvedEquipment,

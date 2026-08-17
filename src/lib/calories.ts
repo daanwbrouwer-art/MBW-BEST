@@ -39,6 +39,32 @@ const MET_BY_CATEGORY: Record<MovementCategory, number> = {
   Legs: 9,
 };
 
+/**
+ * MET is assigned per movement category above, which flattens a real
+ * difference within Legs (and, less often, Push/Pull/Core): explosive/
+ * plyometric reps — jump squats, broad jumps, lateral bounds, burpees,
+ * clapping/plyo push-ups — cost measurably more per rep than a controlled
+ * rep of the same category (ACSM's compendium puts plyometric/jump
+ * training around 11-12 MET vs ~8 MET for moderate calisthenics, roughly a
+ * 1.35x step up). Detected by keyword since these cards span every
+ * category and deck rather than being their own MovementCategory.
+ */
+const EXPLOSIVE_MET_MULTIPLIER = 1.35;
+const EXPLOSIVE_KEYWORDS = [
+  "jump",
+  "explosive",
+  "plyo",
+  "clapping",
+  "burpee",
+  "bound",
+];
+
+function isExplosiveExercise(exerciseName?: string): boolean {
+  if (!exerciseName) return false;
+  const lower = exerciseName.toLowerCase();
+  return EXPLOSIVE_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
 /** Standard kcal/min formula: MET * 3.5 * bodyWeightKg / 200. */
 function caloriesPerMinute(met: number, weightKg: number): number {
   return (met * 3.5 * weightKg) / 200;
@@ -98,6 +124,9 @@ export interface CardCalorieInput {
   weightKg?: number;
   age?: number;
   heightCm?: number;
+  /** Used to detect explosive/plyometric variants for the MET bump above —
+   * optional because Ace/King modifier cards don't carry their own name. */
+  exerciseName?: string;
 }
 
 /** Estimated calories burned for a single card, given how it's actually performed. */
@@ -110,12 +139,16 @@ export function estimateCardCalories({
   weightKg,
   age,
   heightCm,
+  exerciseName,
 }: CardCalorieInput): number {
   const resolvedWeight = weightKg ?? DEFAULT_WEIGHT_KG;
   const resolvedAge = age ?? DEFAULT_AGE;
   const resolvedHeight = heightCm ?? DEFAULT_HEIGHT_CM;
   const bmi = calculateBMI(resolvedWeight, resolvedHeight);
-  const met = MET_BY_CATEGORY[movementCategory] ?? 6;
+  const baseMet = MET_BY_CATEGORY[movementCategory] ?? 6;
+  const met = isExplosiveExercise(exerciseName)
+    ? baseMet * EXPLOSIVE_MET_MULTIPLIER
+    : baseMet;
   const perMinute =
     caloriesPerMinute(met, resolvedWeight) *
     ageFactor(resolvedAge) *

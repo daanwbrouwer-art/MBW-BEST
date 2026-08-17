@@ -783,7 +783,6 @@ export default function WorkoutSessionPage() {
         challenge={jokerChallenge}
         onDismiss={dismissJoker}
         jokerComboList={currentCard?.card.jokerComboList}
-        jokerImagePath={currentCard?.card.imagePath}
       />
       <ModifierOverlay
         type={modifierOverlay.type}

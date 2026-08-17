@@ -20,10 +20,12 @@ interface CardData {
   holdSeconds?: number;
   specialInstruction?: string;
   imagePath?: string;
+  illustrationComingSoon?: boolean;
   jokerComboList?: Array<{
     reps: number;
     exerciseName: string;
     eachLeg?: boolean;
+    imagePath?: string;
   }>;
   deckCategory?: string;
 }
@@ -127,6 +129,7 @@ interface JokerComboStep {
   reps: number;
   exerciseName: string;
   eachLeg?: boolean;
+  imagePath?: string;
 }
 
 /**
@@ -199,7 +202,7 @@ function MiniIllustration({
   flexBasis?: string;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const src = resolveExerciseIllustration(step.exerciseName, gender);
+  const src = step.imagePath ?? resolveExerciseIllustration(step.exerciseName, gender);
 
   return (
     <div
@@ -708,22 +711,49 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           padding: "14px",
         }}
       >
-        <img
-          src={
-            illustrationFailed
-              ? resolveExerciseIllustration(exercise.name, gender)
-              : exercise.illustration
-          }
-          alt={exercise.name}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-          }}
-          onError={() => {
-            if (!illustrationFailed) setIllustrationFailed(true);
-          }}
-        />
+        {sessionCard.card.illustrationComingSoon ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              textAlign: "center",
+              padding: "12px",
+            }}
+          >
+            <span style={{ fontSize: "26px", opacity: 0.5 }}>🎨</span>
+            <span
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                color: "oklch(0.35 0.01 260)",
+              }}
+            >
+              Illustration coming soon
+            </span>
+          </div>
+        ) : (
+          <img
+            src={
+              illustrationFailed
+                ? resolveExerciseIllustration(exercise.name, gender)
+                : exercise.illustration
+            }
+            alt={exercise.name}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+            }}
+            onError={() => {
+              if (!illustrationFailed) setIllustrationFailed(true);
+            }}
+          />
+        )}
       </div>
 
       {/* Bottom strip — original black strip design with white typography */}

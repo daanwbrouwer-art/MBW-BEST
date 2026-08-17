@@ -557,32 +557,32 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     difficulty: "Advanced",
   },
   // ─── Female Upper Body Pro deck ───────────────────────────────────────────
-  "archer pushup standard": {
-    exerciseName: "Archer Push-up Standard",
+  "onearm pushup": {
+    exerciseName: "One-arm Push-up",
     description:
-      "Set up with a wide hand stance. Lower toward one hand while the opposite arm extends straight out sideways, shifting the load onto the working arm. Press back to the top, then alternate sides each rep. The straight supporting arm stays extended and rolls onto its side at the bottom — a bridge between standard push-ups and the one-arm push-up.",
+      "Set up in a push-up position with one hand behind your back and all your weight shifted onto the working arm. Lower with control and press back to the top, keeping the hips square and the body from rotating. Alternate arms as needed between sets. One of the purest tests of single-arm pressing strength in the deck.",
     keyPoints: [
-      "Wide hand stance — wider than shoulder-width",
-      "Lower toward one hand, opposite arm extends sideways",
-      "Alternate sides each rep",
-      "Supporting arm stays straight and rolls onto its side at the bottom",
-      "Shift weight side to side each rep",
+      "One hand behind your back — all weight on the working arm",
+      "Keep the hips square — resist rotating toward the floor",
+      "Lower with control, press back to full lockout",
+      "Feet slightly wider than normal for balance",
+      "Alternate arms between sets as needed",
     ],
-    muscleGroups: ["Chest", "Anterior Deltoid", "Triceps", "Serratus Anterior"],
+    muscleGroups: ["Chest", "Anterior Deltoid", "Triceps", "Core (Anti-rotation)"],
     difficulty: "Pro",
   },
-  "archer pushup deep": {
-    exerciseName: "Archer Push-up Deep",
+  "onearm pushup deep": {
+    exerciseName: "One-arm Push-up Deep",
     description:
-      "Same wide-stance archer mechanics as the Standard, but lower the chest all the way to the floor on the working arm for maximum range of motion. Press back to full lockout at the top. The deeper descent increases the load on the working arm and stretches the chest under tension.",
+      "Same one-arm setup as the standard version, but lower the chest all the way to the floor on the working arm for maximum range of motion. Press back to full lockout at the top. The deeper descent increases time under tension and the strength demand on the working arm.",
     keyPoints: [
-      "Same wide stance as the Archer Standard",
+      "Same one-arm setup as the standard version",
       "Lower chest all the way to the floor on the working arm",
       "Full range of motion — chest touches",
       "Press back to full lockout at the top",
-      "Opposite arm extends straight sideways throughout",
+      "Keep the hips square throughout the descent",
     ],
-    muscleGroups: ["Chest (Full ROM)", "Triceps", "Deltoids"],
+    muscleGroups: ["Chest (Full ROM)", "Triceps", "Deltoids", "Core (Anti-rotation)"],
     difficulty: "Pro",
   },
   "typewriter pushup": {

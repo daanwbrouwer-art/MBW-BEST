@@ -181,15 +181,22 @@ export default function ProDeckPreviewPage() {
                   className="w-10 h-10 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"
                   style={{ background: "oklch(0.98 0.005 70)" }}
                 >
-                  <img
-                    src={ex.imagePath || resolveExerciseIllustration(ex.name, gender)}
-                    alt=""
-                    className="w-full h-full object-contain p-0.5"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.visibility =
-                        "hidden";
-                    }}
-                  />
+                  {ex.illustrationComingSoon ? (
+                    <Dumbbell
+                      className="w-4 h-4"
+                      style={{ color: "oklch(0.7 0.01 260)" }}
+                    />
+                  ) : (
+                    <img
+                      src={ex.imagePath || resolveExerciseIllustration(ex.name, gender)}
+                      alt=""
+                      className="w-full h-full object-contain p-0.5"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.visibility =
+                          "hidden";
+                      }}
+                    />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-display font-bold text-sm text-foreground truncate">
@@ -292,19 +299,31 @@ function FlagshipCard({
       data-ocid="pro-preview.flagship_card"
     >
       <div
-        className="m-2.5 mb-0 rounded-xl overflow-hidden"
+        className="m-2.5 mb-0 rounded-xl overflow-hidden flex items-center justify-center"
         style={{ background: "oklch(0.98 0.005 70)", aspectRatio: "1/1" }}
       >
-        <img
-          src={
-            exercise.imagePath || resolveExerciseIllustration(exercise.name, gender)
-          }
-          alt=""
-          className="w-full h-full object-contain p-2"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-          }}
-        />
+        {exercise.illustrationComingSoon ? (
+          <div className="flex flex-col items-center gap-1 px-2 text-center">
+            <Dumbbell className="w-5 h-5" style={{ color: "oklch(0.6 0.01 260)" }} />
+            <span
+              className="text-[8px] font-bold uppercase tracking-wide"
+              style={{ color: "oklch(0.5 0.01 260)" }}
+            >
+              Coming soon
+            </span>
+          </div>
+        ) : (
+          <img
+            src={
+              exercise.imagePath || resolveExerciseIllustration(exercise.name, gender)
+            }
+            alt=""
+            className="w-full h-full object-contain p-2"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+            }}
+          />
+        )}
       </div>
       <div className="p-2.5 flex flex-col gap-1 flex-1">
         <p className="font-display font-black text-xs text-white leading-tight">

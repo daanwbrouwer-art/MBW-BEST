@@ -60,7 +60,9 @@ interface DeckExerciseSet {
 
 export interface SuitExerciseEntry {
   exerciseName: string;
-  imagePath: string;
+  /** Omitted (with illustrationComingSoon: true) when no dedicated or
+   * accurate photo exists yet for this exercise. */
+  imagePath?: string;
   eachLeg?: boolean;
   eachSide?: boolean;
   holdSeconds?: number;
@@ -75,6 +77,10 @@ export interface SuitExerciseEntry {
     imagePath: string;
     specialInstruction?: string;
   };
+  /** True when this exercise has no accurate illustration yet — rendering
+   * shows an "Illustration coming soon" placeholder instead of a photo
+   * (rather than a misleading reused/approximate image). */
+  illustrationComingSoon?: boolean;
 }
 
 export interface SuitConfig2 {
@@ -87,6 +93,11 @@ export interface JokerComboStep {
   reps: number;
   exerciseName: string;
   eachLeg?: boolean;
+  /** Explicit photo for this combo step — takes priority over the
+   * keyword-based resolveExerciseIllustration() fallback so the Joker's
+   * mini-illustration grid shows the same dedicated per-tier photo as the
+   * exercise's real card elsewhere in the deck. */
+  imagePath?: string;
 }
 
 export interface DeckExerciseConfig {
@@ -437,10 +448,30 @@ const DECK_EXERCISES: Record<
           exerciseName: "Joker",
           imagePath: UPPER_BODY_BEGINNER_ASSETS.jokerCombo,
           comboList: [
-            { reps: 10, exerciseName: "Standard Push-up", eachLeg: false },
-            { reps: 10, exerciseName: "Shoulder Tap Push-up", eachLeg: false },
-            { reps: 10, exerciseName: "Incline Row", eachLeg: false },
-            { reps: 10, exerciseName: "Bench Dip", eachLeg: false },
+            {
+              reps: 10,
+              exerciseName: "Standard Push-up",
+              eachLeg: false,
+              imagePath: UPPER_BODY_BEGINNER_ASSETS.normalPushUp,
+            },
+            {
+              reps: 10,
+              exerciseName: "Shoulder Tap Push-up",
+              eachLeg: false,
+              imagePath: UPPER_BODY_BEGINNER_ASSETS.shoulderTapPushUp,
+            },
+            {
+              reps: 10,
+              exerciseName: "Incline Row",
+              eachLeg: false,
+              imagePath: UPPER_BODY_BEGINNER_ASSETS.invertedRow,
+            },
+            {
+              reps: 10,
+              exerciseName: "Bench Dip",
+              eachLeg: false,
+              imagePath: UPPER_BODY_BEGINNER_ASSETS.negativeBenchDip,
+            },
           ],
         },
         jokerCount: 1,
@@ -837,7 +868,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Archer Push-up",
-              imagePath: "/assets/exercises/male_ub_beg_normal_push_up.png",
+              illustrationComingSoon: true,
               eachSide: true,
               reps: 5,
               specialInstruction:
@@ -849,45 +880,45 @@ const DECK_EXERCISES: Record<
           Hearts: {
             cardMap: {
               2: {
-                exerciseName: "Pike Push-up Flat",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
               },
               3: {
-                exerciseName: "Pike Push-up Flat",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
               },
               4: {
-                exerciseName: "Pike Push-up Flat",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
               },
               5: {
-                exerciseName: "Pike Push-up Flat",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
               },
               6: {
-                exerciseName: "Pike Push-up Elevated",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
                 specialInstruction: "Feet elevated on a low surface",
               },
               7: {
-                exerciseName: "Pike Push-up Elevated",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
                 specialInstruction: "Feet elevated on a low surface",
               },
               8: {
-                exerciseName: "Pike Push-up Elevated",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
                 specialInstruction: "Feet elevated on a low surface",
               },
               9: {
-                exerciseName: "Pike Push-up Elevated",
+                exerciseName: "Pike Push-up",
                 imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
                 eachLeg: false,
                 specialInstruction: "Feet elevated on a low surface",
@@ -1021,7 +1052,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Commando Pull-up",
-              imagePath: "/assets/exercises/male_ub_adv_normal_pull_up.png",
+              illustrationComingSoon: true,
               eachSide: true,
               reps: 5,
               specialInstruction:
@@ -1116,10 +1147,30 @@ const DECK_EXERCISES: Record<
           exerciseName: "Joker Combo",
           imagePath: "/assets/exercises/male_ub_adv_joker_combo.png",
           comboList: [
-            { reps: 6, exerciseName: "Decline Push-up", eachLeg: false },
-            { reps: 6, exerciseName: "Elevated Pike Push-up", eachLeg: false },
-            { reps: 6, exerciseName: "Pull-up", eachLeg: false },
-            { reps: 6, exerciseName: "Parallel Bar Dip", eachLeg: false },
+            {
+              reps: 6,
+              exerciseName: "Decline Push-up",
+              eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_adv_decline_push_up.png",
+            },
+            {
+              reps: 6,
+              exerciseName: "Pike Push-up",
+              eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_beg_pike_push_up.png",
+            },
+            {
+              reps: 6,
+              exerciseName: "Pull-up",
+              eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_adv_normal_pull_up.png",
+            },
+            {
+              reps: 6,
+              exerciseName: "Parallel Bar Dip",
+              eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_adv_deep_dip.png",
+            },
           ],
         },
         jokerCount: 1,
@@ -1499,81 +1550,78 @@ const DECK_EXERCISES: Record<
           Spades: {
             cardMap: {
               2: {
-                exerciseName: "Archer Push-up Standard",
+                exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "One hand behind your back — press with the working arm",
               },
               3: {
-                exerciseName: "Archer Push-up Standard",
+                exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "One hand behind your back — press with the working arm",
               },
               4: {
-                exerciseName: "Archer Push-up Standard",
+                exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "One hand behind your back — press with the working arm",
               },
               5: {
-                exerciseName: "Archer Push-up Standard",
+                exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "One hand behind your back — press with the working arm",
               },
               6: {
-                exerciseName: "Archer Push-up Deep",
+                exerciseName: "One-arm Push-up Deep",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               7: {
-                exerciseName: "Archer Push-up Deep",
+                exerciseName: "One-arm Push-up Deep",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               8: {
-                exerciseName: "Archer Push-up Deep",
+                exerciseName: "One-arm Push-up Deep",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               9: {
-                exerciseName: "Archer Push-up Deep",
+                exerciseName: "One-arm Push-up Deep",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               10: {
-                exerciseName: "Typewriter Push-up",
+                exerciseName: "Diamond Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_diamond_push_up.png",
                 eachLeg: false,
-                specialInstruction:
-                  "At the bottom, slide chest side to side before rising",
+                specialInstruction: "Hands form a diamond under your chest",
               },
               11: {
-                exerciseName: "Typewriter Push-up",
+                exerciseName: "Diamond Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_diamond_push_up.png",
                 eachLeg: false,
-                specialInstruction:
-                  "At the bottom, slide chest side to side before rising",
+                specialInstruction: "Hands form a diamond under your chest",
               },
               12: {
-                exerciseName: "Typewriter Push-up",
+                exerciseName: "Diamond Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_diamond_push_up.png",
                 eachLeg: false,
-                specialInstruction:
-                  "At the bottom, slide chest side to side before rising",
+                specialInstruction: "Hands form a diamond under your chest",
               },
             },
             queen: {
@@ -1669,22 +1717,22 @@ const DECK_EXERCISES: Record<
           Diamonds: {
             cardMap: {
               2: {
-                exerciseName: "Pull-up Overhand",
+                exerciseName: "Pull-up",
                 imagePath: "/assets/exercises/male_ub_pro_normal_pull_up.png",
                 eachLeg: false,
               },
               3: {
-                exerciseName: "Pull-up Overhand",
+                exerciseName: "Pull-up",
                 imagePath: "/assets/exercises/male_ub_pro_normal_pull_up.png",
                 eachLeg: false,
               },
               4: {
-                exerciseName: "Pull-up Overhand",
+                exerciseName: "Pull-up",
                 imagePath: "/assets/exercises/male_ub_pro_normal_pull_up.png",
                 eachLeg: false,
               },
               5: {
-                exerciseName: "Pull-up Overhand",
+                exerciseName: "Pull-up",
                 imagePath: "/assets/exercises/male_ub_pro_normal_pull_up.png",
                 eachLeg: false,
               },
@@ -1714,19 +1762,19 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Close Grip Pull-up",
-                imagePath: "/assets/exercises/male_ub_pro_chin_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Hands nearly touching at bar centre",
               },
               11: {
                 exerciseName: "Close Grip Pull-up",
-                imagePath: "/assets/exercises/male_ub_pro_chin_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Hands nearly touching at bar centre",
               },
               12: {
                 exerciseName: "Close Grip Pull-up",
-                imagePath: "/assets/exercises/male_ub_pro_chin_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Hands nearly touching at bar centre",
               },
@@ -1764,7 +1812,7 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/male_ub_pro_clapping_push_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -1775,7 +1823,7 @@ const DECK_EXERCISES: Record<
               },
               7: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/male_ub_pro_clapping_push_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -1786,7 +1834,7 @@ const DECK_EXERCISES: Record<
               },
               8: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/male_ub_pro_clapping_push_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -1797,7 +1845,7 @@ const DECK_EXERCISES: Record<
               },
               9: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/male_ub_pro_clapping_push_up.png",
+                illustrationComingSoon: true,
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -1842,7 +1890,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "L-sit Hold",
-              imagePath: "/assets/exercises/male_ub_pro_deep_dip.png",
+              illustrationComingSoon: true,
               isIsometric: true,
               holdSeconds: 15,
               specialInstruction:
@@ -1857,16 +1905,28 @@ const DECK_EXERCISES: Record<
           comboList: [
             {
               reps: 5,
-              exerciseName: "Archer Push-up",
+              exerciseName: "One-arm Push-up",
               eachSide: true,
+              imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.png",
             },
             {
               reps: 5,
               exerciseName: "Handstand Push-up Negative",
               eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_pro_handstand_push_up.png",
             },
-            { reps: 5, exerciseName: "Pull-up", eachLeg: false },
-            { reps: 5, exerciseName: "Parallel Bar Dip", eachLeg: false },
+            {
+              reps: 5,
+              exerciseName: "Pull-up",
+              eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_pro_normal_pull_up.png",
+            },
+            {
+              reps: 5,
+              exerciseName: "Parallel Bar Dip",
+              eachLeg: false,
+              imagePath: "/assets/exercises/male_ub_pro_deep_dip.png",
+            },
           ],
         },
         jokerCount: 1,
@@ -8261,6 +8321,7 @@ function buildFullDeck(
           holdSeconds: entry.holdSeconds,
           specialInstruction: entry.specialInstruction,
           imagePath: entry.imagePath,
+          illustrationComingSoon: entry.illustrationComingSoon,
           deckCategory,
           // applySubstitution already swapped this out for the bodyweight
           // substitute when the equipment isn't owned, so a surviving
@@ -8719,40 +8780,38 @@ export function applyCardDistributionAlgorithm(
   }
 
   // ── Rule 2: Ace and King Frequency ──────────────────────────────────────────
+  // Total modifier count (Ace ×2 + King ÷2 combined) scales with session
+  // length only — the same target range applies to every difficulty and
+  // every deck: 2 in a 10-card session, 3 in a 20-card session, and 4-6 in
+  // a full 52-card deck.
   const isModifier = (c: LocalCard) => c.isAce || c.isKing;
 
-  let targetAceMin: number;
-  let targetAceMax: number;
-  let targetKingMin: number;
-  let targetKingMax: number;
-
-  if (difficulty === "Pro") {
-    targetAceMin = 3;
-    targetAceMax = 5;
-    targetKingMin = 3;
-    targetKingMax = 5;
-  } else if (sessionLength <= 25) {
-    targetAceMin = 1;
-    targetAceMax = 2;
-    targetKingMin = 1;
-    targetKingMax = 2;
+  let totalModifierMin: number;
+  let totalModifierMax: number;
+  if (sessionLength <= 10) {
+    totalModifierMin = 2;
+    totalModifierMax = 2;
+  } else if (sessionLength <= 20) {
+    totalModifierMin = 3;
+    totalModifierMax = 3;
   } else {
-    targetAceMin = 2;
-    targetAceMax = 4;
-    targetKingMin = 2;
-    targetKingMax = 4;
+    totalModifierMin = 4;
+    totalModifierMax = 6;
   }
+  const totalModifierTarget =
+    totalModifierMin +
+    Math.floor(Math.random() * (totalModifierMax - totalModifierMin + 1));
+
+  // Split as evenly as possible between Ace and King; an odd total goes
+  // randomly to one side so it isn't always the same modifier that "wins".
+  const modifierHalf = Math.floor(totalModifierTarget / 2);
+  const oddModifier = totalModifierTarget % 2;
+  const oddGoesToAce = oddModifier === 1 && Math.random() < 0.5;
+  const aceTarget = modifierHalf + (oddGoesToAce ? 1 : 0);
+  const kingTarget = modifierHalf + (oddModifier === 1 && !oddGoesToAce ? 1 : 0);
 
   const currentAces = deck.filter((c) => c.isAce);
   const currentKings = deck.filter((c) => c.isKing);
-  const aceTarget = Math.min(
-    targetAceMax,
-    Math.max(targetAceMin, currentAces.length),
-  );
-  const kingTarget = Math.min(
-    targetKingMax,
-    Math.max(targetKingMin, currentKings.length),
-  );
 
   // Trim excess aces
   if (currentAces.length > aceTarget) {
@@ -8778,6 +8837,26 @@ export function applyCardDistributionAlgorithm(
       return true;
     });
   }
+  // buildLocalDeck always builds the FULL ~54-card pool here (this function
+  // has no idea the caller is about to do `full.slice(0, cardCount)`), so a
+  // modifier that's merely "kept" by the trim above can still end up
+  // shuffled past the slice cutoff and never actually be drawn. Every kept
+  // or added modifier below must land within the first `sessionLength`
+  // cards — that's the only slice of `deck` the player will ever see.
+  const windowSize = Math.max(2, Math.min(sessionLength, deck.length));
+
+  // Relocate any surviving ace/king that landed outside the visible window.
+  const relocateIntoWindow = (isTarget: (c: LocalCard) => boolean) => {
+    for (let i = deck.length - 1; i >= windowSize; i--) {
+      if (!isTarget(deck[i]!)) continue;
+      const [card] = deck.splice(i, 1);
+      const pos = 1 + Math.floor(Math.random() * (windowSize - 1));
+      deck.splice(pos, 0, card!);
+    }
+  };
+  relocateIntoWindow((c) => c.isAce);
+  relocateIntoWindow((c) => c.isKing);
+
   // Add missing aces
   const acesNow = deck.filter((c) => c.isAce);
   const kingsNow = deck.filter((c) => c.isKing);
@@ -8802,21 +8881,28 @@ export function applyCardDistributionAlgorithm(
     isKing: true,
   };
   for (let i = acesNow.length; i < aceTarget; i++) {
-    let pos = Math.floor(Math.random() * (deck.length - 2)) + 2;
+    let pos = 1 + Math.floor(Math.random() * (windowSize - 1));
     if (deck[pos - 1] && isModifier(deck[pos - 1]!))
-      pos = Math.min(pos + 2, deck.length);
+      pos = Math.min(pos + 2, windowSize);
     deck.splice(pos, 0, { ...aceTemplate, id: `Hearts-Ace-extra-${i}` });
   }
   for (let i = kingsNow.length; i < kingTarget; i++) {
-    let pos = Math.floor(Math.random() * (deck.length - 2)) + 2;
+    let pos = 1 + Math.floor(Math.random() * (windowSize - 1));
     if (deck[pos - 1] && isModifier(deck[pos - 1]!))
-      pos = Math.min(pos + 2, deck.length);
+      pos = Math.min(pos + 2, windowSize);
     deck.splice(pos, 0, { ...kingTemplate, id: `Spades-King-extra-${i}` });
   }
 
-  // Fix: no modifier at index 0, no consecutive modifier pairs
+  // Fix: no modifier at index 0, no consecutive modifier pairs — prefer a
+  // swap partner still inside the visible window so the fix-up never
+  // shuffles a modifier back out past the slice cutoff.
   if (deck.length > 0 && deck[0] && isModifier(deck[0]!)) {
-    const swapIdx = deck.findIndex((c, i) => i > 0 && !isModifier(c));
+    let swapIdx = deck.findIndex(
+      (c, i) => i > 0 && i < windowSize && !isModifier(c),
+    );
+    if (swapIdx === -1) {
+      swapIdx = deck.findIndex((c, i) => i > 0 && !isModifier(c));
+    }
     if (swapIdx > 0) {
       [deck[0], deck[swapIdx]] = [deck[swapIdx]!, deck[0]!];
     }
@@ -8828,7 +8914,12 @@ export function applyCardDistributionAlgorithm(
       isModifier(deck[i]!) &&
       isModifier(deck[i + 1]!)
     ) {
-      const swapIdx = deck.findIndex((c, j) => j > i + 1 && !isModifier(c));
+      let swapIdx = deck.findIndex(
+        (c, j) => j > i + 1 && j < windowSize && !isModifier(c),
+      );
+      if (swapIdx === -1) {
+        swapIdx = deck.findIndex((c, j) => j > i + 1 && !isModifier(c));
+      }
       if (swapIdx > i + 1) {
         [deck[i + 1], deck[swapIdx]] = [deck[swapIdx]!, deck[i + 1]!];
       }
@@ -9041,6 +9132,7 @@ function estimateSessionCalories(
       weightKg,
       age,
       heightCm,
+      exerciseName: isJoker ? undefined : sc.card.exercise,
     });
   }
   return total;
@@ -9115,6 +9207,7 @@ export function estimateDeckAverageCaloriesPerCard(
         weightKg,
         age,
         heightCm,
+        exerciseName: e.exerciseName,
       }),
     0,
   );

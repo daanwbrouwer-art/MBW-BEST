@@ -10,7 +10,9 @@ export interface ProPreviewExercise {
   /** True when every occurrence of this exercise is a Queen "challenge" card (no fixed rep count). */
   isChallenge: boolean;
   suit: string;
-  imagePath: string;
+  imagePath?: string;
+  /** True when no accurate illustration exists for this exercise yet. */
+  illustrationComingSoon?: boolean;
   requiresEquipment?: keyof EquipmentProfile;
 }
 
@@ -20,7 +22,8 @@ export interface ProFlagshipExercise extends ProPreviewExercise {
 
 interface RawEntry {
   exerciseName: string;
-  imagePath: string;
+  imagePath?: string;
+  illustrationComingSoon?: boolean;
   requiresEquipment?: keyof EquipmentProfile;
 }
 
@@ -41,6 +44,7 @@ function upsert(
       isChallenge,
       suit,
       imagePath: entry.imagePath,
+      illustrationComingSoon: entry.illustrationComingSoon,
       requiresEquipment: entry.requiresEquipment,
     });
     return;
