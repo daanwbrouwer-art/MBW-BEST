@@ -10,6 +10,7 @@ export default defineConfig({
   // for testing Train Together / multiplayer across phones or laptops.
   server: {
     host: true,
+    port: process.env.PORT ? Number(process.env.PORT) : 5173,
   },
   preview: {
     host: true,
