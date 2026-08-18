@@ -1,3 +1,4 @@
+import { buildCustomWorkoutSteps } from "@/lib/customWorkoutBuilder";
 // Data-access layer for "Train Together" v2 — friends, parties of 2-4, and
 // the single shared realtime session — against the MAIN Supabase project
 // (src/lib/supabaseClient.ts), the same one real accounts/subscriptions live
@@ -14,6 +15,7 @@ import {
   type TrainTogetherCategory,
   drawTrainTogetherSteps,
 } from "@/lib/trainTogetherDraw";
+import type { CustomWorkoutExercise } from "@/store/customWorkout";
 
 type FriendshipRow = Tables<"friendships">;
 type TrainTogetherSessionRow = Tables<"train_together_sessions">;
@@ -155,14 +157,35 @@ export async function respondToFriendRequest(
 
 // ─── Party / session setup ─────────────────────────────────────────────
 
+/**
+ * A saved Custom Workout Builder deck (src/store/customWorkout.ts's
+ * `CustomDeck`), snapshotted onto the session row when the host picks it in
+ * `WorkoutSetupSheet` — a participant's device has no local copy of the
+ * host's saved deck, so the actual exercise list has to travel through
+ * Supabase to reach everyone, the same way `cardSequence` already does for
+ * the built-in deckCategory path. `id`/`name` are carried through for
+ * display (the waiting-room label); `exercises` is what
+ * `buildCustomWorkoutSteps()` actually consumes to build `cardSequence`
+ * once the host starts the session.
+ */
+export interface TrainTogetherCustomDeck {
+  id: string;
+  name: string;
+  exercises: CustomWorkoutExercise[];
+}
+
 export interface TrainTogetherSession {
   id: string;
   hostId: string;
   deckCategory: TrainTogetherDeckCategory;
   cardCount: number;
   excludedExercises: string[];
+  /** Non-null when the host chose a saved custom deck instead of a built-in category — takes priority over deckCategory/cardCount/excludedExercises wherever a session's deck choice matters (setup display, waiting-room label, and what startTrainTogetherSession() draws from). */
+  customDeck: TrainTogetherCustomDeck | null;
   cardSequence: CustomWorkoutStep[] | null;
   currentCardIndex: number;
+  /** Who the current card (currentCardIndex) is claimed for — null means unclaimed, so every device shows the "who's up?" picker instead of the exercise's Next button until someone picks. Cleared back to null by train_together_advance_card() whenever the index moves, so each new card starts unclaimed again. */
+  currentCardOwnerId: string | null;
   cardStartedAt: string | null;
   inviteCode: string;
   status: TrainTogetherSessionStatus;
@@ -175,8 +198,10 @@ function toSession(row: TrainTogetherSessionRow): TrainTogetherSession {
     deckCategory: row.deck_category as TrainTogetherDeckCategory,
     cardCount: row.card_count,
     excludedExercises: row.excluded_exercises,
+    customDeck: row.custom_deck as TrainTogetherCustomDeck | null,
     cardSequence: row.card_sequence as CustomWorkoutStep[] | null,
     currentCardIndex: row.current_card_index,
+    currentCardOwnerId: row.current_card_owner_id,
     cardStartedAt: row.card_started_at,
     inviteCode: row.invite_code,
     status: row.status as TrainTogetherSessionStatus,
@@ -331,13 +356,17 @@ export async function listPendingPartyInvites(): Promise<PendingPartyInvite[]> {
 }
 
 /** Host-only: sets the deck, card count, and excluded exercises before starting. */
+export interface TrainTogetherPartySetup {
+  deckCategory: TrainTogetherCategory;
+  cardCount: number;
+  excludedExercises: string[];
+  /** Set instead of (not in addition to) deckCategory when the host picks a saved custom deck — see TrainTogetherCustomDeck. Null clears back to the built-in-deck path. */
+  customDeck: TrainTogetherCustomDeck | null;
+}
+
 export async function updatePartySetup(
   sessionId: string,
-  setup: {
-    deckCategory: TrainTogetherCategory;
-    cardCount: number;
-    excludedExercises: string[];
-  },
+  setup: TrainTogetherPartySetup,
 ): Promise<void> {
   const { error } = await supabase
     .from("train_together_sessions")
@@ -345,6 +374,8 @@ export async function updatePartySetup(
       deck_category: setup.deckCategory,
       card_count: setup.cardCount,
       excluded_exercises: setup.excludedExercises,
+      custom_deck:
+        setup.customDeck as unknown as TrainTogetherSessionRow["custom_deck"],
     })
     .eq("id", sessionId);
   if (error) throw new Error(error.message);
@@ -414,16 +445,27 @@ export async function listSessionParticipants(
   }));
 }
 
-/** Host-only: flips the session to active and draws the one shared card sequence everyone's device renders off. */
+/**
+ * Host-only: flips the session to active and draws the one shared card
+ * sequence everyone's device renders off. Same "host computes once, writes
+ * the full array, everyone else just reads it" mechanism either way —
+ * drawTrainTogetherSteps() shuffles (Math.random()), so it was never
+ * something each device could reproduce independently even for the
+ * built-in path; buildCustomWorkoutSteps() is pure/deterministic, but
+ * participants have no local copy of the host's custom deck to run it on
+ * regardless (see TrainTogetherCustomDeck), so it goes through the exact
+ * same cardSequence broadcast rather than a separate per-device path.
+ */
 export async function startTrainTogetherSession(
   session: TrainTogetherSession,
 ): Promise<void> {
-  const excluded = new Set(session.excludedExercises);
-  const cardSequence = drawTrainTogetherSteps(
-    session.deckCategory as TrainTogetherCategory,
-    session.cardCount,
-    excluded,
-  );
+  const cardSequence = session.customDeck
+    ? buildCustomWorkoutSteps(session.customDeck.exercises)
+    : drawTrainTogetherSteps(
+        session.deckCategory as TrainTogetherCategory,
+        session.cardCount,
+        new Set(session.excludedExercises),
+      );
   const { error } = await supabase
     .from("train_together_sessions")
     .update({
@@ -438,23 +480,42 @@ export async function startTrainTogetherSession(
 }
 
 /**
- * The core "Next" action: attributes the just-finished card to
- * `participantUserId` (whoever the "who is this for?" picker landed on) and
- * atomically advances the one shared card position for the whole party.
- * `expectedIndex` guards against two people tapping Next at once — see
+ * Claims the current card (identified by `expectedIndex`, guarding against
+ * two people tapping different participants at once) for `ownerUserId` —
+ * the "who's up?" picker shown for a still-unclaimed card. Once this
+ * succeeds, every device sees the same owner via the realtime session
+ * subscription and shows that person's turn instead of the picker.
+ */
+export async function assignCardOwner(params: {
+  sessionId: string;
+  expectedIndex: number;
+  ownerUserId: string;
+}): Promise<void> {
+  const { error } = await supabase.rpc("train_together_assign_card_owner", {
+    p_session_id: params.sessionId,
+    p_expected_index: params.expectedIndex,
+    p_owner_user_id: params.ownerUserId,
+  });
+  if (error) throw new Error(error.message);
+}
+
+/**
+ * The core "Next" action, called once the current card already has an
+ * owner (see assignCardOwner) — credits that already-known owner and
+ * atomically advances the one shared card position for the whole party,
+ * clearing the owner so the next card starts unclaimed. `expectedIndex`
+ * guards against two people tapping Next at once — see
  * train_together_advance_card() in the migration for the race handling.
  */
 export async function attributeCardAndAdvance(params: {
   sessionId: string;
   expectedIndex: number;
-  participantUserId: string;
   reps: number;
   holdSeconds: number;
 }): Promise<void> {
   const { error } = await supabase.rpc("train_together_advance_card", {
     p_session_id: params.sessionId,
     p_expected_index: params.expectedIndex,
-    p_participant_user_id: params.participantUserId,
     p_reps: params.reps,
     p_hold_seconds: params.holdSeconds,
   });

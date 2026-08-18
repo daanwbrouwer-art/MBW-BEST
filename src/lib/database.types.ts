@@ -400,6 +400,8 @@ export type Database = {
           completed_at: string | null
           created_at: string
           current_card_index: number
+          current_card_owner_id: string | null
+          custom_deck: Json | null
           deck_category: string
           excluded_exercises: string[]
           host_id: string
@@ -414,6 +416,8 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           current_card_index?: number
+          current_card_owner_id?: string | null
+          custom_deck?: Json | null
           deck_category: string
           excluded_exercises?: string[]
           host_id: string
@@ -428,6 +432,8 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           current_card_index?: number
+          current_card_owner_id?: string | null
+          custom_deck?: Json | null
           deck_category?: string
           excluded_exercises?: string[]
           host_id?: string
@@ -1519,8 +1525,15 @@ export type Database = {
         Args: {
           p_expected_index: number
           p_hold_seconds: number
-          p_participant_user_id: string
           p_reps: number
+          p_session_id: string
+        }
+        Returns: undefined
+      }
+      train_together_assign_card_owner: {
+        Args: {
+          p_expected_index: number
+          p_owner_user_id: string
           p_session_id: string
         }
         Returns: undefined

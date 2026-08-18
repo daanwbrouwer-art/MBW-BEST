@@ -86,6 +86,16 @@ export function useTier() {
     () => (isNative ? null : readSubscription()),
   );
   const [trialStatus] = useState<TrialStatus>(() => getTrialStatus());
+  /** True only on native, from mount until the first Purchases.getCustomerInfo()
+   * call settles (resolves or rejects) — gates every tier-based lock icon,
+   * paywall redirect, and "not subscribed" UI throughout the app so a real
+   * subscriber never sees that flash during the async window right after
+   * cold launch. Always false on web/dev, where subscription state is read
+   * synchronously from localStorage above. To sanity-check on a real device:
+   * isLoading should read true for a beat right after launch, then flip to
+   * false once RevenueCat resolves — a paying user should see a skeleton/
+   * spinner during that beat, never a lock icon or a paywall redirect. */
+  const [isLoading, setIsLoading] = useState<boolean>(() => isNative);
 
   useEffect(() => {
     if (!isNative) return;
@@ -94,9 +104,11 @@ export function useTier() {
       if (!cancelled) setSubscription(subscriptionFromCustomerInfo(info));
     };
 
-    Purchases.getCustomerInfo().then(({ customerInfo }) =>
-      applyCustomerInfo(customerInfo),
-    );
+    Purchases.getCustomerInfo()
+      .then(({ customerInfo }) => applyCustomerInfo(customerInfo))
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
 
     let listenerId: string | undefined;
     Purchases.addCustomerInfoUpdateListener(applyCustomerInfo).then((id) => {
@@ -111,6 +123,19 @@ export function useTier() {
         });
       }
     };
+  }, []);
+
+  /** Re-reads CustomerInfo from RevenueCat and applies it to `subscription`.
+   * The CustomerInfoUpdateListener above should already reflect a restore by
+   * the time `paymentService.restorePurchases()` resolves, but this gives
+   * `ProfilePage`'s restore button an explicit, awaitable refresh to call
+   * right after — same defensive-refresh pattern as the native branch of
+   * `purchase` below — so the UI never shows a stale "Free Plan" state
+   * after a successful restore. No-op on web/dev. */
+  const refreshSubscription = useCallback(async () => {
+    if (!isNative) return;
+    const { customerInfo } = await Purchases.getCustomerInfo();
+    setSubscription(subscriptionFromCustomerInfo(customerInfo));
   }, []);
 
   const trialActive = trialStatus.kind === "active";
@@ -139,9 +164,7 @@ export function useTier() {
         // above will normally have already fired by the time
         // `paymentService.purchase()` resolves, but refresh once more here
         // so there's no stale-state flash before it does.
-        Purchases.getCustomerInfo().then(({ customerInfo }) =>
-          setSubscription(subscriptionFromCustomerInfo(customerInfo)),
-        );
+        refreshSubscription();
       } else {
         const record: SubscriptionRecord = {
           tierId,
@@ -161,7 +184,7 @@ export function useTier() {
       const granted = reconcileAchievementsOnSubscribe(ctx);
       queuePendingUnlockAnimations(isGuest, granted);
     },
-    [isGuest],
+    [isGuest, refreshSubscription],
   );
 
   return {
@@ -172,7 +195,9 @@ export function useTier() {
     trialActive,
     trialStatus,
     purchase,
+    refreshSubscription,
     guestMode: isGuest,
+    isLoading,
   };
 }
 

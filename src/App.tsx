@@ -35,6 +35,7 @@ const NotificationPermissionPage = lazy(
   () => import("@/pages/onboarding/NotificationPermissionPage"),
 );
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const MapPage = lazy(() => import("@/pages/MapPage"));
 const ExerciseProgressPage = lazy(() => import("@/pages/ExerciseProgressPage"));
 const NearbyPage = lazy(() => import("@/pages/NearbyPage"));
@@ -56,6 +57,8 @@ const SubscribePage = lazy(() => import("@/pages/SubscribePage"));
 const CustomWorkoutBuilderPage = lazy(
   () => import("@/pages/CustomWorkoutBuilderPage"),
 );
+const CustomDecksPage = lazy(() => import("@/pages/CustomDecksPage"));
+const CustomDeckDetailPage = lazy(() => import("@/pages/CustomDeckDetailPage"));
 const CustomWorkoutSessionPage = lazy(
   () => import("@/pages/CustomWorkoutSessionPage"),
 );
@@ -250,6 +253,16 @@ const profileRoute = createRoute({
   ),
 });
 
+const faqRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/faq",
+  component: () => (
+    <OnboardingGuard>
+      <FAQPage />
+    </OnboardingGuard>
+  ),
+});
+
 const mapRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/map",
@@ -346,9 +359,19 @@ const subscribeRoute = createRoute({
   ),
 });
 
-const customWorkoutBuilderRoute = createRoute({
+const customWorkoutListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/custom-workout",
+  component: () => (
+    <OnboardingGuard>
+      <CustomDecksPage />
+    </OnboardingGuard>
+  ),
+});
+
+const customWorkoutNewRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/custom-workout/new",
   component: () => (
     <OnboardingGuard>
       <CustomWorkoutBuilderPage />
@@ -356,9 +379,29 @@ const customWorkoutBuilderRoute = createRoute({
   ),
 });
 
+const customWorkoutEditRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/custom-workout/edit/$deckId",
+  component: () => (
+    <OnboardingGuard>
+      <CustomWorkoutBuilderPage />
+    </OnboardingGuard>
+  ),
+});
+
+const customWorkoutDeckDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/custom-workout/deck/$deckId",
+  component: () => (
+    <OnboardingGuard>
+      <CustomDeckDetailPage />
+    </OnboardingGuard>
+  ),
+});
+
 const customWorkoutSessionRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/custom-workout/session",
+  path: "/custom-workout/session/$deckId",
   component: () => (
     <OnboardingGuard>
       <CustomWorkoutSessionPage />
@@ -427,6 +470,7 @@ const routeTree = rootRoute.addChildren([
   onboardingCreateAccountEmailRoute,
   onboardingNotificationsRoute,
   profileRoute,
+  faqRoute,
   mapRoute,
   welcomeTipsRoute,
   verifyEmailConfirmationRoute,
@@ -440,7 +484,10 @@ const routeTree = rootRoute.addChildren([
   myStreakRoute,
   proDeckPreviewRoute,
   subscribeRoute,
-  customWorkoutBuilderRoute,
+  customWorkoutListRoute,
+  customWorkoutNewRoute,
+  customWorkoutEditRoute,
+  customWorkoutDeckDetailRoute,
   customWorkoutSessionRoute,
   trainTogetherRoute,
   trainTogetherWaitingRoute,

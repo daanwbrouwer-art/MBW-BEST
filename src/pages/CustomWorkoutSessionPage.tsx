@@ -16,20 +16,26 @@ import { resolveExerciseIllustration } from "@/data/exerciseAssets";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { buildCustomWorkoutSteps } from "@/lib/customWorkoutBuilder";
 import { useCustomWorkoutStore } from "@/store/customWorkout";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Trophy, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
 export default function CustomWorkoutSessionPage() {
   const navigate = useNavigate();
+  const { deckId } = useParams({ strict: false }) as { deckId?: string };
   const { gender } = useOnboarding();
-  const { selected, clear } = useCustomWorkoutStore();
+  const { getDeck } = useCustomWorkoutStore();
 
-  // Computed once per session (lazy initializer) so the Double/Half
-  // modifier placement stays stable across re-renders instead of
-  // reshuffling every time the component renders.
-  const [steps] = useState(() => buildCustomWorkoutSteps(selected));
+  // Deck lookup + step build both computed once per session (lazy
+  // initializer) so the Double/Half modifier placement stays stable across
+  // re-renders instead of reshuffling every time the component renders.
+  const [deckName] = useState(() =>
+    deckId ? getDeck(deckId)?.name : undefined,
+  );
+  const [steps] = useState(() =>
+    buildCustomWorkoutSteps(deckId ? (getDeck(deckId)?.exercises ?? []) : []),
+  );
 
   const [index, setIndex] = useState(0);
   const [isDone, setIsDone] = useState(false);
@@ -39,8 +45,8 @@ export default function CustomWorkoutSessionPage() {
   const total = steps.length;
   const current = steps[index];
 
-  // Bounce back to the builder if there's nothing to train (e.g. direct nav
-  // or a refresh after the store was cleared).
+  // Bounce back to the deck list if there's nothing to train — no deckId,
+  // the deck was deleted, or it's genuinely empty.
   useEffect(() => {
     if (total === 0 && !isDone) {
       navigate({ to: "/custom-workout" });
@@ -91,7 +97,6 @@ export default function CustomWorkoutSessionPage() {
   };
 
   const handleFinish = () => {
-    clear();
     navigate({ to: "/home" });
   };
 
@@ -117,7 +122,8 @@ export default function CustomWorkoutSessionPage() {
           Workout Complete!
         </h1>
         <p className="text-sm text-muted-foreground font-body mb-8">
-          You crushed all {total} exercises in your custom workout.
+          You crushed all {total} exercises
+          {deckName ? ` in "${deckName}"` : " in your custom workout"}.
         </p>
         <Button
           className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase"

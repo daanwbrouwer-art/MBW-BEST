@@ -1,6 +1,14 @@
 import { Logo } from "@/components/Logo";
 import { PaywallModal } from "@/components/PaywallModal";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { resolveExerciseIllustration } from "@/data/exerciseAssets";
 import {
   type BodyRegion,
@@ -15,7 +23,7 @@ import {
   useCustomWorkoutStore,
 } from "@/store/customWorkout";
 import { DECK_CATEGORY_ICON } from "@/types/workout";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Check,
@@ -27,7 +35,7 @@ import {
   X,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // bodyRegion is the precise per-exercise classification (what the movement
 // actually trains — see exerciseCatalog.ts), which is why it can tag
@@ -47,16 +55,54 @@ const BODY_REGION_LABEL: Record<BodyRegion, string> = {
 
 export default function CustomWorkoutBuilderPage() {
   const navigate = useNavigate();
+  const { deckId } = useParams({ strict: false }) as { deckId?: string };
+  const isEditing = !!deckId;
   const { gender } = useOnboarding();
-  const { effectiveTier } = useTier();
+  const { effectiveTier, isLoading: tierLoading } = useTier();
   const isPremium = effectiveTier === "subscriber";
 
-  const { selected, isSelected, addExercise, removeExercise, setValue } =
-    useCustomWorkoutStore();
+  const {
+    selected,
+    isSelected,
+    addExercise,
+    removeExercise,
+    setValue,
+    clear,
+    getDeck,
+    loadDeckIntoSelected,
+    saveSelectedAsNewDeck,
+    saveSelectedToDeck,
+  } = useCustomWorkoutStore();
+
+  const editingDeck = deckId ? getDeck(deckId) : undefined;
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<BodyRegion | "All">("All");
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [deckNameInput, setDeckNameInput] = useState("");
+
+  // One-time load per screen visit: editing an existing deck seeds `selected`
+  // from its saved exercises; starting fresh clears out whatever was left
+  // over from a previous, unsaved visit to this same picker.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: deckId identity is the only thing that should re-trigger this
+  useEffect(() => {
+    if (deckId) {
+      loadDeckIntoSelected(deckId);
+    } else {
+      clear();
+    }
+  }, [deckId]);
+
+  // Stale/deleted deck link (e.g. back-navigated to an edit URL for a deck
+  // that's since been deleted) — bounce to the list rather than editing a
+  // deck that no longer exists.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only deckId identity should re-trigger this
+  useEffect(() => {
+    if (deckId && !getDeck(deckId)) {
+      navigate({ to: "/custom-workout" });
+    }
+  }, [deckId]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -82,6 +128,10 @@ export default function CustomWorkoutBuilderPage() {
   }, [filtered, filter]);
 
   const handleToggle = (ex: CatalogExercise) => {
+    // The grid renders a loading state (not these cards) while tierLoading,
+    // so this stays as a defensive second line against a stray/queued tap
+    // reading a stale locked state during the brief native-launch window.
+    if (tierLoading) return;
     if (!isPremium) {
       setShowPaywall(true);
       return;
@@ -101,13 +151,37 @@ export default function CustomWorkoutBuilderPage() {
     addExercise(exercise);
   };
 
-  const handleStart = () => {
+  const backDestination = isEditing
+    ? ({
+        to: "/custom-workout/deck/$deckId",
+        params: { deckId: deckId! },
+      } as const)
+    : ({ to: "/custom-workout" } as const);
+
+  const handleSaveTap = () => {
+    if (tierLoading) return;
     if (!isPremium) {
       setShowPaywall(true);
       return;
     }
     if (selected.length === 0) return;
-    navigate({ to: "/custom-workout/session" });
+    if (isEditing) {
+      saveSelectedToDeck(deckId!);
+      clear();
+      navigate(backDestination);
+      return;
+    }
+    setDeckNameInput("");
+    setShowNamePrompt(true);
+  };
+
+  const handleConfirmNewDeckName = () => {
+    const name = deckNameInput.trim();
+    if (!name) return;
+    const newId = saveSelectedAsNewDeck(name);
+    clear();
+    setShowNamePrompt(false);
+    navigate({ to: "/custom-workout/deck/$deckId", params: { deckId: newId } });
   };
 
   return (
@@ -127,7 +201,7 @@ export default function CustomWorkoutBuilderPage() {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           whileTap={{ scale: 0.92 }}
-          onClick={() => navigate({ to: "/home" })}
+          onClick={() => navigate(backDestination)}
           className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth shrink-0"
           data-ocid="custom-workout.back_button"
         >
@@ -142,7 +216,7 @@ export default function CustomWorkoutBuilderPage() {
           animate={{ opacity: 1, y: 0 }}
           className="font-display font-black text-2xl text-foreground leading-tight"
         >
-          Build Your Own
+          {isEditing ? `Edit "${editingDeck?.name ?? ""}"` : "Build Your Own"}
         </motion.h1>
         <div className="flex items-center gap-1.5 mt-1">
           <Crown
@@ -212,7 +286,21 @@ export default function CustomWorkoutBuilderPage() {
           sections when browsing everything, flat grid once a single
           region filter narrows things down. */}
       <div className="relative flex-1 overflow-y-auto px-5 pt-3 pb-4">
-        {filtered.length === 0 ? (
+        {tierLoading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="rounded-2xl border overflow-hidden aspect-square animate-pulse"
+                style={{
+                  background: "oklch(0.16 0.01 260)",
+                  borderColor: "oklch(0.24 0.01 260 / 0.5)",
+                }}
+                data-ocid={`custom-workout.exercise_card.skeleton.${i + 1}`}
+              />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <p className="text-center text-sm text-muted-foreground font-body py-10">
             No exercises match your search.
           </p>
@@ -322,10 +410,10 @@ export default function CustomWorkoutBuilderPage() {
 
             <Button
               className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase shadow-[0_0_40px_oklch(0.68_0.25_180/0.35)]"
-              onClick={handleStart}
-              data-ocid="custom-workout.start_button"
+              onClick={handleSaveTap}
+              data-ocid="custom-workout.save_button"
             >
-              Start Workout — {selected.length}{" "}
+              {isEditing ? "Save Changes" : "Save Deck"} — {selected.length}{" "}
               {selected.length === 1 ? "exercise" : "exercises"}
             </Button>
           </motion.div>
@@ -337,6 +425,42 @@ export default function CustomWorkoutBuilderPage() {
           <PaywallModal onDismiss={() => setShowPaywall(false)} />
         )}
       </AnimatePresence>
+
+      <Dialog open={showNamePrompt} onOpenChange={setShowNamePrompt}>
+        <DialogContent data-ocid="custom-workout.name_dialog">
+          <DialogHeader>
+            <DialogTitle>Name this deck</DialogTitle>
+          </DialogHeader>
+          <Input
+            value={deckNameInput}
+            onChange={(e) => setDeckNameInput(e.target.value)}
+            placeholder="e.g. Upper Body Blast"
+            maxLength={40}
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleConfirmNewDeckName();
+            }}
+            data-ocid="custom-workout.name_dialog_input"
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => setShowNamePrompt(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleConfirmNewDeckName}
+              disabled={!deckNameInput.trim()}
+              data-ocid="custom-workout.name_dialog_confirm"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { EXERCISE_CATALOG } from "@/data/exerciseCatalog";
 import { supabase } from "@/lib/supabaseClient";
 import {
+  type TrainTogetherCustomDeck,
+  type TrainTogetherPartySetup,
   getTrainTogetherSession,
   listSessionParticipants,
   setParticipantReady,
@@ -30,10 +32,11 @@ import {
   availablePoolSize,
 } from "@/lib/trainTogetherDraw";
 import { cn } from "@/lib/utils";
+import { useCustomWorkoutStore } from "@/store/customWorkout";
 import { DECK_CATEGORY_ICON, DECK_CATEGORY_LABEL } from "@/types/workout";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { Check, Copy, Share2, X } from "lucide-react";
+import { Check, Copy, Layers, Share2, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -71,6 +74,7 @@ function WorkoutSetupSheet({
   initialCategory,
   initialCardCount,
   initialExcluded,
+  initialCustomDeck,
   onClose,
   onSaved,
 }: {
@@ -78,9 +82,19 @@ function WorkoutSetupSheet({
   initialCategory: TrainTogetherCategory;
   initialCardCount: number;
   initialExcluded: string[];
+  initialCustomDeck: TrainTogetherCustomDeck | null;
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const { decks: savedDecks } = useCustomWorkoutStore();
+
+  const [deckMode, setDeckMode] = useState<"builtin" | "custom">(
+    initialCustomDeck ? "custom" : "builtin",
+  );
+  const [selectedDeckId, setSelectedDeckId] = useState<string | null>(
+    initialCustomDeck?.id ?? null,
+  );
+
   const [category, setCategory] =
     useState<TrainTogetherCategory>(initialCategory);
   const [cardCount, setCardCount] = useState(initialCardCount);
@@ -98,18 +112,39 @@ function WorkoutSetupSheet({
   );
   const poolSize = availablePoolSize(category, excluded);
   const isCoreEmpty = category === "Core" && pool.length === 0;
+  const selectedDeck = savedDecks.find((d) => d.id === selectedDeckId);
 
   const saveMutation = useMutation({
-    mutationFn: () =>
-      updatePartySetup(sessionId, {
-        deckCategory: category,
-        cardCount,
-        excludedExercises: Array.from(excluded),
-      }),
+    mutationFn: () => {
+      const setup: TrainTogetherPartySetup =
+        deckMode === "custom" && selectedDeck
+          ? {
+              deckCategory: category,
+              cardCount,
+              excludedExercises: Array.from(excluded),
+              customDeck: {
+                id: selectedDeck.id,
+                name: selectedDeck.name,
+                exercises: selectedDeck.exercises,
+              },
+            }
+          : {
+              deckCategory: category,
+              cardCount,
+              excludedExercises: Array.from(excluded),
+              customDeck: null,
+            };
+      return updatePartySetup(sessionId, setup);
+    },
     onSuccess: onSaved,
     onError: (err: Error) =>
       toast("Couldn't save workout setup", { description: err.message }),
   });
+
+  const canSave =
+    deckMode === "custom"
+      ? !!selectedDeck && selectedDeck.exercises.length > 0
+      : !isCoreEmpty && poolSize > 0;
 
   return (
     <motion.div
@@ -146,155 +181,249 @@ function WorkoutSetupSheet({
         <p className="text-xs font-display font-bold uppercase tracking-widest text-muted-foreground mb-2">
           Deck
         </p>
-        <div className="flex gap-2 mb-5 flex-wrap">
-          {DECK_CHOICES.map((cat) => {
-            const disabled =
-              cat === "Core" &&
-              EXERCISE_CATALOG.filter((ex) => ex.categories.includes(cat))
-                .length === 0;
-            return (
-              <button
-                key={cat}
-                type="button"
-                disabled={disabled}
-                onClick={() => setCategory(cat)}
-                className={cn(
-                  "shrink-0 px-3.5 h-9 rounded-full text-xs font-display font-bold uppercase tracking-wide transition-smooth border flex items-center gap-1.5",
-                  disabled && "opacity-40",
-                  category === cat
-                    ? "bg-primary text-background border-primary"
-                    : "bg-card text-muted-foreground border-border/50",
-                )}
-                data-ocid={`train-together.deck.${cat}`}
-              >
-                <span>{DECK_CATEGORY_ICON[cat]}</span>
-                {DECK_CATEGORY_LABEL[cat]}
-                {disabled && " · Coming soon"}
-              </button>
-            );
-          })}
-        </div>
-
-        <p className="text-xs font-display font-bold uppercase tracking-widest text-muted-foreground mb-2">
-          Card count
-        </p>
-        <div className="flex gap-2 mb-3">
-          {CARD_COUNT_PRESETS.map((count) => (
-            <button
-              key={count}
-              type="button"
-              onClick={() => {
-                setUseCustomCount(false);
-                setCardCount(count);
-              }}
-              className={cn(
-                "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
-                !useCustomCount && cardCount === count
-                  ? "bg-primary text-background border-primary"
-                  : "bg-card text-muted-foreground border-border/50",
-              )}
-              data-ocid={`train-together.card_count.${count}`}
-            >
-              {count}
-            </button>
-          ))}
+        <div className="flex gap-2 mb-5">
           <button
             type="button"
-            onClick={() => setUseCustomCount(true)}
+            onClick={() => setDeckMode("builtin")}
             className={cn(
-              "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
-              useCustomCount
+              "flex-1 h-10 rounded-xl text-xs font-display font-bold uppercase tracking-wide transition-smooth border",
+              deckMode === "builtin"
                 ? "bg-primary text-background border-primary"
                 : "bg-card text-muted-foreground border-border/50",
             )}
-            data-ocid="train-together.card_count.custom"
+            data-ocid="train-together.deck_mode.builtin"
           >
-            Custom
+            Built-in Decks
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeckMode("custom")}
+            className={cn(
+              "flex-1 h-10 rounded-xl text-xs font-display font-bold uppercase tracking-wide transition-smooth border",
+              deckMode === "custom"
+                ? "bg-primary text-background border-primary"
+                : "bg-card text-muted-foreground border-border/50",
+            )}
+            data-ocid="train-together.deck_mode.custom"
+          >
+            My Custom Decks
           </button>
         </div>
-        {useCustomCount && (
-          <div className="flex items-center gap-3 mb-2">
-            <input
-              type="range"
-              min={MIN_CARD_COUNT}
-              max={MAX_CARD_COUNT}
-              value={cardCount}
-              onChange={(e) => setCardCount(Number(e.target.value))}
-              className="flex-1"
-              data-ocid="train-together.card_count_slider"
-            />
-            <span className="font-display font-black text-lg text-primary tabular-nums w-10 text-right">
-              {cardCount}
-            </span>
-          </div>
-        )}
-        {poolSize > 0 && poolSize < cardCount && (
-          <p className="text-xs mb-3" style={{ color: "oklch(0.75 0.15 60)" }}>
-            Only {poolSize} exercises available with your exclusions — some will
-            repeat to fill {cardCount} cards.
-          </p>
-        )}
-        {isCoreEmpty && (
-          <p className="text-xs mb-3" style={{ color: "oklch(0.75 0.15 25)" }}>
-            Core doesn't have any cards yet — pick another deck.
-          </p>
-        )}
 
-        <p className="text-xs font-display font-bold uppercase tracking-widest text-muted-foreground mb-2 mt-2">
-          Exclude exercises
-        </p>
-        <div className="flex flex-col gap-1.5 mb-7 max-h-[220px] overflow-y-auto">
-          {pool.map((ex) => {
-            const isExcluded = excluded.has(ex.name);
-            return (
-              <button
-                key={ex.name}
-                type="button"
-                onClick={() =>
-                  setExcluded((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(ex.name)) next.delete(ex.name);
-                    else next.add(ex.name);
-                    return next;
-                  })
-                }
-                className="flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 bg-card border border-border/40 text-left"
-                data-ocid={`train-together.exclude.${ex.name}`}
+        {deckMode === "custom" ? (
+          <div className="mb-7">
+            {savedDecks.length === 0 ? (
+              <div
+                className="rounded-2xl px-4 py-5 text-center"
+                style={{
+                  background: "oklch(0.16 0.01 260)",
+                  border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+                }}
+                data-ocid="train-together.custom_deck.empty"
               >
-                <span
+                <Layers className="w-6 h-6 mx-auto mb-2 text-muted-foreground/60" />
+                <p className="text-sm text-foreground font-body mb-1">
+                  No custom decks saved yet
+                </p>
+                <p className="text-xs text-muted-foreground font-body">
+                  Build one from the Custom Workout Builder, then come back here
+                  to use it.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {savedDecks.map((deck) => (
+                  <button
+                    key={deck.id}
+                    type="button"
+                    onClick={() => setSelectedDeckId(deck.id)}
+                    className={cn(
+                      "flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5 border text-left transition-smooth",
+                      selectedDeckId === deck.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border/50 bg-card",
+                    )}
+                    data-ocid={`train-together.custom_deck.${deck.id}`}
+                  >
+                    <div className="min-w-0">
+                      <p className="font-display font-bold text-sm text-foreground truncate">
+                        {deck.name}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground font-body">
+                        {deck.exercises.length}{" "}
+                        {deck.exercises.length === 1 ? "exercise" : "exercises"}
+                      </p>
+                    </div>
+                    {selectedDeckId === deck.id && (
+                      <Check
+                        className="w-4 h-4 text-primary shrink-0"
+                        strokeWidth={3}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-2 mb-5 flex-wrap">
+              {DECK_CHOICES.map((cat) => {
+                const disabled =
+                  cat === "Core" &&
+                  EXERCISE_CATALOG.filter((ex) => ex.categories.includes(cat))
+                    .length === 0;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => setCategory(cat)}
+                    className={cn(
+                      "shrink-0 px-3.5 h-9 rounded-full text-xs font-display font-bold uppercase tracking-wide transition-smooth border flex items-center gap-1.5",
+                      disabled && "opacity-40",
+                      category === cat
+                        ? "bg-primary text-background border-primary"
+                        : "bg-card text-muted-foreground border-border/50",
+                    )}
+                    data-ocid={`train-together.deck.${cat}`}
+                  >
+                    <span>{DECK_CATEGORY_ICON[cat]}</span>
+                    {DECK_CATEGORY_LABEL[cat]}
+                    {disabled && " · Coming soon"}
+                  </button>
+                );
+              })}
+            </div>
+
+            <p className="text-xs font-display font-bold uppercase tracking-widest text-muted-foreground mb-2">
+              Card count
+            </p>
+            <div className="flex gap-2 mb-3">
+              {CARD_COUNT_PRESETS.map((count) => (
+                <button
+                  key={count}
+                  type="button"
+                  onClick={() => {
+                    setUseCustomCount(false);
+                    setCardCount(count);
+                  }}
                   className={cn(
-                    "font-body text-sm truncate",
-                    isExcluded
-                      ? "text-muted-foreground line-through"
-                      : "text-foreground",
+                    "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
+                    !useCustomCount && cardCount === count
+                      ? "bg-primary text-background border-primary"
+                      : "bg-card text-muted-foreground border-border/50",
                   )}
+                  data-ocid={`train-together.card_count.${count}`}
                 >
-                  {ex.name}
-                </span>
-                <div
-                  className={cn(
-                    "w-5 h-5 rounded-md border flex items-center justify-center shrink-0",
-                    isExcluded
-                      ? "border-border/50"
-                      : "border-primary bg-primary",
-                  )}
-                >
-                  {!isExcluded && (
-                    <Check
-                      className="w-3 h-3 text-background"
-                      strokeWidth={3}
-                    />
-                  )}
-                </div>
+                  {count}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setUseCustomCount(true)}
+                className={cn(
+                  "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
+                  useCustomCount
+                    ? "bg-primary text-background border-primary"
+                    : "bg-card text-muted-foreground border-border/50",
+                )}
+                data-ocid="train-together.card_count.custom"
+              >
+                Custom
               </button>
-            );
-          })}
-        </div>
+            </div>
+            {useCustomCount && (
+              <div className="flex items-center gap-3 mb-2">
+                <input
+                  type="range"
+                  min={MIN_CARD_COUNT}
+                  max={MAX_CARD_COUNT}
+                  value={cardCount}
+                  onChange={(e) => setCardCount(Number(e.target.value))}
+                  className="flex-1"
+                  data-ocid="train-together.card_count_slider"
+                />
+                <span className="font-display font-black text-lg text-primary tabular-nums w-10 text-right">
+                  {cardCount}
+                </span>
+              </div>
+            )}
+            {poolSize > 0 && poolSize < cardCount && (
+              <p
+                className="text-xs mb-3"
+                style={{ color: "oklch(0.75 0.15 60)" }}
+              >
+                Only {poolSize} exercises available with your exclusions — some
+                will repeat to fill {cardCount} cards.
+              </p>
+            )}
+            {isCoreEmpty && (
+              <p
+                className="text-xs mb-3"
+                style={{ color: "oklch(0.75 0.15 25)" }}
+              >
+                Core doesn't have any cards yet — pick another deck.
+              </p>
+            )}
+
+            <p className="text-xs font-display font-bold uppercase tracking-widest text-muted-foreground mb-2 mt-2">
+              Exclude exercises
+            </p>
+            <div className="flex flex-col gap-1.5 mb-7 max-h-[220px] overflow-y-auto">
+              {pool.map((ex) => {
+                const isExcluded = excluded.has(ex.name);
+                return (
+                  <button
+                    key={ex.name}
+                    type="button"
+                    onClick={() =>
+                      setExcluded((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(ex.name)) next.delete(ex.name);
+                        else next.add(ex.name);
+                        return next;
+                      })
+                    }
+                    className="flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 bg-card border border-border/40 text-left"
+                    data-ocid={`train-together.exclude.${ex.name}`}
+                  >
+                    <span
+                      className={cn(
+                        "font-body text-sm truncate",
+                        isExcluded
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground",
+                      )}
+                    >
+                      {ex.name}
+                    </span>
+                    <div
+                      className={cn(
+                        "w-5 h-5 rounded-md border flex items-center justify-center shrink-0",
+                        isExcluded
+                          ? "border-border/50"
+                          : "border-primary bg-primary",
+                      )}
+                    >
+                      {!isExcluded && (
+                        <Check
+                          className="w-3 h-3 text-background"
+                          strokeWidth={3}
+                        />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
 
         <Button
           className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase"
           onClick={() => saveMutation.mutate()}
-          disabled={saveMutation.isPending || isCoreEmpty || poolSize === 0}
+          disabled={saveMutation.isPending || !canSave}
           data-ocid="train-together.setup_save"
         >
           {saveMutation.isPending ? "Saving..." : "Save workout"}
@@ -443,8 +572,9 @@ export default function TrainTogetherWaitingRoomPage() {
           Waiting room
         </h1>
         <p className="text-sm text-muted-foreground font-body mb-5">
-          {DECK_CATEGORY_LABEL[session.deckCategory]} · {session.cardCount}{" "}
-          cards
+          {session.customDeck
+            ? session.customDeck.name
+            : `${DECK_CATEGORY_LABEL[session.deckCategory]} · ${session.cardCount} cards`}
         </p>
 
         <div
@@ -502,10 +632,16 @@ export default function TrainTogetherWaitingRoomPage() {
           >
             <div className="min-w-0">
               <p className="font-display font-bold text-sm text-foreground">
-                {DECK_CATEGORY_LABEL[session.deckCategory]} ·{" "}
-                {session.cardCount} cards
-                {session.excludedExercises.length > 0 &&
-                  ` · ${session.excludedExercises.length} excluded`}
+                {session.customDeck ? (
+                  `${session.customDeck.name} · ${session.customDeck.exercises.length} exercises`
+                ) : (
+                  <>
+                    {DECK_CATEGORY_LABEL[session.deckCategory]} ·{" "}
+                    {session.cardCount} cards
+                    {session.excludedExercises.length > 0 &&
+                      ` · ${session.excludedExercises.length} excluded`}
+                  </>
+                )}
               </p>
               <p className="text-[11px] text-muted-foreground font-body">
                 Tap to change the workout
@@ -598,6 +734,7 @@ export default function TrainTogetherWaitingRoomPage() {
           initialCategory={session.deckCategory}
           initialCardCount={session.cardCount}
           initialExcluded={session.excludedExercises}
+          initialCustomDeck={session.customDeck}
           onClose={() => setShowSetup(false)}
           onSaved={() => {
             setShowSetup(false);

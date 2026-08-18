@@ -77,7 +77,7 @@ export default function SubscribePage() {
           showTrial ? "Your free trial has started!" : "You're subscribed!",
           {
             description: showTrial
-              ? `Full access for 7 days, then ${formatEUR(discountedPrice)}/year.`
+              ? `Full access for 7 days, then ${formatEUR(selectedTier.price)}/year.`
               : `Welcome to MyBodyWeight ${selectedTier.label}.`,
             duration: 4500,
           },
@@ -148,11 +148,12 @@ export default function SubscribePage() {
           >
             <Sparkles className="w-4 h-4 shrink-0" style={{ color: TEAL }} />
             <p className="text-xs text-foreground font-body leading-snug">
-              Your referral discount:{" "}
+              Referral benefit:{" "}
               <span className="font-display font-bold" style={{ color: TEAL }}>
                 {discountPct}% off
               </span>{" "}
-              is applied below.
+              credited to your account after purchase — the App Store/Google
+              Play charge below is the full price.
             </p>
           </motion.div>
         )}
@@ -185,22 +186,28 @@ export default function SubscribePage() {
               {selectedTier.label} plan
             </span>
             <span className="text-sm text-muted-foreground font-body tabular-nums">
-              {discountPct > 0 ? (
-                <>
-                  <span className="line-through opacity-50 mr-1.5">
-                    {formatEUR(selectedTier.price)}
-                  </span>
-                  {formatEUR(discountedPrice)}
-                </>
-              ) : (
-                formatEUR(selectedTier.price)
-              )}
+              {formatEUR(selectedTier.price)}
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-body">
-            {selectedTier.billingPeriodLabel}
-            {discountPct > 0 && ` · ${discountPct}% referral discount applied`}
+            {selectedTier.billingPeriodLabel} · charged to your{" "}
+            {storeAccountLabel}
           </p>
+          {discountPct > 0 && (
+            <p
+              className="text-xs font-body mt-2 pt-2 flex items-center gap-1.5"
+              style={{
+                borderTop: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                color: TEAL,
+              }}
+              data-ocid="subscribe.summary.referral_benefit"
+            >
+              <Sparkles className="w-3 h-3 shrink-0" />
+              Referral benefit —{" "}
+              {formatEUR(selectedTier.price - discountedPrice)} ({discountPct}%)
+              credited to your account, not deducted here
+            </p>
+          )}
         </motion.div>
 
         <motion.button
@@ -220,13 +227,13 @@ export default function SubscribePage() {
           ) : showTrial ? (
             "Start 7-day free trial"
           ) : (
-            `Subscribe — ${formatEUR(discountedPrice)}`
+            `Subscribe — ${formatEUR(selectedTier.price)}`
           )}
         </motion.button>
 
         {showTrial && (
           <p className="text-center text-xs text-muted-foreground font-body mb-3">
-            Free for 7 days, then {formatEUR(discountedPrice)}/year. Cancel
+            Free for 7 days, then {formatEUR(selectedTier.price)}/year. Cancel
             anytime.
           </p>
         )}

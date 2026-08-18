@@ -69,7 +69,7 @@ export default function NearbyPage() {
 
   const isDiscoverable = profile?.discoverable ?? false;
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [
       "nearby-profiles",
       position?.latitude,
@@ -82,6 +82,12 @@ export default function NearbyPage() {
   });
 
   const athletes: NearbyAthlete[] = data?.ok ? data.athletes : [];
+  // getNearbyProfiles() never throws — a Supabase/RLS failure comes back as
+  // `{ ok: false }`, not a rejected query, so `isError` alone (which only
+  // fires for a thrown/rejected queryFn, e.g. the fetch itself failing while
+  // fully offline) misses most real failures. Check both so a misconfigured
+  // env var or an RLS rejection doesn't silently render as "no one nearby."
+  const hasError = isError || (data ? !data.ok : false);
 
   const handleSayHi = async (athlete: NearbyAthlete) => {
     const result = await createOrGetThread(athlete.id);
@@ -237,6 +243,20 @@ export default function NearbyPage() {
               <div className="flex justify-center py-10">
                 <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
               </div>
+            ) : hasError ? (
+              <EmptyState
+                icon={
+                  <Users
+                    className="w-7 h-7"
+                    style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                  />
+                }
+                title="Can't connect right now"
+                description="Check your connection and try again."
+                actionLabel="Try again"
+                onAction={() => refetch()}
+                ocid="nearby.error_state"
+              />
             ) : athletes.length === 0 ? (
               <EmptyState
                 icon={

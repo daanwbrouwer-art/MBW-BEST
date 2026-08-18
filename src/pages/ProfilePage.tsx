@@ -1,6 +1,7 @@
 import { Logo } from "@/components/Logo";
 import { WeeklyGoalPicker } from "@/components/WeeklyGoalPicker";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { useEquipmentTier } from "@/hooks/use-equipment-tier";
 import { useInternetIdentity } from "@/hooks/use-local-identity";
@@ -13,8 +14,16 @@ import { useProfile } from "@/hooks/use-profile";
 import { useStreak } from "@/hooks/use-streak";
 import { useTier } from "@/hooks/use-tier";
 import { useWorkoutHistory } from "@/hooks/use-workout-history";
+import {
+  DEFAULT_AGE,
+  DEFAULT_HEIGHT_CM,
+  DEFAULT_WEIGHT_KG,
+  calculateBMI,
+  getBMICategory,
+} from "@/lib/calories";
 import { readChallengeHistory } from "@/lib/challenge";
 import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
+import { paymentService } from "@/lib/payments";
 import {
   computeDiscountPct,
   ensureReferralCode,
@@ -43,18 +52,25 @@ import {
   FileText,
   Flame,
   Gift,
+  HelpCircle,
   Lock,
   LogOut,
   MessageCircle,
   RotateCcw,
+  Scale,
   Sparkles,
   Trophy,
   User,
   Users,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+/** Anchor id the FAQ page's "reinstalled the app" answer scrolls to — a
+ * plain hash + scrollIntoView rather than router search-param plumbing,
+ * since this is the only cross-page deep link this app needs today. */
+export const RESTORE_PURCHASES_ANCHOR_ID = "profile-restore-purchases";
 
 const EQUIPMENT_ITEMS: {
   key: keyof EquipmentProfile;
@@ -97,6 +113,30 @@ const EQUIPMENT_TIER_OPTIONS: {
   { value: "advanced", label: "Advanced", subtitle: "+ Vest + rings" },
 ];
 
+// Same labels and slider bounds as the onboarding body-metrics step
+// (OnboardingPage.tsx's BodyMetricsStep) — kept in sync manually since
+// neither is currently exported from a shared module. Editing here writes
+// through the same saveOnboarding() path onboarding uses (see
+// handleChangeWeight/Height/Age below), so everything downstream that reads
+// via useOnboarding() — the calorie estimate on WorkoutSetupPage, the BMI
+// readout here — stays consistent automatically.
+const BMI_CATEGORY_LABELS: Record<string, string> = {
+  underweight: "Underweight range",
+  normal: "Healthy weight range",
+  overweight: "Overweight range",
+  obese: "Higher weight range",
+};
+
+const BODY_METRICS_BOUNDS = {
+  weightKg: { min: 30, max: 180 },
+  heightCm: { min: 130, max: 220 },
+  age: { min: 13, max: 90 },
+};
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
 const NOTIFICATION_ITEMS: {
   key: keyof Omit<NotificationSettings, "enabled">;
   label: string;
@@ -130,7 +170,12 @@ export default function ProfilePage() {
   const [isSavingMessagingPreference, setIsSavingMessagingPreference] =
     useState(false);
   const { data: history } = useWorkoutHistory();
-  const { equipment, saveOnboarding } = useOnboarding();
+  const { equipment, saveOnboarding, weightKg, age, heightCm } =
+    useOnboarding();
+  const currentWeightKg = weightKg ?? DEFAULT_WEIGHT_KG;
+  const currentAge = age ?? DEFAULT_AGE;
+  const currentHeightCm = heightCm ?? DEFAULT_HEIGHT_CM;
+  const bodyMetricsBmi = calculateBMI(currentWeightKg, currentHeightCm);
   const { tier: equipmentTier, setTier: setEquipmentTier } = useEquipmentTier();
   const {
     settings: notificationSettings,
@@ -138,7 +183,24 @@ export default function ProfilePage() {
     toggle: toggleNotification,
   } = useNotifications();
   const { streak, setWeeklyGoal } = useStreak();
-  const { subscription, effectiveTier } = useTier();
+  const {
+    subscription,
+    effectiveTier,
+    isLoading: tierLoading,
+    refreshSubscription,
+  } = useTier();
+  const [isRestoring, setIsRestoring] = useState(false);
+
+  // Deep link from the FAQ page's "reinstalled the app" answer — scrolls
+  // straight to the Restore Purchases button instead of leaving the user to
+  // hunt for it themselves after following a link that promised to take
+  // them right to it.
+  useEffect(() => {
+    if (window.location.hash !== `#${RESTORE_PURCHASES_ANCHOR_ID}`) return;
+    document
+      .getElementById(RESTORE_PURCHASES_ANCHOR_ID)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
   const challengeHistory =
     effectiveTier === "subscriber" ? readChallengeHistory() : [];
   const email = getCurrentEmail();
@@ -174,9 +236,41 @@ export default function ProfilePage() {
     saveOnboarding({ equipment: { ...equipment, [key]: !equipment[key] } });
   };
 
+  const handleChangeWeight = (value: number) => {
+    const { min, max } = BODY_METRICS_BOUNDS.weightKg;
+    saveOnboarding({ weightKg: clamp(value, min, max) });
+  };
+
+  const handleChangeHeight = (value: number) => {
+    const { min, max } = BODY_METRICS_BOUNDS.heightCm;
+    saveOnboarding({ heightCm: clamp(value, min, max) });
+  };
+
+  const handleChangeAge = (value: number) => {
+    const { min, max } = BODY_METRICS_BOUNDS.age;
+    saveOnboarding({ age: clamp(value, min, max) });
+  };
+
   const handleRetakeAssessment = async () => {
     await saveOnboarding({ hasCompletedOnboarding: false });
     navigate({ to: "/onboarding" });
+  };
+
+  const handleRestorePurchases = async () => {
+    setIsRestoring(true);
+    try {
+      const result = await paymentService.restorePurchases();
+      if (result.success) {
+        await refreshSubscription();
+        toast("Purchases restored");
+      } else {
+        toast("Restore failed", {
+          description: result.error ?? "Please try again.",
+        });
+      }
+    } finally {
+      setIsRestoring(false);
+    }
   };
 
   const handleToggleDiscoverable = async (next: boolean) => {
@@ -467,6 +561,111 @@ export default function ProfilePage() {
           </div>
         </motion.div>
 
+        {/* Body Metrics — feeds the calorie/BMI estimate on Workout Setup
+            and the post-workout summary (src/lib/calories.ts). Same Slider
+            component, bounds, and BMI labels as onboarding's body-metrics
+            step, writing through the same saveOnboarding() path so nothing
+            downstream needs to change to pick up an edit here. */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.175, duration: 0.45 }}
+          className="mb-6"
+          data-ocid="profile.body_metrics_section"
+        >
+          <div className="flex items-center gap-1.5 mb-3">
+            <Scale className="w-3 h-3 text-muted-foreground" />
+            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+              Body Metrics
+            </p>
+          </div>
+          <div
+            className="rounded-2xl p-4 flex flex-col gap-6"
+            style={{
+              background: "oklch(0.16 0.01 260)",
+              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+            }}
+            data-ocid="profile.body_metrics_card"
+          >
+            <p className="text-xs text-muted-foreground font-body leading-snug">
+              Keeps your calorie estimate accurate as your weight or height
+              changes.
+            </p>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-body text-muted-foreground">
+                  Weight
+                </span>
+                <span className="font-display font-bold text-sm text-primary tabular-nums">
+                  {currentWeightKg} kg
+                </span>
+              </div>
+              <Slider
+                value={[currentWeightKg]}
+                onValueChange={([v]) => handleChangeWeight(v)}
+                min={BODY_METRICS_BOUNDS.weightKg.min}
+                max={BODY_METRICS_BOUNDS.weightKg.max}
+                step={1}
+                data-ocid="profile.body_metrics.weight_slider"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-body text-muted-foreground">
+                  Height
+                </span>
+                <span className="font-display font-bold text-sm text-primary tabular-nums">
+                  {currentHeightCm} cm
+                </span>
+              </div>
+              <Slider
+                value={[currentHeightCm]}
+                onValueChange={([v]) => handleChangeHeight(v)}
+                min={BODY_METRICS_BOUNDS.heightCm.min}
+                max={BODY_METRICS_BOUNDS.heightCm.max}
+                step={1}
+                data-ocid="profile.body_metrics.height_slider"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-body text-muted-foreground">
+                  Age
+                </span>
+                <span className="font-display font-bold text-sm text-primary tabular-nums">
+                  {currentAge} years old
+                </span>
+              </div>
+              <Slider
+                value={[currentAge]}
+                onValueChange={([v]) => handleChangeAge(v)}
+                min={BODY_METRICS_BOUNDS.age.min}
+                max={BODY_METRICS_BOUNDS.age.max}
+                step={1}
+                data-ocid="profile.body_metrics.age_slider"
+              />
+            </div>
+            <div
+              className="rounded-xl px-4 py-3 flex items-center justify-between"
+              style={{
+                background: "oklch(0.17 0.04 180 / 0.35)",
+                border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+              }}
+              data-ocid="profile.body_metrics.bmi_readout"
+            >
+              <div>
+                <p className="text-xs text-muted-foreground">Your BMI</p>
+                <p className="text-sm font-bold text-foreground">
+                  {BMI_CATEGORY_LABELS[getBMICategory(bodyMetricsBmi)]}
+                </p>
+              </div>
+              <p className="text-2xl font-display font-black text-primary tabular-nums">
+                {bodyMetricsBmi.toFixed(1)}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Notifications */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -715,7 +914,25 @@ export default function ProfilePage() {
                 Weekly Challenges
               </p>
             </div>
-            {effectiveTier === "subscriber" ? (
+            {tierLoading ? (
+              <div
+                className="rounded-2xl px-5 py-4 flex items-center gap-3 animate-pulse"
+                style={{
+                  background: "oklch(0.16 0.01 260)",
+                  border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                }}
+                data-ocid="profile.challenges.loading"
+              >
+                <div
+                  className="w-4 h-4 rounded-full shrink-0"
+                  style={{ background: "oklch(0.26 0.01 260)" }}
+                />
+                <div
+                  className="h-3.5 w-40 rounded-full"
+                  style={{ background: "oklch(0.24 0.01 260)" }}
+                />
+              </div>
+            ) : effectiveTier === "subscriber" ? (
               <div
                 className="rounded-2xl overflow-hidden"
                 style={{
@@ -821,52 +1038,95 @@ export default function ProfilePage() {
           <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
             Membership
           </p>
-          <div
-            className="rounded-2xl p-4 flex items-center justify-between gap-3"
-            style={{
-              background: subscription
-                ? "oklch(0.17 0.04 180 / 0.3)"
-                : "oklch(0.16 0.01 260)",
-              border: subscription
-                ? "1px solid oklch(0.68 0.25 180 / 0.35)"
-                : "1px solid oklch(0.26 0.01 260 / 0.5)",
-            }}
-          >
-            <div className="min-w-0">
-              <p className="font-display font-bold text-sm text-foreground">
-                {subscription
-                  ? `${getSubscriptionTier(subscription.tierId).label} Plan`
-                  : "Free Plan"}
-              </p>
-              <p className="text-xs text-muted-foreground font-body mt-0.5">
-                {subscription
-                  ? subscription.startedTrial
-                    ? "Includes your 7-day free trial"
-                    : "Active subscription"
-                  : "20 cards/week, no Pro decks"}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/subscribe" })}
-              className="shrink-0 px-4 h-9 rounded-full font-display font-bold text-xs tracking-wide transition-smooth hover:opacity-90 active:scale-[0.98]"
-              style={
-                subscription
-                  ? {
-                      background: "transparent",
-                      border: "1px solid oklch(0.68 0.25 180 / 0.4)",
-                      color: "oklch(0.68 0.25 180)",
-                    }
-                  : {
-                      background: "oklch(0.68 0.25 180)",
-                      color: "oklch(0.08 0.005 260)",
-                    }
-              }
-              data-ocid="profile.membership.manage_button"
+          {tierLoading ? (
+            // subscription reads null until Purchases.getCustomerInfo()
+            // resolves on native — a real subscriber must never see "Free
+            // Plan" / "Upgrade" flash here, so this stays a neutral
+            // skeleton instead of branching on `subscription` early.
+            <div
+              className="rounded-2xl p-4 flex items-center justify-between gap-3 animate-pulse"
+              style={{
+                background: "oklch(0.16 0.01 260)",
+                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              }}
+              data-ocid="profile.membership.loading"
             >
-              {subscription ? "Manage" : "Upgrade"}
-            </button>
-          </div>
+              <div className="min-w-0 flex flex-col gap-2">
+                <div
+                  className="h-3.5 w-24 rounded-full"
+                  style={{ background: "oklch(0.24 0.01 260)" }}
+                />
+                <div
+                  className="h-3 w-36 rounded-full"
+                  style={{ background: "oklch(0.2 0.01 260)" }}
+                />
+              </div>
+              <div
+                className="shrink-0 w-20 h-9 rounded-full"
+                style={{ background: "oklch(0.22 0.01 260)" }}
+              />
+            </div>
+          ) : (
+            <div
+              className="rounded-2xl p-4 flex items-center justify-between gap-3"
+              style={{
+                background: subscription
+                  ? "oklch(0.17 0.04 180 / 0.3)"
+                  : "oklch(0.16 0.01 260)",
+                border: subscription
+                  ? "1px solid oklch(0.68 0.25 180 / 0.35)"
+                  : "1px solid oklch(0.26 0.01 260 / 0.5)",
+              }}
+            >
+              <div className="min-w-0">
+                <p className="font-display font-bold text-sm text-foreground">
+                  {subscription
+                    ? `${getSubscriptionTier(subscription.tierId).label} Plan`
+                    : "Free Plan"}
+                </p>
+                <p className="text-xs text-muted-foreground font-body mt-0.5">
+                  {subscription
+                    ? subscription.startedTrial
+                      ? "Includes your 7-day free trial"
+                      : "Active subscription"
+                    : "20 cards/week, no Pro decks"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/subscribe" })}
+                className="shrink-0 px-4 h-9 rounded-full font-display font-bold text-xs tracking-wide transition-smooth hover:opacity-90 active:scale-[0.98]"
+                style={
+                  subscription
+                    ? {
+                        background: "transparent",
+                        border: "1px solid oklch(0.68 0.25 180 / 0.4)",
+                        color: "oklch(0.68 0.25 180)",
+                      }
+                    : {
+                        background: "oklch(0.68 0.25 180)",
+                        color: "oklch(0.08 0.005 260)",
+                      }
+                }
+                data-ocid="profile.membership.manage_button"
+              >
+                {subscription ? "Manage" : "Upgrade"}
+              </button>
+            </div>
+          )}
+          <button
+            type="button"
+            id={RESTORE_PURCHASES_ANCHOR_ID}
+            onClick={handleRestorePurchases}
+            disabled={isRestoring}
+            className="w-full mt-2 h-10 rounded-xl flex items-center justify-center gap-1.5 text-xs font-display font-bold uppercase tracking-wide text-muted-foreground hover:text-primary transition-smooth disabled:opacity-50 scroll-mt-6"
+            data-ocid="profile.membership.restore_button"
+          >
+            <RotateCcw
+              className={`w-3 h-3 ${isRestoring ? "animate-spin" : ""}`}
+            />
+            {isRestoring ? "Restoring…" : "Restore Purchases"}
+          </button>
         </motion.div>
 
         {/* Referrals */}
@@ -1016,6 +1276,37 @@ export default function ProfilePage() {
               </p>
             </div>
           )}
+        </motion.div>
+
+        {/* Help */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.222, duration: 0.45 }}
+          className="mb-6"
+          data-ocid="profile.help_section"
+        >
+          <div className="flex items-center gap-1.5 mb-3">
+            <HelpCircle className="w-3 h-3 text-muted-foreground" />
+            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+              Help
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/faq" })}
+            className="w-full rounded-2xl flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
+            style={{
+              background: "oklch(0.16 0.01 260)",
+              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+            }}
+            data-ocid="profile.faq_link"
+          >
+            <span className="font-display font-bold text-sm text-foreground">
+              FAQ &amp; Troubleshooting
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+          </button>
         </motion.div>
 
         {/* Legal */}

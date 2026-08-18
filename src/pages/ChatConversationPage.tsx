@@ -26,6 +26,7 @@ import {
   ShieldOff,
   Volume2,
   VolumeX,
+  WifiOff,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -36,19 +37,37 @@ export default function ChatConversationPage() {
   const { threadId } = useParams({ strict: false }) as { threadId?: string };
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messagesLoadError, setMessagesLoadError] = useState(false);
+  // Bumped by the retry button to re-run the messages effect below — plain
+  // useEffect has no built-in refetch, unlike the peer useQuery.
+  const [retryTick, setRetryTick] = useState(0);
   const [draft, setDraft] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [myUserId, setMyUserId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { data: peerData } = useQuery({
+  const {
+    data: peerData,
+    isError: peerIsError,
+    refetch: refetchPeer,
+  } = useQuery({
     queryKey: ["thread-peer", threadId],
     queryFn: () => getThreadPeer(threadId!),
     enabled: !!threadId,
   });
+  // getThreadPeer() never throws (a Supabase/RLS failure resolves as
+  // `{ok:false}`), so `isError` alone would miss most real failures — same
+  // reasoning as NearbyPage.tsx/ChatThreadsPage.tsx.
+  const hasPeerError = peerIsError || (peerData ? !peerData.ok : false);
   const peer = peerData?.ok
     ? { id: peerData.id, username: peerData.username }
     : null;
+  const hasConversationError = messagesLoadError || hasPeerError;
+
+  const handleRetryLoad = () => {
+    setRetryTick((t) => t + 1);
+    refetchPeer();
+  };
 
   useEffect(() => {
     supabase.auth
@@ -56,12 +75,18 @@ export default function ChatConversationPage() {
       .then(({ data }) => setMyUserId(data.user?.id ?? null));
   }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: load once per threadId, not on every messages/queryClient identity change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: load once per threadId (or on retryTick), not on every messages/queryClient identity change
   useEffect(() => {
     if (!threadId) return;
     let cancelled = false;
+    setMessagesLoadError(false);
     getMessages(threadId).then((result) => {
-      if (!cancelled && result.ok) setMessages(result.messages);
+      if (cancelled) return;
+      if (result.ok) {
+        setMessages(result.messages);
+      } else {
+        setMessagesLoadError(true);
+      }
     });
     markThreadRead(threadId);
     queryClient.invalidateQueries({ queryKey: ["chat-threads"] });
@@ -76,7 +101,7 @@ export default function ChatConversationPage() {
       cancelled = true;
       unsubscribe();
     };
-  }, [threadId]);
+  }, [threadId, retryTick]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally re-runs when the message count changes, even though the effect body doesn't read `messages` itself — it just scrolls
   useEffect(() => {
@@ -114,7 +139,12 @@ export default function ChatConversationPage() {
   };
 
   const handleBlock = async () => {
-    if (!peer) return;
+    if (!peer) {
+      toast("Can't do this right now", {
+        description: "Check your connection and try again.",
+      });
+      return;
+    }
     const result = await blockUser(peer.id);
     if (!result.ok) {
       toast("Couldn't block", { description: result.error });
@@ -127,7 +157,12 @@ export default function ChatConversationPage() {
   };
 
   const handleReport = async () => {
-    if (!peer) return;
+    if (!peer) {
+      toast("Can't do this right now", {
+        description: "Check your connection and try again.",
+      });
+      return;
+    }
     const result = await reportUser(peer.id, "Reported from chat conversation");
     if (!result.ok) {
       toast("Couldn't submit report", { description: result.error });
@@ -154,7 +189,7 @@ export default function ChatConversationPage() {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <p className="font-display font-black text-sm text-foreground truncate max-w-[180px]">
-          {peer?.username ?? "…"}
+          {peer?.username ?? (hasPeerError ? "Unavailable" : "…")}
         </p>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -198,33 +233,71 @@ export default function ChatConversationPage() {
       </header>
 
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-5 pb-4 flex flex-col gap-2">
-        {messages.length === 0 && (
+        {hasConversationError ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div
+              className="rounded-2xl px-5 py-10 text-center"
+              style={{
+                background: "oklch(0.16 0.01 260)",
+                border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+              }}
+              data-ocid="chat-conversation.error_state"
+            >
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+              >
+                <WifiOff
+                  className="w-7 h-7"
+                  style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                />
+              </div>
+              <p className="font-display font-bold text-sm text-foreground mb-1">
+                Can't load this conversation
+              </p>
+              <p className="text-white/70 font-body text-xs mb-5">
+                Check your connection and try again.
+              </p>
+              <button
+                type="button"
+                onClick={handleRetryLoad}
+                className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+                data-ocid="chat-conversation.error_retry_button"
+              >
+                Try again
+              </button>
+            </div>
+          </div>
+        ) : messages.length === 0 ? (
           <p className="text-center text-xs text-muted-foreground font-body mt-8">
             This is the start of your conversation.
           </p>
+        ) : (
+          messages.map((message) => {
+            const isMe = message.senderId === myUserId;
+            return (
+              <div
+                key={message.id}
+                className="max-w-[80%] rounded-2xl px-4 py-2.5"
+                style={{
+                  alignSelf: isMe ? "flex-end" : "flex-start",
+                  background: isMe
+                    ? "oklch(0.68 0.25 180)"
+                    : "oklch(0.16 0.01 260)",
+                  border: isMe
+                    ? "none"
+                    : "1px solid oklch(0.26 0.01 260 / 0.5)",
+                  color: isMe ? "oklch(0.08 0.005 260)" : undefined,
+                }}
+                data-ocid="chat-conversation.message"
+              >
+                <p className="text-sm font-body leading-snug break-words">
+                  {message.body}
+                </p>
+              </div>
+            );
+          })
         )}
-        {messages.map((message) => {
-          const isMe = message.senderId === myUserId;
-          return (
-            <div
-              key={message.id}
-              className="max-w-[80%] rounded-2xl px-4 py-2.5"
-              style={{
-                alignSelf: isMe ? "flex-end" : "flex-start",
-                background: isMe
-                  ? "oklch(0.68 0.25 180)"
-                  : "oklch(0.16 0.01 260)",
-                border: isMe ? "none" : "1px solid oklch(0.26 0.01 260 / 0.5)",
-                color: isMe ? "oklch(0.08 0.005 260)" : undefined,
-              }}
-              data-ocid="chat-conversation.message"
-            >
-              <p className="text-sm font-body leading-snug break-words">
-                {message.body}
-              </p>
-            </div>
-          );
-        })}
         <div ref={bottomRef} />
       </div>
 

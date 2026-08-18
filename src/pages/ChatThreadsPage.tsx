@@ -3,7 +3,7 @@ import { useInternetIdentity } from "@/hooks/use-local-identity";
 import { type ChatThreadSummary, getThreads } from "@/lib/remoteBackend";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, MessageCircle, VolumeX } from "lucide-react";
+import { ArrowLeft, MessageCircle, VolumeX, WifiOff } from "lucide-react";
 import { motion } from "motion/react";
 
 function timeAgoLabel(iso: string | null): string {
@@ -20,13 +20,18 @@ export default function ChatThreadsPage() {
   const { loginStatus } = useInternetIdentity();
   const isLoggedIn = loginStatus === "success";
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["chat-threads"],
     queryFn: getThreads,
     enabled: isLoggedIn,
   });
 
   const threads: ChatThreadSummary[] = data?.ok ? data.threads : [];
+  // getThreads() never throws — a Supabase/RLS failure comes back as
+  // `{ ok: false }`, not a rejected query, so `isError` alone misses most
+  // real failures. Check both so a misconfigured env var or an RLS
+  // rejection doesn't silently render as "no conversations yet."
+  const hasError = isError || (data ? !data.ok : false);
 
   return (
     <div
@@ -105,6 +110,39 @@ export default function ChatThreadsPage() {
         ) : isLoading ? (
           <div className="flex justify-center py-10">
             <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          </div>
+        ) : hasError ? (
+          <div
+            className="rounded-2xl px-5 py-10 text-center"
+            style={{
+              background: "oklch(0.16 0.01 260)",
+              border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+            }}
+            data-ocid="chat-threads.error_state"
+          >
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+            >
+              <WifiOff
+                className="w-7 h-7"
+                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+              />
+            </div>
+            <p className="font-display font-bold text-sm text-foreground mb-1">
+              Can't connect right now
+            </p>
+            <p className="text-white/70 font-body text-xs mb-5">
+              Check your connection and try again.
+            </p>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+              data-ocid="chat-threads.error_retry_button"
+            >
+              Try again
+            </button>
           </div>
         ) : threads.length === 0 ? (
           <div

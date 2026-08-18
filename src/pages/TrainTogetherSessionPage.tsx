@@ -17,13 +17,13 @@ import { useOnboarding } from "@/hooks/use-onboarding";
 import {
   type TrainTogetherParticipant,
   type TrainTogetherSession,
+  assignCardOwner,
   attributeCardAndAdvance,
   getTrainTogetherSession,
   listSessionParticipants,
   subscribeToSession,
   subscribeToSessionParticipants,
 } from "@/lib/trainTogetherBackend";
-import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { ChevronRight, Trophy, X } from "lucide-react";
@@ -38,18 +38,22 @@ function formatDuration(totalSeconds: number): string {
   return `${m}:${rem.toString().padStart(2, "0")}`;
 }
 
-// ─── "Whose rep was this?" attribution picker ──────────────────────────────
+// ─── "Whose card is this?" owner picker ────────────────────────────────────
+// Shown whenever the current card has no owner yet (session.currentCardOwnerId
+// is null) — asked BEFORE the card is performed, not attributed after the
+// fact, so it's not dismissable: the party can't move on until someone
+// claims the card. Every device sees the same claim via the realtime
+// session subscription, so only one person's tap actually wins (the RPC is
+// guarded on currentCardIndex + currentCardOwnerId is null).
 
-function AttributionPicker({
+function CardOwnerPicker({
   participants,
-  lastPicked,
+  isAssigning,
   onPick,
-  onClose,
 }: {
   participants: TrainTogetherParticipant[];
-  lastPicked: string | null;
+  isAssigning: boolean;
   onPick: (userId: string) => void;
-  onClose: () => void;
 }) {
   return (
     <motion.div
@@ -58,7 +62,7 @@ function AttributionPicker({
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-end justify-center"
       style={{ background: "oklch(0.05 0.005 260 / 0.85)" }}
-      data-ocid="train-together.attribution_picker"
+      data-ocid="train-together.card_owner_picker"
     >
       <motion.div
         initial={{ y: "100%" }}
@@ -71,31 +75,18 @@ function AttributionPicker({
           border: "1px solid oklch(0.68 0.25 180 / 0.25)",
         }}
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-black text-lg text-foreground">
-            Whose rep was this?
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+        <h2 className="font-display font-black text-lg text-foreground mb-4">
+          Whose card is this?
+        </h2>
         <div className="flex flex-col gap-2">
           {participants.map((p) => (
             <button
               key={p.userId}
               type="button"
+              disabled={isAssigning}
               onClick={() => onPick(p.userId)}
-              className={cn(
-                "flex items-center gap-3 rounded-2xl px-4 py-4 border text-left transition-smooth",
-                lastPicked === p.userId
-                  ? "border-primary bg-primary/10"
-                  : "border-border/50 bg-card",
-              )}
-              data-ocid={`train-together.attribution_pick.${p.userId}`}
+              className="flex items-center gap-3 rounded-2xl px-4 py-4 border text-left transition-smooth border-border/50 bg-card disabled:opacity-50"
+              data-ocid={`train-together.card_owner_pick.${p.userId}`}
             >
               <span className="font-display font-bold text-base text-foreground">
                 {p.username}
@@ -227,8 +218,7 @@ function SessionRunner({
 
   const [holdCountdown, setHoldCountdown] = useState(0);
   const [holdComplete, setHoldComplete] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
-  const [lastPicked, setLastPicked] = useState<string | null>(null);
+  const [isAssigning, setIsAssigning] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
 
   const steps = session.cardSequence ?? [];
@@ -243,6 +233,9 @@ function SessionRunner({
   const participants = (participantsQuery.data ?? []).filter(
     (p) => p.inviteStatus === "accepted",
   );
+  const owner =
+    participants.find((p) => p.userId === session.currentCardOwnerId) ?? null;
+  const needsOwner = !!current && !owner;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: subscription keyed on sessionId only
   useEffect(() => {
@@ -282,17 +275,29 @@ function SessionRunner({
     return () => clearInterval(interval);
   }, [index, current?.key]);
 
-  const handleAttribute = async (participantUserId: string) => {
-    if (!current || isAdvancing) return;
+  const handleAssignOwner = async (ownerUserId: string) => {
+    if (!current || isAssigning) return;
+    setIsAssigning(true);
+    if (navigator.vibrate) navigator.vibrate(30);
+    try {
+      await assignCardOwner({ sessionId, expectedIndex: index, ownerUserId });
+    } catch (err) {
+      toast("Couldn't assign this card", {
+        description: err instanceof Error ? err.message : undefined,
+      });
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  const handleFinishCard = async () => {
+    if (!current || !owner || isAdvancing) return;
     setIsAdvancing(true);
-    setLastPicked(participantUserId);
-    setShowPicker(false);
     if (navigator.vibrate) navigator.vibrate(50);
     try {
       await attributeCardAndAdvance({
         sessionId,
         expectedIndex: index,
-        participantUserId,
         reps: current.isIsometric ? 0 : current.value,
         holdSeconds: current.isIsometric ? current.value : 0,
       });
@@ -408,6 +413,15 @@ function SessionRunner({
                 <p className="text-xs font-body text-white/60 uppercase tracking-widest mb-1">
                   STEP {index + 1} OF {total}
                 </p>
+                {owner && (
+                  <p
+                    className="text-xs font-display font-bold uppercase tracking-widest mb-1"
+                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    data-ocid="train-together.current_owner_label"
+                  >
+                    {owner.username}'s turn
+                  </p>
+                )}
                 <h2 className="font-display font-bold text-2xl text-foreground uppercase tracking-wide leading-tight">
                   {current.name}
                   {current.eachSide && (
@@ -469,8 +483,8 @@ function SessionRunner({
         <motion.div whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}>
           <Button
             className="w-full h-14 font-display font-black text-xl tracking-[0.15em] rounded-2xl uppercase shadow-[0_0_40px_oklch(0.68_0.25_180/0.35)]"
-            onClick={() => setShowPicker(true)}
-            disabled={isAdvancing}
+            onClick={handleFinishCard}
+            disabled={isAdvancing || needsOwner}
             data-ocid="train-together.session_next"
           >
             {index >= total - 1 ? (
@@ -489,12 +503,11 @@ function SessionRunner({
       </div>
 
       <AnimatePresence>
-        {showPicker && (
-          <AttributionPicker
+        {needsOwner && (
+          <CardOwnerPicker
             participants={participants}
-            lastPicked={lastPicked}
-            onPick={handleAttribute}
-            onClose={() => setShowPicker(false)}
+            isAssigning={isAssigning}
+            onPick={handleAssignOwner}
           />
         )}
       </AnimatePresence>
