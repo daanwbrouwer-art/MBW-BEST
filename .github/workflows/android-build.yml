@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android AAB
 
 on:
   push:
@@ -42,12 +42,25 @@ jobs:
       - name: Sync Capacitor Android project
         run: npx cap sync android
 
-      - name: Build debug APK
-        working-directory: android
-        run: ./gradlew assembleDebug
+      - name: Decode release keystore
+        working-directory: android/app
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release.jks
 
-      - name: Upload APK artifact
+      - name: Build signed release AAB
+        working-directory: android
+        run: ./gradlew bundleRelease
+        env:
+          ANDROID_KEYSTORE_PATH: release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Remove decoded keystore
+        if: always()
+        run: rm -f android/app/release.jks
+
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mybodyweight-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: mybodyweight-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab

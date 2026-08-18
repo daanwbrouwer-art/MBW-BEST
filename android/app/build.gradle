@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+// Populated in CI from the ANDROID_KEYSTORE_* secrets (see .github/workflows/android-build.yml).
+// Left unset for local builds, so `./gradlew assembleDebug`/local release builds still work unsigned.
+def releaseStorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+def releaseStorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
+def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+
 android {
     namespace = "com.mybodyweight.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,10 +23,23 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (releaseStorePath) {
+            release {
+                storeFile file(releaseStorePath)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (releaseStorePath) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
