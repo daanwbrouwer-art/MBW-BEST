@@ -41,6 +41,15 @@ import { useCallback, useEffect, useState } from "react";
 const SUBSCRIPTION_KEY = "mbw_subscription";
 const isNative = Capacitor.isNativePlatform();
 
+// Testing-phase override: forces every tester into the subscriber tier
+// regardless of what RevenueCat reports, so Internal/Closed testers can try
+// every gated feature without a real store purchase (RevenueCat product
+// keys aren't configured yet anyway). Driven by VITE_FORCE_PREMIUM_FOR_TESTING
+// (set as a GitHub Actions repo variable, not hardcoded here) so it can be
+// turned off for a real release build without touching this file.
+const FORCE_PREMIUM_FOR_TESTING =
+  import.meta.env.VITE_FORCE_PREMIUM_FOR_TESTING === "true";
+
 export interface SubscriptionRecord {
   tierId: SubscriptionTierId;
   purchasedAt: string;
@@ -139,7 +148,7 @@ export function useTier() {
   }, []);
 
   const trialActive = trialStatus.kind === "active";
-  const subscriber = subscription !== null;
+  const subscriber = subscription !== null || FORCE_PREMIUM_FOR_TESTING;
 
   // "Real" tier — what the account actually is, ignoring any trial.
   const tier: AppTier = subscriber
