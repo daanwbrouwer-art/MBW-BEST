@@ -1039,52 +1039,13 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     ["mountain climber", "mountain climbers", "cross-body mountain climber"],
     "/assets/exercises/high_knee_march.png",
   ],
-  // Hollow body hold — real asset not available, use squat as generic hold
-  [
-    ["hollow body", "hollow body hold", "hollow hold"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // V-up / sit-up / crunch family
-  [
-    ["v-up", "v up", "vups", "sit-up", "sit up", "situp", "crunch", "crunches"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Bicycle / oblique crunch
-  [
-    ["bicycle crunch", "oblique crunch", "bicycle"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Leg raise / reverse crunch family
-  [
-    ["leg raise", "reverse crunch", "lying leg raise", "straight leg raise"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Flutter / scissor kick
-  [
-    ["flutter kick", "scissor kick", "flutter kicks"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Dead bug
-  [
-    ["dead bug", "modified dead bug", "extended dead bug"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Hanging leg / knee raise
-  [
-    ["hanging leg raise", "hanging knee raise", "hanging raise"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Dragon flag, ab wheel, l-sit, boat hold, hip dip — advanced core
-  [["dragon flag", "dragonflag"], "/assets/exercises/normal_squat.png"],
-  [["ab wheel", "rollout", "ab roller"], "/assets/exercises/normal_squat.png"],
-  [["l-sit", "tuck l-sit", "lsit"], "/assets/exercises/normal_squat.png"],
-  [["boat hold", "boat pose"], "/assets/exercises/normal_squat.png"],
-  [["hip dip", "hip dips"], "/assets/exercises/normal_squat.png"],
-  // Russian twist / oblique twists
-  [
-    ["russian twist", "russian twists", "oblique twist"],
-    "/assets/exercises/normal_squat.png",
-  ],
+  // Deliberately no generic normal_squat.png reuse here anymore for hollow
+  // body / v-up / bicycle crunch / leg raise / flutter kick / dead bug /
+  // hanging raise / dragon flag / ab wheel / l-sit / boat hold / hip dip /
+  // russian twist — a squat photo standing in for a dragon flag was exactly
+  // the "everything is bad" bug. These now fall through to
+  // COMING_SOON_ILLUSTRATION (or their real MALE_CORE_*_ASSETS entry, which
+  // is checked before this map ever runs).
 
   // Full Body — male & female variants (mapped to real illustration assets)
   // Burpee family — closest real full-body dynamic asset is jump squat
@@ -1100,11 +1061,6 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     ],
     "/assets/exercises/jump_squat.png",
   ],
-  // Box jump / plyo — real broad jump / tuck jump assets
-  [
-    ["box jump", "plyo box step", "box jump step"],
-    "/assets/exercises/broad_jump.png",
-  ],
   // Tuck jump — real asset
   [["tuck jump", "tuck jumps"], "/assets/exercises/tuck_jump.png"],
   // Broad jump — real asset
@@ -1114,37 +1070,12 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     ["jump squat", "squat jump", "jump squats"],
     "/assets/exercises/jump_squat.png",
   ],
-  // Turkish get-up — real asset not available, use squat as generic ground->stand
-  [
-    ["turkish get-up", "modified turkish get-up", "turkish get up"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Crawl family — real asset not available, use plank as closest ground asset
-  [
-    [
-      "spiderman crawl",
-      "lateral crawl",
-      "bear crawl",
-      "crab walk",
-      "lateral bear crawl",
-    ],
-    "/assets/exercises/plank.png",
-  ],
-  // Inchworm / walkout — real asset not available, use pike hold (folded shape, male)
-  [
-    ["inchworm", "walkout", "walk out", "inch worm"],
-    UPPER_BODY_BEGINNER_ASSETS.pikeHold,
-  ],
-  // Man maker — complex burpee+row, use jump squat
-  [
-    ["man maker", "modified man maker", "manmaker"],
-    "/assets/exercises/jump_squat.png",
-  ],
-  // Seal jack / jumping jack — real asset not available, use jump squat
-  [
-    ["seal jack", "seal jacks", "jumping jack", "jumping jacks"],
-    "/assets/exercises/jump_squat.png",
-  ],
+  // Deliberately no generic reuse anymore for box jump (was broad_jump.png —
+  // wrong equipment), turkish get-up / man maker (was normal_squat.png /
+  // jump_squat.png), or the crawl family (spiderman crawl, lateral crawl,
+  // bear crawl, crab walk — was plank.png, nothing like a crawl). These now
+  // fall through to their real MALE_FULL_BODY_BEGINNER_ASSETS entry (bear
+  // crawl, crab walk, inchworm all have real art) or COMING_SOON_ILLUSTRATION.
   // Squat pulse — real squat asset
   [
     ["squat pulse", "squat pulses", "pulse squat"],
@@ -1176,8 +1107,11 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   ],
   [["assisted dip"], UPPER_BODY_BEGINNER_ASSETS.negativeBenchDip],
 
-  // Joker challenges — male inverted row asset
-  [["dead hang", "deadhang", "hang"], UPPER_BODY_BEGINNER_ASSETS.invertedRow],
+  // Joker challenges — male inverted row asset. Deliberately NOT matching a
+  // bare "hang" keyword — it was a substring of "hanging", so a Dead Hang
+  // fallback image was incorrectly winning for Hanging L Hold / Hanging
+  // Oblique Raise too.
+  [["dead hang", "deadhang"], UPPER_BODY_BEGINNER_ASSETS.invertedRow],
 ];
 
 /**
