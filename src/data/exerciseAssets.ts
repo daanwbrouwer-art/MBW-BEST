@@ -7,6 +7,22 @@
  * and typos preserved) under /assets/exercises/.
  */
 
+/**
+ * Shown whenever no real, dedicated illustration exists for an exercise —
+ * deliberately never falls back to a generic/reused/wrong-gender image
+ * (a squat photo standing in for a v-up, a male photo in a female deck,
+ * etc). An honest "coming soon" beats a confidently wrong picture.
+ */
+export const COMING_SOON_ILLUSTRATION =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+      <rect width="800" height="800" fill="#f5f2ec"/>
+      <text x="400" y="380" font-family="-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-size="34" font-weight="700" fill="#9c9488" text-anchor="middle">ILLUSTRATION</text>
+      <text x="400" y="430" font-family="-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-size="34" font-weight="700" fill="#9c9488" text-anchor="middle">COMING SOON</text>
+    </svg>`,
+  );
+
 export type SuitKey = "Hearts" | "Spades" | "Clubs" | "Diamonds" | "Joker";
 
 export interface SuitConfig {
@@ -110,7 +126,7 @@ export const FEMALE_UPPER_BODY_ADVANCED_ASSETS = {
   assistedChinUp: "/assets/exercises/assisted pull-up.png",
   fullChinUp: "/assets/exercises/chin up.png",
   chinUpWithPause: "/assets/exercises/pull with pause.png",
-  commandoPullUp: "/assets/exercises/normal_pullup.png",
+  commandoPullUp: COMING_SOON_ILLUSTRATION,
   benchDipStraightLeg: "/assets/exercises/bench dip.png",
   parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.png",
   chestDip: "/assets/exercises/chest dip.png",
@@ -141,11 +157,11 @@ export const FEMALE_UPPER_BODY_ADVANCED_ASSETS = {
  */
 export const FEMALE_UPPER_BODY_PRO_ASSETS = {
   archerPushUp: "/assets/exercises/normal push up.png",
-  typewriterPushUp: "/assets/exercises/wide_pushup.png",
+  typewriterPushUp: COMING_SOON_ILLUSTRATION,
   handstandHold: "/assets/exercises/handstand hold.png",
   handstandPushUp: "/assets/exercises/handstand push-up.png",
   pullUp: "/assets/exercises/upper body pro pull up.png",
-  widePullUp: "/assets/exercises/wide_pullup.png",
+  widePullUp: COMING_SOON_ILLUSTRATION,
   lSitPullUp: "/assets/exercises/L-sit pull up.png",
   parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.png",
   ringPushUp: "/assets/exercises/normal push up.png",
@@ -173,7 +189,7 @@ export const FEMALE_UPPER_BODY_BEGINNER_ASSETS = {
   invertedRow: "/assets/exercises/inverted row.png",
   benchDip: "/assets/exercises/bench dip.png",
   tricepPushUp: "/assets/exercises/tricep push up.png",
-  jokerCombo: "/assets/exercises/female combo finisher beginner.png",
+  jokerCombo: COMING_SOON_ILLUSTRATION,
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
 } as const;
@@ -193,21 +209,23 @@ export const FEMALE_UPPER_BODY_BEGINNER_ASSETS = {
  * with the other decks — they are global face card images.
  */
 export const FEMALE_LOWER_BODY_BEGINNER_ASSETS = {
-  normalSquat: "/assets/exercises/normal_squat.png",
-  sumoSquat: "/assets/exercises/sumo_squat.png",
+  // No dedicated female art delivered yet for these three — was silently
+  // reusing a male-illustrated generic asset before, now honest about it.
+  normalSquat: COMING_SOON_ILLUSTRATION,
+  reverseLunge: COMING_SOON_ILLUSTRATION,
+  forwardLunge: COMING_SOON_ILLUSTRATION,
+  sumoSquat: "/assets/exercises/female sumo squat.png",
   narrowSquat: "/assets/exercises/narrow squat.png",
-  wallSit: "/assets/exercises/wall_sit.png",
+  wallSit: "/assets/exercises/female wall sit.png",
   twoLegGluteBridge: "/assets/exercises/glute bridge.png",
   singleLegGluteBridge: "/assets/exercises/single leg bridge.png",
-  elevatedHipThrust: "/assets/exercises/hip thrust.png",
+  elevatedHipThrust: COMING_SOON_ILLUSTRATION,
   gluteBridgePulse: "/assets/exercises/glute bridge.png",
-  reverseLunge: "/assets/exercises/reverse_lunge.png",
-  forwardLunge: "/assets/exercises/front_lunge.png",
-  lateralLunge: "/assets/exercises/lateral_lunge.png",
-  walkingLunge: "/assets/exercises/walking lunge dedicated.png",
-  standingCalfRaise: "/assets/exercises/calf_raise.png",
-  stepUp: "/assets/exercises/step_up.png",
-  singleLegCalfRaise: "/assets/exercises/single_leg_calf_raise.png",
+  lateralLunge: "/assets/exercises/female lateral lunge.png",
+  walkingLunge: "/assets/exercises/female walking lunge.png",
+  standingCalfRaise: "/assets/exercises/female calf raise.png",
+  stepUp: "/assets/exercises/female step up.png",
+  singleLegCalfRaise: "/assets/exercises/female single leg calf raise.png",
   singleLegBalanceHold: "/assets/exercises/single leg balance hold.png",
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -247,7 +265,7 @@ export const FEMALE_LOWER_BODY_PRO_ASSETS = {
   pistolSquat: "/assets/exercises/pistol squat.png",
   // Hearts — jump family
   jumpSquat: "/assets/exercises/jump squat.png",
-  broadJump: "/assets/exercises/broad jump.png",
+  broadJump: COMING_SOON_ILLUSTRATION,
   tuckJump: "/assets/exercises/tuck jump.png",
   // Diamonds — single-leg strength
   shrimpSquat: "/assets/exercises/shrimp squat.png",
@@ -255,7 +273,7 @@ export const FEMALE_LOWER_BODY_PRO_ASSETS = {
   goodMorning: "/assets/exercises/good morning.png",
   // Clubs — hip / lateral
   hipAbduction: "/assets/exercises/hip abduction.png",
-  lateralBound: "/assets/exercises/lateral bound.png",
+  lateralBound: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -287,10 +305,10 @@ export const FEMALE_LOWER_BODY_ADVANCED_ASSETS = {
   bssDeficit: "/assets/exercises/bss deficit.png",
   bssIsometricHold: "/assets/exercises/bulgarian split squat hold.png",
   // Hearts — Hip Thrust & Hamstring family
-  elevatedHipThrust: "/assets/exercises/hip thrust.png",
+  elevatedHipThrust: COMING_SOON_ILLUSTRATION,
   singleLegHipThrust: "/assets/exercises/single leg hip thrust.png",
-  nordicCurl: "/assets/exercises/nordic curl.png",
-  hipThrustPulse: "/assets/exercises/hip thrust.png",
+  nordicCurl: COMING_SOON_ILLUSTRATION,
+  hipThrustPulse: COMING_SOON_ILLUSTRATION,
   // Diamonds — Plyometric Lunge family
   jumpingLunge: "/assets/exercises/jump lunge.png",
   lateralJumpLunge: "/assets/exercises/lateral jump lunge.png",
@@ -298,11 +316,11 @@ export const FEMALE_LOWER_BODY_ADVANCED_ASSETS = {
   continuousJumpLunge: "/assets/exercises/continuous jump lunge.png",
   // Clubs — Glute Isolation family
   gluteKickback: "/assets/exercises/glute kickback.png",
-  fireHydrant: "/assets/exercises/fire hydrant.png",
+  fireHydrant: COMING_SOON_ILLUSTRATION,
   donkeyKickPulse: "/assets/exercises/donkey kick.png",
   clamshell: "/assets/exercises/clamshell.png",
   // Joker combo
-  jokerCombo: "/assets/exercises/combo finisher advanced female.png",
+  jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -337,17 +355,17 @@ export const FEMALE_CORE_BEGINNER_ASSETS = {
   bicycleCrunch: "/assets/exercises/bicycle crunch.png",
   reverseCrunch: "/assets/exercises/reverse crunch.png",
   // Anti-extension / stability
-  birdDog: "/assets/exercises/bird dog.png",
+  birdDog: COMING_SOON_ILLUSTRATION,
   deadBug: "/assets/exercises/dead bug.png",
   supermanHold: "/assets/exercises/superman hold.png",
   // Dynamic core
   bearCrawl: "/assets/exercises/bear crawl.png",
-  kneeTuck: "/assets/exercises/knee tuck.png",
+  kneeTuck: COMING_SOON_ILLUSTRATION,
   flutterKick: "/assets/exercises/flutter kick.png",
   legRaise: "/assets/exercises/leg raise.png",
   legRaiseHold: "/assets/exercises/leg raise hold.png",
   // Joker combo
-  jokerCombo: "/assets/exercises/combo finisher beginner female.png",
+  jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -390,7 +408,7 @@ export const FEMALE_CORE_BEGINNER_ASSETS = {
 export const FEMALE_CORE_ADVANCED_ASSETS = {
   // Hollow body family
   hollowBodyHold: "/assets/exercises/hollow body hold.png",
-  hollowBodyRock: "/assets/exercises/hollow body rock.png",
+  hollowBodyRock: COMING_SOON_ILLUSTRATION,
   vUp: "/assets/exercises/v up.png",
   // Rotational core
   russianTwist: "/assets/exercises/russian twist.png",
@@ -398,15 +416,15 @@ export const FEMALE_CORE_ADVANCED_ASSETS = {
   bicycleWithPause: "/assets/exercises/bicycle crunch with pause.png",
   // Dynamic plank
   mountainClimber: "/assets/exercises/mountain climber.png",
-  spiderManPlank: "/assets/exercises/spiderman plank.png",
+  spiderManPlank: COMING_SOON_ILLUSTRATION,
   plankToDownDog: "/assets/exercises/plank to down dog.png",
   // Hanging core
   hangingKneeRaise: "/assets/exercises/hanging knee raise.png",
-  hangingObliqueRaise: "/assets/exercises/hanging oblique raise.png",
+  hangingObliqueRaise: COMING_SOON_ILLUSTRATION,
   lSit: "/assets/exercises/l-sit.png",
   toesToBar: "/assets/exercises/toes to bar.png",
   // Joker combo
-  jokerCombo: "/assets/exercises/combo finisher advanced female.png",
+  jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -449,26 +467,26 @@ export const FEMALE_CORE_ADVANCED_ASSETS = {
  */
 export const FEMALE_CORE_PRO_ASSETS = {
   // Dragon flag family
-  dragonFlagNegative: "/assets/exercises/dragon flag negative.png",
-  dragonFlag: "/assets/exercises/dragon flag.png",
-  tuckDragonFlag: "/assets/exercises/dragon flag.png",
+  dragonFlagNegative: COMING_SOON_ILLUSTRATION,
+  dragonFlag: COMING_SOON_ILLUSTRATION,
+  tuckDragonFlag: COMING_SOON_ILLUSTRATION,
   // Front lever & windshield wipers
-  frontLever: "/assets/exercises/front lever.png",
-  windshieldWipers: "/assets/exercises/windshield wipers.png",
+  frontLever: COMING_SOON_ILLUSTRATION,
+  windshieldWipers: COMING_SOON_ILLUSTRATION,
   toesToBar: "/assets/exercises/toes to bar.png",
   // Planche family
-  plancheLean: "/assets/exercises/planche lean.png",
-  tuckPlanche: "/assets/exercises/tuck planche.png",
-  straddlePlanche: "/assets/exercises/tuck planche.png",
-  hangingLHold: "/assets/exercises/hanging l hold.png",
+  plancheLean: COMING_SOON_ILLUSTRATION,
+  tuckPlanche: COMING_SOON_ILLUSTRATION,
+  straddlePlanche: COMING_SOON_ILLUSTRATION,
+  hangingLHold: COMING_SOON_ILLUSTRATION,
   // Side plank & copenhagen
-  hollowBodyPlancheRock: "/assets/exercises/planche lean.png",
-  sidePlankHipDip: "/assets/exercises/side plank hip dip.png",
-  copenhagenPlank: "/assets/exercises/copenhagen plank.png",
-  humanFlagAttempt: "/assets/exercises/human flag attempt.png",
-  starSidePlank: "/assets/exercises/side plank hip dip.png",
+  hollowBodyPlancheRock: COMING_SOON_ILLUSTRATION,
+  sidePlankHipDip: COMING_SOON_ILLUSTRATION,
+  copenhagenPlank: COMING_SOON_ILLUSTRATION,
+  humanFlagAttempt: COMING_SOON_ILLUSTRATION,
+  starSidePlank: COMING_SOON_ILLUSTRATION,
   // Joker combo
-  jokerCombo: "/assets/exercises/combo finisher pro female.png",
+  jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -487,17 +505,17 @@ export const FEMALE_CORE_PRO_ASSETS = {
  * without images rendering and they resolve once the user uploads them.
  */
 export const FEMALE_FULL_BODY_BEGINNER_ASSETS = {
-  modifiedBurpee: "/assets/exercises/modified burpee.png",
+  modifiedBurpee: COMING_SOON_ILLUSTRATION,
   burpee: "/assets/exercises/burpee.png",
   inchworm: "/assets/exercises/inchworm.png",
   jumpingJacks: "/assets/exercises/jumping jacks.png",
   highKnees: "/assets/exercises/high knees.png",
-  stepUp: "/assets/exercises/step up.png",
+  stepUp: COMING_SOON_ILLUSTRATION,
   bearCrawl: "/assets/exercises/bear crawl.png",
   bearCrawlSprint: "/assets/exercises/bear crawl sprint.png",
-  crabWalk: "/assets/exercises/crab walk.png",
-  lateralShuffle: "/assets/exercises/lateral shuffle.png",
-  squatToStand: "/assets/exercises/squat to stand.png",
+  crabWalk: COMING_SOON_ILLUSTRATION,
+  lateralShuffle: COMING_SOON_ILLUSTRATION,
+  squatToStand: COMING_SOON_ILLUSTRATION,
   lungeTwist: "/assets/exercises/lunge twist.png",
   pushUpDownDog: "/assets/exercises/push up down dog.png",
   // Face cards (shared global images)
@@ -514,13 +532,13 @@ export const FEMALE_FULL_BODY_BEGINNER_ASSETS = {
 export const FEMALE_FULL_BODY_ADVANCED_ASSETS = {
   plyometricBurpee: "/assets/exercises/plyo burpee.png",
   singleLegBurpee: "/assets/exercises/single leg burpee.png",
-  burpeeBoxJump: "/assets/exercises/burpee box jump.png",
+  burpeeBoxJump: COMING_SOON_ILLUSTRATION,
   burpeeChinUp: "/assets/exercises/burpee chin up.png",
-  boxJump: "/assets/exercises/box jump.png",
-  broadJump: "/assets/exercises/broad jump.png",
+  boxJump: COMING_SOON_ILLUSTRATION,
+  broadJump: COMING_SOON_ILLUSTRATION,
   tuckJump: "/assets/exercises/tuck jump.png",
-  spiderManPushUp: "/assets/exercises/spiderman push up.png",
-  archerPushUp: "/assets/exercises/archer push up.png",
+  spiderManPushUp: COMING_SOON_ILLUSTRATION,
+  archerPushUp: COMING_SOON_ILLUSTRATION,
   declinePushUp: "/assets/exercises/decline push up.png",
   jumpLunge: "/assets/exercises/jump squat to jump lunge.png",
   lateralJumpLunge: "/assets/exercises/lateral jump lunge full body.png",
@@ -537,16 +555,16 @@ export const FEMALE_FULL_BODY_ADVANCED_ASSETS = {
  */
 export const FEMALE_FULL_BODY_PRO_ASSETS = {
   burpeeChinUp: "/assets/exercises/burpee chin up pro.png",
-  explosivePullUp: "/assets/exercises/explosive pull up.png",
+  explosivePullUp: COMING_SOON_ILLUSTRATION,
   muscleUp: "/assets/exercises/muscle up.png",
-  clappingPushUp: "/assets/exercises/clapping push up.png",
-  plyoPushUp: "/assets/exercises/plyo push up.png",
-  archerPushUp: "/assets/exercises/archer push up.png",
+  clappingPushUp: COMING_SOON_ILLUSTRATION,
+  plyoPushUp: COMING_SOON_ILLUSTRATION,
+  archerPushUp: COMING_SOON_ILLUSTRATION,
   pistolSquat: "/assets/exercises/pistol squat pro fullbody.png",
-  pistolJump: "/assets/exercises/pistol jump.png",
-  pistolBurpee: "/assets/exercises/pistol burpee.png",
+  pistolJump: COMING_SOON_ILLUSTRATION,
+  pistolBurpee: COMING_SOON_ILLUSTRATION,
   handstandPushUp: "/assets/exercises/handstand push up.png",
-  typewriterPushUp: "/assets/exercises/typewriter push up.png",
+  typewriterPushUp: COMING_SOON_ILLUSTRATION,
   // Queen — Pistol Complex (dedicated, distinct from base pistol squat)
   pistolComplex: "/assets/exercises/pistol complex.png",
   // Queen — Freestanding Handstand Attempt (dedicated, distinct from handstand push-up)
@@ -1627,45 +1645,10 @@ const FEMALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     FEMALE_LOWER_BODY_BEGINNER_ASSETS.normalSquat,
   ],
 
-  // Lower Body — female variants
-  [["squat hold"], "/assets/exercises/squat_hold.png"],
-  [["sumo squat"], "/assets/exercises/sumo_squat.png"],
-  [["regular squat", "normal squat"], "/assets/exercises/normal_squat.png"],
-  [
-    ["slow alternating lunge", "slow alternating", "slow lunge"],
-    "/assets/exercises/slow_lunge.png",
-  ],
-  [["alternating lunge"], "/assets/exercises/alternating_lunge.png"],
-  [["forward lunge", "front lunge"], "/assets/exercises/front_lunge.png"],
-  [["reverse lunge"], "/assets/exercises/reverse_lunge.png"],
-  [
-    ["high knee march", "high knee", "knee march"],
-    "/assets/exercises/high_knee_march.png",
-  ],
-  [["step-up", "step up", "stepup"], "/assets/exercises/step_up.png"],
-  [["calf raise", "calf raises", "calf"], "/assets/exercises/calf_raise.png"],
-  [["wall sit"], "/assets/exercises/wall_sit.png"],
-  [
-    ["standing hip circle", "hip circle", "standing hip"],
-    "/assets/exercises/standing_hip_circle.png",
-  ],
-
-  // Lower Body Advanced — female variants
-  [["jump squat", "squat jump"], "/assets/exercises/jump_squat.png"],
-  [["pistol squat"], "/assets/exercises/pistol_squat_advanced.png"],
-  [["sumo squat advanced"], "/assets/exercises/sumo_squat_advanced.png"],
-  [["walking lunge"], "/assets/exercises/walking_lunge.png"],
-  [
-    ["lunge with knee drive", "lunge knee drive"],
-    "/assets/exercises/lunge_knee_drive_new.png",
-  ],
-  [["broad jump"], "/assets/exercises/broad_jump.png"],
-  [["lateral bound"], "/assets/exercises/lateral_bound.png"],
-  [["tuck jump"], "/assets/exercises/tuck_jump.png"],
-  [
-    ["single-leg calf raise", "single leg calf raise", "one leg calf raise"],
-    "/assets/exercises/single_leg_calf_raise.png",
-  ],
+  // Deliberately no generic Lower Body / Lower Body Advanced reuse block
+  // here anymore (was borrowing male-illustrated generic assets like
+  // normal_squat.png, broad_jump.png, tuck_jump.png for exercises with no
+  // real female art). Falls through to COMING_SOON_ILLUSTRATION instead.
 
   // Lower Body Pro — female variants
   // Most-specific pistol-squat names FIRST so they win over the generic
@@ -1698,36 +1681,9 @@ const FEMALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     ["lateral bound", "lateralbound"],
     FEMALE_LOWER_BODY_PRO_ASSETS.lateralBound,
   ],
-  // Generic pistol squat (after assisted/box variants above)
-  [["pistol squat pro"], "/assets/exercises/pistol_squat_pro.png"],
-  [["pistol squat"], "/assets/exercises/pistol_squat_pro.png"],
-  [["sumo jump squat"], "/assets/exercises/sumo_jump_squat.png"],
-  [
-    ["jumping lunges", "jumping lunge", "jump lunge"],
-    "/assets/exercises/jumping_lunges.png",
-  ],
-  [
-    ["bulgarian split squat", "bulgarian split", "split squat"],
-    "/assets/exercises/bg_split_squat.png",
-  ],
-  [["curtsy lunge", "curtsy"], "/assets/exercises/curtsy_lunge.png"],
-  [
-    ["lunge with knee drive pro", "lunge knee drive pro"],
-    "/assets/exercises/lunge_knee_drive_pro.png",
-  ],
-  [
-    [
-      "single-leg step-up",
-      "single leg step-up",
-      "one leg step-up",
-      "single leg step up",
-    ],
-    "/assets/exercises/one_leg_step_up.png",
-  ],
-  [
-    ["single-leg wall sit", "single leg wall sit"],
-    "/assets/exercises/single_leg_wall_sit.png",
-  ],
+  // Deliberately no generic Lower Body Pro reuse block here anymore (was
+  // borrowing male-illustrated generic assets). Falls through to
+  // COMING_SOON_ILLUSTRATION instead.
 
   // ── Lower Body — Advanced (female-specific assets) ─────────────────────────
   // Most-specific advanced names are listed FIRST so they win over the
@@ -2374,152 +2330,12 @@ const FEMALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     FEMALE_FULL_BODY_PRO_ASSETS.freestandingHandstandAttempt,
   ],
 
-  // Core — female variants (mapped to real illustration assets, same as male)
-  // Plank family — real plank asset
-  [
-    [
-      "plank",
-      "plank hold",
-      "plank to push up",
-      "plank to pushup",
-      "plank to push-up",
-      "plank shoulder tap",
-      "plank up down",
-      "up down plank",
-    ],
-    "/assets/exercises/plank.png",
-  ],
-  // Side plank — real plank asset
-  [
-    ["side plank", "weighted side plank", "side plank hold"],
-    "/assets/exercises/plank.png",
-  ],
-  // Superman / back extension — real superman hold asset
-  [
-    ["superman hold", "superman", "back extension", "swimmer"],
-    "/assets/exercises/superman hold.png",
-  ],
-  // Pike hold — real pike hold asset
-  [["pike hold", "pike compression"], "/assets/exercises/pike hold.png"],
-  // Mountain climber — high knee march is the closest real dynamic asset
-  [
-    ["mountain climber", "mountain climbers", "cross-body mountain climber"],
-    "/assets/exercises/high_knee_march.png",
-  ],
-  // Hollow body hold
-  [
-    ["hollow body", "hollow body hold", "hollow hold"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // V-up / sit-up / crunch family
-  [
-    ["v-up", "v up", "vups", "sit-up", "sit up", "situp", "crunch", "crunches"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Bicycle / oblique crunch
-  [
-    ["bicycle crunch", "oblique crunch", "bicycle"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Leg raise / reverse crunch family
-  [
-    ["leg raise", "reverse crunch", "lying leg raise", "straight leg raise"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Flutter / scissor kick
-  [
-    ["flutter kick", "scissor kick", "flutter kicks"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Dead bug
-  [
-    ["dead bug", "modified dead bug", "extended dead bug"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Hanging leg / knee raise
-  [
-    ["hanging leg raise", "hanging knee raise", "hanging raise"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Dragon flag, ab wheel, l-sit, boat hold, hip dip
-  [["dragon flag", "dragonflag"], "/assets/exercises/normal_squat.png"],
-  [["ab wheel", "rollout", "ab roller"], "/assets/exercises/normal_squat.png"],
-  [["l-sit", "tuck l-sit", "lsit"], "/assets/exercises/normal_squat.png"],
-  [["boat hold", "boat pose"], "/assets/exercises/normal_squat.png"],
-  [["hip dip", "hip dips"], "/assets/exercises/normal_squat.png"],
-  // Russian twist / oblique twists
-  [
-    ["russian twist", "russian twists", "oblique twist"],
-    "/assets/exercises/normal_squat.png",
-  ],
-
-  // Full Body — female variants (mapped to real illustration assets, same as male)
-  // Burpee family — closest real full-body dynamic asset is jump squat
-  [
-    [
-      "muscle-up burpee",
-      "burpee pull-up",
-      "burpee to broad jump",
-      "burpee",
-      "modified burpee",
-      "half burpee",
-      "burpee broad jump",
-    ],
-    "/assets/exercises/jump_squat.png",
-  ],
-  // Box jump / plyo
-  [
-    ["box jump", "plyo box step", "box jump step"],
-    "/assets/exercises/broad_jump.png",
-  ],
-  // Tuck jump — real asset
-  [["tuck jump", "tuck jumps"], "/assets/exercises/tuck_jump.png"],
-  // Broad jump — real asset
-  [["broad jump", "broad jumps"], "/assets/exercises/broad_jump.png"],
-  // Jump squat — real asset
-  [
-    ["jump squat", "squat jump", "jump squats"],
-    "/assets/exercises/jump_squat.png",
-  ],
-  // Turkish get-up
-  [
-    ["turkish get-up", "modified turkish get-up", "turkish get up"],
-    "/assets/exercises/normal_squat.png",
-  ],
-  // Crawl family — plank as closest ground asset
-  [
-    [
-      "spiderman crawl",
-      "lateral crawl",
-      "bear crawl",
-      "crab walk",
-      "lateral bear crawl",
-    ],
-    "/assets/exercises/plank.png",
-  ],
-  // Inchworm / walkout — pike hold (folded shape)
-  [
-    ["inchworm", "walkout", "walk out", "inch worm"],
-    "/assets/exercises/pike hold.png",
-  ],
-  // Man maker
-  [
-    ["man maker", "modified man maker", "manmaker"],
-    "/assets/exercises/jump_squat.png",
-  ],
-  // Seal jack / jumping jack
-  [
-    ["seal jack", "seal jacks", "jumping jack", "jumping jacks"],
-    "/assets/exercises/jump_squat.png",
-  ],
-  // Squat pulse
-  [
-    ["squat pulse", "squat pulses", "pulse squat"],
-    "/assets/exercises/normal_squat.png",
-  ],
-
-  // Joker challenges — female variants
-  [["dead hang", "deadhang", "hang"], "/assets/exercises/inverted row.png"],
+  // Deliberately no generic/reused fallback block here anymore — Core,
+  // Full Body, and joker-challenge exercises with no dedicated female
+  // asset above now correctly fall through to COMING_SOON_ILLUSTRATION
+  // in resolveExerciseIllustration() rather than borrowing a male photo
+  // or reusing one unrelated image (e.g. a squat) across a dozen
+  // different exercises.
 ];
 
 /**
@@ -2672,13 +2488,17 @@ export function resolveExerciseIllustration(
 ): string {
   const key = normalizeKey(exerciseName);
 
-  // Female-specific overrides
+  // Female-specific overrides. Deliberately does NOT fall through to the
+  // shared/male map below on a miss — that map's generic entries are real
+  // male-illustrated images, and showing one in a female deck is worse than
+  // showing nothing. A female miss goes straight to COMING_SOON_ILLUSTRATION.
   if (gender === "female") {
     for (const [keywords, path] of FEMALE_EXERCISE_ILLUSTRATION_MAP) {
       for (const kw of keywords) {
         if (key.includes(kw)) return path;
       }
     }
+    return COMING_SOON_ILLUSTRATION;
   }
 
   // Male-specific overrides (Core / Full Body — Beginner dedicated art)
@@ -2695,7 +2515,7 @@ export function resolveExerciseIllustration(
       if (key.includes(kw)) return path;
     }
   }
-  return UPPER_BODY_BEGINNER_ASSETS.normalPushUp;
+  return COMING_SOON_ILLUSTRATION;
 }
 
 export function getSuitLabel(suit: string, deckCategory?: string): string {
