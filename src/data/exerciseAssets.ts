@@ -593,6 +593,8 @@ export const MALE_CORE_BEGINNER_ASSETS = {
   flutterKick: "/assets/exercises/male_core_beg_flutter_kick.png",
   legRaise: "/assets/exercises/male_core_beg_leg_raise.png",
   plankShoulderTap: "/assets/exercises/male_core_beg_plank_shoulder_tap.png",
+  deadBug: "/assets/exercises/male_core_beg_dead_bug.png",
+  sidePlank: "/assets/exercises/male_core_beg_side_plank.png",
   // Joker combo
   jokerCombo: "/assets/exercises/male_core_beg_joker_combo.png",
   // Face cards (shared global images)
@@ -641,6 +643,7 @@ export const MALE_CORE_PRO_ASSETS = {
   sidePlankHipDip: "/assets/exercises/male_core_pro_side_plank_hip_dip.png",
   starSidePlank: "/assets/exercises/male_core_pro_star_side_plank.png",
   humanFlagAttempt: "/assets/exercises/male_core_pro_human_flag_attempt.png",
+  windshieldWipers: "/assets/exercises/male_core_pro_windshield_wipers.png",
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -662,6 +665,7 @@ export const MALE_FULL_BODY_BEGINNER_ASSETS = {
   crabWalk: "/assets/exercises/male_fb_beg_crab_walk.png",
   squatToStand: "/assets/exercises/male_fb_beg_squat_to_stand.png",
   pushUpDownDog: "/assets/exercises/male_fb_beg_push_up_down_dog.png",
+  modifiedBurpee: "/assets/exercises/male_fb_beg_modified_burpee.png",
   // Face cards (shared global images)
   aceDouble: "/assets/exercises/Last excersie x2.png",
   kingHalf: "/assets/exercises/dividng by 2.png",
@@ -2411,6 +2415,17 @@ const MALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     ["hollow body rock", "hollow rock"],
     MALE_CORE_ADVANCED_ASSETS.hollowBodyRock,
   ],
+  // Dead bug — before generic bird dog / hold (Beginner asset, checked here
+  // too since Core Advanced/Beginner keyword lists are interleaved below)
+  [
+    ["dead bug", "modified dead bug", "extended dead bug"],
+    MALE_CORE_BEGINNER_ASSETS.deadBug,
+  ],
+  // Side plank — before generic plank
+  [
+    ["side plank", "weighted side plank", "side plank hold"],
+    MALE_CORE_BEGINNER_ASSETS.sidePlank,
+  ],
   // V-up
   [["v up", "v-up", "vups"], MALE_CORE_ADVANCED_ASSETS.vUp],
   // Russian twist
@@ -2444,8 +2459,18 @@ const MALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     ["human flag attempt", "human flag", "flag attempt"],
     MALE_CORE_PRO_ASSETS.humanFlagAttempt,
   ],
+  // Windshield wipers
+  [
+    ["windshield wiper", "windshield wipers"],
+    MALE_CORE_PRO_ASSETS.windshieldWipers,
+  ],
 
   // ── Full Body — Beginner (male-specific assets) ─────────────────────────────
+  // Modified burpee — before generic burpee
+  [
+    ["modified burpee", "modified burpee beginner"],
+    MALE_FULL_BODY_BEGINNER_ASSETS.modifiedBurpee,
+  ],
   // Inchworm — before generic inchworm / walkout
   [
     ["inchworm", "inch worm", "walkout", "walk out"],
