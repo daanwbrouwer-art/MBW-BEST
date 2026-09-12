@@ -1,6 +1,11 @@
 import { useNotifications } from "@/hooks/use-notifications";
 import { openPrivacyPolicy } from "@/lib/legal";
 import {
+  isLocalNotificationCapable,
+  presentLocalNotification,
+  scheduleDailyReminders,
+} from "@/lib/localNotifications";
+import {
   DAILY_NOTIFICATION_TITLE,
   getDailyNotificationBody,
 } from "@/lib/notificationContent";
@@ -100,16 +105,25 @@ export default function NotificationPermissionPage() {
     try {
       const granted = await requestPermission();
       updateSettings({ enabled: granted, reminders: granted });
-      if (granted && typeof Notification !== "undefined") {
-        try {
-          new Notification(DAILY_NOTIFICATION_TITLE, {
-            body: previewBody,
-            icon: "/assets/images/mbw-logo-white-icon.png",
-          });
-        } catch {
-          // Notification construction can fail in some contexts (e.g. no
-          // service worker on some platforms) — the permission + settings
-          // were still recorded correctly either way.
+      if (granted) {
+        if (isLocalNotificationCapable()) {
+          // Native: schedule the real rolling daily-reminder window (see
+          // localNotifications.ts) and show one immediate demo notification
+          // through the same plugin — `new Notification()` isn't bridged
+          // inside an Android/iOS WebView, so it silently does nothing there.
+          await scheduleDailyReminders();
+          await presentLocalNotification(DAILY_NOTIFICATION_TITLE, previewBody);
+        } else if (typeof Notification !== "undefined") {
+          try {
+            new Notification(DAILY_NOTIFICATION_TITLE, {
+              body: previewBody,
+              icon: "/assets/images/mbw-logo-white-icon.png",
+            });
+          } catch {
+            // Notification construction can fail in some contexts (e.g. no
+            // service worker on some platforms) — the permission + settings
+            // were still recorded correctly either way.
+          }
         }
       }
     } finally {

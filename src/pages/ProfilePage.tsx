@@ -13,6 +13,7 @@ import { useOnboarding } from "@/hooks/use-onboarding";
 import { useProfile } from "@/hooks/use-profile";
 import { useStreak } from "@/hooks/use-streak";
 import { useTier } from "@/hooks/use-tier";
+import { isLocalNotificationCapable } from "@/lib/localNotifications";
 import { useWorkoutHistory } from "@/hooks/use-workout-history";
 import {
   DEFAULT_AGE,
@@ -179,7 +180,7 @@ export default function ProfilePage() {
   const { tier: equipmentTier, setTier: setEquipmentTier } = useEquipmentTier();
   const {
     settings: notificationSettings,
-    browserPermission,
+    isBlocked: notificationsBlocked,
     toggle: toggleNotification,
   } = useNotifications();
   const { streak, setWeeklyGoal } = useStreak();
@@ -715,10 +716,11 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-          {browserPermission === "denied" && (
+          {notificationsBlocked && (
             <p className="text-xs text-muted-foreground font-body mt-2 px-1 leading-relaxed">
-              Notifications are blocked in your browser for this site. Enable
-              them in your browser's site settings to use reminders.
+              {isLocalNotificationCapable()
+                ? "Notifications are blocked for this app. Enable them in your device's system settings to use reminders."
+                : "Notifications are blocked in your browser for this site. Enable them in your browser's site settings to use reminders."}
             </p>
           )}
         </motion.div>

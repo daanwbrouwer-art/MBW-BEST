@@ -21,6 +21,10 @@ import {
   drainPendingUnlockAnimations,
 } from "@/lib/achievementEngine";
 import { capDifficultyToTier, weeklyCardLimitFor } from "@/lib/cardLimit";
+import {
+  notifyAchievementUnlocked,
+  refreshScheduledNotifications,
+} from "@/lib/localNotifications";
 import { getRecommendation } from "@/lib/recommendation";
 import { applyRecoveryLogic, formatRecoveryTip } from "@/lib/recovery";
 import {
@@ -81,12 +85,25 @@ export default function HomePage() {
     dismiss: dismissTrialExpiredModal,
   } = useTrialExpiryModal();
   const { achievements } = useAchievements();
-  const { settings: notifSettings, browserPermission } = useNotifications();
+  const { settings: notifSettings } = useNotifications();
   const {
     current: unlockAnim,
     enqueue: enqueueUnlocks,
     handleComplete: handleUnlockComplete,
   } = useAchievementUnlockQueue();
+
+  // Tops up both rolling local-notification schedules on every app open —
+  // each only covers a finite window (30 days / 8 weeks, see
+  // localNotifications.ts), so a user who opens the app at least that
+  // often never has their reminders/weekly summary silently run dry.
+  // No-ops for whichever toggle is off, and outside a native build.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reminders/weeklySummary read once per mount is enough — a mid-session toggle already (re)schedules itself via useNotifications().toggle()
+  useEffect(() => {
+    refreshScheduledNotifications({
+      reminders: notifSettings.reminders,
+      weeklySummary: notifSettings.weeklySummary,
+    });
+  }, []);
 
   // Drains achievements granted in a batch right after subscribing (see
   // useTier().purchase()) and plays their unlock animations here.
@@ -94,15 +111,13 @@ export default function HomePage() {
     const pending = drainPendingUnlockAnimations(isGuest);
     if (pending.length === 0) return;
     enqueueUnlocks(pending);
-    if (browserPermission === "granted" && notifSettings.enabled) {
+    // notifyAchievementUnlocked checks real permission state itself (native
+    // and web report it very differently — see its own comment) — gating
+    // on `notifSettings.enabled` alone here, not `browserPermission`, which
+    // only reflects the web Notification API and is meaningless on native.
+    if (notifSettings.enabled) {
       for (const a of pending) {
-        try {
-          new Notification(`🏆 Achievement unlocked: ${a.name}!`, {
-            body: "Open the app to see it.",
-          });
-        } catch {
-          // Notification constructor can throw in some embedded contexts — non-fatal.
-        }
+        notifyAchievementUnlocked(a.name);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
