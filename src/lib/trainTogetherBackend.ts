@@ -257,19 +257,6 @@ export async function inviteToParty(
   if (error) throw new Error(error.message);
 }
 
-export async function getSessionByInviteCode(
-  code: string,
-): Promise<TrainTogetherSession | null> {
-  const { data, error } = await supabase
-    .from("train_together_sessions")
-    .select("*")
-    .ilike("invite_code", code.trim())
-    .eq("status", "waiting")
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  return data ? toSession(data as unknown as TrainTogetherSessionRow) : null;
-}
-
 export async function getTrainTogetherSession(
   sessionId: string,
 ): Promise<TrainTogetherSession | null> {
@@ -282,20 +269,32 @@ export async function getTrainTogetherSession(
   return data ? toSession(data as unknown as TrainTogetherSessionRow) : null;
 }
 
-/** Joins a party directly via invite code, e.g. from a shared link, bypassing the friend-invite step — arrives already accepted since typing/opening the code is itself the acceptance. */
-export async function joinPartyByCode(sessionId: string): Promise<void> {
-  const userId = await requireUserId();
-  const { error } = await supabase
-    .from("train_together_session_participants")
-    .upsert(
-      {
-        session_id: sessionId,
-        user_id: userId,
-        invite_status: "accepted",
-      },
-      { onConflict: "session_id,user_id", ignoreDuplicates: true },
-    );
+/**
+ * Joins a party directly via invite code, e.g. from a shared link, bypassing
+ * the friend-invite step — arrives already accepted since typing/opening
+ * the code is itself the acceptance.
+ *
+ * Goes through the join_train_together_party_by_code() RPC rather than a
+ * plain select-then-insert: a non-participant can't SELECT a
+ * train_together_sessions row under RLS (that policy only allows the host
+ * or an existing participant), and an insert into
+ * train_together_session_participants referencing that session_id then
+ * fails its foreign-key visibility check for the same reason — a
+ * chicken-and-egg deadlock that made every code-based join fail with a
+ * plain RLS violation (confirmed live 2026-09-12). The RPC is
+ * SECURITY DEFINER specifically to break that cycle: the invite code itself
+ * is the authorization, the same pattern create_or_get_thread and
+ * nearby_profiles already use elsewhere in this schema.
+ */
+export async function joinTrainTogetherPartyByCode(
+  code: string,
+): Promise<TrainTogetherSession> {
+  const { data, error } = await supabase.rpc(
+    "join_train_together_party_by_code",
+    { p_invite_code: code.trim() },
+  );
   if (error) throw new Error(error.message);
+  return toSession(data as unknown as TrainTogetherSessionRow);
 }
 
 /** The invited user accepting/declining a pending party invite. */

@@ -10,9 +10,8 @@ import {
   type PendingPartyInvite,
   createTrainTogetherParty,
   findProfileByUsername,
-  getSessionByInviteCode,
   inviteToParty,
-  joinPartyByCode,
+  joinTrainTogetherPartyByCode,
   listFriendships,
   listPendingPartyInvites,
   respondToFriendRequest,
@@ -694,9 +693,7 @@ export default function TrainTogetherHubPage() {
 
   const joinMutation = useMutation({
     mutationFn: async (code: string) => {
-      const session = await getSessionByInviteCode(code);
-      if (!session) throw new Error("That invite code isn't valid.");
-      await joinPartyByCode(session.id);
+      const session = await joinTrainTogetherPartyByCode(code);
       return session.id;
     },
     onSuccess: (sessionId) =>
