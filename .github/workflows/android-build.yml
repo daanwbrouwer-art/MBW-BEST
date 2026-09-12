@@ -49,7 +49,7 @@ jobs:
 
       - name: Build signed release AAB
         working-directory: android
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleRelease --stacktrace
         env:
           ANDROID_KEYSTORE_PATH: release.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
