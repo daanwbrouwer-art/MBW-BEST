@@ -22,12 +22,120 @@ import {
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Check, Lock, Users, X } from "lucide-react";
+import { Check, Info, Lock, Shuffle, Users, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const PARTY_SIZES = [2, 3, 4] as const;
+
+// ─── "How it works" info sheet ─────────────────────────────────────────────
+
+function HowItWorksSheet({ onClose }: { onClose: () => void }) {
+  const steps: { title: string; body: string }[] = [
+    {
+      title: "Start or join a party",
+      body: "Start a party of 2-4 (invite friends or share a code), or join one with a code someone sent you.",
+    },
+    {
+      title: "The host picks the workout",
+      body: "Any built-in deck (or one of your saved custom decks) and how many cards — everyone in the party trains that same deck.",
+    },
+    {
+      title: "Everyone readies up, host starts",
+      body: "Once every player taps \"I'm ready,\" the host starts the session and the deck is drawn once, synced live to every device.",
+    },
+    {
+      title: "Same card, same rep, for everyone",
+      body: "Every player sees the exact same card at the exact same time — same exercise, same rep count — so you're all moving together, not racing separate decks.",
+    },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[70] flex items-end justify-center"
+      style={{ background: "oklch(0.05 0.005 260 / 0.85)" }}
+      data-ocid="train-together.how_it_works_sheet"
+    >
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
+        className="w-full max-w-[430px] rounded-t-3xl px-5 pt-5 pb-8 max-h-[88dvh] overflow-y-auto"
+        style={{
+          background: "oklch(0.13 0.01 260)",
+          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+        }}
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-display font-black text-xl text-foreground">
+            How Train Together works
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-9 h-9 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground"
+            data-ocid="train-together.how_it_works_close"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-4 mb-6">
+          {steps.map((step, i) => (
+            <div key={step.title} className="flex gap-3">
+              <div
+                className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-display font-black text-xs"
+                style={{
+                  background: "oklch(0.68 0.25 180 / 0.15)",
+                  color: "oklch(0.68 0.25 180)",
+                }}
+              >
+                {i + 1}
+              </div>
+              <div className="min-w-0">
+                <p className="font-display font-bold text-sm text-foreground mb-0.5">
+                  {step.title}
+                </p>
+                <p className="text-xs text-muted-foreground font-body leading-relaxed">
+                  {step.body}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="rounded-2xl px-4 py-4 flex gap-3"
+          style={{
+            background: "oklch(0.68 0.25 180 / 0.1)",
+            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+          }}
+          data-ocid="train-together.how_it_works_variety_note"
+        >
+          <Shuffle
+            className="w-5 h-5 shrink-0 mt-0.5"
+            style={{ color: "oklch(0.68 0.25 180)" }}
+          />
+          <div>
+            <p className="font-display font-bold text-sm text-foreground mb-1">
+              Every card is a different exercise
+            </p>
+            <p className="text-xs text-muted-foreground font-body leading-relaxed">
+              The draw is built so the same exercise never comes up twice in a
+              row — you'll always get full variety across the whole session,
+              no matter which deck, difficulty, or party size you pick.
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 // ─── Gate: real account + active subscription required ────────────────────
 
@@ -537,6 +645,7 @@ export default function TrainTogetherHubPage() {
 
   const [showPartyPanel, setShowPartyPanel] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [addFriendHandle, setAddFriendHandle] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
@@ -611,10 +720,21 @@ export default function TrainTogetherHubPage() {
 
       <header className="relative flex items-center gap-3 px-5 pt-12 pb-3">
         <Logo size="sm" iconOnly className="opacity-70" />
-        <div>
-          <h1 className="font-display font-black text-xl text-foreground">
-            Train Together
-          </h1>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h1 className="font-display font-black text-xl text-foreground">
+              Train Together
+            </h1>
+            <button
+              type="button"
+              onClick={() => setShowHowItWorks(true)}
+              className="w-6 h-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary transition-smooth shrink-0"
+              aria-label="How Train Together works"
+              data-ocid="train-together.how_it_works_button"
+            >
+              <Info className="w-4 h-4" />
+            </button>
+          </div>
           {isUnlocked && (
             <p className="text-[11px] text-muted-foreground font-body">
               Choose 2, 3, or 4 — including you
@@ -719,6 +839,9 @@ export default function TrainTogetherHubPage() {
         )}
         {showPaywall && (
           <PaywallModal onDismiss={() => setShowPaywall(false)} />
+        )}
+        {showHowItWorks && (
+          <HowItWorksSheet onClose={() => setShowHowItWorks(false)} />
         )}
       </AnimatePresence>
     </div>
