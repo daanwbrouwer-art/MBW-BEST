@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { hashPassword } from "@/hooks/use-auth";
 import { useActor } from "@/hooks/use-local-actor";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -24,10 +23,7 @@ export default function AuthPage() {
     }
     setIsLoading(true);
     try {
-      const result = await (actor as any).loginUser(
-        email,
-        await hashPassword(password),
-      );
+      const result = await (actor as any).loginUser(email, password);
       if ("ok" in result) {
         localStorage.setItem("mbw_user", JSON.stringify(result.ok));
         const isFirstLogin = localStorage.getItem("mbw_first_login") === null;

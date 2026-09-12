@@ -829,3 +829,13 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Approximates a dark basemap from OpenStreetMap's light-only standard
+   tiles — used only when no Stadia Maps key is configured (see
+   src/lib/mapTiles.ts's TILE_CSS_CLASS). Invert flips light<->dark,
+   hue-rotate undoes the resulting color-wheel flip (so land stays roughly
+   green/tan instead of purple), and the brightness/contrast pull keeps it
+   from reading as a stark true-invert. */
+.map-tiles-osm-dark {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9);
+}

@@ -10,10 +10,10 @@ import { localBackend } from "./localBackend";
 import { supabase } from "./supabaseClient";
 
 // ─── Supabase-backed data layer ────────────────────────────────────────────
-// Infrastructure only — nothing in this file is imported by the UI yet (see
-// src/hooks/use-local-actor.ts, still wired to localBackend). It exists so
-// the swap can happen later without changing any call site: remoteBackend
-// satisfies the exact same backendInterface as localBackend.
+// Live: src/hooks/use-local-actor.ts wires useActor() to this module (not
+// localBackend) — registerUser/loginUser and everything else the UI calls
+// through `actor` actually hits Supabase. remoteBackend satisfies the exact
+// same backendInterface as localBackend so that swap didn't touch call sites.
 //
 // Everything NOT related to account identity / profile / discovery is
 // spread in from localBackend unchanged below — those methods (deck
@@ -29,14 +29,11 @@ import { supabase } from "./supabaseClient";
 // storage (src/lib/streak.ts) regardless of account type, so that's not a
 // visible regression for anything currently wired up.
 //
-// Auth note: the app hashes passwords client-side (see src/hooks/use-auth.ts
-// hashPassword) before they ever reach backendInterface, so `passwordHash`
-// below is passed straight through as the Supabase Auth "password" — Supabase
-// hashes it again server-side. That's intentional (the raw password never
-// leaves the device) but means Supabase Auth is authenticating against a
-// hash-of-a-password, not the password itself; harmless, just worth knowing
-// if this is ever compared against a Supabase project that also has native
-// mobile/social sign-in expecting the real password.
+// Auth note: registerUser/loginUser receive the user's real password and
+// pass it straight through to Supabase Auth, which salts and hashes it
+// server-side. Do not hash it client-side first — Supabase's password
+// policy (length, breach checks, complexity) needs to validate what the
+// user actually typed, not a hex digest of it.
 //
 // Password reset lives at https://reset.my-bodyweight.com — the app
 // initiates the flow via supabase.auth.resetPasswordForEmail (called
@@ -124,34 +121,48 @@ function roundCoord(value: number): number {
   return Math.round(value * 1000) / 1000;
 }
 
+/**
+ * Supabase surfaces a raw browser fetch failure ("Failed to fetch", or a
+ * TypeError's message on some engines) as `error.message` whenever the
+ * request never reaches the server at all — wrong/dead project URL, DNS
+ * failure, offline device. Left as-is, that string lands verbatim in the
+ * sign-in/sign-up form, which reads as a broken app rather than a
+ * connectivity problem. Every other Supabase Auth error (invalid
+ * credentials, user already registered, weak password, ...) is already
+ * written for end users, so this only intercepts the network-failure shape.
+ */
+function friendlyAuthErrorMessage(message: string): string {
+  if (/failed to fetch|networkerror|load failed|fetch failed/i.test(message)) {
+    return "Can't reach the server right now. Check your connection and try again.";
+  }
+  return message;
+}
+
 export const remoteBackend: backendInterface = {
   ...localBackend,
 
-  registerUser: async (
-    username: string,
-    email: string,
-    passwordHash: string,
-  ) => {
+  registerUser: async (username: string, email: string, password: string) => {
     const { error } = await supabase.auth.signUp({
       email,
-      password: passwordHash,
+      password,
       options: { data: { username } },
     });
-    if (error) return { __kind__: "err", err: error.message };
+    if (error)
+      return { __kind__: "err", err: friendlyAuthErrorMessage(error.message) };
     // The on_auth_user_created trigger creates the profiles row (with the
     // username from this metadata) server-side — nothing left to do here.
     return { __kind__: "ok", ok: null };
   },
 
-  loginUser: async (email: string, passwordHash: string) => {
+  loginUser: async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password: passwordHash,
+      password,
     });
     if (error || !data.user) {
       return {
         __kind__: "err",
-        err: error?.message ?? "Invalid email or password",
+        err: error ? friendlyAuthErrorMessage(error.message) : "Invalid email or password",
       };
     }
     const { data: profile, error: profileError } = await supabase
@@ -254,6 +265,24 @@ export const remoteBackend: backendInterface = {
   getOnboarding: async (): Promise<OnboardingData | null> => null,
 };
 
+/** Runs a Supabase call that has no useful `data`, folding its error into the `{ ok: false, error }` shape shared by every function below — so a call site can't forget the check. */
+async function runOp(
+  promise: PromiseLike<{ error: { message: string } | null }>,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const { error } = await promise;
+  return error ? { ok: false, error: error.message } : { ok: true };
+}
+
+/** Same as `runOp`, but for calls whose `data` feeds the success result — `onOk` only runs once `error` is confirmed null. */
+async function withResult<T, R>(
+  promise: PromiseLike<{ data: T; error: { message: string } | null }>,
+  onOk: (data: T) => R,
+): Promise<R | { ok: false; error: string }> {
+  const { data, error } = await promise;
+  if (error) return { ok: false, error: error.message };
+  return onOk(data);
+}
+
 // ─── Nearby athletes ────────────────────────────────────────────────────────
 
 /**
@@ -268,11 +297,18 @@ export async function updateActivityPing(
   const userId = await getCurrentUserId();
   if (!userId) return;
 
-  const { data: profile } = await supabase
+  const { data: profile, error: readError } = await supabase
     .from("profiles")
     .select("discoverable")
     .eq("id", userId)
     .single();
+  if (readError) {
+    console.warn(
+      "updateActivityPing: couldn't read discoverable flag:",
+      readError.message,
+    );
+    return;
+  }
   if (!profile?.discoverable) return;
 
   const update: Database["public"]["Tables"]["profiles"]["Update"] = {
@@ -282,7 +318,16 @@ export async function updateActivityPing(
     update.last_lat = roundCoord(position.latitude);
     update.last_lng = roundCoord(position.longitude);
   }
-  await supabase.from("profiles").update(update).eq("id", userId);
+  const { error: writeError } = await supabase
+    .from("profiles")
+    .update(update)
+    .eq("id", userId);
+  if (writeError) {
+    console.warn(
+      "updateActivityPing: failed to write activity ping:",
+      writeError.message,
+    );
+  }
 }
 
 /** Flips the "Visible to nearby athletes" flag. Turning it off doesn't clear the last-known coordinates, just stops exposing them (nearby_profiles filters on discoverable = true). */
@@ -291,12 +336,9 @@ export async function setDiscoverable(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const userId = await getCurrentUserId();
   if (!userId) return { ok: false, error: "Not authenticated" };
-  const { error } = await supabase
-    .from("profiles")
-    .update({ discoverable })
-    .eq("id", userId);
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase.from("profiles").update({ discoverable }).eq("id", userId),
+  );
 }
 
 export interface NearbyAthlete {
@@ -315,22 +357,19 @@ export async function getNearbyProfiles(
 ): Promise<
   { ok: true; athletes: NearbyAthlete[] } | { ok: false; error: string }
 > {
-  const { data, error } = await supabase.rpc("nearby_profiles", {
-    lat,
-    lng,
-    radius_km: radiusKm,
-  });
-  if (error) return { ok: false, error: error.message };
-  return {
-    ok: true,
-    athletes: (data ?? []).map((row) => ({
-      id: row.id,
-      username: row.username,
-      gender: row.gender,
-      lastActiveAt: row.last_active_at,
-      distanceKm: row.distance_km,
-    })),
-  };
+  return withResult(
+    supabase.rpc("nearby_profiles", { lat, lng, radius_km: radiusKm }),
+    (data) => ({
+      ok: true as const,
+      athletes: (data ?? []).map((row) => ({
+        id: row.id,
+        username: row.username,
+        gender: row.gender,
+        lastActiveAt: row.last_active_at,
+        distanceKm: row.distance_km,
+      })),
+    }),
+  );
 }
 
 export async function blockUser(
@@ -338,11 +377,9 @@ export async function blockUser(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const me = await getCurrentUserId();
   if (!me) return { ok: false, error: "Not authenticated" };
-  const { error } = await supabase
-    .from("blocks")
-    .insert({ blocker_id: me, blocked_id: userId });
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase.from("blocks").insert({ blocker_id: me, blocked_id: userId }),
+  );
 }
 
 export async function unblockUser(
@@ -350,13 +387,13 @@ export async function unblockUser(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const me = await getCurrentUserId();
   if (!me) return { ok: false, error: "Not authenticated" };
-  const { error } = await supabase
-    .from("blocks")
-    .delete()
-    .eq("blocker_id", me)
-    .eq("blocked_id", userId);
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase
+      .from("blocks")
+      .delete()
+      .eq("blocker_id", me)
+      .eq("blocked_id", userId),
+  );
 }
 
 export async function reportUser(
@@ -365,22 +402,25 @@ export async function reportUser(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const me = await getCurrentUserId();
   if (!me) return { ok: false, error: "Not authenticated" };
-  const { error } = await supabase
-    .from("reports")
-    .insert({ reporter_id: me, reported_id: userId, reason });
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase
+      .from("reports")
+      .insert({ reporter_id: me, reported_id: userId, reason }),
+  );
 }
 
 /** Finds or creates the 1:1 thread with otherUserId via the create_or_get_thread RPC — server-side block check AND gender/messaging_preference gating (the recipient's stated preference governs). */
 export async function createOrGetThread(
   otherUserId: string,
 ): Promise<{ ok: true; threadId: string } | { ok: false; error: string }> {
-  const { data, error } = await supabase.rpc("create_or_get_thread", {
-    other_user_id: otherUserId,
-  });
-  if (error) return { ok: false, error: error.message };
-  return { ok: true, threadId: data };
+  return withResult(
+    supabase.rpc("create_or_get_thread", { other_user_id: otherUserId }),
+    // create_or_get_thread's Postgres signature returns a non-null uuid;
+    // wrapping the call in withResult's generic collapses that guarantee to
+    // `string | null` in TS, but a null value here can only mean the RPC
+    // itself is broken, so asserting is more honest than a silent fallback.
+    (data) => ({ ok: true as const, threadId: data as string }),
+  );
 }
 
 // ─── Chat ───────────────────────────────────────────────────────────────────
@@ -390,11 +430,17 @@ export type MessagingPreference = "same_gender_only" | "anyone" | "no_one";
 export async function getMessagingPreference(): Promise<MessagingPreference> {
   const userId = await getCurrentUserId();
   if (!userId) return "same_gender_only";
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
     .select("messaging_preference")
     .eq("id", userId)
     .single();
+  if (error) {
+    console.warn(
+      "getMessagingPreference: failed to read preference:",
+      error.message,
+    );
+  }
   return (
     (data?.messaging_preference as MessagingPreference) ?? "same_gender_only"
   );
@@ -405,12 +451,12 @@ export async function setMessagingPreference(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const userId = await getCurrentUserId();
   if (!userId) return { ok: false, error: "Not authenticated" };
-  const { error } = await supabase
-    .from("profiles")
-    .update({ messaging_preference: preference })
-    .eq("id", userId);
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase
+      .from("profiles")
+      .update({ messaging_preference: preference })
+      .eq("id", userId),
+  );
 }
 
 export interface ChatThreadSummary {
@@ -427,10 +473,8 @@ export interface ChatThreadSummary {
 export async function getThreads(): Promise<
   { ok: true; threads: ChatThreadSummary[] } | { ok: false; error: string }
 > {
-  const { data, error } = await supabase.rpc("get_my_threads");
-  if (error) return { ok: false, error: error.message };
-  return {
-    ok: true,
+  return withResult(supabase.rpc("get_my_threads"), (data) => ({
+    ok: true as const,
     threads: (data ?? []).map((row) => ({
       threadId: row.thread_id,
       otherUserId: row.other_user_id,
@@ -440,7 +484,7 @@ export async function getThreads(): Promise<
       isUnread: row.is_unread,
       muted: row.muted,
     })),
-  };
+  }));
 }
 
 /** The other participant's (id, username) for a thread you're part of — via the get_thread_peer() RPC, since profiles RLS otherwise only allows reading your own row. */
@@ -449,13 +493,14 @@ export async function getThreadPeer(
 ): Promise<
   { ok: true; id: string; username: string } | { ok: false; error: string }
 > {
-  const { data, error } = await supabase.rpc("get_thread_peer", {
-    p_thread_id: threadId,
-  });
-  if (error) return { ok: false, error: error.message };
-  const peer = data?.[0];
-  if (!peer) return { ok: false, error: "Thread not found" };
-  return { ok: true, id: peer.id, username: peer.username };
+  return withResult(
+    supabase.rpc("get_thread_peer", { p_thread_id: threadId }),
+    (data) => {
+      const peer = data?.[0];
+      if (!peer) return { ok: false as const, error: "Thread not found" };
+      return { ok: true as const, id: peer.id, username: peer.username };
+    },
+  );
 }
 
 export interface ChatMessage {
@@ -471,22 +516,23 @@ export async function getMessages(
 ): Promise<
   { ok: true; messages: ChatMessage[] } | { ok: false; error: string }
 > {
-  const { data, error } = await supabase
-    .from("chat_messages")
-    .select("*")
-    .eq("thread_id", threadId)
-    .order("created_at", { ascending: true });
-  if (error) return { ok: false, error: error.message };
-  return {
-    ok: true,
-    messages: (data ?? []).map((row) => ({
-      id: row.id,
-      threadId: row.thread_id,
-      senderId: row.sender_id,
-      body: row.body,
-      createdAt: row.created_at,
-    })),
-  };
+  return withResult(
+    supabase
+      .from("chat_messages")
+      .select("*")
+      .eq("thread_id", threadId)
+      .order("created_at", { ascending: true }),
+    (data) => ({
+      ok: true as const,
+      messages: (data ?? []).map((row) => ({
+        id: row.id,
+        threadId: row.thread_id,
+        senderId: row.sender_id,
+        body: row.body,
+        createdAt: row.created_at,
+      })),
+    }),
+  );
 }
 
 /** Rate limit (20/min) and a baseline keyword filter are enforced server-side by a trigger — this surfaces whatever error it raises. */
@@ -496,27 +542,32 @@ export async function sendMessage(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const userId = await getCurrentUserId();
   if (!userId) return { ok: false, error: "Not authenticated" };
-  const { error } = await supabase
-    .from("chat_messages")
-    .insert({ thread_id: threadId, sender_id: userId, body });
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase
+      .from("chat_messages")
+      .insert({ thread_id: threadId, sender_id: userId, body }),
+  );
 }
 
 export async function markThreadRead(threadId: string): Promise<void> {
-  await supabase.rpc("mark_thread_read", { p_thread_id: threadId });
+  const { error } = await supabase.rpc("mark_thread_read", {
+    p_thread_id: threadId,
+  });
+  if (error) {
+    console.warn("markThreadRead failed:", error.message);
+  }
 }
 
 export async function setThreadMuted(
   threadId: string,
   muted: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const { error } = await supabase.rpc("set_thread_muted", {
-    p_thread_id: threadId,
-    p_muted: muted,
-  });
-  if (error) return { ok: false, error: error.message };
-  return { ok: true };
+  return runOp(
+    supabase.rpc("set_thread_muted", {
+      p_thread_id: threadId,
+      p_muted: muted,
+    }),
+  );
 }
 
 /** Subscribes to new messages in a thread via Supabase Realtime. Returns an unsubscribe function. */

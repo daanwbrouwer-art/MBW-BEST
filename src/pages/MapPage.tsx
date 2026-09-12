@@ -14,6 +14,7 @@ import { geocodePlace, zoomForRadiusKm } from "@/lib/geocoding";
 import {
   PARK_ICON,
   TILE_ATTRIBUTION,
+  TILE_CSS_CLASS,
   TILE_URL,
   USER_LOCATION_ICON,
 } from "@/lib/mapTiles";
@@ -500,7 +501,11 @@ export default function MapPage() {
             className="absolute inset-0"
             scrollWheelZoom
           >
-            <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+            <TileLayer
+              url={TILE_URL}
+              attribution={TILE_ATTRIBUTION}
+              className={TILE_CSS_CLASS}
+            />
             <FlyToCenter center={mapCenter} zoom={mapZoom} />
             <MapPanTracker
               searchCenter={searchCenter}

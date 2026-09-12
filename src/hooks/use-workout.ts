@@ -8388,92 +8388,40 @@ export function cardCountToNumber(cc: CardCount): number {
   return 52;
 }
 
+/**
+ * Returns the effective exercise name of a single card in a deck, for exact
+ * -name dedup. Ace/King inherit the name of the nearest preceding
+ * non-modifier card (mirroring how their reps are resolved), matching
+ * getCardMovementCategory's inheritance rule below.
+ */
+function getCardExerciseName(
+  card: LocalCard,
+  index: number,
+  deck: LocalCard[],
+): string {
+  if (card.isAce || card.isKing) {
+    for (let j = index - 1; j >= 0; j--) {
+      const prev = deck[j]!;
+      if (!prev.isAce && !prev.isKing) return prev.exerciseName;
+    }
+    return "";
+  }
+  return card.exerciseName;
+}
+
+/**
+ * Ensures no two cards within a 2-card lookback share the same exact
+ * exercise name (e.g. "Push-Up" can't reappear at i and i+2 either).
+ * Delegates to reorderNoConsecutiveCategories — same collision/backoff
+ * machinery as the movement-category pass below, just keyed on exercise
+ * name instead of category.
+ */
 function ensureNoConsecutiveExercises(deck: LocalCard[]): LocalCard[] {
-  if (deck.length < 2) return deck;
-
-  // Build effective exercise names for each position
-  const effective: string[] = [];
-  for (let i = 0; i < deck.length; i++) {
-    const card = deck[i]!;
-    if (card.isAce || card.isKing) {
-      // Look back to find the previous non-modifier card
-      let prev = "";
-      for (let j = i - 1; j >= 0; j--) {
-        if (!deck[j]!.isAce && !deck[j]!.isKing) {
-          prev = deck[j]!.exerciseName;
-          break;
-        }
-      }
-      effective.push(prev);
-    } else {
-      effective.push(card.exerciseName);
-    }
-  }
-
-  let changed = true;
-  let iterations = 0;
-  const maxIterations = deck.length * 2;
-
-  while (changed && iterations < maxIterations) {
-    changed = false;
-    iterations++;
-
-    for (let i = 0; i < deck.length - 1; i++) {
-      if (effective[i] === effective[i + 1] && effective[i] !== "") {
-        // Find next card with a different effective exercise
-        let swapIdx = -1;
-        for (let j = i + 2; j < deck.length; j++) {
-          const cardJ = deck[j]!;
-          const effJ =
-            cardJ.isAce || cardJ.isKing ? effective[j] : cardJ.exerciseName;
-          if (effJ !== effective[i]) {
-            swapIdx = j;
-            break;
-          }
-        }
-
-        if (swapIdx === -1) {
-          // Try searching from the end of the deck for any different exercise
-          for (let j = deck.length - 1; j > i + 1; j--) {
-            const cardJ = deck[j]!;
-            const effJ =
-              cardJ.isAce || cardJ.isKing ? effective[j] : cardJ.exerciseName;
-            if (effJ !== effective[i]) {
-              swapIdx = j;
-              break;
-            }
-          }
-        }
-
-        if (swapIdx > i + 1) {
-          // Swap positions i+1 and swapIdx
-          const temp = deck[i + 1]!;
-          deck[i + 1] = deck[swapIdx]!;
-          deck[swapIdx] = temp;
-
-          // Rebuild effective array from position i onward
-          for (let k = i; k < deck.length; k++) {
-            const card = deck[k]!;
-            if (card.isAce || card.isKing) {
-              let prev = "";
-              for (let j = k - 1; j >= 0; j--) {
-                if (!deck[j]!.isAce && !deck[j]!.isKing) {
-                  prev = deck[j]!.exerciseName;
-                  break;
-                }
-              }
-              effective[k] = prev;
-            } else {
-              effective[k] = card.exerciseName;
-            }
-          }
-          changed = true;
-        }
-      }
-    }
-  }
-
-  return deck;
+  return reorderNoConsecutiveCategories(
+    deck,
+    getCardExerciseName,
+    (c) => c.isAce || c.isKing,
+  );
 }
 
 // ─── Movement Category System ─────────────────────────────────────────────────
@@ -8612,96 +8560,244 @@ function getCardMovementCategory(
 }
 
 /**
- * Generic second shuffle pass: reorders `items` so that no two consecutive
- * items share the same category (computed via `getCategory`, which may depend
- * on position — e.g. Ace/King inherit the previous card's category).
+ * Counts 2-back collisions: adjacent pairs (i, i+1) and skip-one pairs
+ * (i-1, i+1) that share the same category. A modifier that directly
+ * inherits its category from the non-modifier card immediately before it is
+ * exempted from the adjacent-pair check — that pairing is structurally
+ * always equal (the modifier borrows its neighbour's category by
+ * definition), not a real repeat, and treating it as one would make the fix
+ * loop spin on an unresolvable "collision" forever.
+ */
+function countCategoryCollisions<T>(
+  deck: T[],
+  eff: string[],
+  isModifier?: (item: T) => boolean,
+): number {
+  let count = 0;
+  for (let i = 0; i < deck.length - 1; i++) {
+    const j = i + 1;
+    const isAnchorOfModifier =
+      !!isModifier && isModifier(deck[j]!) && !isModifier(deck[i]!);
+    if (!isAnchorOfModifier && eff[i] !== "" && eff[i] === eff[j]) count++;
+    if (i - 1 >= 0 && eff[i - 1] !== "" && eff[j] !== "" && eff[i - 1] === eff[j])
+      count++;
+  }
+  return count;
+}
+
+/**
+ * Single fix-up pass (per spec): iterate the deck. When item N+1 collides
+ * (per countCategoryCollisions's 2-back rule) with item N or item N-1, swap
+ * N+1 with another card. Candidates are tried nearest-forward-first, then
+ * nearest-backward, but a swap is only committed if it strictly reduces the
+ * deck's total collision count — a "first safe-looking candidate" swap can
+ * silently create a new collision elsewhere, and two such fixes can then
+ * undo each other forever (confirmed by simulation: naive first-candidate
+ * selection ping-pongs the same pair of cards indefinitely). Requiring
+ * strict improvement guarantees termination within a bounded number of
+ * swaps.
  *
- * Algorithm (per spec): iterate the deck. When item N and N+1 share a
- * category, swap item N+1 with the nearest item after N+1 that has a
- * different category. If none exists after N+1, look before N. Repeat until
- * no consecutive same-category pairs remain or no more swaps can be made.
+ * Modifier guard: Ace/King (or equivalent) cards are never moved and are
+ * never chosen as a swap-in candidate. A useful consequence: since the set
+ * of indices holding a modifier is therefore fixed for the whole pass, a
+ * non-modifier card's effective category depends only on the card itself
+ * (never on its position), and a modifier's depends only on whatever
+ * currently sits at the fixed index right before it. That lets every
+ * candidate trial below be evaluated and (if rejected) undone in O(1)
+ * instead of recomputing categories for the whole deck per candidate —
+ * needed because the naive O(deck length) per-candidate version measured
+ * multiple SECONDS of worst-case latency against the real exercise catalog
+ * (some category/difficulty pools are far more skewed than a synthetic
+ * uniform test suggested), which is unusable for a synchronous deck build.
+ */
+function fixNoConsecutiveCategoriesOnce<T>(
+  items: T[],
+  getCategory: (item: T, index: number, arr: T[]) => string,
+  isModifier?: (item: T) => boolean,
+): T[] {
+  const deck = [...items];
+  const n = deck.length;
+  if (n < 2) return deck;
+
+  const eff = deck.map((c, i) => getCategory(c, i, deck));
+
+  const adjacentCollides = (i: number): boolean => {
+    const j = i + 1;
+    if (j >= n) return false;
+    const isAnchorOfModifier =
+      !!isModifier && isModifier(deck[j]!) && !isModifier(deck[i]!);
+    return (
+      eff[i] !== "" && eff[j] !== "" && eff[i] === eff[j] && !isAnchorOfModifier
+    );
+  };
+  const skipCollides = (i: number): boolean => {
+    const j = i + 1;
+    if (i - 1 < 0 || j >= n) return false;
+    return eff[i - 1] !== "" && eff[j] !== "" && eff[i - 1] === eff[j];
+  };
+  const totalCollisions = (): number => {
+    let count = 0;
+    for (let i = 0; i < n - 1; i++) {
+      if (adjacentCollides(i)) count++;
+      if (skipCollides(i)) count++;
+    }
+    return count;
+  };
+  // Sum of collisions among the handful of pairs whose result can possibly
+  // depend on the content currently at index p, for each p in `positions` —
+  // i.e. pairs (p-1,p), (p,p+1), and the skip-one pairs referencing them.
+  // A swap only ever touches two indices, so scoping the before/after
+  // comparison to just their neighborhoods is exact, not approximate.
+  const localCount = (positions: number[]): number => {
+    const idxs = new Set<number>();
+    for (const p of positions) {
+      for (const d of [-1, 0, 1]) {
+        const i = p + d;
+        if (i >= 0 && i < n - 1) idxs.add(i);
+      }
+    }
+    let count = 0;
+    for (const i of idxs) {
+      if (adjacentCollides(i)) count++;
+      if (skipCollides(i)) count++;
+    }
+    return count;
+  };
+
+  let iterations = 0;
+  const maxIterations = n * 10;
+  let changed = true;
+
+  while (changed && iterations < maxIterations) {
+    changed = false;
+    iterations++;
+    if (totalCollisions() === 0) break;
+
+    for (let i = 0; i < n - 1; i++) {
+      const j = i + 1;
+      if (!adjacentCollides(i) && !skipCollides(i)) continue;
+      if (isModifier?.(deck[j]!)) continue; // never move a modifier card
+
+      const candidateOrder: number[] = [];
+      for (let k = j + 1; k < n; k++) candidateOrder.push(k);
+      for (let k = i - 1; k >= 0; k--) candidateOrder.push(k);
+
+      let applied = false;
+      for (const k of candidateOrder) {
+        if (isModifier?.(deck[k]!)) continue; // never relocate a modifier
+
+        const beforeLocal = localCount([j, k]);
+
+        // Trial swap: card content moves, so its effective category moves
+        // with it. A modifier immediately after j or k (if any) inherits
+        // whatever now sits at that fixed preceding index.
+        const oldEffJ = eff[j]!;
+        const oldEffK = eff[k]!;
+        const jNextMod = j + 1 < n && !!isModifier?.(deck[j + 1]!);
+        const kNextMod = k + 1 < n && !!isModifier?.(deck[k + 1]!);
+        const oldEffJNext = jNextMod ? eff[j + 1]! : "";
+        const oldEffKNext = kNextMod ? eff[k + 1]! : "";
+
+        [deck[j], deck[k]] = [deck[k]!, deck[j]!];
+        eff[j] = oldEffK;
+        eff[k] = oldEffJ;
+        if (jNextMod) eff[j + 1] = oldEffK;
+        if (kNextMod) eff[k + 1] = oldEffJ;
+
+        if (localCount([j, k]) < beforeLocal) {
+          changed = true;
+          applied = true;
+          break;
+        }
+
+        // No improvement — undo the trial swap.
+        [deck[j], deck[k]] = [deck[k]!, deck[j]!];
+        eff[j] = oldEffJ;
+        eff[k] = oldEffK;
+        if (jNextMod) eff[j + 1] = oldEffJNext;
+        if (kNextMod) eff[k + 1] = oldEffKNext;
+      }
+      if (applied) break; // re-scan from the top after a committed swap
+    }
+  }
+
+  return deck;
+}
+
+/** Randomly permutes only the non-modifier slots of `items`, leaving every
+ * modifier card's position untouched — used between fix-up attempts so a
+ * pool that's hard (but not impossible) to satisfy gets a fresh arrangement
+ * to work with, without disturbing the session-length placement rules
+ * applyCardDistributionAlgorithm already applied to Ace/King cards. */
+function shuffleNonModifierSlots<T>(
+  items: T[],
+  isModifier?: (item: T) => boolean,
+): T[] {
+  const deck = [...items];
+  const idxs: number[] = [];
+  for (let i = 0; i < deck.length; i++) {
+    if (!isModifier || !isModifier(deck[i]!)) idxs.push(i);
+  }
+  const vals = idxs.map((i) => deck[i]!);
+  for (let i = vals.length - 1; i > 0; i--) {
+    const r = Math.floor(Math.random() * (i + 1));
+    [vals[i], vals[r]] = [vals[r]!, vals[i]!];
+  }
+  idxs.forEach((idx, k) => {
+    deck[idx] = vals[k]!;
+  });
+  return deck;
+}
+
+/**
+ * Generic reorder pass: reorders `items` so that no two items within a
+ * 2-card lookback share the same category (computed via `getCategory`,
+ * which may depend on position — e.g. Ace/King inherit the previous card's
+ * category) — i.e. item i+1 must differ from both item i and item i-1, not
+ * just the strictly adjacent one. A 1-back-only check lets sequences like
+ * Push, Legs, Push, Legs, Push through untouched, since no two neighbours
+ * ever match even though Push reappears every other card.
  *
- * Modifier guard: Ace/King cards are never moved by this pass (their reps are
- * tied to the previous card). When a collision involves a modifier, the
- * non-modifier neighbour is swapped instead, preserving the modifier placement
- * established by applyCardDistributionAlgorithm.
+ * Runs fixNoConsecutiveCategoriesOnce, and if a pool is tight enough that
+ * one pass can't fully satisfy the rule, retries with the non-modifier
+ * cards reshuffled (up to maxAttempts times), keeping whichever attempt
+ * leaves the fewest collisions. A pool that still can't be fully resolved
+ * after every attempt is a content gap (too many cards of one category for
+ * the deck length), not a shuffle bug — see exerciseCatalog.ts.
  */
 export function reorderNoConsecutiveCategories<T>(
   items: T[],
   getCategory: (item: T, index: number, arr: T[]) => string,
   isModifier?: (item: T) => boolean,
 ): T[] {
-  const deck = [...items];
-  if (deck.length < 2) return deck;
+  if (items.length < 2) return [...items];
 
-  const maxIterations = deck.length * 3;
-  let iterations = 0;
-  let changed = true;
+  const countFor = (deck: T[]) =>
+    countCategoryCollisions(
+      deck,
+      deck.map((c, i) => getCategory(c, i, deck)),
+      isModifier,
+    );
 
-  while (changed && iterations < maxIterations) {
-    changed = false;
-    iterations++;
+  let best = fixNoConsecutiveCategoriesOnce(items, getCategory, isModifier);
+  let bestCount = countFor(best);
 
-    // Recompute effective categories each pass (Ace/King depend on position).
-    const eff = deck.map((c, i) => getCategory(c, i, deck));
-
-    for (let i = 0; i < deck.length - 1; i++) {
-      const a = eff[i]!;
-      const b = eff[i + 1]!;
-      if (a === "" || b === "" || a !== b) continue;
-
-      // Decide which side to swap. Prefer swapping the non-modifier so that
-      // Ace/King cards stay anchored to the card they modify.
-      const iIsMod = isModifier ? isModifier(deck[i]!) : false;
-      const jIsMod = isModifier ? isModifier(deck[i + 1]!) : false;
-      let swapMover: number; // index whose position changes
-      if (iIsMod && jIsMod) continue; // shouldn't happen post-Rule2; skip
-      if (jIsMod)
-        swapMover = i; // move the non-modifier at i
-      else swapMover = i + 1; // default per spec: move N+1
-
-      const anchorCat = swapMover === i + 1 ? a : b; // category we're escaping
-
-      // 1) Nearest different-category card after N+1.
-      let swapIdx = -1;
-      for (let j = i + 2; j < deck.length; j++) {
-        const ej = eff[j]!;
-        if (ej !== "" && ej !== anchorCat) {
-          swapIdx = j;
-          break;
-        }
-      }
-      // 2) Fallback: look before N.
-      if (swapIdx === -1) {
-        for (let j = i - 1; j >= 0; j--) {
-          const ej = eff[j]!;
-          if (ej !== "" && ej !== anchorCat) {
-            swapIdx = j;
-            break;
-          }
-        }
-      }
-
-      if (swapIdx === -1) continue; // no candidate — leave this pair
-
-      // Don't move a modifier into the swap target's slot if that would break
-      // modifier placement (index 0 or adjacent to another modifier).
-      if (isModifier?.(deck[swapMover]!)) {
-        const targetIdx = swapIdx;
-        if (targetIdx === 0) continue;
-        const before = deck[targetIdx - 1];
-        const after = deck[targetIdx + 1];
-        if (before && isModifier(before)) continue;
-        if (after && isModifier(after)) continue;
-      }
-
-      [deck[swapMover], deck[swapIdx]] = [deck[swapIdx]!, deck[swapMover]!];
-      changed = true;
-      break; // recompute effective categories after the swap
+  const maxAttempts = 8;
+  for (let attempt = 1; attempt < maxAttempts && bestCount > 0; attempt++) {
+    const reshuffled = shuffleNonModifierSlots(items, isModifier);
+    const candidate = fixNoConsecutiveCategoriesOnce(
+      reshuffled,
+      getCategory,
+      isModifier,
+    );
+    const candidateCount = countFor(candidate);
+    if (candidateCount < bestCount) {
+      best = candidate;
+      bestCount = candidateCount;
     }
   }
 
-  return deck;
+  return best;
 }
 
 /**
@@ -9030,7 +9126,8 @@ export function readEquipmentProfile(guestMode: boolean): EquipmentProfile {
   }
 }
 
-function buildLocalDeck(
+/** Exported only for deckBuild.simulation.test.ts, which builds real decks across every category/difficulty/gender combo to catch exercise-repetition regressions the synthetic-fixture unit tests above can't — every other caller goes through useWorkout()'s start(). */
+export function buildLocalDeck(
   _deckId: string,
   cardCount: number,
   category: DeckCategory = "UpperBody",
@@ -9082,8 +9179,26 @@ function buildLocalDeck(
 
   // Second shuffle pass: ensure no two consecutive cards share the same
   // movement category (Push / Pull / Dip / Core / Legs). Runs after the
-  // random shuffle and distribution algorithm — only fixes collisions.
+  // random shuffle and distribution algorithm — only fixes collisions. This
+  // is a best-effort pass: some decks are skewed enough (e.g. a deck that's
+  // ~44% Push-category exercises) that full category variety is
+  // mathematically unachievable, so on a hard pool it falls back to
+  // reshuffle-and-keep-best-attempt, which can still land on an arrangement
+  // with residual collisions.
   full = ensureNoConsecutiveMovementCategories(full);
+
+  // Final guarantee pass: re-run exact-exercise-name dedup LAST. Category
+  // variety above is best-effort and can leave a residual collision on a
+  // skewed pool (confirmed by simulation against the real catalog — see
+  // git history), and a residual category collision can itself be two
+  // cards with the IDENTICAL exercise name, not just the same broad
+  // category. Exact-name avoidance is a strictly easier constraint (far
+  // fewer cards share one exact name than share one of only 5 categories),
+  // so it succeeds even on pools where full category variety cannot — this
+  // pass is what actually guarantees "no exercise repeats back-to-back",
+  // the one rule that must never be violated even when category variety is
+  // infeasible.
+  full = ensureNoConsecutiveExercises(full);
 
   const deck = full.slice(0, cardCount);
 

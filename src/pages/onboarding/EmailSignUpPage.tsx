@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { hashPassword } from "@/hooks/use-auth";
 import { useActor } from "@/hooks/use-local-actor";
 import {
   hasCompletedOnboarding,
@@ -57,14 +56,13 @@ export default function EmailSignUpPage() {
     setError("");
     setIsLoading(true);
     try {
-      const passwordHash = await hashPassword(password);
       const result = await (actor as any).registerUser(
         username,
         email,
-        passwordHash,
+        password,
       );
       if ("ok" in result) {
-        const loginResult = await (actor as any).loginUser(email, passwordHash);
+        const loginResult = await (actor as any).loginUser(email, password);
         if ("ok" in loginResult) {
           localStorage.setItem("mbw_user", JSON.stringify(loginResult.ok));
           migrateGuestOnboarding();

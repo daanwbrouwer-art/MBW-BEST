@@ -6,6 +6,10 @@ import { EXERCISE_CATALOG } from "@/data/exerciseCatalog";
 // count (30-75, chosen by the host) and the excluded-exercise set are both
 // caller-supplied instead of fixed per difficulty.
 import {
+  getMovementCategory,
+  reorderNoConsecutiveCategories,
+} from "@/hooks/use-workout";
+import {
   type CustomWorkoutStep,
   buildCustomWorkoutSteps,
 } from "@/lib/customWorkoutBuilder";
@@ -43,6 +47,74 @@ export function availablePoolSize(
 ): number {
   return poolForCategory(category).filter((ex) => !excludedNames.has(ex.name))
     .length;
+}
+
+/**
+ * Groups a flat step sequence into reorder-safe units: a Double/Half
+ * modifier step is always fused with the exercise step right before it into
+ * one unit. Unlike solo decks' Ace/King cards — which look backward at
+ * runtime to inherit whichever exercise ends up preceding them after
+ * shuffling — a CustomWorkoutStep modifier's name and value are baked in at
+ * build time (buildCustomWorkoutSteps) for one specific exercise. Moving it
+ * away from that exercise (or moving the exercise away from it) would leave
+ * the modifier card describing the wrong exercise. Fusing them into a single
+ * atomic unit before reordering makes that impossible — the pair only ever
+ * moves together, and reorderNoConsecutiveCategories never has to know
+ * modifiers exist at all.
+ */
+function groupIntoUnits(steps: CustomWorkoutStep[]): CustomWorkoutStep[][] {
+  const units: CustomWorkoutStep[][] = [];
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i]!;
+    if (step.modifier) continue; // already attached to the unit before it
+    const next = steps[i + 1];
+    units.push(next?.modifier ? [step, next] : [step]);
+  }
+  return units;
+}
+
+/**
+ * Reorders a step sequence so no two units within a 2-card lookback share a
+ * movement category — the same rule, and the same reorderNoConsecutiveCategories
+ * helper, solo decks use via ensureNoConsecutiveMovementCategories.
+ *
+ * Best-effort: on a category-skewed pool this can't always fully succeed
+ * (see applyExerciseNameVariety below), so it must never be the only pass —
+ * always follow it with that final exact-name guarantee.
+ */
+function applyMovementVariety(
+  steps: CustomWorkoutStep[],
+): CustomWorkoutStep[] {
+  const units = groupIntoUnits(steps);
+  const reordered = reorderNoConsecutiveCategories(units, (unit) =>
+    getMovementCategory(unit[0]!.name),
+  );
+  return reordered.flat();
+}
+
+/**
+ * Final guarantee pass: re-run dedup keyed on the exact exercise name,
+ * after movement-category variety above. That pass is best-effort — a pool
+ * skewed toward one category (e.g. mostly push-up variants) can make full
+ * category variety mathematically unachievable, so on a hard pool it falls
+ * back to reshuffle-and-keep-best-attempt, which can still land on an
+ * arrangement with two IDENTICAL exercises adjacent (confirmed by
+ * simulation against the real catalog, same failure mode solo decks hit —
+ * see use-workout.ts's buildLocalDeck). Exact-name avoidance is a strictly
+ * easier constraint (far fewer cards share one exact name than share one of
+ * only 5 categories), so it succeeds even where full category variety
+ * cannot — this is what actually guarantees "no exercise repeats
+ * back-to-back", the one rule that must never be violated.
+ */
+function applyExerciseNameVariety(
+  steps: CustomWorkoutStep[],
+): CustomWorkoutStep[] {
+  const units = groupIntoUnits(steps);
+  const reordered = reorderNoConsecutiveCategories(
+    units,
+    (unit) => unit[0]!.name,
+  );
+  return reordered.flat();
 }
 
 /**
@@ -88,7 +160,12 @@ export function drawTrainTogetherSteps(
     steps = buildCustomWorkoutSteps(exercises);
   }
 
-  return steps.slice(0, cardCount);
+  // Fix movement-category clustering, then guarantee exact-name variety,
+  // on the FINAL assembled sequence (after slicing to cardCount), not on an
+  // intermediate draw batch — otherwise a reshuffle mid-draw (the
+  // `shuffled.length === 0` branch above) could reintroduce a collision a
+  // batch-level fix already resolved.
+  return applyExerciseNameVariety(applyMovementVariety(steps.slice(0, cardCount)));
 }
 
 export type { CustomWorkoutStep };

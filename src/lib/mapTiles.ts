@@ -6,21 +6,34 @@ import L from "leaflet";
 // extensions, and stricter referrer policies all break it silently, which
 // is exactly what happened testing this for real: a blank/black map with a
 // 401 on every tile request). So: use Stadia only once a real key is
-// configured (production/native builds, per .env.example), and fall back to
-// CARTO's public basemap tiles otherwise — no key or referrer dependency,
-// verified working with a plain unauthenticated request.
+// configured (production/native builds, per .env.example).
+//
+// The no-key fallback used to be CARTO's public basemap tiles — verified
+// keyless at the time, but CARTO has since locked that tier down: every
+// tile now comes back 200 OK but with "API KEY REQUIRED" baked directly
+// into the image server-side (confirmed by fetching a tile directly, no
+// browser involved — not a referrer/CORS thing, the endpoint itself
+// changed). Switched to plain OpenStreetMap standard tiles instead, which
+// are still genuinely keyless — fine for internal testing's traffic volume
+// under OSM's tile usage policy (https://operations.osmfoundation.org/policies/tiles/),
+// but a real Stadia key is still what should back this before any public
+// launch. OSM's raster tiles are a light basemap with no dark variant, so
+// MapPage applies a CSS invert filter (see the ".map-tiles-osm-dark"
+// class) to approximate the app's dark theme without a key.
 const TILE_API_KEY = import.meta.env.VITE_MAP_TILES_API_KEY;
 
 export const TILE_URL = TILE_API_KEY
-  ? `https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=${TILE_API_KEY}`
-  : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+  ? `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${TILE_API_KEY}`
+  : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+/** Applied as the Leaflet TileLayer's `className` only for the OSM fallback (see TILE_URL above) — approximates a dark basemap from OSM's light-only tiles via a CSS filter. No-op (undefined) once a real Stadia key is configured, since alidade_smooth_dark is already dark. */
+export const TILE_CSS_CLASS = TILE_API_KEY ? undefined : "map-tiles-osm-dark";
 
 export const TILE_ATTRIBUTION = TILE_API_KEY
   ? '&copy; <a href="https://stadiamaps.com/" target="_blank" rel="noreferrer">Stadia Maps</a>, ' +
     '&copy; <a href="https://openmaptiles.org/" target="_blank" rel="noreferrer">OpenMapTiles</a> ' +
     '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors'
-  : '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors ' +
-    '&copy; <a href="https://carto.com/attributions" target="_blank" rel="noreferrer">CARTO</a>';
+  : '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors';
 
 export const PARK_ICON = L.divIcon({
   className: "",
