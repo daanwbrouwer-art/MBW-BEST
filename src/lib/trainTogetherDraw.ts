@@ -152,9 +152,14 @@ export function drawTrainTogetherSteps(
     const exercises: CustomWorkoutExercise[] = picks.map((ex) => ({
       name: ex.name,
       isIsometric: ex.isIsometric,
+      // Reps clamped to the same 3-10 range every deck/difficulty targets
+      // (see clampReps in use-workout.ts) — hold seconds are a different
+      // unit entirely and left as authored. Double/Half modifier cards
+      // (buildCustomWorkoutSteps) apply on top of this and are
+      // deliberately not clamped, same reasoning as Ace/King elsewhere.
       value: ex.isIsometric
         ? (ex.defaultHoldSeconds ?? 20)
-        : (ex.defaultReps ?? 10),
+        : Math.min(10, Math.max(3, ex.defaultReps ?? 10)),
       eachSide: ex.eachSide,
     }));
     steps = buildCustomWorkoutSteps(exercises);

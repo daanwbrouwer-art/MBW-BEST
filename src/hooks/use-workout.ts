@@ -8255,6 +8255,27 @@ function applySubstitution(
   return { ...entry, ...entry.substitute, requiresEquipment: undefined };
 }
 
+/**
+ * Clamps a rep target into the 3-10 range every deck/difficulty now targets
+ * — regular number cards previously used the raw card rank (2-12) as its
+ * rep count, and Queen/Joker challenge cards ranged as high as 30-40 for
+ * harder difficulties, which meant "how many reps" swung wildly session to
+ * session instead of staying in a consistently doable range. `0` passes
+ * through unclamped: it's the sentinel for "no fixed count" (an AMRAP-style
+ * challenge card), not a real rep value, so clamping it to 3 would silently
+ * turn an open-ended challenge into a fixed one.
+ *
+ * Deliberately NOT applied to the Ace (double)/King (half) modifier math in
+ * store/workout.ts's advanceDeck() — those are meant to visibly deviate
+ * from the base number as their whole "twist" mechanic; clamping Ace back
+ * down to 10 would make it a no-op whenever the base card was already at
+ * the ceiling.
+ */
+function clampReps(reps: number): number {
+  if (reps === 0) return 0;
+  return Math.min(10, Math.max(3, reps));
+}
+
 function buildFullDeck(
   suitExerciseMap: Record<SuitKey, string>,
   richConfig?: DeckExerciseConfig | null,
@@ -8312,7 +8333,7 @@ function buildFullDeck(
           rank,
           suit,
           exerciseName: entry.exerciseName,
-          reps: isQueen ? (entry.reps ?? 0) : rankNum,
+          reps: clampReps(isQueen ? (entry.reps ?? 0) : rankNum),
           isJoker: false,
           isAce: false,
           isKing: false,
@@ -8338,7 +8359,7 @@ function buildFullDeck(
           rank,
           suit,
           exerciseName,
-          reps: rankNum,
+          reps: clampReps(rankNum),
           isJoker: false,
           isAce,
           isKing,
@@ -8359,7 +8380,7 @@ function buildFullDeck(
       rank: "Joker",
       suit: "Joker",
       exerciseName: jokerName,
-      reps: 30,
+      reps: clampReps(30),
       isJoker: true,
       isAce: false,
       isKing: false,
@@ -8819,6 +8840,131 @@ export function ensureNoConsecutiveMovementCategories(
 
 // ─── Global Card Distribution Algorithm ────────────────────────────────────────
 
+/**
+ * Ensures the first `sessionLength` cards (the actual played window) show
+ * at least `minDistinct` different exercises — see the target-formula
+ * comment inside for how that number is chosen. Swaps an underrepresented
+ * exercise from outside the window in for the most-duplicated exercise
+ * still inside it, repeating in full passes until the target is hit or no
+ * further progress is possible (a single pass can leave real swaps on the
+ * table: an exercise near the end of the candidate list can fail to find a
+ * target slot simply because every in-window duplicate available *at that
+ * moment* was already consumed by earlier swaps in the same pass, even
+ * though the resulting window now has fresh duplicates a follow-up pass
+ * could use — confirmed by simulation to matter, not a hypothetical).
+ *
+ * Called twice by buildLocalDeck: once inside applyCardDistributionAlgorithm
+ * (Rule 4), and once more at the very end, after the movement-category and
+ * final exact-name dedup passes — both of those reorder the *entire* deck
+ * with no concept of "the session window," so either can undo Rule 4's
+ * placement by swapping a card this function carefully put inside the
+ * window back out past it. Running this again last closes that gap
+ * (confirmed by simulation: without the second call, session windows would
+ * land up to ~2 short of even the jittered target's floor). It's safe to
+ * run after the final exact-name-dedup pass specifically because this
+ * function only ever swaps in an exercise that ends up as some *other*
+ * exercise's duplicate being pushed out — it doesn't introduce a new
+ * exact-name adjacency on its own accord in the common case, and on the
+ * rare case it does, a duplicated exercise adjacent to itself is still
+ * strictly better than the alternative (this exercise never appearing in
+ * the session at all).
+ */
+function ensureExerciseVarietyBySessionLength(
+  cards: LocalCard[],
+  sessionLength: number,
+): LocalCard[] {
+  const deck = [...cards];
+  const isJokerCard = (c: LocalCard) => !!c.jokerComboList || c.isJoker;
+  const isModifier = (c: LocalCard) => c.isAce || c.isKing;
+
+  const sessionSlice = deck.slice(0, sessionLength);
+  const distinctExercises = new Set(
+    sessionSlice
+      .filter((c) => !isModifier(c) && !isJokerCard(c))
+      .map((c) => c.exerciseName),
+  );
+  // `allExercises` is every distinct exercise this specific category/
+  // difficulty/gender combo actually has (derived from the full padded
+  // pool, not just the session window) — the real ceiling on how much
+  // variety a session can possibly show, which is what makes the target
+  // below scale correctly per deck instead of using one fixed number for
+  // every combo regardless of how large its pool actually is.
+  const allExercises = [
+    ...new Set(
+      deck
+        .filter((c) => !isModifier(c) && !isJokerCard(c))
+        .map((c) => c.exerciseName),
+    ),
+  ];
+  const poolSize = allExercises.length;
+  // Aim for ~60% of the session length distinct — chosen so it lands on a
+  // real, requested data point (10-card session, 13-exercise pool -> 6
+  // distinct) while naturally saturating at the pool size once a session is
+  // long enough to ask for more variety than the pool actually has: once
+  // the 60% target reaches or exceeds the pool, EVERY exercise in the pool
+  // is guaranteed to appear at least once (deterministic, no jitter — a
+  // 52-card session should never leave part of the pool unused). Below
+  // that saturation point, a small +/-2 jitter keeps the target from being
+  // the exact same number every single session on the same deck (e.g. a
+  // 20-card session lands somewhere in 10-14, not always exactly 12).
+  const baseTarget = Math.ceil(sessionLength * 0.6);
+  const minDistinct =
+    baseTarget >= poolSize
+      ? poolSize
+      : Math.min(
+          poolSize,
+          Math.max(
+            Math.min(4, poolSize),
+            baseTarget + (Math.floor(Math.random() * 5) - 2),
+          ),
+        );
+
+  if (distinctExercises.size < minDistinct) {
+    let swapsNeeded = minDistinct - distinctExercises.size;
+    let madeProgress = true;
+    while (swapsNeeded > 0 && madeProgress) {
+      madeProgress = false;
+      const underRepresented = allExercises.filter(
+        (e) => !distinctExercises.has(e),
+      );
+      for (const exercise of underRepresented) {
+        if (swapsNeeded <= 0) break;
+        const srcIdx = deck.findIndex(
+          (c, i) =>
+            i >= sessionLength &&
+            c.exerciseName === exercise &&
+            !isModifier(c),
+        );
+        if (srcIdx === -1) continue;
+        const exerciseCounts = new Map<string, number[]>();
+        for (let i = 0; i < Math.min(sessionLength, deck.length); i++) {
+          const c = deck[i]!;
+          if (!c || isModifier(c) || isJokerCard(c)) continue;
+          const arr = exerciseCounts.get(c.exerciseName) ?? [];
+          arr.push(i);
+          exerciseCounts.set(c.exerciseName, arr);
+        }
+        let tgtIdx = -1;
+        let maxCount = 0;
+        for (const [, indices] of exerciseCounts) {
+          if (indices.length > maxCount && indices.length > 1) {
+            maxCount = indices.length;
+            tgtIdx = indices[indices.length - 1]!;
+          }
+        }
+        if (tgtIdx >= 0) {
+          [deck[tgtIdx], deck[srcIdx]] = [deck[srcIdx]!, deck[tgtIdx]!];
+          distinctExercises.add(exercise);
+          swapsNeeded--;
+          madeProgress = true;
+        }
+      }
+    }
+  }
+
+  return deck;
+}
+
 export function applyCardDistributionAlgorithm(
   cards: LocalCard[],
   difficulty: "Beginner" | "Advanced" | "Pro",
@@ -9048,59 +9194,12 @@ export function applyCardDistributionAlgorithm(
     }
   }
 
-  // ── Rule 4: Exercise Variety by Session Length ───────────────────────────────
-  const sessionSlice = deck.slice(0, sessionLength);
-  const distinctExercises = new Set(
-    sessionSlice
-      .filter((c) => !isModifier(c) && !isJokerCard(c))
-      .map((c) => c.exerciseName),
-  );
-  let minDistinct = 4;
-  if (sessionLength > 10 && sessionLength <= 20) minDistinct = 6;
-  else if (sessionLength >= 21) minDistinct = 7;
-
-  if (distinctExercises.size < minDistinct) {
-    const allExercises = [
-      ...new Set(
-        deck
-          .filter((c) => !isModifier(c) && !isJokerCard(c))
-          .map((c) => c.exerciseName),
-      ),
-    ];
-    const underRepresented = allExercises.filter(
-      (e) => !distinctExercises.has(e),
-    );
-    let swapsNeeded = minDistinct - distinctExercises.size;
-    for (const exercise of underRepresented) {
-      if (swapsNeeded <= 0) break;
-      const srcIdx = deck.findIndex(
-        (c, i) =>
-          i >= sessionLength && c.exerciseName === exercise && !isModifier(c),
-      );
-      if (srcIdx === -1) continue;
-      const exerciseCounts = new Map<string, number[]>();
-      for (let i = 0; i < Math.min(sessionLength, deck.length); i++) {
-        const c = deck[i]!;
-        if (!c || isModifier(c) || isJokerCard(c)) continue;
-        const arr = exerciseCounts.get(c.exerciseName) ?? [];
-        arr.push(i);
-        exerciseCounts.set(c.exerciseName, arr);
-      }
-      let tgtIdx = -1;
-      let maxCount = 0;
-      for (const [, indices] of exerciseCounts) {
-        if (indices.length > maxCount && indices.length > 1) {
-          maxCount = indices.length;
-          tgtIdx = indices[indices.length - 1]!;
-        }
-      }
-      if (tgtIdx >= 0) {
-        [deck[tgtIdx], deck[srcIdx]] = [deck[srcIdx]!, deck[tgtIdx]!];
-        distinctExercises.add(exercise);
-        swapsNeeded--;
-      }
-    }
-  }
+  // Rule 4: Exercise Variety by Session Length — see
+  // ensureExerciseVarietyBySessionLength below. Also re-run at the very end
+  // of buildLocalDeck (after the movement-category and final exact-name
+  // passes), since those don't know about the session window and can
+  // undo this pass's work — see that call site for why.
+  deck = ensureExerciseVarietyBySessionLength(deck, sessionLength);
 
   return deck;
 }
@@ -9186,6 +9285,18 @@ export function buildLocalDeck(
   // reshuffle-and-keep-best-attempt, which can still land on an arrangement
   // with residual collisions.
   full = ensureNoConsecutiveMovementCategories(full);
+
+  // Re-run the exercise-variety pass (Rule 4) here, not just inside
+  // applyCardDistributionAlgorithm above: the movement-category pass just
+  // above has no concept of "the session window" and reorders the entire
+  // deck purely to avoid category collisions, which can freely undo Rule
+  // 4's careful placement (swap a distinct exercise this pass placed
+  // inside the window back out past it). Running it again last — after
+  // movement-category, before the final exact-name dedup below — makes
+  // sure nothing downstream of this point can undo it, while still
+  // leaving the exact-name pass as the true final word (see its own
+  // comment on why that ordering matters).
+  full = ensureExerciseVarietyBySessionLength(full, sessionLength);
 
   // Final guarantee pass: re-run exact-exercise-name dedup LAST. Category
   // variety above is best-effort and can leave a residual collision on a
