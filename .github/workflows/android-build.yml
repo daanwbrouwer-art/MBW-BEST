@@ -37,8 +37,25 @@ jobs:
           distribution: "temurin"
           java-version: "21"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      # android-actions/setup-android@v3 unconditionally tries to install the
+      # legacy "tools" SDK package, which Google has fully removed from the
+      # remote repository — that step now fails outright (confirmed via
+      # --stacktrace-equivalent full log, 2026-09-17), unrelated to anything
+      # in this app. ubuntu-latest runners already ship a working Android
+      # SDK (cmdline-tools + ANDROID_HOME preconfigured) — this just
+      # installs the two components this project's compileSdk/targetSdk
+      # (36, see android/variables.gradle) actually need, via that
+      # preinstalled sdkmanager directly, skipping the broken action.
+      - name: Install Android SDK components
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME" -name sdkmanager -type f | head -1)
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "platform-tools"
+          # Exact build-tools version isn't pinned here — AGP resolves and
+          # auto-downloads whichever build-tools it needs at build time
+          # (licenses are already accepted above), so guessing a specific
+          # version string here would just risk recreating the same
+          # "package not found" failure this step exists to avoid.
 
       - name: Sync Capacitor Android project
         run: npx cap sync android
