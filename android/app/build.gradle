@@ -7,6 +7,16 @@ def releaseStorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
 def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
 def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
 
+// Play Console permanently rejects re-uploading a versionCode it's already
+// seen, even for a different build — confirmed live 2026-09-17 ("Versiecode
+// 1 is al gebruikt") after several same-versionCode AABs got built tonight.
+// ANDROID_VERSION_CODE is set by CI to the GitHub Actions run number
+// (.github/workflows/android-build.yml), which only ever increases, so
+// every CI build is automatically unique with no manual bump needed. Local
+// builds (no env var set) fall back to a fixed placeholder — never intended
+// to be uploaded anywhere, so a static fallback here is fine.
+def resolvedVersionCode = (System.getenv("ANDROID_VERSION_CODE") ?: "1").toInteger()
+
 android {
     namespace = "com.mybodyweight.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -14,7 +24,7 @@ android {
         applicationId "com.mybodyweight.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode resolvedVersionCode
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

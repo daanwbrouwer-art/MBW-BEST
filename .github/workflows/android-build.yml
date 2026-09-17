@@ -72,6 +72,11 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          # GitHub's own run counter — strictly increasing across every run
+          # of this workflow (push or manual), so every AAB this pipeline
+          # ever produces has a versionCode Play Console has never seen
+          # before. See the matching comment in android/app/build.gradle.
+          ANDROID_VERSION_CODE: ${{ github.run_number }}
 
       - name: Remove decoded keystore
         if: always()

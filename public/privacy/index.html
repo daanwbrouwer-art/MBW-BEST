@@ -161,20 +161,6 @@
       Website: <a href="https://my-bodyweight.com">my-bodyweight.com</a>
     </p>
 
-    <div class="consultant-notes">
-      <h2>Notes for the legal consultant</h2>
-      <ol>
-        <li><strong>Entity details</strong> in Sections 1 and 12 — legal name, country of incorporation, registration number, VAT number, address (match the Subscription Terms document).</li>
-        <li><strong>Applicable data-protection framework(s)</strong> — confirm GDPR is the primary framework (NL/BG incorporation likely) and whether any other regime (e.g. UK GDPR, or a US state law) applies given the launch markets.</li>
-        <li><strong>Lawful basis for each processing purpose</strong> in Sections 2–3 — should be documented explicitly (consent for location/camera, contract necessity for account/subscription data, legitimate interest for security/abuse prevention).</li>
-        <li><strong>Health-data classification</strong> — weight/height/BMI-style data (Section 2.2) may qualify as "special category" data under GDPR Art. 9 depending on interpretation; confirm whether explicit consent language is required beyond the general onboarding flow.</li>
-        <li><strong>Sub-processor list completeness</strong> — Section 4 lists Supabase and RevenueCat as the named processors per current data flows; confirm whether Supabase's own sub-processors (e.g. its cloud hosting provider) need to be named, and whether an email-delivery provider used for account/marketing emails needs to be added.</li>
-        <li><strong>Data Processing Agreements</strong> — confirm DPAs are in place with Supabase and RevenueCat before this policy is published.</li>
-        <li><strong>Retention periods</strong> in Section 5 — currently qualitative ("as long as active, plus a reasonable period"); consider specifying concrete periods per data category.</li>
-        <li><strong>Cross-check</strong> with the Terms of Service and Subscription Terms for consistency in entity details, contact channels, and defined terms.</li>
-      </ol>
-    </div>
-
     <footer class="page-foot">© <span id="year"></span> MyBodyWeight</footer>
   </div>
   <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
