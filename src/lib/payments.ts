@@ -1,4 +1,5 @@
 import type { SubscriptionTierId } from "@/types/subscription";
+import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 import {
   PURCHASES_ERROR_CODE,
@@ -214,3 +215,20 @@ class RevenueCatPaymentService implements PaymentService {
 export const paymentService: PaymentService = Capacitor.isNativePlatform()
   ? new RevenueCatPaymentService()
   : new LocalMockPaymentService();
+
+/**
+ * Opens the platform's own subscription-management screen — neither Apple
+ * nor Google let an app cancel a store subscription on the user's behalf
+ * (only the user, through the store's own UI, can), so "unsubscribe"
+ * inside the app can only ever be a deep link to that screen, not an
+ * in-app action. `com.mybodyweight.app` in the Android URL matches
+ * `capacitor.config.ts`'s appId; the iOS URL is store-wide (Apple's
+ * subscriptions screen isn't per-app).
+ */
+export async function openSubscriptionManagement(): Promise<void> {
+  const url =
+    Capacitor.getPlatform() === "ios"
+      ? "https://apps.apple.com/account/subscriptions"
+      : "https://play.google.com/store/account/subscriptions?package=com.mybodyweight.app";
+  await Browser.open({ url });
+}

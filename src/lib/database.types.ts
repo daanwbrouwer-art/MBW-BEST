@@ -224,6 +224,7 @@ export type Database = {
           last_lng: number | null
           last_workout_date: string | null
           longest_streak: number
+          marketing_emails_opt_out: boolean
           messaging_preference: string
           preferred_equipment_tier: string
           reps_clubs: number
@@ -253,6 +254,7 @@ export type Database = {
           last_lng?: number | null
           last_workout_date?: string | null
           longest_streak?: number
+          marketing_emails_opt_out?: boolean
           messaging_preference?: string
           preferred_equipment_tier?: string
           reps_clubs?: number
@@ -282,6 +284,7 @@ export type Database = {
           last_lng?: number | null
           last_workout_date?: string | null
           longest_streak?: number
+          marketing_emails_opt_out?: boolean
           messaging_preference?: string
           preferred_equipment_tier?: string
           reps_clubs?: number
@@ -707,6 +710,7 @@ export type Database = {
             Returns: string
           }
       create_or_get_thread: { Args: { other_user_id: string }; Returns: string }
+      delete_my_account: { Args: never; Returns: undefined }
       disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {

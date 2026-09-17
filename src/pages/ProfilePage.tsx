@@ -1,5 +1,16 @@
 import { Logo } from "@/components/Logo";
 import { WeeklyGoalPicker } from "@/components/WeeklyGoalPicker";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -24,7 +35,7 @@ import {
 } from "@/lib/calories";
 import { readChallengeHistory } from "@/lib/challenge";
 import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
-import { paymentService } from "@/lib/payments";
+import { openSubscriptionManagement, paymentService } from "@/lib/payments";
 import {
   computeDiscountPct,
   ensureReferralCode,
@@ -33,8 +44,11 @@ import {
 } from "@/lib/referral";
 import {
   type MessagingPreference,
+  deleteMyAccount,
+  getMarketingEmailsOptOut,
   getMessagingPreference,
   setDiscoverable,
+  setMarketingEmailsOptOut,
   setMessagingPreference,
 } from "@/lib/remoteBackend";
 import { CHALLENGE_TYPE_EMOJI } from "@/types/challenge";
@@ -57,9 +71,12 @@ import {
   Lock,
   LogOut,
   MessageCircle,
+  CreditCard,
+  Mail,
   RotateCcw,
   Scale,
   Sparkles,
+  Trash2,
   Trophy,
   User,
   Users,
@@ -170,6 +187,14 @@ export default function ProfilePage() {
   });
   const [isSavingMessagingPreference, setIsSavingMessagingPreference] =
     useState(false);
+  const { data: marketingEmailsOptOut } = useQuery({
+    queryKey: ["marketing-emails-opt-out"],
+    queryFn: getMarketingEmailsOptOut,
+    enabled: isLoggedIn,
+  });
+  const [isSavingEmailPreference, setIsSavingEmailPreference] =
+    useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const { data: history } = useWorkoutHistory();
   const { equipment, saveOnboarding, weightKg, age, heightCm } =
     useOnboarding();
@@ -303,6 +328,42 @@ export default function ProfilePage() {
       queryClient.invalidateQueries({ queryKey: ["messaging-preference"] });
     } finally {
       setIsSavingMessagingPreference(false);
+    }
+  };
+
+  const handleToggleMarketingEmails = async (receiveEmails: boolean) => {
+    setIsSavingEmailPreference(true);
+    try {
+      const result = await setMarketingEmailsOptOut(!receiveEmails);
+      if (!result.ok) {
+        toast("Couldn't update email preference", {
+          description: result.error,
+        });
+        return;
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["marketing-emails-opt-out"],
+      });
+    } finally {
+      setIsSavingEmailPreference(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      const result = await deleteMyAccount();
+      if (!result.ok) {
+        toast("Couldn't delete account", { description: result.error });
+        return;
+      }
+      clear();
+      localStorage.removeItem("mbw_user");
+      localStorage.removeItem("mbw_first_login");
+      toast("Account deleted");
+      navigate({ to: "/onboarding/welcome" });
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -865,6 +926,47 @@ export default function ProfilePage() {
           </motion.div>
         )}
 
+        {/* Email preferences */}
+        {isLoggedIn && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.209, duration: 0.45 }}
+            className="mb-6"
+            data-ocid="profile.email_section"
+          >
+            <div className="flex items-center gap-1.5 mb-3">
+              <Mail className="w-3 h-3 text-muted-foreground" />
+              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+                Email
+              </p>
+            </div>
+            <div
+              className="rounded-2xl overflow-hidden flex items-center justify-between gap-3 px-5 py-3.5"
+              style={{
+                background: "oklch(0.16 0.01 260)",
+                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              }}
+            >
+              <div className="min-w-0">
+                <p className="font-display font-bold text-sm text-foreground">
+                  Email updates
+                </p>
+                <p className="text-xs text-muted-foreground font-body mt-0.5 leading-snug">
+                  News and tips from MyBodyWeight. Account and security
+                  emails (like password resets) are always sent regardless.
+                </p>
+              </div>
+              <Switch
+                checked={!marketingEmailsOptOut}
+                disabled={isSavingEmailPreference}
+                onCheckedChange={handleToggleMarketingEmails}
+                data-ocid="profile.marketing_emails_toggle"
+              />
+            </div>
+          </motion.div>
+        )}
+
         {/* Training Goal */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -1129,6 +1231,17 @@ export default function ProfilePage() {
             />
             {isRestoring ? "Restoring…" : "Restore Purchases"}
           </button>
+          {subscription && (
+            <button
+              type="button"
+              onClick={() => openSubscriptionManagement()}
+              className="w-full mt-1 h-10 rounded-xl flex items-center justify-center gap-1.5 text-xs font-display font-bold uppercase tracking-wide text-muted-foreground hover:text-primary transition-smooth"
+              data-ocid="profile.membership.manage_subscription_button"
+            >
+              <CreditCard className="w-3 h-3" />
+              Cancel or manage subscription
+            </button>
+          )}
         </motion.div>
 
         {/* Referrals */}
@@ -1408,6 +1521,64 @@ export default function ProfilePage() {
             </span>
             <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
           </motion.button>
+        )}
+
+        {/* Danger zone */}
+        {isLoggedIn && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.37, duration: 0.45 }}
+            className="mt-6"
+            data-ocid="profile.danger_zone_section"
+          >
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  type="button"
+                  className="w-full rounded-2xl px-5 py-3.5 flex items-center justify-center gap-2 transition-smooth hover:opacity-80"
+                  style={{
+                    background: "oklch(0.2 0.03 25 / 0.15)",
+                    border: "1px solid oklch(0.55 0.15 25 / 0.35)",
+                  }}
+                  disabled={isDeletingAccount}
+                  data-ocid="profile.delete_account_button"
+                >
+                  <Trash2
+                    className="w-4 h-4"
+                    style={{ color: "oklch(0.65 0.18 25)" }}
+                  />
+                  <span
+                    className="font-display font-bold text-sm"
+                    style={{ color: "oklch(0.65 0.18 25)" }}
+                  >
+                    Delete Account
+                  </span>
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This permanently deletes your account, workout history,
+                    streak, and messages. This can't be undone. Community
+                    content you contributed (like parks you added) stays up,
+                    just no longer credited to you.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAccount}
+                    disabled={isDeletingAccount}
+                    data-ocid="profile.delete_account_confirm"
+                  >
+                    {isDeletingAccount ? "Deleting…" : "Delete Account"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </motion.div>
         )}
       </div>
 

@@ -30,7 +30,14 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import { ArrowLeft, LocateFixed, Plus, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  LocateFixed,
+  MessageCircle,
+  Plus,
+  Search,
+  Users,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -427,7 +434,26 @@ export default function MapPage() {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <Logo size="sm" showIcon />
-        <div className="w-9" />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+            onClick={() => navigate({ to: "/nearby" })}
+            data-ocid="map.nearby_athletes_button"
+            aria-label="Nearby athletes"
+          >
+            <Users className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+            onClick={() => navigate({ to: "/chat" })}
+            data-ocid="map.messages_button"
+            aria-label="Messages"
+          >
+            <MessageCircle className="w-4 h-4" />
+          </button>
+        </div>
       </header>
 
       <motion.div

@@ -459,6 +459,54 @@ export async function setMessagingPreference(
   );
 }
 
+/** True once the user has turned off non-essential email — password reset and other security/account mail is never gated by this. */
+export async function getMarketingEmailsOptOut(): Promise<boolean> {
+  const userId = await getCurrentUserId();
+  if (!userId) return false;
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("marketing_emails_opt_out")
+    .eq("id", userId)
+    .single();
+  if (error) {
+    console.warn(
+      "getMarketingEmailsOptOut: failed to read preference:",
+      error.message,
+    );
+  }
+  return data?.marketing_emails_opt_out ?? false;
+}
+
+export async function setMarketingEmailsOptOut(
+  optOut: boolean,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const userId = await getCurrentUserId();
+  if (!userId) return { ok: false, error: "Not authenticated" };
+  return runOp(
+    supabase
+      .from("profiles")
+      .update({ marketing_emails_opt_out: optOut })
+      .eq("id", userId),
+  );
+}
+
+/**
+ * Permanently deletes the signed-in account and its data via the
+ * delete_my_account() RPC (SECURITY DEFINER — a plain client call can't
+ * remove the auth.users row itself, that needs the service-role key). See
+ * the migration for exactly what's deleted vs. anonymized. Irreversible;
+ * the caller is responsible for confirming with the user first and for
+ * clearing any local session state afterward (this only touches the
+ * server side).
+ */
+export async function deleteMyAccount(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  const { error } = await supabase.rpc("delete_my_account");
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
 export interface ChatThreadSummary {
   threadId: string;
   otherUserId: string;
