@@ -12,6 +12,9 @@ import {
 } from "@/lib/countryCapitals";
 import { geocodePlace, zoomForRadiusKm } from "@/lib/geocoding";
 import {
+  FALLBACK_TILE_ATTRIBUTION,
+  FALLBACK_TILE_CSS_CLASS,
+  FALLBACK_TILE_URL,
   PARK_ICON,
   TILE_ATTRIBUTION,
   TILE_CSS_CLASS,
@@ -39,7 +42,7 @@ import {
   Users,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Circle,
   MapContainer,
@@ -225,6 +228,21 @@ export default function MapPage() {
     [number, number] | null
   >(null);
   const [searchQuery, setSearchQuery] = useState("");
+  // Starts on the configured tile source (Stadia if a key is set, else the
+  // keyless OSM fallback already). Flips permanently to the guaranteed
+  // keyless OSM tiles if enough tile requests actually fail to load —
+  // catches the case where a Stadia key is configured but the request's
+  // origin isn't on that key's allowed-domains list (native app vs. Vercel
+  // vs. localhost all send different origins), which otherwise renders a
+  // near-blank map with no visible error to the user. See mapTiles.ts.
+  const [useFallbackTiles, setUseFallbackTiles] = useState(false);
+  const tileErrorCountRef = useRef(0);
+  const handleTileError = useCallback(() => {
+    tileErrorCountRef.current += 1;
+    if (tileErrorCountRef.current >= 4) {
+      setUseFallbackTiles(true);
+    }
+  }, []);
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [showLocationPrompt, setShowLocationPrompt] = useState(false);
@@ -528,9 +546,17 @@ export default function MapPage() {
             scrollWheelZoom
           >
             <TileLayer
-              url={TILE_URL}
-              attribution={TILE_ATTRIBUTION}
-              className={TILE_CSS_CLASS}
+              key={useFallbackTiles ? "fallback" : "primary"}
+              url={useFallbackTiles ? FALLBACK_TILE_URL : TILE_URL}
+              attribution={
+                useFallbackTiles ? FALLBACK_TILE_ATTRIBUTION : TILE_ATTRIBUTION
+              }
+              className={
+                useFallbackTiles ? FALLBACK_TILE_CSS_CLASS : TILE_CSS_CLASS
+              }
+              eventHandlers={
+                useFallbackTiles ? undefined : { tileerror: handleTileError }
+              }
             />
             <FlyToCenter center={mapCenter} zoom={mapZoom} />
             <MapPanTracker

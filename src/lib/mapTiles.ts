@@ -35,6 +35,23 @@ export const TILE_ATTRIBUTION = TILE_API_KEY
     '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors'
   : '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors';
 
+// Unconditional keyless OSM tiles — used by MapPage as a runtime fallback
+// when the Stadia key path (TILE_URL above) is configured but still fails to
+// actually serve imagery, e.g. because the key's allowed-domains/referrer
+// allowlist (set in the Stadia dashboard) doesn't cover the origin a given
+// build requests from — Capacitor's native Android WebView sends a
+// different origin (typically "https://localhost") than a normal desktop
+// browser, and Vercel's preview/production domains are separate origins
+// too, so a key allowlisted for one won't necessarily work for the others.
+// Rather than depend on getting that allowlist exactly right everywhere,
+// MapPage watches for tile load failures and swaps to these unconditionally
+// so the map still shows *something* instead of a blank basemap.
+export const FALLBACK_TILE_URL =
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+export const FALLBACK_TILE_CSS_CLASS = "map-tiles-osm-dark";
+export const FALLBACK_TILE_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors';
+
 export const PARK_ICON = L.divIcon({
   className: "",
   html: `<div style="
