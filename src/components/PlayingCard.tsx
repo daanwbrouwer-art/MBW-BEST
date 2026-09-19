@@ -263,6 +263,7 @@ export function PlayingCard({
           {/* Card back image */}
           <img
             src="/assets/exercises/backside_of_card.png"
+            alt="Card back"
             className="absolute inset-0 w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = "none";

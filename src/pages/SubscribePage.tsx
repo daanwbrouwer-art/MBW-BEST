@@ -1,6 +1,10 @@
 import { Logo } from "@/components/Logo";
 import { useTier } from "@/hooks/use-tier";
-import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
+import {
+  openPrivacyPolicy,
+  openSubscriptionTerms,
+  openTermsOfUse,
+} from "@/lib/legal";
 import { paymentService } from "@/lib/payments";
 import {
   computeDiscountPct,
@@ -264,6 +268,15 @@ export default function SubscribePage() {
             data-ocid="subscribe.privacy_link"
           >
             Privacy Policy
+          </button>
+          {" · "}
+          <button
+            type="button"
+            onClick={openSubscriptionTerms}
+            className="underline hover:text-muted-foreground transition-smooth"
+            data-ocid="subscribe.subscription_terms_link"
+          >
+            Subscription Terms
           </button>
         </p>
       </div>

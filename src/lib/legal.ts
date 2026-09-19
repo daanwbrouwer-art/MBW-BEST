@@ -17,6 +17,8 @@ export const PRIVACY_POLICY_URL =
   "https://daanwbrouwer-art.github.io/MBW-BEST/privacy/";
 export const TERMS_OF_USE_URL =
   "https://daanwbrouwer-art.github.io/MBW-BEST/terms/";
+export const SUBSCRIPTION_TERMS_URL =
+  "https://daanwbrouwer-art.github.io/MBW-BEST/subscription-terms/";
 
 export async function openPrivacyPolicy(): Promise<void> {
   await Browser.open({ url: PRIVACY_POLICY_URL });
@@ -24,4 +26,8 @@ export async function openPrivacyPolicy(): Promise<void> {
 
 export async function openTermsOfUse(): Promise<void> {
   await Browser.open({ url: TERMS_OF_USE_URL });
+}
+
+export async function openSubscriptionTerms(): Promise<void> {
+  await Browser.open({ url: SUBSCRIPTION_TERMS_URL });
 }

@@ -7,6 +7,7 @@ import {
   migrateGuestStreak,
   migrateGuestWeeklyChallenge,
 } from "@/lib/completeSignup";
+import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
 import { ensureReferralCode, redeemReferralCode } from "@/lib/referral";
 import { useWorkoutStore } from "@/store/workout";
 import { useNavigate } from "@tanstack/react-router";
@@ -46,6 +47,7 @@ export default function EmailSignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [referralCode, setReferralCode] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -71,6 +73,9 @@ export default function EmailSignUpPage() {
     }
     if (!isAtLeast16(birthDate)) {
       return `You must be at least ${MIN_SIGNUP_AGE} to create an account`;
+    }
+    if (!agreedToTerms) {
+      return "You must agree to the Terms of Use and Privacy Policy to continue";
     }
     return "";
   };
@@ -469,6 +474,55 @@ export default function EmailSignUpPage() {
               <p className="text-xs text-white/30 font-body mt-2">
                 Have a friend's code? Get 10% off your first payment.
               </p>
+            </div>
+
+            {/* Not wrapped in <label> — a nested <button> (the Terms/Privacy
+                links) inside a <label> would also toggle the checkbox on
+                click in most browsers, since label click-forwarding applies
+                to interactive descendants too. Explicit htmlFor avoids that
+                footgun while keeping the checkbox click target accessible. */}
+            <div
+              className="mb-6 flex items-start gap-3"
+              data-ocid="email-signup.terms_consent_row"
+            >
+              <input
+                id="create-terms-consent"
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 shrink-0 accent-primary cursor-pointer"
+                data-ocid="email-signup.terms_consent_checkbox"
+              />
+              <label
+                htmlFor="create-terms-consent"
+                className="font-body text-xs text-white/50 leading-relaxed cursor-pointer"
+              >
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openTermsOfUse();
+                  }}
+                  className="underline text-white/70 hover:text-white transition-smooth"
+                  data-ocid="email-signup.terms_link"
+                >
+                  Terms of Use
+                </button>{" "}
+                and{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openPrivacyPolicy();
+                  }}
+                  className="underline text-white/70 hover:text-white transition-smooth"
+                  data-ocid="email-signup.privacy_link"
+                >
+                  Privacy Policy
+                </button>
+                .
+              </label>
             </div>
 
             {error && (
