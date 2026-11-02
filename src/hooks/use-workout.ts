@@ -1255,7 +1255,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Archer Push-up",
-              imagePath: "/assets/exercises/normal push up.webp",
+              imagePath: "/assets/exercises/push up alt.webp",
               eachSide: true,
               reps: 5,
               specialInstruction:
@@ -1344,95 +1344,95 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Assisted Chin-up",
-                imagePath: "/assets/exercises/chinup_rows.webp",
+                imagePath: "/assets/exercises/assisted pull-up.webp",
                 eachLeg: false,
                 specialInstruction: "use resistance band",
                 requiresEquipment: "resistanceBandLong",
                 substitute: {
                   exerciseName: "Negative Chin-up",
-                  imagePath: "/assets/exercises/chinup_rows.webp",
+                  imagePath: "/assets/exercises/chin up pro.webp",
                   specialInstruction: "Jump to top, lower slowly (3-5 sec)",
                 },
               },
               3: {
                 exerciseName: "Assisted Chin-up",
-                imagePath: "/assets/exercises/chinup_rows.webp",
+                imagePath: "/assets/exercises/assisted pull-up.webp",
                 eachLeg: false,
                 specialInstruction: "use resistance band",
                 requiresEquipment: "resistanceBandLong",
                 substitute: {
                   exerciseName: "Negative Chin-up",
-                  imagePath: "/assets/exercises/chinup_rows.webp",
+                  imagePath: "/assets/exercises/chin up pro.webp",
                   specialInstruction: "Jump to top, lower slowly (3-5 sec)",
                 },
               },
               4: {
                 exerciseName: "Assisted Chin-up",
-                imagePath: "/assets/exercises/chinup_rows.webp",
+                imagePath: "/assets/exercises/assisted pull-up.webp",
                 eachLeg: false,
                 specialInstruction: "use resistance band",
                 requiresEquipment: "resistanceBandLong",
                 substitute: {
                   exerciseName: "Negative Chin-up",
-                  imagePath: "/assets/exercises/chinup_rows.webp",
+                  imagePath: "/assets/exercises/chin up pro.webp",
                   specialInstruction: "Jump to top, lower slowly (3-5 sec)",
                 },
               },
               5: {
                 exerciseName: "Assisted Chin-up",
-                imagePath: "/assets/exercises/chinup_rows.webp",
+                imagePath: "/assets/exercises/assisted pull-up.webp",
                 eachLeg: false,
                 specialInstruction: "use resistance band",
                 requiresEquipment: "resistanceBandLong",
                 substitute: {
                   exerciseName: "Negative Chin-up",
-                  imagePath: "/assets/exercises/chinup_rows.webp",
+                  imagePath: "/assets/exercises/chin up pro.webp",
                   specialInstruction: "Jump to top, lower slowly (3-5 sec)",
                 },
               },
               6: {
                 exerciseName: "Full Chin-up",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/chin up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Supinated grip, full dead hang between reps",
               },
               7: {
                 exerciseName: "Full Chin-up",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/chin up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Supinated grip, full dead hang between reps",
               },
               8: {
                 exerciseName: "Full Chin-up",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/chin up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Supinated grip, full dead hang between reps",
               },
               9: {
                 exerciseName: "Full Chin-up",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/chin up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Supinated grip, full dead hang between reps",
               },
               10: {
                 exerciseName: "Chin-up with Pause",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/pull with pause.webp",
                 eachLeg: false,
                 specialInstruction: "2 sec hold at top",
               },
               11: {
                 exerciseName: "Chin-up with Pause",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/pull with pause.webp",
                 eachLeg: false,
                 specialInstruction: "2 sec hold at top",
               },
               12: {
                 exerciseName: "Chin-up with Pause",
-                imagePath: "/assets/exercises/chinup_pullup.webp",
+                imagePath: "/assets/exercises/pull with pause.webp",
                 eachLeg: false,
                 specialInstruction: "2 sec hold at top",
               },
@@ -1452,69 +1452,69 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Bench Dip Straight-leg",
-                imagePath: "/assets/exercises/bench dip.webp",
+                imagePath: "/assets/exercises/bench dip straight leg.webp",
                 eachLeg: false,
                 specialInstruction: "Legs fully extended on the floor",
               },
               3: {
                 exerciseName: "Bench Dip Straight-leg",
-                imagePath: "/assets/exercises/bench dip.webp",
+                imagePath: "/assets/exercises/bench dip straight leg.webp",
                 eachLeg: false,
                 specialInstruction: "Legs fully extended on the floor",
               },
               4: {
                 exerciseName: "Bench Dip Straight-leg",
-                imagePath: "/assets/exercises/bench dip.webp",
+                imagePath: "/assets/exercises/bench dip straight leg.webp",
                 eachLeg: false,
                 specialInstruction: "Legs fully extended on the floor",
               },
               5: {
                 exerciseName: "Bench Dip Straight-leg",
-                imagePath: "/assets/exercises/bench dip.webp",
+                imagePath: "/assets/exercises/bench dip straight leg.webp",
                 eachLeg: false,
                 specialInstruction: "Legs fully extended on the floor",
               },
               6: {
                 exerciseName: "Parallel Bar Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/Tricep Dip Parallel Bar.webp",
                 eachLeg: false,
                 specialInstruction: "Upright torso, 90 degree depth",
               },
               7: {
                 exerciseName: "Parallel Bar Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/Tricep Dip Parallel Bar.webp",
                 eachLeg: false,
                 specialInstruction: "Upright torso, 90 degree depth",
               },
               8: {
                 exerciseName: "Parallel Bar Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/Tricep Dip Parallel Bar.webp",
                 eachLeg: false,
                 specialInstruction: "Upright torso, 90 degree depth",
               },
               9: {
                 exerciseName: "Parallel Bar Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/Tricep Dip Parallel Bar.webp",
                 eachLeg: false,
                 specialInstruction: "Upright torso, 90 degree depth",
               },
               10: {
                 exerciseName: "Chest Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/chest dip.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Slight forward lean, shoulders below elbows",
               },
               11: {
                 exerciseName: "Chest Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/chest dip.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Slight forward lean, shoulders below elbows",
               },
               12: {
                 exerciseName: "Chest Dip",
-                imagePath: "/assets/exercises/dips.webp",
+                imagePath: "/assets/exercises/chest dip.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Slight forward lean, shoulders below elbows",
@@ -1522,7 +1522,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Dip Slow Negative",
-              imagePath: "/assets/exercises/dips.webp",
+              imagePath: "/assets/exercises/slow dip.webp",
               reps: 5,
               specialInstruction:
                 "5 reps, 5-second descent, full lockout at top — 5-second descent",
@@ -1962,56 +1962,56 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Archer Push-up Standard",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Shift weight side to side each rep — alternate working arm",
               },
               3: {
                 exerciseName: "Archer Push-up Standard",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Shift weight side to side each rep — alternate working arm",
               },
               4: {
                 exerciseName: "Archer Push-up Standard",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Shift weight side to side each rep — alternate working arm",
               },
               5: {
                 exerciseName: "Archer Push-up Standard",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Shift weight side to side each rep — alternate working arm",
               },
               6: {
                 exerciseName: "Archer Push-up Deep",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               7: {
                 exerciseName: "Archer Push-up Deep",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               8: {
                 exerciseName: "Archer Push-up Deep",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
               },
               9: {
                 exerciseName: "Archer Push-up Deep",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
                   "Lower chest all the way to floor on the working arm",
@@ -2176,19 +2176,19 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Close Grip Pull-up",
-                imagePath: "/assets/exercises/normal_pullup.webp",
+                imagePath: "/assets/exercises/chin up pro.webp",
                 eachLeg: false,
                 specialInstruction: "Hands nearly touching at bar centre",
               },
               11: {
                 exerciseName: "Close Grip Pull-up",
-                imagePath: "/assets/exercises/normal_pullup.webp",
+                imagePath: "/assets/exercises/chin up pro.webp",
                 eachLeg: false,
                 specialInstruction: "Hands nearly touching at bar centre",
               },
               12: {
                 exerciseName: "Close Grip Pull-up",
-                imagePath: "/assets/exercises/normal_pullup.webp",
+                imagePath: "/assets/exercises/chin up pro.webp",
                 eachLeg: false,
                 specialInstruction: "Hands nearly touching at bar centre",
               },
@@ -2226,7 +2226,7 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt 2.webp",
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -2237,7 +2237,7 @@ const DECK_EXERCISES: Record<
               },
               7: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt 2.webp",
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -2248,7 +2248,7 @@ const DECK_EXERCISES: Record<
               },
               8: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt 2.webp",
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -2259,7 +2259,7 @@ const DECK_EXERCISES: Record<
               },
               9: {
                 exerciseName: "Ring Push-up",
-                imagePath: "/assets/exercises/normal push up.webp",
+                imagePath: "/assets/exercises/push up alt 2.webp",
                 eachLeg: false,
                 specialInstruction: "Feet on floor, hands in rings",
                 requiresEquipment: "rings",
@@ -2771,42 +2771,42 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Reverse Lunge",
-                imagePath: "/assets/exercises/reverse_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               3: {
                 exerciseName: "Reverse Lunge",
-                imagePath: "/assets/exercises/reverse_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               4: {
                 exerciseName: "Reverse Lunge",
-                imagePath: "/assets/exercises/reverse_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               5: {
                 exerciseName: "Reverse Lunge",
-                imagePath: "/assets/exercises/reverse_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               6: {
                 exerciseName: "Forward Lunge",
-                imagePath: "/assets/exercises/front_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               7: {
                 exerciseName: "Forward Lunge",
-                imagePath: "/assets/exercises/front_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               8: {
                 exerciseName: "Forward Lunge",
-                imagePath: "/assets/exercises/front_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               9: {
                 exerciseName: "Forward Lunge",
-                imagePath: "/assets/exercises/front_lunge.webp",
+                imagePath: "/assets/exercises/female lunge.webp",
                 eachLeg: true,
               },
               10: {
@@ -3928,22 +3928,22 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               7: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               8: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               9: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               10: {
@@ -4601,7 +4601,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Long Plank Hold",
-              imagePath: "/assets/exercises/plank hold.webp",
+              imagePath: "/assets/exercises/high plank.webp",
               isIsometric: true,
               holdSeconds: 45,
               specialInstruction: "#QueenChallenge hold full plank 45 seconds",
@@ -4679,7 +4679,7 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Slow Crunch",
-              imagePath: "/assets/exercises/crunch.webp",
+              imagePath: "/assets/exercises/slow crunch.webp",
               reps: 5,
               specialInstruction:
                 "#QueenChallenge 5 reps, 3-second ascent and 3-second descent each rep",
@@ -4782,25 +4782,25 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Knee Tuck",
-                imagePath: "/assets/exercises/knee tuck.png",
+                imagePath: "/assets/exercises/knee tuck.webp",
                 reps: 2,
                 specialInstruction: "bring knees to chest, lower controlled",
               },
               3: {
                 exerciseName: "Knee Tuck",
-                imagePath: "/assets/exercises/knee tuck.png",
+                imagePath: "/assets/exercises/knee tuck.webp",
                 reps: 3,
                 specialInstruction: "bring knees to chest, lower controlled",
               },
               4: {
                 exerciseName: "Knee Tuck",
-                imagePath: "/assets/exercises/knee tuck.png",
+                imagePath: "/assets/exercises/knee tuck.webp",
                 reps: 4,
                 specialInstruction: "bring knees to chest, lower controlled",
               },
               5: {
                 exerciseName: "Knee Tuck",
-                imagePath: "/assets/exercises/knee tuck.png",
+                imagePath: "/assets/exercises/knee tuck.webp",
                 reps: 5,
                 specialInstruction: "bring knees to chest, lower controlled",
               },
@@ -5282,28 +5282,28 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Hollow Body Rock",
-                imagePath: "/assets/exercises/hollow body rock.png",
+                imagePath: "/assets/exercises/hollow body rock.webp",
                 reps: 10,
                 specialInstruction:
                   "rock body back and forth, arms and legs extended",
               },
               7: {
                 exerciseName: "Hollow Body Rock",
-                imagePath: "/assets/exercises/hollow body rock.png",
+                imagePath: "/assets/exercises/hollow body rock.webp",
                 reps: 12,
                 specialInstruction:
                   "rock body back and forth, arms and legs extended",
               },
               8: {
                 exerciseName: "Hollow Body Rock",
-                imagePath: "/assets/exercises/hollow body rock.png",
+                imagePath: "/assets/exercises/hollow body rock.webp",
                 reps: 14,
                 specialInstruction:
                   "rock body back and forth, arms and legs extended",
               },
               9: {
                 exerciseName: "Hollow Body Rock",
-                imagePath: "/assets/exercises/hollow body rock.png",
+                imagePath: "/assets/exercises/hollow body rock.webp",
                 reps: 16,
                 specialInstruction:
                   "rock body back and forth, arms and legs extended",
@@ -7357,22 +7357,22 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               7: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               8: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               9: {
                 exerciseName: "Broad Jump",
-                imagePath: "/assets/exercises/broad_jump.webp",
+                imagePath: "/assets/exercises/female broad jump.webp",
                 eachLeg: false,
               },
               10: {
@@ -7424,22 +7424,22 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Archer Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
               },
               7: {
                 exerciseName: "Archer Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
               },
               8: {
                 exerciseName: "Archer Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
               },
               9: {
                 exerciseName: "Archer Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
               },
               10: {
@@ -7474,22 +7474,22 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump lunge alt.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump lunge alt.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump lunge alt.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump lunge alt.webp",
                 eachLeg: false,
               },
               6: {
@@ -7514,19 +7514,19 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Jump Squat to Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump squat to jump lunge.webp",
                 eachLeg: false,
                 specialInstruction: "1 jump squat + 2 jump lunges = 1 rep",
               },
               11: {
                 exerciseName: "Jump Squat to Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump squat to jump lunge.webp",
                 eachLeg: false,
                 specialInstruction: "1 jump squat + 2 jump lunges = 1 rep",
               },
               12: {
                 exerciseName: "Jump Squat to Jump Lunge",
-                imagePath: "/assets/exercises/jump lunge.webp",
+                imagePath: "/assets/exercises/jump squat to jump lunge.webp",
                 eachLeg: false,
                 specialInstruction: "1 jump squat + 2 jump lunges = 1 rep",
               },

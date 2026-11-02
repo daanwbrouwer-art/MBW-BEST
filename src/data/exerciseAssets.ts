@@ -135,11 +135,11 @@ export const FEMALE_UPPER_BODY_ADVANCED_ASSETS = {
   fullChinUp: "/assets/exercises/chin up.webp",
   chinUpWithPause: "/assets/exercises/pull with pause.webp",
   commandoPullUp: COMING_SOON_ILLUSTRATION,
-  benchDipStraightLeg: "/assets/exercises/bench dip.webp",
+  benchDipStraightLeg: "/assets/exercises/bench dip straight leg.webp",
   parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.webp",
   chestDip: "/assets/exercises/chest dip.webp",
   dipSlowNegative: "/assets/exercises/slow dip.webp",
-  archerPushUp: "/assets/exercises/normal push up.webp",
+  archerPushUp: "/assets/exercises/push up alt.webp",
   aceDouble: "/assets/exercises/Last excersie x2.webp",
   kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
@@ -164,7 +164,7 @@ export const FEMALE_UPPER_BODY_ADVANCED_ASSETS = {
  * with the beginner/advanced decks — they are global face card images.
  */
 export const FEMALE_UPPER_BODY_PRO_ASSETS = {
-  archerPushUp: "/assets/exercises/normal push up.webp",
+  archerPushUp: "/assets/exercises/push up alt.webp",
   typewriterPushUp: COMING_SOON_ILLUSTRATION,
   handstandHold: "/assets/exercises/handstand hold.webp",
   handstandPushUp: "/assets/exercises/handstand push-up.webp",
@@ -172,7 +172,7 @@ export const FEMALE_UPPER_BODY_PRO_ASSETS = {
   widePullUp: COMING_SOON_ILLUSTRATION,
   lSitPullUp: "/assets/exercises/L-sit pull up.webp",
   parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.webp",
-  ringPushUp: "/assets/exercises/normal push up.webp",
+  ringPushUp: "/assets/exercises/push up alt 2.webp",
   ringDip: "/assets/exercises/dips.webp",
   lSitHold: "/assets/exercises/l-sit hold.webp",
   aceDouble: "/assets/exercises/Last excersie x2.webp",
@@ -220,8 +220,8 @@ export const FEMALE_LOWER_BODY_BEGINNER_ASSETS = {
   // No dedicated female art delivered yet for these three — was silently
   // reusing a male-illustrated generic asset before, now honest about it.
   normalSquat: COMING_SOON_ILLUSTRATION,
-  reverseLunge: COMING_SOON_ILLUSTRATION,
-  forwardLunge: COMING_SOON_ILLUSTRATION,
+  reverseLunge: "/assets/exercises/female lunge.webp",
+  forwardLunge: "/assets/exercises/female lunge.webp",
   sumoSquat: "/assets/exercises/female sumo squat.webp",
   narrowSquat: "/assets/exercises/narrow squat.webp",
   wallSit: "/assets/exercises/female wall sit.webp",
@@ -273,7 +273,7 @@ export const FEMALE_LOWER_BODY_PRO_ASSETS = {
   pistolSquat: "/assets/exercises/pistol squat.webp",
   // Hearts — jump family
   jumpSquat: "/assets/exercises/jump squat.webp",
-  broadJump: COMING_SOON_ILLUSTRATION,
+  broadJump: "/assets/exercises/female broad jump.webp",
   tuckJump: "/assets/exercises/tuck jump.webp",
   // Diamonds — single-leg strength
   shrimpSquat: "/assets/exercises/shrimp squat.webp",
@@ -368,7 +368,7 @@ export const FEMALE_CORE_BEGINNER_ASSETS = {
   supermanHold: "/assets/exercises/superman hold.webp",
   // Dynamic core
   bearCrawl: "/assets/exercises/bear crawl.webp",
-  kneeTuck: COMING_SOON_ILLUSTRATION,
+  kneeTuck: "/assets/exercises/knee tuck.webp",
   flutterKick: "/assets/exercises/flutter kick.webp",
   legRaise: "/assets/exercises/leg raise.webp",
   legRaiseHold: "/assets/exercises/leg raise hold.webp",
@@ -416,7 +416,7 @@ export const FEMALE_CORE_BEGINNER_ASSETS = {
 export const FEMALE_CORE_ADVANCED_ASSETS = {
   // Hollow body family
   hollowBodyHold: "/assets/exercises/hollow body hold.webp",
-  hollowBodyRock: COMING_SOON_ILLUSTRATION,
+  hollowBodyRock: "/assets/exercises/hollow body rock.webp",
   vUp: "/assets/exercises/v up.webp",
   // Rotational core
   russianTwist: "/assets/exercises/russian twist.webp",
@@ -543,10 +543,10 @@ export const FEMALE_FULL_BODY_ADVANCED_ASSETS = {
   burpeeBoxJump: COMING_SOON_ILLUSTRATION,
   burpeeChinUp: "/assets/exercises/burpee chin up.webp",
   boxJump: COMING_SOON_ILLUSTRATION,
-  broadJump: COMING_SOON_ILLUSTRATION,
+  broadJump: "/assets/exercises/female broad jump.webp",
   tuckJump: "/assets/exercises/tuck jump.webp",
   spiderManPushUp: COMING_SOON_ILLUSTRATION,
-  archerPushUp: COMING_SOON_ILLUSTRATION,
+  archerPushUp: "/assets/exercises/push up alt.webp",
   declinePushUp: "/assets/exercises/decline push up.webp",
   jumpLunge: "/assets/exercises/jump squat to jump lunge.webp",
   lateralJumpLunge: "/assets/exercises/lateral jump lunge full body.webp",
