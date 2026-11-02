@@ -286,6 +286,15 @@ export default function SubscribePage() {
           >
             Privacy Policy
           </button>
+          {" · "}
+          <button
+            type="button"
+            onClick={openSubscriptionTerms}
+            className="underline hover:text-muted-foreground transition-smooth"
+            data-ocid="subscribe.subscription_terms_link"
+          >
+            Subscription Terms
+          </button>
         </p>
       </div>
     </div>

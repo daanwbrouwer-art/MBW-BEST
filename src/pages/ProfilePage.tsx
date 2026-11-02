@@ -22,6 +22,7 @@ import { useOnboarding } from "@/hooks/use-onboarding";
 import { useProfile } from "@/hooks/use-profile";
 import { useStreak } from "@/hooks/use-streak";
 import { useTier } from "@/hooks/use-tier";
+import { isLocalNotificationCapable } from "@/lib/localNotifications";
 import { useWorkoutHistory } from "@/hooks/use-workout-history";
 import {
   DEFAULT_AGE,
@@ -47,8 +48,10 @@ import {
 } from "@/lib/referral";
 import {
   type MessagingPreference,
+  getMarketingEmailsOptOut,
   getMessagingPreference,
   setDiscoverable,
+  setMarketingEmailsOptOut,
   setMessagingPreference,
 } from "@/lib/remoteBackend";
 import { CHALLENGE_TYPE_EMOJI } from "@/types/challenge";
@@ -72,6 +75,7 @@ import {
   LogOut,
   MessageCircle,
   Palette,
+  Mail,
   RotateCcw,
   Scale,
   Sparkles,
@@ -186,6 +190,13 @@ export default function ProfilePage() {
   });
   const [isSavingMessagingPreference, setIsSavingMessagingPreference] =
     useState(false);
+  const { data: marketingEmailsOptOut } = useQuery({
+    queryKey: ["marketing-emails-opt-out"],
+    queryFn: getMarketingEmailsOptOut,
+    enabled: isLoggedIn,
+  });
+  const [isSavingEmailPreference, setIsSavingEmailPreference] =
+    useState(false);
   const { data: history } = useWorkoutHistory();
   const { equipment, saveOnboarding, weightKg, age, heightCm } =
     useOnboarding();
@@ -196,7 +207,7 @@ export default function ProfilePage() {
   const { tier: equipmentTier, setTier: setEquipmentTier } = useEquipmentTier();
   const {
     settings: notificationSettings,
-    browserPermission,
+    isBlocked: notificationsBlocked,
     toggle: toggleNotification,
   } = useNotifications();
   const { streak, setWeeklyGoal } = useStreak();
@@ -343,6 +354,24 @@ export default function ProfilePage() {
       queryClient.invalidateQueries({ queryKey: ["messaging-preference"] });
     } finally {
       setIsSavingMessagingPreference(false);
+    }
+  };
+
+  const handleToggleMarketingEmails = async (receiveEmails: boolean) => {
+    setIsSavingEmailPreference(true);
+    try {
+      const result = await setMarketingEmailsOptOut(!receiveEmails);
+      if (!result.ok) {
+        toast("Couldn't update email preference", {
+          description: result.error,
+        });
+        return;
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["marketing-emails-opt-out"],
+      });
+    } finally {
+      setIsSavingEmailPreference(false);
     }
   };
 
@@ -759,10 +788,11 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-          {browserPermission === "denied" && (
+          {notificationsBlocked && (
             <p className="text-xs text-muted-foreground font-body mt-2 px-1 leading-relaxed">
-              Notifications are blocked in your browser for this site. Enable
-              them in your browser's site settings to use reminders.
+              {isLocalNotificationCapable()
+                ? "Notifications are blocked for this app. Enable them in your device's system settings to use reminders."
+                : "Notifications are blocked in your browser for this site. Enable them in your browser's site settings to use reminders."}
             </p>
           )}
         </motion.div>
@@ -911,6 +941,47 @@ export default function ProfilePage() {
                 </span>
                 <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
               </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Email preferences */}
+        {isLoggedIn && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.209, duration: 0.45 }}
+            className="mb-6"
+            data-ocid="profile.email_section"
+          >
+            <div className="flex items-center gap-1.5 mb-3">
+              <Mail className="w-3 h-3 text-muted-foreground" />
+              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+                Email
+              </p>
+            </div>
+            <div
+              className="rounded-2xl overflow-hidden flex items-center justify-between gap-3 px-5 py-3.5"
+              style={{
+                background: "oklch(0.16 0.01 260)",
+                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              }}
+            >
+              <div className="min-w-0">
+                <p className="font-display font-bold text-sm text-foreground">
+                  Email updates
+                </p>
+                <p className="text-xs text-muted-foreground font-body mt-0.5 leading-snug">
+                  News and tips from MyBodyWeight. Account and security
+                  emails (like password resets) are always sent regardless.
+                </p>
+              </div>
+              <Switch
+                checked={!marketingEmailsOptOut}
+                disabled={isSavingEmailPreference}
+                onCheckedChange={handleToggleMarketingEmails}
+                data-ocid="profile.marketing_emails_toggle"
+              />
             </div>
           </motion.div>
         )}
@@ -1554,6 +1625,7 @@ export default function ProfilePage() {
             <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
           </motion.button>
         )}
+
       </div>
 
       <AlertDialog

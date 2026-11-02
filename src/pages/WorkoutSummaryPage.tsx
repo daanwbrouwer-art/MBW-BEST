@@ -23,6 +23,7 @@ import {
   setFirstCardEverIfUnset,
 } from "@/lib/achievementSessionLog";
 import { checkWeeklyCardLimit } from "@/lib/cardLimit";
+import { notifyAchievementUnlocked } from "@/lib/localNotifications";
 import {
   processWeeklyChallenge,
   setPendingChallengeCelebration,
@@ -307,7 +308,7 @@ export default function WorkoutSummaryPage() {
   const { actor } = useActor();
   const { isSubscriber, effectiveTier } = useTier();
   const { fitnessLevel, selfAssessment } = useOnboarding();
-  const { settings: notifSettings, browserPermission } = useNotifications();
+  const { settings: notifSettings } = useNotifications();
   const {
     current: unlockAnim,
     enqueue: enqueueUnlocks,
@@ -505,15 +506,9 @@ export default function WorkoutSummaryPage() {
       if (newlyUnlocked.length > 0) {
         setEarnedThisSession(newlyUnlocked);
         enqueueUnlocks(newlyUnlocked);
-        if (browserPermission === "granted" && notifSettings.enabled) {
+        if (notifSettings.enabled) {
           for (const a of newlyUnlocked) {
-            try {
-              new Notification(`🏆 Achievement unlocked: ${a.name}!`, {
-                body: "Open the app to see it.",
-              });
-            } catch {
-              // Notification constructor can throw in some embedded contexts — non-fatal.
-            }
+            notifyAchievementUnlocked(a.name);
           }
         }
       }

@@ -209,94 +209,97 @@ export type Database = {
       };
       profiles: {
         Row: {
-          ace_cards_drawn: number;
-          created_at: string;
-          current_streak: number;
-          discoverable: boolean;
-          full_decks_completed: number;
-          gender: string | null;
-          id: string;
-          is_founding_member: boolean;
-          joker_cards_drawn: number;
-          king_cards_drawn: number;
-          last_active_at: string | null;
-          last_lat: number | null;
-          last_lng: number | null;
-          last_workout_date: string | null;
-          longest_streak: number;
-          messaging_preference: string;
-          preferred_equipment_tier: string;
-          reps_clubs: number;
-          reps_diamonds: number;
-          reps_hearts: number;
-          reps_spades: number;
-          total_calories: number;
-          total_reps: number;
-          total_workouts: number;
-          unlocked_achievements: Json;
-          updated_at: string;
-          username: string | null;
-        };
+          ace_cards_drawn: number
+          created_at: string
+          current_streak: number
+          discoverable: boolean
+          full_decks_completed: number
+          gender: string | null
+          id: string
+          is_founding_member: boolean
+          joker_cards_drawn: number
+          king_cards_drawn: number
+          last_active_at: string | null
+          last_lat: number | null
+          last_lng: number | null
+          last_workout_date: string | null
+          longest_streak: number
+          marketing_emails_opt_out: boolean
+          messaging_preference: string
+          preferred_equipment_tier: string
+          reps_clubs: number
+          reps_diamonds: number
+          reps_hearts: number
+          reps_spades: number
+          total_calories: number
+          total_reps: number
+          total_workouts: number
+          unlocked_achievements: Json
+          updated_at: string
+          username: string | null
+        }
         Insert: {
-          ace_cards_drawn?: number;
-          created_at?: string;
-          current_streak?: number;
-          discoverable?: boolean;
-          full_decks_completed?: number;
-          gender?: string | null;
-          id: string;
-          is_founding_member?: boolean;
-          joker_cards_drawn?: number;
-          king_cards_drawn?: number;
-          last_active_at?: string | null;
-          last_lat?: number | null;
-          last_lng?: number | null;
-          last_workout_date?: string | null;
-          longest_streak?: number;
-          messaging_preference?: string;
-          preferred_equipment_tier?: string;
-          reps_clubs?: number;
-          reps_diamonds?: number;
-          reps_hearts?: number;
-          reps_spades?: number;
-          total_calories?: number;
-          total_reps?: number;
-          total_workouts?: number;
-          unlocked_achievements?: Json;
-          updated_at?: string;
-          username?: string | null;
-        };
+          ace_cards_drawn?: number
+          created_at?: string
+          current_streak?: number
+          discoverable?: boolean
+          full_decks_completed?: number
+          gender?: string | null
+          id: string
+          is_founding_member?: boolean
+          joker_cards_drawn?: number
+          king_cards_drawn?: number
+          last_active_at?: string | null
+          last_lat?: number | null
+          last_lng?: number | null
+          last_workout_date?: string | null
+          longest_streak?: number
+          marketing_emails_opt_out?: boolean
+          messaging_preference?: string
+          preferred_equipment_tier?: string
+          reps_clubs?: number
+          reps_diamonds?: number
+          reps_hearts?: number
+          reps_spades?: number
+          total_calories?: number
+          total_reps?: number
+          total_workouts?: number
+          unlocked_achievements?: Json
+          updated_at?: string
+          username?: string | null
+        }
         Update: {
-          ace_cards_drawn?: number;
-          created_at?: string;
-          current_streak?: number;
-          discoverable?: boolean;
-          full_decks_completed?: number;
-          gender?: string | null;
-          id?: string;
-          is_founding_member?: boolean;
-          joker_cards_drawn?: number;
-          king_cards_drawn?: number;
-          last_active_at?: string | null;
-          last_lat?: number | null;
-          last_lng?: number | null;
-          last_workout_date?: string | null;
-          longest_streak?: number;
-          messaging_preference?: string;
-          preferred_equipment_tier?: string;
-          reps_clubs?: number;
-          reps_diamonds?: number;
-          reps_hearts?: number;
-          reps_spades?: number;
-          total_calories?: number;
-          total_reps?: number;
-          total_workouts?: number;
-          unlocked_achievements?: Json;
-          updated_at?: string;
-          username?: string | null;
-        };
-        Relationships: [];
-      };
+          ace_cards_drawn?: number
+          created_at?: string
+          current_streak?: number
+          discoverable?: boolean
+          full_decks_completed?: number
+          gender?: string | null
+          id?: string
+          is_founding_member?: boolean
+          joker_cards_drawn?: number
+          king_cards_drawn?: number
+          last_active_at?: string | null
+          last_lat?: number | null
+          last_lng?: number | null
+          last_workout_date?: string | null
+          longest_streak?: number
+          marketing_emails_opt_out?: boolean
+          messaging_preference?: string
+          preferred_equipment_tier?: string
+          reps_clubs?: number
+          reps_diamonds?: number
+          reps_hearts?: number
+          reps_spades?: number
+          total_calories?: number
+          total_reps?: number
+          total_workouts?: number
+          unlocked_achievements?: Json
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
           created_at: string;
@@ -703,20 +706,18 @@ export type Database = {
           }
         | {
             Args: {
-              column_name: string;
-              new_dim: number;
-              new_srid: number;
-              new_type: string;
-              table_name: string;
-              use_typmod?: boolean;
-            };
-            Returns: string;
-          };
-      create_or_get_thread: {
-        Args: { other_user_id: string };
-        Returns: string;
-      };
-      disablelongtransactions: { Args: never; Returns: string };
+              column_name: string
+              new_dim: number
+              new_srid: number
+              new_type: string
+              table_name: string
+              use_typmod?: boolean
+            }
+            Returns: string
+          }
+      create_or_get_thread: { Args: { other_user_id: string }; Returns: string }
+      delete_my_account: { Args: never; Returns: undefined }
+      disablelongtransactions: { Args: never; Returns: string }
       dropgeometrycolumn:
         | {
             Args: {
@@ -872,15 +873,36 @@ export type Database = {
       };
       gettransactionid: { Args: never; Returns: unknown };
       is_train_together_session_member: {
-        Args: { p_session_id: string; p_user_id: string };
-        Returns: boolean;
-      };
+        Args: { p_session_id: string; p_user_id: string }
+        Returns: boolean
+      }
       join_train_together_party_by_code: {
-        Args: { p_invite_code: string };
-        Returns: Database["public"]["Tables"]["train_together_sessions"]["Row"];
-      };
-      longtransactionsenabled: { Args: never; Returns: boolean };
-      mark_thread_read: { Args: { p_thread_id: string }; Returns: undefined };
+        Args: { p_invite_code: string }
+        Returns: {
+          card_count: number
+          card_sequence: Json | null
+          card_started_at: string | null
+          completed_at: string | null
+          created_at: string
+          current_card_index: number
+          current_card_owner_id: string | null
+          custom_deck: Json | null
+          deck_category: string
+          excluded_exercises: string[]
+          host_id: string
+          id: string
+          invite_code: string
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "train_together_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      longtransactionsenabled: { Args: never; Returns: boolean }
+      mark_thread_read: { Args: { p_thread_id: string }; Returns: undefined }
       nearby_parks: {
         Args: { in_lat: number; in_lng: number; radius_km?: number };
         Returns: {
@@ -1639,12 +1661,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -1668,11 +1690,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -1693,11 +1715,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -1718,11 +1740,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -1735,11 +1757,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }

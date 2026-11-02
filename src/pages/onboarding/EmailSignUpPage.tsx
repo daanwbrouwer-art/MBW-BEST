@@ -7,12 +7,35 @@ import {
   migrateGuestStreak,
   migrateGuestWeeklyChallenge,
 } from "@/lib/completeSignup";
+import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
 import { ensureReferralCode, redeemReferralCode } from "@/lib/referral";
 import { useWorkoutStore } from "@/store/workout";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+
+/** Minimum age to register — a conservative default covering GDPR Article 8's
+ * "digital age of consent" range (13-16 depending on EU member state) and
+ * broadly aligned with COPPA (13, US-only). Self-declared via the date
+ * picker, same as every other app using this pattern — nothing server-side
+ * currently re-verifies it (see the signup handler's own note). */
+const MIN_SIGNUP_AGE = 16;
+
+/** Latest birth date that's still >= MIN_SIGNUP_AGE today — used as the date input's `max` so the picker itself won't offer a too-young date, in addition to the explicit validate() check below (belt and suspenders: `max` alone doesn't stop a manually-typed date on every browser/platform). */
+function maxBirthDateFor16(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - MIN_SIGNUP_AGE);
+  return d.toISOString().slice(0, 10);
+}
+
+function isAtLeast16(birthDateStr: string): boolean {
+  const birth = new Date(birthDateStr);
+  if (Number.isNaN(birth.getTime())) return false;
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - MIN_SIGNUP_AGE);
+  return birth <= cutoff;
+}
 
 export default function EmailSignUpPage() {
   const navigate = useNavigate();
@@ -22,7 +45,9 @@ export default function EmailSignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [referralCode, setReferralCode] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,6 +67,15 @@ export default function EmailSignUpPage() {
     }
     if (password !== confirmPassword) {
       return "Passwords do not match";
+    }
+    if (!birthDate) {
+      return "Please enter your date of birth";
+    }
+    if (!isAtLeast16(birthDate)) {
+      return `You must be at least ${MIN_SIGNUP_AGE} to create an account`;
+    }
+    if (!agreedToTerms) {
+      return "You must agree to the Terms of Use and Privacy Policy to continue";
     }
     return "";
   };
@@ -362,6 +396,61 @@ export default function EmailSignUpPage() {
 
             <div className="mb-6">
               <label
+                htmlFor="create-dob"
+                className="font-display text-xs font-bold uppercase tracking-widest text-white/50 mb-2 block"
+              >
+                Date of birth
+              </label>
+              <div
+                className="w-full h-14 rounded-2xl flex items-center px-4 gap-3 transition-smooth focus-within:border-primary/60"
+                style={{
+                  background: "oklch(0.17 0.012 260)",
+                  border: "1px solid oklch(0.28 0.01 260)",
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  className="shrink-0"
+                  role="img"
+                  aria-hidden="true"
+                  style={{ color: "oklch(0.55 0.008 260)" }}
+                >
+                  <rect
+                    x="1.5"
+                    y="3"
+                    width="15"
+                    height="13.5"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  />
+                  <path
+                    d="M1.5 7h15M5.5 1.5v3M12.5 1.5v3"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <input
+                  id="create-dob"
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  max={maxBirthDateFor16()}
+                  className="flex-1 bg-transparent font-body text-sm text-white outline-none [color-scheme:dark]"
+                  data-ocid="email-signup.birth_date_input"
+                />
+              </div>
+              <p className="text-xs text-white/30 font-body mt-2">
+                You must be 16 or older to create an account.
+              </p>
+            </div>
+
+            <div className="mb-6">
+              <label
                 htmlFor="create-referral"
                 className="font-display text-xs font-bold uppercase tracking-widest text-white/50 mb-2 block"
               >
@@ -387,6 +476,55 @@ export default function EmailSignUpPage() {
               <p className="text-xs text-white/30 font-body mt-2">
                 Have a friend's code? Get 10% off your first payment.
               </p>
+            </div>
+
+            {/* Not wrapped in <label> — a nested <button> (the Terms/Privacy
+                links) inside a <label> would also toggle the checkbox on
+                click in most browsers, since label click-forwarding applies
+                to interactive descendants too. Explicit htmlFor avoids that
+                footgun while keeping the checkbox click target accessible. */}
+            <div
+              className="mb-6 flex items-start gap-3"
+              data-ocid="email-signup.terms_consent_row"
+            >
+              <input
+                id="create-terms-consent"
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 shrink-0 accent-primary cursor-pointer"
+                data-ocid="email-signup.terms_consent_checkbox"
+              />
+              <label
+                htmlFor="create-terms-consent"
+                className="font-body text-xs text-white/50 leading-relaxed cursor-pointer"
+              >
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openTermsOfUse();
+                  }}
+                  className="underline text-white/70 hover:text-white transition-smooth"
+                  data-ocid="email-signup.terms_link"
+                >
+                  Terms of Use
+                </button>{" "}
+                and{" "}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openPrivacyPolicy();
+                  }}
+                  className="underline text-white/70 hover:text-white transition-smooth"
+                  data-ocid="email-signup.privacy_link"
+                >
+                  Privacy Policy
+                </button>
+                .
+              </label>
             </div>
 
             {error && (
