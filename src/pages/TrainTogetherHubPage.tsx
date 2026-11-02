@@ -1,4 +1,3 @@
-import { BottomNav } from "@/components/BottomNav";
 import { Logo } from "@/components/Logo";
 import { PaywallModal } from "@/components/PaywallModal";
 import { Button } from "@/components/ui/button";
@@ -10,9 +9,8 @@ import {
   type PendingPartyInvite,
   createTrainTogetherParty,
   findProfileByUsername,
-  getSessionByInviteCode,
   inviteToParty,
-  joinPartyByCode,
+  joinPartyByInviteCode,
   listFriendships,
   listPendingPartyInvites,
   respondToFriendRequest,
@@ -43,7 +41,7 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
     },
     {
       title: "Everyone readies up, host starts",
-      body: "Once every player taps \"I'm ready,\" the host starts the session and the deck is drawn once, synced live to every device.",
+      body: 'Once every player taps "I\'m ready," the host starts the session and the deck is drawn once, synced live to every device.',
     },
     {
       title: "Same card, same rep, for everyone",
@@ -57,7 +55,7 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-end justify-center"
-      style={{ background: "oklch(0.05 0.005 260 / 0.85)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.85)" }}
       data-ocid="train-together.how_it_works_sheet"
     >
       <motion.div
@@ -67,8 +65,8 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
         className="w-full max-w-[430px] rounded-t-3xl px-5 pt-5 pb-8 max-h-[88dvh] overflow-y-auto"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--pulse) / 0.25)",
         }}
       >
         <div className="flex items-center justify-between mb-5">
@@ -91,8 +89,8 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
               <div
                 className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-display font-black text-xs"
                 style={{
-                  background: "oklch(0.68 0.25 180 / 0.15)",
-                  color: "oklch(0.68 0.25 180)",
+                  background: "oklch(var(--pulse) / 0.15)",
+                  color: "oklch(var(--pulse))",
                 }}
               >
                 {i + 1}
@@ -112,14 +110,14 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
         <div
           className="rounded-2xl px-4 py-4 flex gap-3"
           style={{
-            background: "oklch(0.68 0.25 180 / 0.1)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+            background: "oklch(var(--pulse) / 0.1)",
+            border: "1px solid oklch(var(--pulse) / 0.3)",
           }}
           data-ocid="train-together.how_it_works_variety_note"
         >
           <Shuffle
             className="w-5 h-5 shrink-0 mt-0.5"
-            style={{ color: "oklch(0.68 0.25 180)" }}
+            style={{ color: "oklch(var(--pulse))" }}
           />
           <div>
             <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -127,8 +125,8 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">
               The draw is built so the same exercise never comes up twice in a
-              row — you'll always get full variety across the whole session,
-              no matter which deck, difficulty, or party size you pick.
+              row — you'll always get full variety across the whole session, no
+              matter which deck, difficulty, or party size you pick.
             </p>
           </div>
         </div>
@@ -152,11 +150,11 @@ function TrainTogetherLocked({
       <div
         className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
         style={{
-          background: "oklch(0.68 0.25 180 / 0.15)",
-          border: "2px solid oklch(0.68 0.25 180 / 0.4)",
+          background: "oklch(var(--pulse) / 0.15)",
+          border: "2px solid oklch(var(--pulse) / 0.4)",
         }}
       >
-        <Lock className="w-7 h-7" style={{ color: "oklch(0.68 0.25 180)" }} />
+        <Lock className="w-7 h-7" style={{ color: "oklch(var(--pulse))" }} />
       </div>
       <h1 className="font-display font-black text-2xl text-foreground mb-2">
         Train Together
@@ -167,6 +165,7 @@ function TrainTogetherLocked({
           : "Train Together is a subscriber feature — subscribe to invite friends and train live together."}
       </p>
       <Button
+        variant="pulse"
         className="w-full h-12 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase"
         onClick={
           needsAccount
@@ -248,7 +247,7 @@ function PartySetupPanel({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-end justify-center"
-      style={{ background: "oklch(0.05 0.005 260 / 0.85)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.85)" }}
       data-ocid="train-together.party_panel"
     >
       <motion.div
@@ -258,8 +257,8 @@ function PartySetupPanel({
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
         className="w-full max-w-[430px] rounded-t-3xl px-5 pt-5 pb-8 max-h-[88dvh] overflow-y-auto"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--pulse) / 0.25)",
         }}
       >
         <div className="flex items-center justify-between mb-1">
@@ -288,7 +287,7 @@ function PartySetupPanel({
               className={cn(
                 "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
                 partySize === size
-                  ? "bg-primary text-background border-primary"
+                  ? "bg-pulse text-background border-pulse"
                   : "bg-card text-muted-foreground border-border/50",
               )}
               data-ocid={`train-together.party_size.${size}`}
@@ -303,13 +302,13 @@ function PartySetupPanel({
         </p>
         <div className="flex flex-col gap-2 mb-6">
           <div
-            className="flex items-center gap-3 rounded-2xl px-4 py-3.5 bg-card border border-primary/40"
+            className="flex items-center gap-3 rounded-2xl px-4 py-3.5 bg-card border border-pulse/40"
             data-ocid="train-together.roster_self"
           >
             <span className="font-body text-sm text-foreground truncate">
               {myUsername}
             </span>
-            <span className="text-[10px] font-display font-bold uppercase tracking-wider text-primary ml-auto">
+            <span className="text-xs font-display font-bold uppercase tracking-wider text-pulse ml-auto">
               You
             </span>
           </div>
@@ -337,6 +336,7 @@ function PartySetupPanel({
         </div>
 
         <Button
+          variant="pulse"
           className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase"
           onClick={() => createMutation.mutate()}
           disabled={createMutation.isPending}
@@ -357,7 +357,7 @@ function PartySetupPanel({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[80] flex items-end justify-center"
-            style={{ background: "oklch(0.05 0.005 260 / 0.9)" }}
+            style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.9)" }}
           >
             <motion.div
               initial={{ y: "100%" }}
@@ -366,8 +366,8 @@ function PartySetupPanel({
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.3 }}
               className="w-full max-w-[430px] rounded-t-3xl px-5 pt-5 pb-8 max-h-[70dvh] overflow-y-auto"
               style={{
-                background: "oklch(0.15 0.01 260)",
-                border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+                background: "oklch(0.15 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(var(--pulse) / 0.25)",
               }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -389,10 +389,11 @@ function PartySetupPanel({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search by username"
-                  className="flex-1 h-11 rounded-xl bg-card border border-border/50 px-4 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-smooth"
+                  className="flex-1 h-11 rounded-xl bg-card border border-border/50 px-4 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-pulse/50 transition-smooth"
                   data-ocid="train-together.picker_search"
                 />
                 <Button
+                  variant="pulse"
                   className="h-11 px-4 rounded-xl font-display font-bold text-xs uppercase tracking-wide shrink-0"
                   disabled={
                     search.trim().length === 0 || searchMutation.isPending
@@ -484,7 +485,7 @@ function PendingInvites({ invites }: { invites: PendingPartyInvite[] }) {
         {invites.map((invite) => (
           <div
             key={invite.sessionId}
-            className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3 bg-card border border-primary/40"
+            className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3 bg-card border border-pulse/40"
             data-ocid="train-together.pending_party_invite"
           >
             <span className="font-body text-sm text-foreground truncate">
@@ -501,8 +502,8 @@ function PendingInvites({ invites }: { invites: PendingPartyInvite[] }) {
                 }
                 className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
-                  background: "oklch(0.68 0.25 180 / 0.15)",
-                  color: "oklch(0.68 0.25 180)",
+                  background: "oklch(var(--pulse) / 0.15)",
+                  color: "oklch(var(--pulse))",
                 }}
                 data-ocid="train-together.accept_party_invite"
               >
@@ -579,8 +580,8 @@ function FriendsSection({ friendships }: { friendships: FriendshipEntry[] }) {
                     }
                     className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
-                      background: "oklch(0.68 0.25 180 / 0.15)",
-                      color: "oklch(0.68 0.25 180)",
+                      background: "oklch(var(--pulse) / 0.15)",
+                      color: "oklch(var(--pulse))",
                     }}
                     data-ocid="train-together.accept_request"
                   >
@@ -620,7 +621,7 @@ function FriendsSection({ friendships }: { friendships: FriendshipEntry[] }) {
                 <span className="font-body text-sm text-muted-foreground truncate">
                   {f.otherUsername}
                 </span>
-                <span className="text-[10px] font-display font-bold uppercase tracking-wider text-muted-foreground shrink-0">
+                <span className="text-xs font-display font-bold uppercase tracking-wider text-muted-foreground shrink-0">
                   Pending
                 </span>
               </div>
@@ -694,9 +695,7 @@ export default function TrainTogetherHubPage() {
 
   const joinMutation = useMutation({
     mutationFn: async (code: string) => {
-      const session = await getSessionByInviteCode(code);
-      if (!session) throw new Error("That invite code isn't valid.");
-      await joinPartyByCode(session.id);
+      const session = await joinPartyByInviteCode(code);
       return session.id;
     },
     onSuccess: (sessionId) =>
@@ -709,12 +708,12 @@ export default function TrainTogetherHubPage() {
   });
 
   return (
-    <div className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto overflow-x-hidden pb-24 relative">
+    <div className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto overflow-x-hidden pb-28 relative">
       <div
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--pulse-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -728,7 +727,7 @@ export default function TrainTogetherHubPage() {
             <button
               type="button"
               onClick={() => setShowHowItWorks(true)}
-              className="w-6 h-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary transition-smooth shrink-0"
+              className="w-6 h-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-pulse transition-smooth shrink-0"
               aria-label="How Train Together works"
               data-ocid="train-together.how_it_works_button"
             >
@@ -736,7 +735,7 @@ export default function TrainTogetherHubPage() {
             </button>
           </div>
           {isUnlocked && (
-            <p className="text-[11px] text-muted-foreground font-body">
+            <p className="text-xs text-muted-foreground font-body">
               Choose 2, 3, or 4 — including you
             </p>
           )}
@@ -751,6 +750,7 @@ export default function TrainTogetherHubPage() {
       ) : (
         <div className="relative flex-1 px-5 pt-2 flex flex-col gap-6">
           <Button
+            variant="pulse"
             className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase flex items-center justify-center gap-2"
             onClick={() => setShowPartyPanel(true)}
             data-ocid="train-together.start_party"
@@ -769,10 +769,11 @@ export default function TrainTogetherHubPage() {
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Enter code"
-                className="flex-1 h-11 rounded-xl bg-card border border-border/50 px-4 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-smooth uppercase"
+                className="flex-1 h-11 rounded-xl bg-card border border-border/50 px-4 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-pulse/50 transition-smooth uppercase"
                 data-ocid="train-together.join_code_input"
               />
               <Button
+                variant="pulse"
                 className="h-11 px-4 rounded-xl font-display font-bold text-xs uppercase tracking-wide shrink-0"
                 disabled={
                   joinCode.trim().length === 0 || joinMutation.isPending
@@ -797,10 +798,11 @@ export default function TrainTogetherHubPage() {
                 value={addFriendHandle}
                 onChange={(e) => setAddFriendHandle(e.target.value)}
                 placeholder="Username"
-                className="flex-1 h-11 rounded-xl bg-card border border-border/50 px-4 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 transition-smooth"
+                className="flex-1 h-11 rounded-xl bg-card border border-border/50 px-4 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-pulse/50 transition-smooth"
                 data-ocid="train-together.add_friend_input"
               />
               <Button
+                variant="pulse"
                 className="h-11 px-4 rounded-xl font-display font-bold text-xs uppercase tracking-wide shrink-0"
                 disabled={
                   addFriendHandle.trim().length === 0 ||
@@ -820,7 +822,6 @@ export default function TrainTogetherHubPage() {
         </div>
       )}
 
-      <BottomNav active="together" />
 
       <AnimatePresence>
         {showPartyPanel && myProfileQuery.data && (

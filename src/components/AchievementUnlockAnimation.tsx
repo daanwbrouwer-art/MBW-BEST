@@ -82,7 +82,7 @@ export function AchievementUnlockAnimation({
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.75 }}
               transition={{ duration: 0.4 }}
-              style={{ background: "oklch(0.05 0.005 260)" }}
+              style={{ background: "oklch(0.05 0.005 var(--neutral-hue))" }}
             />
             {/* Gold particles */}
             {Array.from({ length: 24 }, (_, i) => `particle-fall-${i}`).map(
@@ -124,7 +124,7 @@ export function AchievementUnlockAnimation({
                 <motion.div
                   key={`teal-burst-${i}`}
                   className="absolute w-1.5 h-1.5 rounded-full"
-                  style={{ background: "#1AD6A0" }}
+                  style={{ background: "oklch(var(--prestige))" }}
                   initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
                   animate={{ x: dx, y: dy, opacity: 0, scale: 0.3 }}
                   transition={{
@@ -172,7 +172,7 @@ export function AchievementUnlockAnimation({
         <motion.div
           className="relative z-10 w-full max-w-sm mx-6 rounded-3xl p-8 text-center"
           style={{
-            background: "oklch(0.14 0.02 260 / 0.95)",
+            background: "oklch(0.14 0.02 var(--neutral-hue) / 0.95)",
             border: `2px solid ${config.glowColor}50`,
             boxShadow: `0 0 60px ${config.glowColor}30, 0 0 120px ${config.glowColor}15`,
             perspective: 1000,
@@ -303,7 +303,7 @@ export function AchievementUnlockAnimation({
 
           {/* Rarity badge */}
           <motion.span
-            className="inline-block text-[11px] font-display font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3"
+            className="inline-block text-xs font-display font-black uppercase tracking-wider px-3 py-1 rounded-full mb-3"
             style={{
               background: `${config.glowColor}20`,
               color: config.glowColor,

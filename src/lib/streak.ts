@@ -207,9 +207,7 @@ export const MILESTONE_WEEKS = new Set(
 );
 
 export function getMilestoneMessage(weeks: number): string {
-  return (
-    MILESTONE_MESSAGES[weeks] ?? `Week goal hit! 🔥 ${weeks}-week streak`
-  );
+  return MILESTONE_MESSAGES[weeks] ?? `Week goal hit! 🔥 ${weeks}-week streak`;
 }
 
 // ─── Weekly rollover / sync ─────────────────────────────────────────────────
@@ -230,7 +228,10 @@ export interface SyncResult {
  * — so the celebration fires immediately rather than waiting for Sunday).
  * Idempotent: calling this repeatedly with no new data is a no-op.
  */
-export function syncStreak(data: StreakData, today: Date = new Date()): SyncResult {
+export function syncStreak(
+  data: StreakData,
+  today: Date = new Date(),
+): SyncResult {
   const d: StreakData = { ...data };
   let justHitWeeklyGoal = false;
   let newStreakWeeks = 0;
@@ -285,7 +286,13 @@ export function syncStreak(data: StreakData, today: Date = new Date()): SyncResu
     newStreakWeeks = d.current;
   }
 
-  return { data: d, justHitWeeklyGoal, newStreakWeeks, streakJustEnded, endedFromWeeks };
+  return {
+    data: d,
+    justHitWeeklyGoal,
+    newStreakWeeks,
+    streakJustEnded,
+    endedFromWeeks,
+  };
 }
 
 // ─── Recording a completed workout ─────────────────────────────────────────

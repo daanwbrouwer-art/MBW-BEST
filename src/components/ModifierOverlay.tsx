@@ -66,8 +66,8 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center cursor-pointer select-none"
           style={{
             background: isAce
-              ? "radial-gradient(ellipse 70% 60% at 50% 40%, oklch(0.65 0.25 30) 0%, oklch(0.10 0.02 20) 45%, oklch(0.08 0.008 260) 70%)"
-              : "radial-gradient(ellipse 70% 60% at 50% 40%, oklch(0.55 0.18 250) 0%, oklch(0.09 0.02 250) 45%, oklch(0.08 0.008 260) 70%)",
+              ? "radial-gradient(ellipse 70% 60% at 50% 40%, oklch(var(--energy)) 0%, oklch(0.10 0.02 20) 45%, oklch(0.08 0.008 var(--neutral-hue)) 70%)"
+              : "radial-gradient(ellipse 70% 60% at 50% 40%, oklch(var(--pulse)) 0%, oklch(0.09 0.02 var(--neutral-hue)) 45%, oklch(0.08 0.008 var(--neutral-hue)) 70%)",
           }}
           onClick={() => {
             if (timerRef.current) clearTimeout(timerRef.current);
@@ -81,12 +81,14 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             className="absolute top-6 right-6 px-3 py-1.5 rounded-full text-sm font-black tracking-wider"
             style={{
               background: isAce
-                ? "linear-gradient(135deg, oklch(0.83 0.19 84), oklch(0.72 0.22 50))"
-                : "linear-gradient(135deg, oklch(0.72 0.10 240), oklch(0.78 0.04 240))",
-              color: isAce ? "oklch(0.12 0.015 60)" : "oklch(0.10 0.015 250)",
+                ? "linear-gradient(135deg, oklch(var(--prestige)), oklch(var(--prestige)))"
+                : "linear-gradient(135deg, oklch(var(--pulse)), oklch(0.78 0.04 var(--neutral-hue)))",
+              color: isAce
+                ? "oklch(0.12 0.015 var(--prestige-h))"
+                : "oklch(0.10 0.015 var(--neutral-hue))",
               boxShadow: isAce
-                ? "0 0 16px oklch(0.83 0.19 84 / 0.5), 0 2px 8px oklch(0 0 0 / 0.4)"
-                : "0 0 16px oklch(0.72 0.10 240 / 0.5), 0 2px 8px oklch(0 0 0 / 0.4)",
+                ? "0 0 16px oklch(var(--prestige) / 0.5), 0 2px 8px oklch(0 0 0 / 0.4)"
+                : "0 0 16px oklch(var(--pulse) / 0.5), 0 2px 8px oklch(0 0 0 / 0.4)",
             }}
           >
             {isAce ? "\u00d72" : "\u00f72"}
@@ -98,7 +100,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             <p
               className="text-xs font-bold uppercase tracking-[0.3em]"
               style={{
-                color: isAce ? "oklch(0.83 0.19 84)" : "oklch(0.72 0.10 240)",
+                color: isAce ? "oklch(var(--prestige))" : "oklch(var(--pulse))",
               }}
             >
               MODIFIER
@@ -107,7 +109,10 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             {/* REPS text */}
             <p
               className="font-black leading-none"
-              style={{ fontSize: "3.25rem", color: "oklch(0.97 0.005 260)" }}
+              style={{
+                fontSize: "3.25rem",
+                color: "oklch(0.97 0.005 var(--neutral-hue))",
+              }}
             >
               REPS
             </p>
@@ -118,15 +123,15 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
               style={{
                 fontSize: "4.5rem",
                 background: isAce
-                  ? "linear-gradient(135deg, oklch(0.83 0.19 84) 0%, oklch(0.65 0.25 30) 100%)"
-                  : "linear-gradient(135deg, oklch(0.72 0.10 240) 0%, oklch(0.78 0.04 240) 100%)",
+                  ? "linear-gradient(135deg, oklch(var(--prestige)) 0%, oklch(var(--energy)) 100%)"
+                  : "linear-gradient(135deg, oklch(var(--pulse)) 0%, oklch(0.78 0.04 var(--neutral-hue)) 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
                 textShadow: "none",
                 filter: isAce
-                  ? "drop-shadow(0 0 18px oklch(0.83 0.19 84 / 0.55))"
-                  : "drop-shadow(0 0 18px oklch(0.72 0.10 240 / 0.55))",
+                  ? "drop-shadow(0 0 18px oklch(var(--prestige) / 0.55))"
+                  : "drop-shadow(0 0 18px oklch(var(--pulse) / 0.55))",
               }}
             >
               {isAce ? "DOUBLED" : "HALVED"}
@@ -137,8 +142,8 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
               className="w-16 h-px my-1"
               style={{
                 background: isAce
-                  ? "linear-gradient(90deg, transparent, oklch(0.83 0.19 84), transparent)"
-                  : "linear-gradient(90deg, transparent, oklch(0.72 0.10 240), transparent)",
+                  ? "linear-gradient(90deg, transparent, oklch(var(--prestige)), transparent)"
+                  : "linear-gradient(90deg, transparent, oklch(var(--pulse)), transparent)",
               }}
             />
 
@@ -147,7 +152,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
               className="font-black leading-none"
               style={{
                 fontSize: "6rem",
-                color: "oklch(0.97 0.005 260)",
+                color: "oklch(0.97 0.005 var(--neutral-hue))",
                 lineHeight: 1,
               }}
             >
@@ -158,7 +163,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             <p
               className="font-bold text-sm tracking-[0.2em] uppercase"
               style={{
-                color: isAce ? "oklch(0.83 0.19 84)" : "oklch(0.72 0.10 240)",
+                color: isAce ? "oklch(var(--prestige))" : "oklch(var(--pulse))",
               }}
             >
               REPS
@@ -168,7 +173,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             {exerciseName && (
               <p
                 className="text-sm font-medium text-center mt-1"
-                style={{ color: "oklch(0.92 0.01 260 / 0.65)" }}
+                style={{ color: "oklch(0.92 0.01 var(--neutral-hue) / 0.65)" }}
               >
                 {exerciseName}
               </p>
@@ -178,7 +183,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
           {/* Tap to continue hint */}
           <p
             className="absolute bottom-10 text-xs font-medium tracking-widest uppercase"
-            style={{ color: "oklch(0.92 0.01 260 / 0.3)" }}
+            style={{ color: "oklch(0.92 0.01 var(--neutral-hue) / 0.3)" }}
           >
             TAP TO CONTINUE
           </p>

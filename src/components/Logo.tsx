@@ -34,7 +34,7 @@ export function Logo({
     >
       {(showIcon || iconOnly) && (
         <img
-          src="/assets/images/mbw-logo-white-icon.png"
+          src="/assets/images/mbw-logo-white-icon.webp"
           alt="MyBodyWeight emblem"
           className={cn("object-contain shrink-0", iconSizes[size])}
         />

@@ -26,15 +26,15 @@ export function VideoButton({ url, className }: VideoButtonProps) {
         className,
       )}
       style={{
-        boxShadow: "0 0 0 0 oklch(0.68 0.25 180 / 0)",
+        boxShadow: "0 0 0 0 oklch(var(--primary) / 0)",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLButtonElement).style.boxShadow =
-          "0 0 14px oklch(0.68 0.25 180 / 0.35)";
+          "0 0 14px oklch(var(--primary) / 0.35)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLButtonElement).style.boxShadow =
-          "0 0 0 0 oklch(0.68 0.25 180 / 0)";
+          "0 0 0 0 oklch(var(--primary) / 0)";
       }}
       data-ocid="video-button"
     >

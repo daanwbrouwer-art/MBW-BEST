@@ -157,8 +157,14 @@ export function buildSessionRecord(params: {
   });
 
   const hasRoyalFlush =
-    kingCount > 0 && queenCount > 0 && jackCount > 0 && aceCount > 0 && jokerCount > 0;
-  const hasMirrorImage = Object.values(rankSuits).some((suits) => suits.size >= 4);
+    kingCount > 0 &&
+    queenCount > 0 &&
+    jackCount > 0 &&
+    aceCount > 0 &&
+    jokerCount > 0;
+  const hasMirrorImage = Object.values(rankSuits).some(
+    (suits) => suits.size >= 4,
+  );
   const isFullDeckSession = totalCardsInSession >= 52 && cardsDrawn >= 52;
   const startDate = new Date(startedAt);
 

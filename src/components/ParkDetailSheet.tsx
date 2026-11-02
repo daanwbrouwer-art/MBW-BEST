@@ -70,7 +70,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-end justify-center"
-      style={{ background: "oklch(0.05 0.005 260 / 0.92)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.92)" }}
       data-ocid="park-detail.sheet"
       onClick={onClose}
     >
@@ -81,8 +81,8 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
         className="w-full max-w-[430px] rounded-t-3xl overflow-hidden"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--pulse) / 0.3)",
           borderBottom: "none",
           boxShadow: "0 -20px 60px oklch(0 0 0 / 0.6)",
         }}
@@ -91,7 +91,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
         <div className="px-5 pt-3 pb-8">
           <div
             className="w-10 h-1 rounded-full mx-auto mb-4"
-            style={{ background: "oklch(0.4 0.01 260)" }}
+            style={{ background: "oklch(0.4 0.01 var(--neutral-hue))" }}
           />
 
           <div className="relative">
@@ -102,7 +102,9 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
                     <CarouselItem key={photo.id} className="pl-0">
                       <div
                         className="w-full aspect-[4/3] rounded-2xl overflow-hidden"
-                        style={{ background: "oklch(0.16 0.01 260)" }}
+                        style={{
+                          background: "oklch(0.16 0.01 var(--neutral-hue))",
+                        }}
                       >
                         <img
                           src={photo.photo_url}
@@ -118,8 +120,8 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
               <div
                 className="w-full aspect-[4/3] rounded-2xl flex flex-col items-center justify-center gap-2"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px dashed oklch(0.32 0.01 260)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px dashed oklch(0.32 0.01 var(--neutral-hue))",
                 }}
                 data-ocid="park-detail.no_photos"
               >
@@ -133,7 +135,9 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
               type="button"
               onClick={onClose}
               className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ background: "oklch(0.08 0.005 260 / 0.7)" }}
+              style={{
+                background: "oklch(0.08 0.005 var(--neutral-hue) / 0.7)",
+              }}
               data-ocid="park-detail.close_button"
               aria-label="Close"
             >
@@ -150,11 +154,11 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
                 {park.equipment.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[11px] font-display font-bold px-3 py-1 rounded-full"
+                    className="text-xs font-display font-bold px-3 py-1 rounded-full"
                     style={{
-                      background: "oklch(0.68 0.25 180 / 0.12)",
-                      color: "oklch(0.68 0.25 180)",
-                      border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+                      background: "oklch(var(--pulse) / 0.12)",
+                      color: "oklch(var(--pulse))",
+                      border: "1px solid oklch(var(--pulse) / 0.25)",
                     }}
                   >
                     {tag}
@@ -174,8 +178,8 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
             disabled={!park}
             className="w-full h-12 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm font-display font-bold transition-smooth hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
             style={{
-              background: "oklch(0.68 0.25 180)",
-              color: "oklch(0.08 0.005 260)",
+              background: "oklch(var(--pulse))",
+              color: "oklch(0.08 0.005 var(--neutral-hue))",
             }}
             data-ocid="park-detail.navigate_button"
             aria-label="Get directions to this park"

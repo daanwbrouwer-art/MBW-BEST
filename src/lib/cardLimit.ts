@@ -1,6 +1,6 @@
 import { CardCount } from "@/backend";
-import { getCardsDrawnThisWeek } from "@/lib/streak";
 import type { AppTier } from "@/hooks/use-tier";
+import { getCardsDrawnThisWeek } from "@/lib/streak";
 import type { DeckDifficulty } from "@/types/workout";
 
 export const GUEST_WEEKLY_CARD_LIMIT = 10;
@@ -28,7 +28,9 @@ export function isDifficultyLocked(
   difficulty: DeckDifficulty,
   tier: AppTier,
 ): boolean {
-  return DIFFICULTY_RANK[difficulty] > DIFFICULTY_RANK[MAX_DIFFICULTY_FOR_TIER[tier]];
+  return (
+    DIFFICULTY_RANK[difficulty] > DIFFICULTY_RANK[MAX_DIFFICULTY_FOR_TIER[tier]]
+  );
 }
 
 /** Caps a difficulty down to the highest one the tier actually has access to — used to close the "Recommended for you" shortcut around DecksPage's own lock check. */
@@ -36,7 +38,8 @@ export function capDifficultyToTier(
   difficulty: DeckDifficulty,
   tier: AppTier,
 ): DeckDifficulty {
-  return DIFFICULTY_RANK[difficulty] > DIFFICULTY_RANK[MAX_DIFFICULTY_FOR_TIER[tier]]
+  return DIFFICULTY_RANK[difficulty] >
+    DIFFICULTY_RANK[MAX_DIFFICULTY_FOR_TIER[tier]]
     ? MAX_DIFFICULTY_FOR_TIER[tier]
     : difficulty;
 }
@@ -91,7 +94,12 @@ export function checkWeeklyCardLimit(
 ): CardLimitCheck {
   const limit = weeklyCardLimitFor(effectiveTier);
   if (limit === null) {
-    return { allowed: true, limit: null, cardsUsedThisWeek: 0, remaining: null };
+    return {
+      allowed: true,
+      limit: null,
+      cardsUsedThisWeek: 0,
+      remaining: null,
+    };
   }
   const used = getCardsDrawnThisWeek(isGuest);
   const remaining = Math.max(0, limit - used);

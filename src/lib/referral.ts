@@ -23,7 +23,11 @@ export interface ReferralRecord {
 
 interface RawAccounts {
   [email: string]: {
-    account: { username?: string; referral?: ReferralRecord; [k: string]: unknown };
+    account: {
+      username?: string;
+      referral?: ReferralRecord;
+      [k: string]: unknown;
+    };
     [k: string]: unknown;
   };
 }
@@ -53,7 +57,10 @@ export function getCurrentEmail(): string | null {
 }
 
 function generateCode(username: string): string {
-  const base = (username || "MBW").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
+  const base = (username || "MBW")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 4);
   const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
   return `MBW-${base || "USER"}${suffix}`;
 }
@@ -70,7 +77,8 @@ export function ensureReferralCode(email: string): string {
     code,
     successfulReferrals: record.account.referral?.successfulReferrals ?? 0,
     wasReferred: record.account.referral?.wasReferred ?? false,
-    firstPaymentDiscountUsed: record.account.referral?.firstPaymentDiscountUsed ?? false,
+    firstPaymentDiscountUsed:
+      record.account.referral?.firstPaymentDiscountUsed ?? false,
   };
   writeRaw(accounts);
   return code;

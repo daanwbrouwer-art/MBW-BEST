@@ -3,11 +3,19 @@
 // toward healthy, varied training rather than repetitive strain. Never
 // blocks the user from training whatever they actively pick themselves —
 // this only shapes what gets *recommended*.
-import { type AchievementSessionRecord, readSessions } from "@/lib/achievementSessionLog";
+import {
+  type AchievementSessionRecord,
+  readSessions,
+} from "@/lib/achievementSessionLog";
 import { CATEGORY_LABEL } from "@/lib/recommendation";
 import { DECK_CATEGORY_LABEL, type DeckCategory } from "@/types/workout";
 
-const ALL_CATEGORIES: DeckCategory[] = ["UpperBody", "LowerBody", "Core", "FullBody"];
+const ALL_CATEGORIES: DeckCategory[] = [
+  "UpperBody",
+  "LowerBody",
+  "Core",
+  "FullBody",
+];
 
 // Upper/Lower Body sessions load a specific muscle group hard and need the
 // full ~72h window; Core/Full Body distribute load differently and recover
@@ -44,7 +52,8 @@ export function getMuscleGroupRecency(
   const result = {} as Record<DeckCategory, MuscleGroupRecency>;
   for (const category of ALL_CATEGORIES) {
     const lastTrainedAt = latestSessionAt(sessions, category);
-    const hoursAgo = lastTrainedAt === null ? null : (now - lastTrainedAt) / 3_600_000;
+    const hoursAgo =
+      lastTrainedAt === null ? null : (now - lastTrainedAt) / 3_600_000;
     result[category] = {
       category,
       lastTrainedAt,
@@ -126,6 +135,8 @@ export function formatRecoveryTip(tip: RecoveryTipInfo): string {
   const trainedLabel = CATEGORY_LABEL[tip.trainedCategory];
   const recommendedLabel = DECK_CATEGORY_LABEL[tip.recommendedCategory];
   const whenPhrase =
-    tip.daysAgo <= 0 ? "earlier today" : `${tip.daysAgo} ${tip.daysAgo === 1 ? "day" : "days"} ago`;
+    tip.daysAgo <= 0
+      ? "earlier today"
+      : `${tip.daysAgo} ${tip.daysAgo === 1 ? "day" : "days"} ago`;
   return `Recovery tip: your ${trainedLabel} trained ${whenPhrase}, try ${recommendedLabel} today`;
 }

@@ -1,6 +1,6 @@
+import type { DeckCategory, DeckDifficulty } from "@/types/workout";
 import { describe, expect, it } from "vitest";
 import { buildLocalDeck } from "./use-workout";
-import type { DeckCategory, DeckDifficulty } from "@/types/workout";
 
 const CATEGORIES: DeckCategory[] = [
   "UpperBody",

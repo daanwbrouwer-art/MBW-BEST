@@ -52,14 +52,14 @@ export default function ExerciseProgressPage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--energy-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-energy/50 hover:text-energy transition-smooth"
           onClick={() => navigate({ to: "/achievements" })}
           data-ocid="exercise-progress.back_button"
           aria-label="Go back to achievements"
@@ -89,18 +89,18 @@ export default function ExerciseProgressPage() {
           <div
             className="rounded-2xl px-5 py-10 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
             }}
             data-ocid="exercise-progress.empty_state"
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+              style={{ background: "oklch(var(--energy) / 0.1)" }}
             >
               <Dumbbell
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--energy) / 0.5)" }}
               />
             </div>
             <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -117,8 +117,8 @@ export default function ExerciseProgressPage() {
             transition={{ delay: 0.12, duration: 0.45 }}
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="exercise-progress.list"
           >
@@ -129,14 +129,14 @@ export default function ExerciseProgressPage() {
                 style={{
                   borderBottom:
                     i < rows.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`exercise-progress.item.${i + 1}`}
               >
                 <div
                   className="w-12 h-12 rounded-xl overflow-hidden shrink-0"
-                  style={{ background: "oklch(0.13 0.01 260)" }}
+                  style={{ background: "oklch(var(--background))" }}
                 >
                   <img
                     src={resolveExerciseIllustration(row.name, gender)}
@@ -150,13 +150,13 @@ export default function ExerciseProgressPage() {
                 <div className="flex items-baseline gap-1 shrink-0">
                   <span
                     className="font-display font-black text-lg leading-none"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    style={{ color: "oklch(var(--energy))" }}
                   >
                     {row.reps}
                   </span>
                   <span
-                    className="font-body text-[10px] uppercase tracking-wide"
-                    style={{ color: "oklch(0.75 0.008 260)" }}
+                    className="font-body text-xs uppercase tracking-wide"
+                    style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                   >
                     reps
                   </span>

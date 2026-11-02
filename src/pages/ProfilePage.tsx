@@ -1,5 +1,14 @@
 import { Logo } from "@/components/Logo";
 import { WeeklyGoalPicker } from "@/components/WeeklyGoalPicker";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -22,7 +31,13 @@ import {
   getBMICategory,
 } from "@/lib/calories";
 import { readChallengeHistory } from "@/lib/challenge";
-import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
+import { deleteAccount } from "@/lib/deleteAccount";
+import {
+  openManageSubscriptions,
+  openPrivacyPolicy,
+  openSubscriptionTerms,
+  openTermsOfUse,
+} from "@/lib/legal";
 import { paymentService } from "@/lib/payments";
 import {
   computeDiscountPct,
@@ -56,9 +71,11 @@ import {
   Lock,
   LogOut,
   MessageCircle,
+  Palette,
   RotateCcw,
   Scale,
   Sparkles,
+  Trash2,
   Trophy,
   User,
   Users,
@@ -232,6 +249,30 @@ export default function ProfilePage() {
     navigate({ to: "/onboarding/welcome" });
   };
 
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    const result = await deleteAccount();
+    setIsDeleting(false);
+    if (!result.ok) {
+      toast("Account not deleted", {
+        description: result.error,
+        duration: 6000,
+      });
+      return;
+    }
+    setIsDeleteDialogOpen(false);
+    clear();
+    queryClient.clear();
+    toast("Account deleted", {
+      description: "Your account and data have been permanently removed.",
+      duration: 5000,
+    });
+    navigate({ to: "/onboarding/welcome" });
+  };
+
   const handleToggleEquipment = (key: keyof EquipmentProfile) => {
     saveOnboarding({ equipment: { ...equipment, [key]: !equipment[key] } });
   };
@@ -313,7 +354,7 @@ export default function ProfilePage() {
 
   return (
     <div
-      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto"
+      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto pb-28"
       data-ocid="profile.page"
     >
       {/* Radial gradient */}
@@ -321,7 +362,7 @@ export default function ProfilePage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
@@ -363,31 +404,31 @@ export default function ProfilePage() {
           <div
             className="w-20 h-20 rounded-full flex items-center justify-center mb-4"
             style={{
-              background: "oklch(0.17 0.015 180 / 0.3)",
-              border: "2px solid oklch(0.68 0.25 180 / 0.4)",
-              boxShadow: "0 0 40px oklch(0.68 0.25 180 / 0.18)",
+              background: "oklch(0.17 0.015 var(--primary-h) / 0.3)",
+              border: "2px solid oklch(var(--primary) / 0.4)",
+              boxShadow: "0 0 40px oklch(var(--primary) / 0.18)",
             }}
           >
             <User
               className="w-9 h-9"
-              style={{ color: "oklch(0.68 0.25 180)" }}
+              style={{ color: "oklch(var(--primary))" }}
             />
           </div>
           <h1 className="font-display font-black text-2xl text-foreground mb-1">
             {profile?.username ?? (isLoggedIn ? "Athlete" : "Guest")}
           </h1>
           <span
-            className="text-[11px] font-display font-bold px-3 py-1 rounded-full"
+            className="text-xs font-display font-bold px-3 py-1 rounded-full"
             style={{
               background: isLoggedIn
-                ? "oklch(0.68 0.25 180 / 0.12)"
-                : "oklch(0.28 0.01 260 / 0.6)",
+                ? "oklch(var(--primary) / 0.12)"
+                : "oklch(0.28 0.01 var(--neutral-hue) / 0.6)",
               color: isLoggedIn
-                ? "oklch(0.68 0.25 180)"
-                : "oklch(0.62 0.008 260)",
+                ? "oklch(var(--primary))"
+                : "oklch(0.62 0.008 var(--neutral-hue))",
               border: isLoggedIn
-                ? "1px solid oklch(0.68 0.25 180 / 0.25)"
-                : "1px solid oklch(0.32 0.01 260 / 0.5)",
+                ? "1px solid oklch(var(--primary) / 0.25)"
+                : "1px solid oklch(0.32 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {isLoggedIn ? "REGISTERED" : "GUEST MODE"}
@@ -422,16 +463,18 @@ export default function ProfilePage() {
               key={stat.label}
               className="rounded-2xl p-3.5 flex flex-col items-center gap-1.5 text-center"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
               }}
               data-ocid={`profile.stat.item.${i + 1}`}
             >
-              <span style={{ color: "oklch(0.68 0.25 180)" }}>{stat.icon}</span>
+              <span style={{ color: "oklch(var(--primary))" }}>
+                {stat.icon}
+              </span>
               <p className="font-display font-black text-xl text-foreground leading-none">
                 {stat.value}
               </p>
-              <p className="text-[10px] font-body text-muted-foreground uppercase tracking-wider">
+              <p className="text-xs font-body text-muted-foreground uppercase tracking-wider">
                 {stat.label}
               </p>
             </div>
@@ -450,7 +493,7 @@ export default function ProfilePage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <Dumbbell className="w-3 h-3 text-muted-foreground" />
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               Equipment Tier
             </p>
           </div>
@@ -473,13 +516,14 @@ export default function ProfilePage() {
                   style={
                     selected
                       ? {
-                          background: "oklch(0.68 0.25 180 / 0.14)",
-                          border: "1px solid oklch(0.68 0.25 180 / 0.6)",
-                          boxShadow: "0 0 16px oklch(0.68 0.25 180 / 0.18)",
+                          background: "oklch(var(--primary) / 0.14)",
+                          border: "1px solid oklch(var(--primary) / 0.6)",
+                          boxShadow: "0 0 16px oklch(var(--primary) / 0.18)",
                         }
                       : {
-                          background: "oklch(0.16 0.01 260)",
-                          border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+                          background: "oklch(0.16 0.01 var(--neutral-hue))",
+                          border:
+                            "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
                         }
                   }
                   data-ocid={`profile.equipment_tier.option_${option.value}`}
@@ -488,13 +532,13 @@ export default function ProfilePage() {
                     className="font-display font-bold text-xs"
                     style={{
                       color: selected
-                        ? "oklch(0.68 0.25 180)"
-                        : "oklch(0.92 0.01 260)",
+                        ? "oklch(var(--primary))"
+                        : "oklch(0.92 0.01 var(--neutral-hue))",
                     }}
                   >
                     {option.label}
                   </span>
-                  <span className="text-[9px] font-body leading-tight text-muted-foreground">
+                  <span className="text-xs font-body leading-tight text-muted-foreground">
                     {option.subtitle}
                   </span>
                 </button>
@@ -512,13 +556,13 @@ export default function ProfilePage() {
           data-ocid="profile.equipment_section"
         >
           <div className="flex items-center justify-between mb-3">
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               My Equipment
             </p>
             <button
               type="button"
               onClick={handleRetakeAssessment}
-              className="flex items-center gap-1 text-[10px] font-display font-bold uppercase tracking-wide text-primary hover:opacity-75 transition-smooth"
+              className="flex items-center gap-1 text-xs font-display font-bold uppercase tracking-wide text-primary hover:opacity-75 transition-smooth"
               data-ocid="profile.retake_assessment_button"
             >
               <RotateCcw className="w-3 h-3" /> Retake Assessment
@@ -527,8 +571,8 @@ export default function ProfilePage() {
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {EQUIPMENT_ITEMS.map((item, i) => (
@@ -538,7 +582,7 @@ export default function ProfilePage() {
                 style={{
                   borderBottom:
                     i < EQUIPMENT_ITEMS.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`profile.equipment.item.${i + 1}`}
@@ -575,15 +619,15 @@ export default function ProfilePage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <Scale className="w-3 h-3 text-muted-foreground" />
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               Body Metrics
             </p>
           </div>
           <div
             className="rounded-2xl p-4 flex flex-col gap-6"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="profile.body_metrics_card"
           >
@@ -648,8 +692,8 @@ export default function ProfilePage() {
             <div
               className="rounded-xl px-4 py-3 flex items-center justify-between"
               style={{
-                background: "oklch(0.17 0.04 180 / 0.35)",
-                border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+                background: "oklch(0.17 0.04 var(--primary-h) / 0.35)",
+                border: "1px solid oklch(var(--primary) / 0.25)",
               }}
               data-ocid="profile.body_metrics.bmi_readout"
             >
@@ -676,15 +720,15 @@ export default function ProfilePage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <Bell className="w-3 h-3 text-muted-foreground" />
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               Notifications
             </p>
           </div>
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {NOTIFICATION_ITEMS.map((item, i) => (
@@ -694,7 +738,7 @@ export default function ProfilePage() {
                 style={{
                   borderBottom:
                     i < NOTIFICATION_ITEMS.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`profile.notifications.item.${i + 1}`}
@@ -734,15 +778,15 @@ export default function ProfilePage() {
           >
             <div className="flex items-center gap-1.5 mb-3">
               <Users className="w-3 h-3 text-muted-foreground" />
-              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+              <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
                 Nearby Athletes
               </p>
             </div>
             <div
               className="rounded-2xl overflow-hidden"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
             >
               <div className="flex items-center justify-between gap-3 px-5 py-3.5">
@@ -767,7 +811,10 @@ export default function ProfilePage() {
                 type="button"
                 onClick={() => navigate({ to: "/nearby" })}
                 className="w-full flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
-                style={{ borderTop: "1px solid oklch(0.22 0.01 260 / 0.5)" }}
+                style={{
+                  borderTop:
+                    "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
+                }}
                 data-ocid="profile.view_nearby_button"
               >
                 <span className="font-display font-bold text-sm text-foreground">
@@ -790,15 +837,15 @@ export default function ProfilePage() {
           >
             <div className="flex items-center gap-1.5 mb-3">
               <MessageCircle className="w-3 h-3 text-muted-foreground" />
-              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+              <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
                 Messaging
               </p>
             </div>
             <div
               className="rounded-2xl overflow-hidden"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
             >
               <div className="px-5 py-3.5">
@@ -829,14 +876,16 @@ export default function ProfilePage() {
                         style={
                           selected
                             ? {
-                                background: "oklch(0.68 0.25 180 / 0.18)",
-                                color: "oklch(0.68 0.25 180)",
-                                border: "1px solid oklch(0.68 0.25 180 / 0.5)",
+                                background: "oklch(var(--primary) / 0.18)",
+                                color: "oklch(var(--primary))",
+                                border: "1px solid oklch(var(--primary) / 0.5)",
                               }
                             : {
-                                background: "oklch(0.17 0.012 260)",
-                                color: "oklch(0.62 0.008 260)",
-                                border: "1px solid oklch(0.28 0.01 260)",
+                                background:
+                                  "oklch(0.17 0.012 var(--neutral-hue))",
+                                color: "oklch(0.62 0.008 var(--neutral-hue))",
+                                border:
+                                  "1px solid oklch(0.28 0.01 var(--neutral-hue))",
                               }
                         }
                         data-ocid={`profile.messaging_preference.${option.value}`}
@@ -851,7 +900,10 @@ export default function ProfilePage() {
                 type="button"
                 onClick={() => navigate({ to: "/chat" })}
                 className="w-full flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
-                style={{ borderTop: "1px solid oklch(0.22 0.01 260 / 0.5)" }}
+                style={{
+                  borderTop:
+                    "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
+                }}
                 data-ocid="profile.view_chats_button"
               >
                 <span className="font-display font-bold text-sm text-foreground">
@@ -873,15 +925,15 @@ export default function ProfilePage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <Flame className="w-3 h-3 text-muted-foreground" />
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               Training Goal
             </p>
           </div>
           <div
             className="rounded-2xl p-4"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             <p className="text-xs text-muted-foreground font-body mb-3 leading-snug">
@@ -910,7 +962,7 @@ export default function ProfilePage() {
           >
             <div className="flex items-center gap-1.5 mb-3">
               <Trophy className="w-3 h-3 text-muted-foreground" />
-              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+              <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
                 Weekly Challenges
               </p>
             </div>
@@ -918,26 +970,26 @@ export default function ProfilePage() {
               <div
                 className="rounded-2xl px-5 py-4 flex items-center gap-3 animate-pulse"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                 }}
                 data-ocid="profile.challenges.loading"
               >
                 <div
                   className="w-4 h-4 rounded-full shrink-0"
-                  style={{ background: "oklch(0.26 0.01 260)" }}
+                  style={{ background: "oklch(0.26 0.01 var(--neutral-hue))" }}
                 />
                 <div
                   className="h-3.5 w-40 rounded-full"
-                  style={{ background: "oklch(0.24 0.01 260)" }}
+                  style={{ background: "oklch(0.24 0.01 var(--neutral-hue))" }}
                 />
               </div>
             ) : effectiveTier === "subscriber" ? (
               <div
                 className="rounded-2xl overflow-hidden"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                 }}
               >
                 <div
@@ -945,7 +997,7 @@ export default function ProfilePage() {
                   style={{
                     borderBottom:
                       challengeHistory.length > 0
-                        ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                        ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                         : "none",
                   }}
                   data-ocid="profile.challenges.won_counter"
@@ -955,7 +1007,7 @@ export default function ProfilePage() {
                   </span>
                   <span
                     className="font-display font-black text-sm text-right"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    style={{ color: "oklch(var(--primary))" }}
                   >
                     {challengeHistory.length} weekly{" "}
                     {challengeHistory.length === 1 ? "challenge" : "challenges"}{" "}
@@ -979,7 +1031,7 @@ export default function ProfilePage() {
                         style={{
                           borderBottom:
                             i < arr.length - 1
-                              ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                              ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                               : "none",
                         }}
                         data-ocid={`profile.challenges.history.item.${i + 1}`}
@@ -1010,14 +1062,14 @@ export default function ProfilePage() {
               <div
                 className="rounded-2xl px-5 py-4 flex items-center gap-3"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                 }}
                 data-ocid="profile.challenges.locked_note"
               >
                 <Lock
                   className="w-4 h-4 shrink-0"
-                  style={{ color: "oklch(0.68 0.25 180)" }}
+                  style={{ color: "oklch(var(--primary))" }}
                 />
                 <p className="text-sm text-foreground font-body">
                   Subscribe to save your challenge history
@@ -1035,7 +1087,7 @@ export default function ProfilePage() {
           className="mb-6"
           data-ocid="profile.membership_section"
         >
-          <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+          <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground mb-3">
             Membership
           </p>
           {tierLoading ? (
@@ -1046,24 +1098,24 @@ export default function ProfilePage() {
             <div
               className="rounded-2xl p-4 flex items-center justify-between gap-3 animate-pulse"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
               data-ocid="profile.membership.loading"
             >
               <div className="min-w-0 flex flex-col gap-2">
                 <div
                   className="h-3.5 w-24 rounded-full"
-                  style={{ background: "oklch(0.24 0.01 260)" }}
+                  style={{ background: "oklch(0.24 0.01 var(--neutral-hue))" }}
                 />
                 <div
                   className="h-3 w-36 rounded-full"
-                  style={{ background: "oklch(0.2 0.01 260)" }}
+                  style={{ background: "oklch(0.2 0.01 var(--neutral-hue))" }}
                 />
               </div>
               <div
                 className="shrink-0 w-20 h-9 rounded-full"
-                style={{ background: "oklch(0.22 0.01 260)" }}
+                style={{ background: "oklch(0.22 0.01 var(--neutral-hue))" }}
               />
             </div>
           ) : (
@@ -1071,11 +1123,11 @@ export default function ProfilePage() {
               className="rounded-2xl p-4 flex items-center justify-between gap-3"
               style={{
                 background: subscription
-                  ? "oklch(0.17 0.04 180 / 0.3)"
-                  : "oklch(0.16 0.01 260)",
+                  ? "oklch(0.17 0.04 var(--primary-h) / 0.3)"
+                  : "oklch(0.16 0.01 var(--neutral-hue))",
                 border: subscription
-                  ? "1px solid oklch(0.68 0.25 180 / 0.35)"
-                  : "1px solid oklch(0.26 0.01 260 / 0.5)",
+                  ? "1px solid oklch(var(--primary) / 0.35)"
+                  : "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
             >
               <div className="min-w-0">
@@ -1100,12 +1152,12 @@ export default function ProfilePage() {
                   subscription
                     ? {
                         background: "transparent",
-                        border: "1px solid oklch(0.68 0.25 180 / 0.4)",
-                        color: "oklch(0.68 0.25 180)",
+                        border: "1px solid oklch(var(--primary) / 0.4)",
+                        color: "oklch(var(--primary))",
                       }
                     : {
-                        background: "oklch(0.68 0.25 180)",
-                        color: "oklch(0.08 0.005 260)",
+                        background: "oklch(var(--primary))",
+                        color: "oklch(0.08 0.005 var(--neutral-hue))",
                       }
                 }
                 data-ocid="profile.membership.manage_button"
@@ -1127,6 +1179,14 @@ export default function ProfilePage() {
             />
             {isRestoring ? "Restoring…" : "Restore Purchases"}
           </button>
+          <button
+            type="button"
+            onClick={openManageSubscriptions}
+            className="w-full h-10 rounded-xl flex items-center justify-center gap-1.5 text-xs font-display font-bold uppercase tracking-wide text-muted-foreground hover:text-primary transition-smooth"
+            data-ocid="profile.membership.manage_store_subscription_button"
+          >
+            Manage or cancel subscription
+          </button>
         </motion.div>
 
         {/* Referrals */}
@@ -1140,15 +1200,15 @@ export default function ProfilePage() {
           >
             <div className="flex items-center gap-1.5 mb-3">
               <Gift className="w-3 h-3 text-muted-foreground" />
-              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+              <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
                 Referrals
               </p>
             </div>
             <div
               className="rounded-2xl p-4"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
             >
               <p className="text-xs text-muted-foreground font-body mb-3 leading-snug">
@@ -1160,8 +1220,8 @@ export default function ProfilePage() {
                 onClick={handleCopyReferralCode}
                 className="w-full h-12 rounded-xl flex items-center justify-between px-4 mb-3 transition-smooth hover:opacity-90"
                 style={{
-                  background: "oklch(0.13 0.008 260)",
-                  border: "1px dashed oklch(0.68 0.25 180 / 0.4)",
+                  background: "oklch(0.13 0.008 var(--neutral-hue))",
+                  border: "1px dashed oklch(var(--primary) / 0.4)",
                 }}
                 data-ocid="profile.referral.copy_button"
               >
@@ -1180,7 +1240,7 @@ export default function ProfilePage() {
                 {referralDiscountPct > 0 && (
                   <span
                     className="flex items-center gap-1 text-xs font-display font-bold"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    style={{ color: "oklch(var(--primary))" }}
                     data-ocid="profile.referral.discount_active"
                   >
                     <Sparkles className="w-3 h-3" />
@@ -1200,15 +1260,15 @@ export default function ProfilePage() {
           className="mb-6"
           data-ocid="profile.history_section"
         >
-          <p className="font-display font-bold text-[10px] uppercase tracking-widest mb-3 text-muted-foreground">
+          <p className="font-display font-bold text-xs uppercase tracking-widest mb-3 text-muted-foreground">
             Past Sessions
           </p>
           {history && history.length > 0 ? (
             <div
               className="rounded-2xl overflow-hidden"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
             >
               {[...history]
@@ -1227,7 +1287,7 @@ export default function ProfilePage() {
                       style={{
                         borderBottom:
                           i < Math.min(history.length, 10) - 1
-                            ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                            ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                             : "none",
                       }}
                       data-ocid={`profile.history.item.${i + 1}`}
@@ -1244,13 +1304,15 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-2 shrink-0">
                         <span
                           className="font-display font-black text-base"
-                          style={{ color: "oklch(0.68 0.25 180)" }}
+                          style={{ color: "oklch(var(--primary))" }}
                         >
                           {Number(entry.totalReps)}
                         </span>
                         <span
-                          className="text-[10px] font-body uppercase tracking-wide"
-                          style={{ color: "oklch(0.5 0.008 260)" }}
+                          className="text-xs font-body uppercase tracking-wide"
+                          style={{
+                            color: "oklch(0.5 0.008 var(--neutral-hue))",
+                          }}
                         >
                           reps
                         </span>
@@ -1263,8 +1325,8 @@ export default function ProfilePage() {
             <div
               className="rounded-2xl px-5 py-8 text-center"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
               }}
               data-ocid="profile.history.empty_state"
             >
@@ -1279,6 +1341,56 @@ export default function ProfilePage() {
         </motion.div>
 
         {/* Help */}
+        {/* Appearance */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.45 }}
+          className="mb-6"
+          data-ocid="profile.appearance_section"
+        >
+          <div className="flex items-center gap-1.5 mb-3">
+            <Palette className="w-3 h-3 text-muted-foreground" />
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
+              Appearance
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/palette-lab" })}
+            className="w-full rounded-2xl flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
+            style={{
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+            }}
+            data-ocid="profile.palette_link"
+          >
+            <span className="flex items-center gap-3">
+              <span className="flex -space-x-1" aria-hidden="true">
+                {(
+                  [
+                    "primary",
+                    "energy",
+                    "prestige",
+                    "pulse",
+                    "highlight",
+                  ] as const
+                ).map((role) => (
+                  <span
+                    key={role}
+                    className="w-4 h-4 rounded-full ring-2 ring-background"
+                    style={{ background: `oklch(var(--${role}))` }}
+                  />
+                ))}
+              </span>
+              <span className="font-display font-bold text-sm text-foreground">
+                Theme
+              </span>
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+          </button>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1288,7 +1400,7 @@ export default function ProfilePage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <HelpCircle className="w-3 h-3 text-muted-foreground" />
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               Help
             </p>
           </div>
@@ -1297,8 +1409,8 @@ export default function ProfilePage() {
             onClick={() => navigate({ to: "/faq" })}
             className="w-full rounded-2xl flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="profile.faq_link"
           >
@@ -1319,15 +1431,15 @@ export default function ProfilePage() {
         >
           <div className="flex items-center gap-1.5 mb-3">
             <FileText className="w-3 h-3 text-muted-foreground" />
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
               Legal
             </p>
           </div>
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             <button
@@ -1345,7 +1457,10 @@ export default function ProfilePage() {
               type="button"
               onClick={openPrivacyPolicy}
               className="w-full flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
-              style={{ borderTop: "1px solid oklch(0.22 0.01 260 / 0.5)" }}
+              style={{
+                borderTop:
+                  "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
+              }}
               data-ocid="profile.privacy_link"
             >
               <span className="font-display font-bold text-sm text-foreground">
@@ -1353,6 +1468,38 @@ export default function ProfilePage() {
               </span>
               <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
             </button>
+            <button
+              type="button"
+              onClick={openSubscriptionTerms}
+              className="w-full flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
+              style={{
+                borderTop:
+                  "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
+              }}
+              data-ocid="profile.subscription_terms_link"
+            >
+              <span className="font-display font-bold text-sm text-foreground">
+                Subscription Terms
+              </span>
+              <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+            </button>
+            {isLoggedIn && (
+              <button
+                type="button"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                className="w-full flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
+                style={{
+                  borderTop:
+                    "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
+                }}
+                data-ocid="profile.delete_account_button"
+              >
+                <span className="font-display font-bold text-sm text-destructive">
+                  Delete Account
+                </span>
+                <Trash2 className="w-4 h-4 text-destructive/70" />
+              </button>
+            )}
           </div>
         </motion.div>
 
@@ -1367,7 +1514,7 @@ export default function ProfilePage() {
               className="w-full h-14 font-display font-black text-base tracking-wider rounded-2xl"
               style={{
                 boxShadow:
-                  "0 0 32px oklch(0.68 0.25 180 / 0.28), 0 4px 16px oklch(0 0 0 / 0.25)",
+                  "0 0 32px oklch(var(--primary) / 0.28), 0 4px 16px oklch(0 0 0 / 0.25)",
               }}
               onClick={() => navigate({ to: "/onboarding/auth" })}
               data-ocid="profile.sign_in_button"
@@ -1386,19 +1533,19 @@ export default function ProfilePage() {
             transition={{ delay: 0.35 }}
             className="w-full rounded-2xl px-5 py-4 flex items-center gap-3 hover:border-primary/40 transition-smooth"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             onClick={() => navigate({ to: "/decks" })}
             data-ocid="profile.start_workout_button"
           >
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: "oklch(0.68 0.25 180 / 0.12)" }}
+              style={{ background: "oklch(var(--primary) / 0.12)" }}
             >
               <Dumbbell
                 className="w-4 h-4"
-                style={{ color: "oklch(0.68 0.25 180)" }}
+                style={{ color: "oklch(var(--primary))" }}
               />
             </div>
             <span className="font-display font-bold text-sm text-foreground flex-1 text-left">
@@ -1408,6 +1555,42 @@ export default function ProfilePage() {
           </motion.button>
         )}
       </div>
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => !isDeleting && setIsDeleteDialogOpen(open)}
+      >
+        <AlertDialogContent data-ocid="profile.delete_account_dialog">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm">
+                <p>
+                  This permanently deletes your account, profile, workout
+                  history, streaks, achievements, chats, and park photos you
+                  uploaded. This can't be undone.
+                </p>
+                <p>
+                  Deleting your account does <strong>not</strong> cancel a
+                  subscription. Cancel it first in Google Play or the App Store
+                  under Subscriptions.
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              data-ocid="profile.delete_account_confirm_button"
+            >
+              {isDeleting ? "Deleting…" : "Delete permanently"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Footer */}
       <footer className="relative z-10 px-5 pb-10 text-center mt-auto">

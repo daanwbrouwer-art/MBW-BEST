@@ -162,6 +162,36 @@ export async function getOfferings(): Promise<PurchasesOffering | null> {
   return current;
 }
 
+/** Store-localized price strings for one plan, straight from RevenueCat. */
+export interface StorePrice {
+  price: string;
+  perMonth: string | null;
+  perWeek: string | null;
+}
+
+/**
+ * Store-localized prices per plan (Google Play requires showing the store's
+ * price/currency rather than our hardcoded EUR). Empty outside native or
+ * before RevenueCat products are configured — callers fall back to
+ * `SUBSCRIPTION_TIERS`' EUR figures.
+ */
+export async function getStorePrices(): Promise<
+  Partial<Record<SubscriptionTierId, StorePrice>>
+> {
+  const offering = await getOfferings().catch(() => null);
+  const prices: Partial<Record<SubscriptionTierId, StorePrice>> = {};
+  for (const tierId of ["monthly", "quarterly", "annual"] as const) {
+    const product = packageForTier(offering, tierId)?.product;
+    if (!product) continue;
+    prices[tierId] = {
+      price: product.priceString,
+      perMonth: product.pricePerMonthString ?? null,
+      perWeek: product.pricePerWeekString ?? null,
+    };
+  }
+  return prices;
+}
+
 class RevenueCatPaymentService implements PaymentService {
   async purchase(
     tierId: SubscriptionTierId,

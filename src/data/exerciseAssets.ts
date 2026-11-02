@@ -34,48 +34,56 @@ export interface SuitConfig {
   gradientTo: string;
 }
 
+// Four-colour deck: each suit owns one palette colour (src/theme/palettes.ts),
+// so a card reads at a glance even mid-set — ♠ primary, ♥ energy,
+// ♦ prestige, ♣ pulse. The Joker borrows from all four.
 export const SUIT_CONFIG: Record<string, SuitConfig> = {
   Hearts: {
-    symbol: "\u2665",
+    symbol: "♥",
     label: "PUSH UPS",
-    accent: "oklch(0.65 0.22 25)",
-    glowColor: "oklch(0.65 0.22 25 / 0.35)",
-    gradientFrom: "oklch(0.09 0.015 310)",
-    gradientTo: "oklch(0.12 0.01 20)",
+    accent: "oklch(var(--energy))",
+    glowColor: "oklch(var(--energy) / 0.35)",
+    gradientFrom: "oklch(0.09 0.02 var(--energy-h))",
+    gradientTo: "oklch(0.12 0.015 var(--neutral-hue))",
   },
   Spades: {
-    symbol: "\u2660",
+    symbol: "♠",
     label: "PULL UPS",
-    accent: "oklch(0.72 0.04 240)",
-    glowColor: "oklch(0.72 0.04 240 / 0.30)",
-    gradientFrom: "oklch(0.09 0.02 240)",
-    gradientTo: "oklch(0.12 0.015 250)",
+    accent: "oklch(var(--primary))",
+    glowColor: "oklch(var(--primary) / 0.32)",
+    gradientFrom: "oklch(0.09 0.02 var(--primary-h))",
+    gradientTo: "oklch(0.12 0.015 var(--neutral-hue))",
   },
   Clubs: {
-    symbol: "\u2663",
+    symbol: "♣",
     label: "ROWS",
-    accent: "oklch(0.72 0.19 145)",
-    glowColor: "oklch(0.72 0.19 145 / 0.30)",
-    gradientFrom: "oklch(0.09 0.02 150)",
-    gradientTo: "oklch(0.11 0.025 145)",
+    accent: "oklch(var(--pulse))",
+    glowColor: "oklch(var(--pulse) / 0.32)",
+    gradientFrom: "oklch(0.09 0.02 var(--pulse-h))",
+    gradientTo: "oklch(0.12 0.015 var(--neutral-hue))",
   },
   Diamonds: {
-    symbol: "\u2666",
+    symbol: "♦",
     label: "DIPS",
-    accent: "oklch(0.65 0.18 250)",
-    glowColor: "oklch(0.65 0.18 250 / 0.30)",
-    gradientFrom: "oklch(0.09 0.02 250)",
-    gradientTo: "oklch(0.12 0.025 255)",
+    accent: "oklch(var(--prestige))",
+    glowColor: "oklch(var(--prestige) / 0.32)",
+    gradientFrom: "oklch(0.09 0.02 var(--prestige-h))",
+    gradientTo: "oklch(0.12 0.015 var(--neutral-hue))",
   },
   Joker: {
-    symbol: "\u2605",
+    symbol: "★",
     label: "WILD",
-    accent: "oklch(0.68 0.25 180)",
-    glowColor: "oklch(0.68 0.25 180 / 0.40)",
-    gradientFrom: "oklch(0.08 0.02 260)",
-    gradientTo: "oklch(0.08 0.025 255)",
+    accent: "oklch(var(--prestige))",
+    glowColor: "oklch(var(--primary) / 0.4)",
+    gradientFrom: "oklch(0.1 0.03 var(--energy-h))",
+    gradientTo: "oklch(0.1 0.03 var(--pulse-h))",
   },
 };
+
+/** The suit's palette colour — use this anywhere a suit is coloured. */
+export function suitAccent(suit: string): string {
+  return (SUIT_CONFIG[suit] ?? SUIT_CONFIG.Joker).accent;
+}
 
 /**
  * Upper Body — Beginner deck image assets.
@@ -83,20 +91,20 @@ export const SUIT_CONFIG: Record<string, SuitConfig> = {
  * Referenced by both the illustration map and the Joker overlay.
  */
 export const UPPER_BODY_BEGINNER_ASSETS = {
-  normalPushUp: "/assets/exercises/male_ub_beg_normal_push_up.png",
-  widePushUp: "/assets/exercises/male_ub_beg_wide_push_up.png",
-  negativePushUp: "/assets/exercises/male_ub_beg_negative_push_up.png",
-  shoulderTapPushUp: "/assets/exercises/male_ub_beg_shoulder_tap_push_up.png",
-  pikePushUp: "/assets/exercises/male_ub_beg_pike_push_up.png",
-  pikeHold: "/assets/exercises/male_ub_beg_pike_hold.png",
-  supermanHold: "/assets/exercises/male_ub_beg_superman_hold.png",
-  invertedRow: "/assets/exercises/male_ub_beg_inverted_row.png",
-  negativeBenchDip: "/assets/exercises/male_ub_beg_negative_bench_dip.png",
-  tricepPushUp: "/assets/exercises/male_ub_beg_tricep_push_up.png",
-  inclinePushUp: "/assets/exercises/male_ub_beg_incline_push_up.png",
-  jokerCombo: "/assets/exercises/male_ub_beg_combo_finisher.png",
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  normalPushUp: "/assets/exercises/male_ub_beg_normal_push_up.webp",
+  widePushUp: "/assets/exercises/male_ub_beg_wide_push_up.webp",
+  negativePushUp: "/assets/exercises/male_ub_beg_negative_push_up.webp",
+  shoulderTapPushUp: "/assets/exercises/male_ub_beg_shoulder_tap_push_up.webp",
+  pikePushUp: "/assets/exercises/male_ub_beg_pike_push_up.webp",
+  pikeHold: "/assets/exercises/male_ub_beg_pike_hold.webp",
+  supermanHold: "/assets/exercises/male_ub_beg_superman_hold.webp",
+  invertedRow: "/assets/exercises/male_ub_beg_inverted_row.webp",
+  negativeBenchDip: "/assets/exercises/male_ub_beg_negative_bench_dip.webp",
+  tricepPushUp: "/assets/exercises/male_ub_beg_tricep_push_up.webp",
+  inclinePushUp: "/assets/exercises/male_ub_beg_incline_push_up.webp",
+  jokerCombo: "/assets/exercises/male_ub_beg_combo_finisher.webp",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -116,24 +124,24 @@ export const UPPER_BODY_BEGINNER_ASSETS = {
  * with the beginner deck — they are global face card images.
  */
 export const FEMALE_UPPER_BODY_ADVANCED_ASSETS = {
-  normalPushUp: "/assets/exercises/normal push up.png",
-  declinePushUp: "/assets/exercises/decline push-up.png",
-  diamondPushUp: "/assets/exercises/diamond_pushup.png",
-  pikePushUpFlat: "/assets/exercises/pike push up.png",
-  pikePushUpElevated: "/assets/exercises/pike push-up elevated.png",
-  pikePushUpDecline: "/assets/exercises/pike push up.png",
-  wallHandstandHold: "/assets/exercises/wall handstand hold.png",
-  assistedChinUp: "/assets/exercises/assisted pull-up.png",
-  fullChinUp: "/assets/exercises/chin up.png",
-  chinUpWithPause: "/assets/exercises/pull with pause.png",
+  normalPushUp: "/assets/exercises/normal push up.webp",
+  declinePushUp: "/assets/exercises/decline push-up.webp",
+  diamondPushUp: "/assets/exercises/diamond_pushup.webp",
+  pikePushUpFlat: "/assets/exercises/pike push up.webp",
+  pikePushUpElevated: "/assets/exercises/pike push-up elevated.webp",
+  pikePushUpDecline: "/assets/exercises/pike push up.webp",
+  wallHandstandHold: "/assets/exercises/wall handstand hold.webp",
+  assistedChinUp: "/assets/exercises/assisted pull-up.webp",
+  fullChinUp: "/assets/exercises/chin up.webp",
+  chinUpWithPause: "/assets/exercises/pull with pause.webp",
   commandoPullUp: COMING_SOON_ILLUSTRATION,
-  benchDipStraightLeg: "/assets/exercises/bench dip.png",
-  parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.png",
-  chestDip: "/assets/exercises/chest dip.png",
-  dipSlowNegative: "/assets/exercises/slow dip.png",
-  archerPushUp: "/assets/exercises/normal push up.png",
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  benchDipStraightLeg: "/assets/exercises/bench dip.webp",
+  parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.webp",
+  chestDip: "/assets/exercises/chest dip.webp",
+  dipSlowNegative: "/assets/exercises/slow dip.webp",
+  archerPushUp: "/assets/exercises/normal push up.webp",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -156,19 +164,19 @@ export const FEMALE_UPPER_BODY_ADVANCED_ASSETS = {
  * with the beginner/advanced decks — they are global face card images.
  */
 export const FEMALE_UPPER_BODY_PRO_ASSETS = {
-  archerPushUp: "/assets/exercises/normal push up.png",
+  archerPushUp: "/assets/exercises/normal push up.webp",
   typewriterPushUp: COMING_SOON_ILLUSTRATION,
-  handstandHold: "/assets/exercises/handstand hold.png",
-  handstandPushUp: "/assets/exercises/handstand push-up.png",
-  pullUp: "/assets/exercises/upper body pro pull up.png",
+  handstandHold: "/assets/exercises/handstand hold.webp",
+  handstandPushUp: "/assets/exercises/handstand push-up.webp",
+  pullUp: "/assets/exercises/upper body pro pull up.webp",
   widePullUp: COMING_SOON_ILLUSTRATION,
-  lSitPullUp: "/assets/exercises/L-sit pull up.png",
-  parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.png",
-  ringPushUp: "/assets/exercises/normal push up.png",
-  ringDip: "/assets/exercises/dips.png",
-  lSitHold: "/assets/exercises/l-sit hold.png",
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  lSitPullUp: "/assets/exercises/L-sit pull up.webp",
+  parallelBarDip: "/assets/exercises/Tricep Dip Parallel Bar.webp",
+  ringPushUp: "/assets/exercises/normal push up.webp",
+  ringDip: "/assets/exercises/dips.webp",
+  lSitHold: "/assets/exercises/l-sit hold.webp",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -178,20 +186,20 @@ export const FEMALE_UPPER_BODY_PRO_ASSETS = {
  * Ace and King images are shared with the male deck.
  */
 export const FEMALE_UPPER_BODY_BEGINNER_ASSETS = {
-  kneePushUp: "/assets/exercises/knee push up.png",
-  normalPushUp: "/assets/exercises/normal push up.png",
-  widePushUp: "/assets/exercises/wide push up.png",
-  negativePushUp: "/assets/exercises/negative push up.png",
-  shoulderTapPushUp: "/assets/exercises/shoulder tap push up.png",
-  pikePushUp: "/assets/exercises/pike push up.png",
-  pikeHold: "/assets/exercises/pike hold.png",
-  supermanHold: "/assets/exercises/superman hold.png",
-  invertedRow: "/assets/exercises/inverted row.png",
-  benchDip: "/assets/exercises/bench dip.png",
-  tricepPushUp: "/assets/exercises/tricep push up.png",
+  kneePushUp: "/assets/exercises/knee push up.webp",
+  normalPushUp: "/assets/exercises/normal push up.webp",
+  widePushUp: "/assets/exercises/wide push up.webp",
+  negativePushUp: "/assets/exercises/negative push up.webp",
+  shoulderTapPushUp: "/assets/exercises/shoulder tap push up.webp",
+  pikePushUp: "/assets/exercises/pike push up.webp",
+  pikeHold: "/assets/exercises/pike hold.webp",
+  supermanHold: "/assets/exercises/superman hold.webp",
+  invertedRow: "/assets/exercises/inverted row.webp",
+  benchDip: "/assets/exercises/bench dip.webp",
+  tricepPushUp: "/assets/exercises/tricep push up.webp",
   jokerCombo: COMING_SOON_ILLUSTRATION,
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -214,21 +222,21 @@ export const FEMALE_LOWER_BODY_BEGINNER_ASSETS = {
   normalSquat: COMING_SOON_ILLUSTRATION,
   reverseLunge: COMING_SOON_ILLUSTRATION,
   forwardLunge: COMING_SOON_ILLUSTRATION,
-  sumoSquat: "/assets/exercises/female sumo squat.png",
-  narrowSquat: "/assets/exercises/narrow squat.png",
-  wallSit: "/assets/exercises/female wall sit.png",
-  twoLegGluteBridge: "/assets/exercises/glute bridge.png",
-  singleLegGluteBridge: "/assets/exercises/single leg bridge.png",
+  sumoSquat: "/assets/exercises/female sumo squat.webp",
+  narrowSquat: "/assets/exercises/narrow squat.webp",
+  wallSit: "/assets/exercises/female wall sit.webp",
+  twoLegGluteBridge: "/assets/exercises/glute bridge.webp",
+  singleLegGluteBridge: "/assets/exercises/single leg bridge.webp",
   elevatedHipThrust: COMING_SOON_ILLUSTRATION,
-  gluteBridgePulse: "/assets/exercises/glute bridge.png",
-  lateralLunge: "/assets/exercises/female lateral lunge.png",
-  walkingLunge: "/assets/exercises/female walking lunge.png",
-  standingCalfRaise: "/assets/exercises/female calf raise.png",
-  stepUp: "/assets/exercises/female step up.png",
-  singleLegCalfRaise: "/assets/exercises/female single leg calf raise.png",
-  singleLegBalanceHold: "/assets/exercises/single leg balance hold.png",
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  gluteBridgePulse: "/assets/exercises/glute bridge.webp",
+  lateralLunge: "/assets/exercises/female lateral lunge.webp",
+  walkingLunge: "/assets/exercises/female walking lunge.webp",
+  standingCalfRaise: "/assets/exercises/female calf raise.webp",
+  stepUp: "/assets/exercises/female step up.webp",
+  singleLegCalfRaise: "/assets/exercises/female single leg calf raise.webp",
+  singleLegBalanceHold: "/assets/exercises/single leg balance hold.webp",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -260,23 +268,23 @@ export const FEMALE_LOWER_BODY_BEGINNER_ASSETS = {
  */
 export const FEMALE_LOWER_BODY_PRO_ASSETS = {
   // Spades — pistol squat family
-  assistedPistolSquat: "/assets/exercises/assisted pistol squat.png",
-  boxPistolSquat: "/assets/exercises/box pistol squat.png",
-  pistolSquat: "/assets/exercises/pistol squat.png",
+  assistedPistolSquat: "/assets/exercises/assisted pistol squat.webp",
+  boxPistolSquat: "/assets/exercises/box pistol squat.webp",
+  pistolSquat: "/assets/exercises/pistol squat.webp",
   // Hearts — jump family
-  jumpSquat: "/assets/exercises/jump squat.png",
+  jumpSquat: "/assets/exercises/jump squat.webp",
   broadJump: COMING_SOON_ILLUSTRATION,
-  tuckJump: "/assets/exercises/tuck jump.png",
+  tuckJump: "/assets/exercises/tuck jump.webp",
   // Diamonds — single-leg strength
-  shrimpSquat: "/assets/exercises/shrimp squat.png",
-  singleLegNordicCurl: "/assets/exercises/single leg nordic curl.png",
-  goodMorning: "/assets/exercises/good morning.png",
+  shrimpSquat: "/assets/exercises/shrimp squat.webp",
+  singleLegNordicCurl: "/assets/exercises/single leg nordic curl.webp",
+  goodMorning: "/assets/exercises/good morning.webp",
   // Clubs — hip / lateral
-  hipAbduction: "/assets/exercises/hip abduction.png",
+  hipAbduction: "/assets/exercises/hip abduction.webp",
   lateralBound: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -300,30 +308,30 @@ export const FEMALE_LOWER_BODY_PRO_ASSETS = {
  */
 export const FEMALE_LOWER_BODY_ADVANCED_ASSETS = {
   // Spades — Bulgarian Split Squat family
-  bssNormal: "/assets/exercises/bulgarian split squat.png",
-  bssElevated: "/assets/exercises/bss elevated.png",
-  bssDeficit: "/assets/exercises/bss deficit.png",
-  bssIsometricHold: "/assets/exercises/bulgarian split squat hold.png",
+  bssNormal: "/assets/exercises/bulgarian split squat.webp",
+  bssElevated: "/assets/exercises/bss elevated.webp",
+  bssDeficit: "/assets/exercises/bss deficit.webp",
+  bssIsometricHold: "/assets/exercises/bulgarian split squat hold.webp",
   // Hearts — Hip Thrust & Hamstring family
   elevatedHipThrust: COMING_SOON_ILLUSTRATION,
-  singleLegHipThrust: "/assets/exercises/single leg hip thrust.png",
+  singleLegHipThrust: "/assets/exercises/single leg hip thrust.webp",
   nordicCurl: COMING_SOON_ILLUSTRATION,
   hipThrustPulse: COMING_SOON_ILLUSTRATION,
   // Diamonds — Plyometric Lunge family
-  jumpingLunge: "/assets/exercises/jump lunge.png",
-  lateralJumpLunge: "/assets/exercises/lateral jump lunge.png",
-  singleLegRdl: "/assets/exercises/single leg rdl.png",
-  continuousJumpLunge: "/assets/exercises/continuous jump lunge.png",
+  jumpingLunge: "/assets/exercises/jump lunge.webp",
+  lateralJumpLunge: "/assets/exercises/lateral jump lunge.webp",
+  singleLegRdl: "/assets/exercises/single leg rdl.webp",
+  continuousJumpLunge: "/assets/exercises/continuous jump lunge.webp",
   // Clubs — Glute Isolation family
-  gluteKickback: "/assets/exercises/glute kickback.png",
+  gluteKickback: "/assets/exercises/glute kickback.webp",
   fireHydrant: COMING_SOON_ILLUSTRATION,
-  donkeyKickPulse: "/assets/exercises/donkey kick.png",
-  clamshell: "/assets/exercises/clamshell.png",
+  donkeyKickPulse: "/assets/exercises/donkey kick.webp",
+  clamshell: "/assets/exercises/clamshell.webp",
   // Joker combo
   jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -347,28 +355,28 @@ export const FEMALE_LOWER_BODY_ADVANCED_ASSETS = {
  */
 export const FEMALE_CORE_BEGINNER_ASSETS = {
   // Plank family
-  plankHold: "/assets/exercises/plank hold.png",
-  sidePlank: "/assets/exercises/side plank.png",
-  plankShoulderTap: "/assets/exercises/plank shoulder tap.png",
+  plankHold: "/assets/exercises/plank hold.webp",
+  sidePlank: "/assets/exercises/side plank.webp",
+  plankShoulderTap: "/assets/exercises/plank shoulder tap.webp",
   // Crunch family
-  crunch: "/assets/exercises/crunch.png",
-  bicycleCrunch: "/assets/exercises/bicycle crunch.png",
-  reverseCrunch: "/assets/exercises/reverse crunch.png",
+  crunch: "/assets/exercises/crunch.webp",
+  bicycleCrunch: "/assets/exercises/bicycle crunch.webp",
+  reverseCrunch: "/assets/exercises/reverse crunch.webp",
   // Anti-extension / stability
   birdDog: COMING_SOON_ILLUSTRATION,
-  deadBug: "/assets/exercises/dead bug.png",
-  supermanHold: "/assets/exercises/superman hold.png",
+  deadBug: "/assets/exercises/dead bug.webp",
+  supermanHold: "/assets/exercises/superman hold.webp",
   // Dynamic core
-  bearCrawl: "/assets/exercises/bear crawl.png",
+  bearCrawl: "/assets/exercises/bear crawl.webp",
   kneeTuck: COMING_SOON_ILLUSTRATION,
-  flutterKick: "/assets/exercises/flutter kick.png",
-  legRaise: "/assets/exercises/leg raise.png",
-  legRaiseHold: "/assets/exercises/leg raise hold.png",
+  flutterKick: "/assets/exercises/flutter kick.webp",
+  legRaise: "/assets/exercises/leg raise.webp",
+  legRaiseHold: "/assets/exercises/leg raise hold.webp",
   // Joker combo
   jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -407,27 +415,27 @@ export const FEMALE_CORE_BEGINNER_ASSETS = {
  */
 export const FEMALE_CORE_ADVANCED_ASSETS = {
   // Hollow body family
-  hollowBodyHold: "/assets/exercises/hollow body hold.png",
+  hollowBodyHold: "/assets/exercises/hollow body hold.webp",
   hollowBodyRock: COMING_SOON_ILLUSTRATION,
-  vUp: "/assets/exercises/v up.png",
+  vUp: "/assets/exercises/v up.webp",
   // Rotational core
-  russianTwist: "/assets/exercises/russian twist.png",
-  crossBodyCrunch: "/assets/exercises/cross body crunch.png",
-  bicycleWithPause: "/assets/exercises/bicycle crunch with pause.png",
+  russianTwist: "/assets/exercises/russian twist.webp",
+  crossBodyCrunch: "/assets/exercises/cross body crunch.webp",
+  bicycleWithPause: "/assets/exercises/bicycle crunch with pause.webp",
   // Dynamic plank
-  mountainClimber: "/assets/exercises/mountain climber.png",
+  mountainClimber: "/assets/exercises/mountain climber.webp",
   spiderManPlank: COMING_SOON_ILLUSTRATION,
-  plankToDownDog: "/assets/exercises/plank to down dog.png",
+  plankToDownDog: "/assets/exercises/plank to down dog.webp",
   // Hanging core
-  hangingKneeRaise: "/assets/exercises/hanging knee raise.png",
+  hangingKneeRaise: "/assets/exercises/hanging knee raise.webp",
   hangingObliqueRaise: COMING_SOON_ILLUSTRATION,
-  lSit: "/assets/exercises/l-sit.png",
-  toesToBar: "/assets/exercises/toes to bar.png",
+  lSit: "/assets/exercises/l-sit.webp",
+  toesToBar: "/assets/exercises/toes to bar.webp",
   // Joker combo
   jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -473,7 +481,7 @@ export const FEMALE_CORE_PRO_ASSETS = {
   // Front lever & windshield wipers
   frontLever: COMING_SOON_ILLUSTRATION,
   windshieldWipers: COMING_SOON_ILLUSTRATION,
-  toesToBar: "/assets/exercises/toes to bar.png",
+  toesToBar: "/assets/exercises/toes to bar.webp",
   // Planche family
   plancheLean: COMING_SOON_ILLUSTRATION,
   tuckPlanche: COMING_SOON_ILLUSTRATION,
@@ -488,8 +496,8 @@ export const FEMALE_CORE_PRO_ASSETS = {
   // Joker combo
   jokerCombo: COMING_SOON_ILLUSTRATION,
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -506,21 +514,21 @@ export const FEMALE_CORE_PRO_ASSETS = {
  */
 export const FEMALE_FULL_BODY_BEGINNER_ASSETS = {
   modifiedBurpee: COMING_SOON_ILLUSTRATION,
-  burpee: "/assets/exercises/burpee.png",
-  inchworm: "/assets/exercises/inchworm.png",
-  jumpingJacks: "/assets/exercises/jumping jacks.png",
-  highKnees: "/assets/exercises/high knees.png",
+  burpee: "/assets/exercises/burpee.webp",
+  inchworm: "/assets/exercises/inchworm.webp",
+  jumpingJacks: "/assets/exercises/jumping jacks.webp",
+  highKnees: "/assets/exercises/high knees.webp",
   stepUp: COMING_SOON_ILLUSTRATION,
-  bearCrawl: "/assets/exercises/bear crawl.png",
-  bearCrawlSprint: "/assets/exercises/bear crawl sprint.png",
+  bearCrawl: "/assets/exercises/bear crawl.webp",
+  bearCrawlSprint: "/assets/exercises/bear crawl sprint.webp",
   crabWalk: COMING_SOON_ILLUSTRATION,
   lateralShuffle: COMING_SOON_ILLUSTRATION,
   squatToStand: COMING_SOON_ILLUSTRATION,
-  lungeTwist: "/assets/exercises/lunge twist.png",
-  pushUpDownDog: "/assets/exercises/push up down dog.png",
+  lungeTwist: "/assets/exercises/lunge twist.webp",
+  pushUpDownDog: "/assets/exercises/push up down dog.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -530,21 +538,21 @@ export const FEMALE_FULL_BODY_BEGINNER_ASSETS = {
  * functions without images rendering and they resolve once the user uploads them.
  */
 export const FEMALE_FULL_BODY_ADVANCED_ASSETS = {
-  plyometricBurpee: "/assets/exercises/plyo burpee.png",
-  singleLegBurpee: "/assets/exercises/single leg burpee.png",
+  plyometricBurpee: "/assets/exercises/plyo burpee.webp",
+  singleLegBurpee: "/assets/exercises/single leg burpee.webp",
   burpeeBoxJump: COMING_SOON_ILLUSTRATION,
-  burpeeChinUp: "/assets/exercises/burpee chin up.png",
+  burpeeChinUp: "/assets/exercises/burpee chin up.webp",
   boxJump: COMING_SOON_ILLUSTRATION,
   broadJump: COMING_SOON_ILLUSTRATION,
-  tuckJump: "/assets/exercises/tuck jump.png",
+  tuckJump: "/assets/exercises/tuck jump.webp",
   spiderManPushUp: COMING_SOON_ILLUSTRATION,
   archerPushUp: COMING_SOON_ILLUSTRATION,
-  declinePushUp: "/assets/exercises/decline push up.png",
-  jumpLunge: "/assets/exercises/jump squat to jump lunge.png",
-  lateralJumpLunge: "/assets/exercises/lateral jump lunge full body.png",
+  declinePushUp: "/assets/exercises/decline push up.webp",
+  jumpLunge: "/assets/exercises/jump squat to jump lunge.webp",
+  lateralJumpLunge: "/assets/exercises/lateral jump lunge full body.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -554,25 +562,25 @@ export const FEMALE_FULL_BODY_ADVANCED_ASSETS = {
  * functions without images rendering and they resolve once the user uploads them.
  */
 export const FEMALE_FULL_BODY_PRO_ASSETS = {
-  burpeeChinUp: "/assets/exercises/burpee chin up pro.png",
+  burpeeChinUp: "/assets/exercises/burpee chin up pro.webp",
   explosivePullUp: COMING_SOON_ILLUSTRATION,
-  muscleUp: "/assets/exercises/muscle up.png",
+  muscleUp: "/assets/exercises/muscle up.webp",
   clappingPushUp: COMING_SOON_ILLUSTRATION,
   plyoPushUp: COMING_SOON_ILLUSTRATION,
   archerPushUp: COMING_SOON_ILLUSTRATION,
-  pistolSquat: "/assets/exercises/pistol squat pro fullbody.png",
+  pistolSquat: "/assets/exercises/pistol squat pro fullbody.webp",
   pistolJump: COMING_SOON_ILLUSTRATION,
   pistolBurpee: COMING_SOON_ILLUSTRATION,
-  handstandPushUp: "/assets/exercises/handstand push up.png",
+  handstandPushUp: "/assets/exercises/handstand push up.webp",
   typewriterPushUp: COMING_SOON_ILLUSTRATION,
   // Queen — Pistol Complex (dedicated, distinct from base pistol squat)
-  pistolComplex: "/assets/exercises/pistol complex.png",
+  pistolComplex: "/assets/exercises/pistol complex.webp",
   // Queen — Freestanding Handstand Attempt (dedicated, distinct from handstand push-up)
   freestandingHandstandAttempt:
-    "/assets/exercises/freestanding handstand attempt.png",
+    "/assets/exercises/freestanding handstand attempt.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -585,21 +593,21 @@ export const FEMALE_FULL_BODY_PRO_ASSETS = {
  * rendering for those and they resolve once dedicated art is uploaded.
  */
 export const MALE_CORE_BEGINNER_ASSETS = {
-  plankHold: "/assets/exercises/male_core_beg_plank_hold.png",
-  crunch: "/assets/exercises/male_core_beg_crunch.png",
-  bicycleCrunch: "/assets/exercises/male_core_beg_bicycle_crunch.png",
-  reverseCrunch: "/assets/exercises/male_core_beg_reverse_crunch.png",
-  birdDog: "/assets/exercises/male_core_beg_bird_dog.png",
-  flutterKick: "/assets/exercises/male_core_beg_flutter_kick.png",
-  legRaise: "/assets/exercises/male_core_beg_leg_raise.png",
-  plankShoulderTap: "/assets/exercises/male_core_beg_plank_shoulder_tap.png",
-  deadBug: "/assets/exercises/male_core_beg_dead_bug.png",
-  sidePlank: "/assets/exercises/male_core_beg_side_plank.png",
+  plankHold: "/assets/exercises/male_core_beg_plank_hold.webp",
+  crunch: "/assets/exercises/male_core_beg_crunch.webp",
+  bicycleCrunch: "/assets/exercises/male_core_beg_bicycle_crunch.webp",
+  reverseCrunch: "/assets/exercises/male_core_beg_reverse_crunch.webp",
+  birdDog: "/assets/exercises/male_core_beg_bird_dog.webp",
+  flutterKick: "/assets/exercises/male_core_beg_flutter_kick.webp",
+  legRaise: "/assets/exercises/male_core_beg_leg_raise.webp",
+  plankShoulderTap: "/assets/exercises/male_core_beg_plank_shoulder_tap.webp",
+  deadBug: "/assets/exercises/male_core_beg_dead_bug.webp",
+  sidePlank: "/assets/exercises/male_core_beg_side_plank.webp",
   // Joker combo
-  jokerCombo: "/assets/exercises/male_core_beg_joker_combo.png",
+  jokerCombo: "/assets/exercises/male_core_beg_joker_combo.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -612,19 +620,19 @@ export const MALE_CORE_BEGINNER_ASSETS = {
  * toesToBar) — the deck functions without images rendering for those.
  */
 export const MALE_CORE_ADVANCED_ASSETS = {
-  hollowBodyHold: "/assets/exercises/male_core_adv_hollow_body_hold.png",
-  hollowBodyRock: "/assets/exercises/male_core_adv_hollow_body_rock.png",
-  vUp: "/assets/exercises/male_core_adv_v_up.png",
-  russianTwist: "/assets/exercises/male_core_adv_russian_twist.png",
-  bicycleWithPause: "/assets/exercises/male_core_adv_bicycle_with_pause.png",
-  mountainClimber: "/assets/exercises/male_core_adv_mountain_climber.png",
-  hangingKneeRaise: "/assets/exercises/male_core_adv_hanging_knee_raise.png",
-  lSit: "/assets/exercises/male_core_adv_l_sit.png",
+  hollowBodyHold: "/assets/exercises/male_core_adv_hollow_body_hold.webp",
+  hollowBodyRock: "/assets/exercises/male_core_adv_hollow_body_rock.webp",
+  vUp: "/assets/exercises/male_core_adv_v_up.webp",
+  russianTwist: "/assets/exercises/male_core_adv_russian_twist.webp",
+  bicycleWithPause: "/assets/exercises/male_core_adv_bicycle_with_pause.webp",
+  mountainClimber: "/assets/exercises/male_core_adv_mountain_climber.webp",
+  hangingKneeRaise: "/assets/exercises/male_core_adv_hanging_knee_raise.webp",
+  lSit: "/assets/exercises/male_core_adv_l_sit.webp",
   // Joker combo
-  jokerCombo: "/assets/exercises/male_core_adv_joker_combo.png",
+  jokerCombo: "/assets/exercises/male_core_adv_joker_combo.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -638,15 +646,15 @@ export const MALE_CORE_ADVANCED_ASSETS = {
  * the deck functions without images rendering for those.
  */
 export const MALE_CORE_PRO_ASSETS = {
-  toesToBar: "/assets/exercises/male_core_pro_toes_to_bar.png",
-  plancheLean: "/assets/exercises/male_core_pro_planche_lean.png",
-  sidePlankHipDip: "/assets/exercises/male_core_pro_side_plank_hip_dip.png",
-  starSidePlank: "/assets/exercises/male_core_pro_star_side_plank.png",
-  humanFlagAttempt: "/assets/exercises/male_core_pro_human_flag_attempt.png",
-  windshieldWipers: "/assets/exercises/male_core_pro_windshield_wipers.png",
+  toesToBar: "/assets/exercises/male_core_pro_toes_to_bar.webp",
+  plancheLean: "/assets/exercises/male_core_pro_planche_lean.webp",
+  sidePlankHipDip: "/assets/exercises/male_core_pro_side_plank_hip_dip.webp",
+  starSidePlank: "/assets/exercises/male_core_pro_star_side_plank.webp",
+  humanFlagAttempt: "/assets/exercises/male_core_pro_human_flag_attempt.webp",
+  windshieldWipers: "/assets/exercises/male_core_pro_windshield_wipers.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /**
@@ -659,16 +667,16 @@ export const MALE_CORE_PRO_ASSETS = {
  * the deck functions without images rendering for those.
  */
 export const MALE_FULL_BODY_BEGINNER_ASSETS = {
-  inchworm: "/assets/exercises/male_fb_beg_inchworm.png",
-  jumpingJacks: "/assets/exercises/male_fb_beg_jumping_jacks.png",
-  bearCrawl: "/assets/exercises/male_fb_beg_bear_crawl.png",
-  crabWalk: "/assets/exercises/male_fb_beg_crab_walk.png",
-  squatToStand: "/assets/exercises/male_fb_beg_squat_to_stand.png",
-  pushUpDownDog: "/assets/exercises/male_fb_beg_push_up_down_dog.png",
-  modifiedBurpee: "/assets/exercises/male_fb_beg_modified_burpee.png",
+  inchworm: "/assets/exercises/male_fb_beg_inchworm.webp",
+  jumpingJacks: "/assets/exercises/male_fb_beg_jumping_jacks.webp",
+  bearCrawl: "/assets/exercises/male_fb_beg_bear_crawl.webp",
+  crabWalk: "/assets/exercises/male_fb_beg_crab_walk.webp",
+  squatToStand: "/assets/exercises/male_fb_beg_squat_to_stand.webp",
+  pushUpDownDog: "/assets/exercises/male_fb_beg_push_up_down_dog.webp",
+  modifiedBurpee: "/assets/exercises/male_fb_beg_modified_burpee.webp",
   // Face cards (shared global images)
-  aceDouble: "/assets/exercises/Last excersie x2.png",
-  kingHalf: "/assets/exercises/dividng by 2.png",
+  aceDouble: "/assets/exercises/Last excersie x2.webp",
+  kingHalf: "/assets/exercises/dividng by 2.webp",
 } as const;
 
 /** Normalizes an exercise name to a lowercase key for matching. */
@@ -767,7 +775,7 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   // Bench Dip — generic dip fallback for Upper Body Beginner
   [
     ["bench dip", "deep bench dip", "weighted dip", "ring dip", "dip", "dips"],
-    "/assets/exercises/dips.png",
+    "/assets/exercises/dips.webp",
   ],
 
   // ── Upper Body — Advanced / Pro push-up & handstand family (male assets) ──
@@ -783,31 +791,31 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
       "combo finisher advanced",
       "joker combo (upper body advanced)",
     ],
-    "/assets/exercises/male_ub_adv_joker_combo.png",
+    "/assets/exercises/male_ub_adv_joker_combo.webp",
   ],
   [
     ["joker combo pro", "combo finisher pro", "joker combo (upper body pro)"],
-    "/assets/exercises/male_ub_pro_joker_combo.png",
+    "/assets/exercises/male_ub_pro_joker_combo.webp",
   ],
   // Handstand Push-up — before generic push up / handstand hold
   [
     ["handstand push", "handstand pushup", "handstand push up"],
-    "/assets/exercises/male_ub_pro_handstand_push_up.png",
+    "/assets/exercises/male_ub_pro_handstand_push_up.webp",
   ],
   // Freestanding Handstand (Pro, no wall) — before the wall handstand fallback
   [
     ["freestanding handstand", "handstand attempt"],
-    "/assets/exercises/male_ub_pro_handstand_hold.png",
+    "/assets/exercises/male_ub_pro_handstand_hold.webp",
   ],
   // Wall Handstand Hold — isometric, before generic hold
   [
     ["wall handstand", "handstand hold", "handstand"],
-    "/assets/exercises/male_ub_adv_handstand_hold.png",
+    "/assets/exercises/male_ub_adv_handstand_hold.webp",
   ],
   // Diamond Push-up — dedicated male asset
   [
     ["diamond push", "diamond pushup", "diamond push up"],
-    "/assets/exercises/male_ub_adv_diamond_push_up.png",
+    "/assets/exercises/male_ub_adv_diamond_push_up.webp",
   ],
   // Typewriter Push-up — wide push-up family
   [
@@ -823,7 +831,7 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
       "one arm push",
       "one-arm push",
     ],
-    "/assets/exercises/male_ub_pro_one_arm_push_up.png",
+    "/assets/exercises/male_ub_pro_one_arm_push_up.webp",
   ],
   // Ring Push-up — unstable push family
   [
@@ -833,17 +841,17 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   // Pike Push-up Decline — dedicated male asset (Advanced), before generic pike push up
   [
     ["pike push up decline", "pike push-up decline", "decline pike push"],
-    "/assets/exercises/male_ub_adv_pike_push_up_decline.png",
+    "/assets/exercises/male_ub_adv_pike_push_up_decline.webp",
   ],
   // Decline Push-up — dedicated male asset (Advanced)
   [
     ["decline push", "decline pushup", "decline push up"],
-    "/assets/exercises/male_ub_adv_decline_push_up.png",
+    "/assets/exercises/male_ub_adv_decline_push_up.webp",
   ],
   // Dip Slow Negative — dedicated male asset (Advanced), before generic dip
   [
     ["dip slow negative", "slow negative dip"],
-    "/assets/exercises/male_ub_adv_dip_slow_negative.png",
+    "/assets/exercises/male_ub_adv_dip_slow_negative.webp",
   ],
 
   // ── Upper Body — Advanced / Pro pull-up family (keyword entries) ────────────
@@ -852,127 +860,127 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   // Wide grip pull-up — dedicated male asset (Pro)
   [
     ["wide grip pull", "wide pull", "wide pullup", "wide pull up"],
-    "/assets/exercises/male_ub_pro_wide_pull_up.png",
+    "/assets/exercises/male_ub_pro_wide_pull_up.webp",
   ],
   // Close grip pull-up — before generic "pull up"
   [
     ["close grip pull", "close grip pullup", "close grip pull up"],
-    "/assets/exercises/normal_pullup.png",
+    "/assets/exercises/normal_pullup.webp",
   ],
   // L-sit pull-up — dedicated male asset (Pro)
   [
     ["l sit pull", "l sit pullup", "l sit pull up"],
-    "/assets/exercises/male_ub_pro_l_sit_pull_up.png",
+    "/assets/exercises/male_ub_pro_l_sit_pull_up.webp",
   ],
   // Commando pull-up — before generic "pull up"
   [
     ["commando pull", "commando pullup", "commando pull up"],
-    "/assets/exercises/normal_pullup.png",
+    "/assets/exercises/normal_pullup.webp",
   ],
   // Assisted pull-up — uses the rows/assisted image
   [
     ["assisted pull", "assisted pullup", "assisted pull up"],
-    "/assets/exercises/chinup_rows.png",
+    "/assets/exercises/chinup_rows.webp",
   ],
   // Chin-up — dedicated male asset (Advanced)
   [
     ["chin up", "chinup", "chin ups"],
-    "/assets/exercises/male_ub_adv_chin_up.png",
+    "/assets/exercises/male_ub_adv_chin_up.webp",
   ],
   // Generic pull-up fallback — dedicated male asset, must come after all
   // specific pull variants
   [
     ["pull up", "pullup", "pull ups", "pull-up"],
-    "/assets/exercises/male_ub_adv_normal_pull_up.png",
+    "/assets/exercises/male_ub_adv_normal_pull_up.webp",
   ],
 
   // ── Lower Body Beginner (real assets) ──────────────────────────────────────
   // Joker Combo (Lower Body) — must be checked before generic combo/joker
   [
     ["joker combo lower", "lb_beginner_combo", "joker combo (lower body)"],
-    "/assets/exercises/lb_beginner_combo.png",
+    "/assets/exercises/lb_beginner_combo.webp",
   ],
   // Squat Hold — isometric, before generic "squat" matches
-  [["squat hold"], "/assets/exercises/squat_hold.png"],
+  [["squat hold"], "/assets/exercises/squat_hold.webp"],
   // Sumo Squat — before generic "squat"
-  [["sumo squat"], "/assets/exercises/sumo_squat.png"],
+  [["sumo squat"], "/assets/exercises/sumo_squat.webp"],
   // Regular / Normal Squat — after sumo/hold specifics
-  [["regular squat", "normal squat"], "/assets/exercises/normal_squat.png"],
+  [["regular squat", "normal squat"], "/assets/exercises/normal_squat.webp"],
   // Slow Alternating Lunge — before generic alternating/lunge
   [
     ["slow alternating lunge", "slow alternating", "slow lunge"],
-    "/assets/exercises/slow_lunge.png",
+    "/assets/exercises/slow_lunge.webp",
   ],
   // Alternating Lunge — before generic "lunge"
-  [["alternating lunge"], "/assets/exercises/alternating_lunge.png"],
+  [["alternating lunge"], "/assets/exercises/alternating_lunge.webp"],
   // Forward / Front Lunge — before generic "lunge"
-  [["forward lunge", "front lunge"], "/assets/exercises/front_lunge.png"],
+  [["forward lunge", "front lunge"], "/assets/exercises/front_lunge.webp"],
   // Reverse Lunge
-  [["reverse lunge"], "/assets/exercises/reverse_lunge.png"],
+  [["reverse lunge"], "/assets/exercises/reverse_lunge.webp"],
   // High Knee March — before generic "knee" or "march"
   [
     ["high knee march", "high knee", "knee march"],
-    "/assets/exercises/high_knee_march.png",
+    "/assets/exercises/high_knee_march.webp",
   ],
   // Step-Up
-  [["step-up", "step up", "stepup"], "/assets/exercises/step_up.png"],
+  [["step-up", "step up", "stepup"], "/assets/exercises/step_up.webp"],
   // Calf Raise
-  [["calf raise", "calf raises", "calf"], "/assets/exercises/calf_raise.png"],
+  [["calf raise", "calf raises", "calf"], "/assets/exercises/calf_raise.webp"],
   // Wall Sit
-  [["wall sit"], "/assets/exercises/wall_sit.png"],
+  [["wall sit"], "/assets/exercises/wall_sit.webp"],
   // Standing Hip Circle
   [
     ["standing hip circle", "hip circle", "standing hip"],
-    "/assets/exercises/standing_hip_circle.png",
+    "/assets/exercises/standing_hip_circle.webp",
   ],
 
   // ── Lower Body Advanced (real assets) ────────────────────────────────────────
   // Jump Squat — before generic squat matches
-  [["jump squat", "squat jump"], "/assets/exercises/jump_squat.png"],
+  [["jump squat", "squat jump"], "/assets/exercises/jump_squat.webp"],
   // Pistol Squat
-  [["pistol squat"], "/assets/exercises/pistol_squat_advanced.png"],
+  [["pistol squat"], "/assets/exercises/pistol_squat_advanced.webp"],
   // Sumo Squat advanced variant
-  [["sumo squat advanced"], "/assets/exercises/sumo_squat_advanced.png"],
+  [["sumo squat advanced"], "/assets/exercises/sumo_squat_advanced.webp"],
   // Walking Lunge — before generic lunge
-  [["walking lunge"], "/assets/exercises/walking_lunge.png"],
+  [["walking lunge"], "/assets/exercises/walking_lunge.webp"],
   // Lunge with Knee Drive — before generic lunge
   [
     ["lunge with knee drive", "lunge knee drive"],
-    "/assets/exercises/lunge_knee_drive_new.png",
+    "/assets/exercises/lunge_knee_drive_new.webp",
   ],
   // Broad Jump — before generic jump
-  [["broad jump"], "/assets/exercises/broad_jump.png"],
+  [["broad jump"], "/assets/exercises/broad_jump.webp"],
   // Lateral Bound
-  [["lateral bound"], "/assets/exercises/lateral_bound.png"],
+  [["lateral bound"], "/assets/exercises/lateral_bound.webp"],
   // Tuck Jump — before generic jump
-  [["tuck jump"], "/assets/exercises/tuck_jump.png"],
+  [["tuck jump"], "/assets/exercises/tuck_jump.webp"],
   // Single-Leg Calf Raise — before generic calf raise
   [
     ["single-leg calf raise", "single leg calf raise", "one leg calf raise"],
-    "/assets/exercises/single_leg_calf_raise.png",
+    "/assets/exercises/single_leg_calf_raise.webp",
   ],
 
   // ── Lower Body Pro (real assets) ─────────────────────────────────────────────
   // Pistol Squat Pro — before generic "pistol squat" or "squat" matches
-  [["pistol squat pro"], "/assets/exercises/pistol_squat_pro.png"],
+  [["pistol squat pro"], "/assets/exercises/pistol_squat_pro.webp"],
   // Sumo Jump Squat — before generic "sumo squat" or "squat"
-  [["sumo jump squat"], "/assets/exercises/sumo_jump_squat.png"],
+  [["sumo jump squat"], "/assets/exercises/sumo_jump_squat.webp"],
   // Jumping Lunges — before generic "lunge"
   [
     ["jumping lunges", "jumping lunge", "jump lunge"],
-    "/assets/exercises/jumping_lunges.png",
+    "/assets/exercises/jumping_lunges.webp",
   ],
   // Bulgarian Split Squat — before generic "squat" or "lunge"
   [
     ["bulgarian split squat", "bulgarian split", "split squat"],
-    "/assets/exercises/bg_split_squat.png",
+    "/assets/exercises/bg_split_squat.webp",
   ],
   // Curtsy Lunge — before generic "lunge"
-  [["curtsy lunge", "curtsy"], "/assets/exercises/curtsy_lunge.png"],
+  [["curtsy lunge", "curtsy"], "/assets/exercises/curtsy_lunge.webp"],
   // Lunge with Knee Drive Pro — before generic lunge/knee drive (different image to advanced)
   [
     ["lunge with knee drive pro", "lunge knee drive pro"],
-    "/assets/exercises/lunge_knee_drive_pro.png",
+    "/assets/exercises/lunge_knee_drive_pro.webp",
   ],
   // Single-Leg Step-Up — before generic "step up"
   [
@@ -982,30 +990,30 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
       "one leg step-up",
       "single leg step up",
     ],
-    "/assets/exercises/one_leg_step_up.png",
+    "/assets/exercises/one_leg_step_up.webp",
   ],
   // Single-Leg Wall Sit — before generic "wall sit"
   [
     ["single-leg wall sit", "single leg wall sit"],
-    "/assets/exercises/single_leg_wall_sit.png",
+    "/assets/exercises/single_leg_wall_sit.webp",
   ],
 
   // ── Lower Body (other/placeholder) ──────────────────────────────────────────
-  [["squat pulse", "squat"], "/assets/exercises/normal_squat.png"],
-  [["lunge"], "/assets/exercises/alternating_lunge.png"],
+  [["squat pulse", "squat"], "/assets/exercises/normal_squat.webp"],
+  [["lunge"], "/assets/exercises/alternating_lunge.webp"],
   [
     ["glute bridge", "single-leg glute bridge"],
-    "/assets/exercises/normal_squat.png",
+    "/assets/exercises/normal_squat.webp",
   ],
-  [["box step-up", "lateral step-up"], "/assets/exercises/step_up.png"],
-  [["nordic curl"], "/assets/exercises/single leg nordic curl.png"],
-  [["donkey kick"], "/assets/exercises/normal_squat.png"],
-  [["romanian deadlift"], "/assets/exercises/normal_squat.png"],
+  [["box step-up", "lateral step-up"], "/assets/exercises/step_up.webp"],
+  [["nordic curl"], "/assets/exercises/single leg nordic curl.webp"],
+  [["donkey kick"], "/assets/exercises/normal_squat.webp"],
+  [["romanian deadlift"], "/assets/exercises/normal_squat.webp"],
   [
     ["plyometric lunge", "lateral lunge"],
-    "/assets/exercises/alternating_lunge.png",
+    "/assets/exercises/alternating_lunge.webp",
   ],
-  [["sissy squat"], "/assets/exercises/normal_squat.png"],
+  [["sissy squat"], "/assets/exercises/normal_squat.webp"],
 
   // Core — male & female variants (mapped to real illustration assets)
   // Plank family — real plank asset
@@ -1020,12 +1028,12 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
       "plank up down",
       "up down plank",
     ],
-    "/assets/exercises/plank.png",
+    "/assets/exercises/plank.webp",
   ],
   // Side plank — real plank asset (same hold shape)
   [
     ["side plank", "weighted side plank", "side plank hold"],
-    "/assets/exercises/plank.png",
+    "/assets/exercises/plank.webp",
   ],
   // Superman / back extension — real superman hold asset (male)
   [
@@ -1037,7 +1045,7 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   // Mountain climber — high knee march is the closest real dynamic asset
   [
     ["mountain climber", "mountain climbers", "cross-body mountain climber"],
-    "/assets/exercises/high_knee_march.png",
+    "/assets/exercises/high_knee_march.webp",
   ],
   // Deliberately no generic normal_squat.png reuse here anymore for hollow
   // body / v-up / bicycle crunch / leg raise / flutter kick / dead bug /
@@ -1059,16 +1067,16 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
       "half burpee",
       "burpee broad jump",
     ],
-    "/assets/exercises/jump_squat.png",
+    "/assets/exercises/jump_squat.webp",
   ],
   // Tuck jump — real asset
-  [["tuck jump", "tuck jumps"], "/assets/exercises/tuck_jump.png"],
+  [["tuck jump", "tuck jumps"], "/assets/exercises/tuck_jump.webp"],
   // Broad jump — real asset
-  [["broad jump", "broad jumps"], "/assets/exercises/broad_jump.png"],
+  [["broad jump", "broad jumps"], "/assets/exercises/broad_jump.webp"],
   // Jump squat — real asset
   [
     ["jump squat", "squat jump", "jump squats"],
-    "/assets/exercises/jump_squat.png",
+    "/assets/exercises/jump_squat.webp",
   ],
   // Deliberately no generic reuse anymore for box jump (was broad_jump.png —
   // wrong equipment), turkish get-up / man maker (was normal_squat.png /
@@ -1079,7 +1087,7 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   // Squat pulse — real squat asset
   [
     ["squat pulse", "squat pulses", "pulse squat"],
-    "/assets/exercises/normal_squat.png",
+    "/assets/exercises/normal_squat.webp",
   ],
   // Push-up (full body compound) — male push up asset
   [
@@ -1087,14 +1095,14 @@ const EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     UPPER_BODY_BEGINNER_ASSETS.normalPushUp,
   ],
   // Lunge (full body compound) — real lunge asset
-  [["lunge", "lunges"], "/assets/exercises/alternating_lunge.png"],
+  [["lunge", "lunges"], "/assets/exercises/alternating_lunge.webp"],
   // Squat (full body compound) — real squat asset
   [
     ["squat", "squats", "bodyweight squat"],
-    "/assets/exercises/normal_squat.png",
+    "/assets/exercises/normal_squat.webp",
   ],
   // Step-up (full body compound) — real step up asset
-  [["step-up", "step up", "stepup"], "/assets/exercises/step_up.png"],
+  [["step-up", "step up", "stepup"], "/assets/exercises/step_up.webp"],
 
   // Assisted / Band variations — male inverted row / bench dip assets
   [
@@ -1228,7 +1236,7 @@ const FEMALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
     FEMALE_UPPER_BODY_PRO_ASSETS.lSitPullUp,
   ],
   // Ring Dip — before generic dip / ring
-  [["ring dip", "ring dips"], "/assets/exercises/dips.png"],
+  [["ring dip", "ring dips"], "/assets/exercises/dips.webp"],
   // Ring Push-up — before generic push up / ring
   [
     ["ring push up", "ring pushup", "ring push-up"],
@@ -1467,7 +1475,7 @@ const FEMALE_EXERCISE_ILLUSTRATION_MAP: Array<[string[], string]> = [
   // Bench Dip — generic dip fallback for female Upper Body Beginner
   [
     ["bench dip", "deep bench dip", "weighted dip", "ring dip", "dip", "dips"],
-    "/assets/exercises/dips.png",
+    "/assets/exercises/dips.webp",
   ],
   // Horizontal Row — same image as Incline Row; on-screen text distinguishes angle
   [["horizontal row"], FEMALE_UPPER_BODY_BEGINNER_ASSETS.invertedRow],

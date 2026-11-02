@@ -568,7 +568,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Feet slightly wider than normal for balance",
       "Alternate arms between sets as needed",
     ],
-    muscleGroups: ["Chest", "Anterior Deltoid", "Triceps", "Core (Anti-rotation)"],
+    muscleGroups: [
+      "Chest",
+      "Anterior Deltoid",
+      "Triceps",
+      "Core (Anti-rotation)",
+    ],
     difficulty: "Pro",
   },
   "onearm pushup deep": {
@@ -582,7 +587,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Press back to full lockout at the top",
       "Keep the hips square throughout the descent",
     ],
-    muscleGroups: ["Chest (Full ROM)", "Triceps", "Deltoids", "Core (Anti-rotation)"],
+    muscleGroups: [
+      "Chest (Full ROM)",
+      "Triceps",
+      "Deltoids",
+      "Core (Anti-rotation)",
+    ],
     difficulty: "Pro",
   },
   "typewriter pushup": {
@@ -3596,10 +3606,10 @@ export function ExerciseInfoPanel({
     effective?.difficulty === "Beginner"
       ? "oklch(0.75 0.18 145)"
       : effective?.difficulty === "Intermediate"
-        ? "oklch(0.75 0.20 70)"
+        ? "oklch(var(--prestige))"
         : effective?.difficulty === "Advanced"
           ? "oklch(0.68 0.24 25)"
-          : "oklch(0.68 0.25 180)";
+          : "oklch(var(--primary))";
 
   return (
     <AnimatePresence>
@@ -3633,8 +3643,8 @@ export function ExerciseInfoPanel({
               "md:w-[340px] md:max-w-[340px] md:right-0 md:inset-y-0",
             )}
             style={{
-              background: "oklch(0.11 0.015 260)",
-              borderLeft: "1px solid oklch(0.26 0.01 260 / 0.6)",
+              background: "oklch(0.11 0.015 var(--neutral-hue))",
+              borderLeft: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
               boxShadow: "-16px 0 60px oklch(0 0 0 / 0.55)",
             }}
             data-ocid="workout-session.exercise_info_panel"
@@ -3643,13 +3653,14 @@ export function ExerciseInfoPanel({
             <div
               className="flex items-start justify-between px-5 pt-12 pb-4"
               style={{
-                borderBottom: "1px solid oklch(0.22 0.01 260 / 0.5)",
+                borderBottom:
+                  "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
               }}
             >
               <div className="flex-1 min-w-0 pr-3">
                 <p
-                  className="text-[10px] font-display font-bold uppercase tracking-[0.22em] mb-1"
-                  style={{ color: "oklch(0.68 0.25 180)" }}
+                  className="text-xs font-display font-bold uppercase tracking-[0.22em] mb-1"
+                  style={{ color: "oklch(var(--primary))" }}
                 >
                   Exercise Info
                 </p>
@@ -3662,8 +3673,8 @@ export function ExerciseInfoPanel({
                 onClick={onClose}
                 className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center text-white/60 hover:text-white transition-colors duration-200"
                 style={{
-                  background: "oklch(0.18 0.01 260)",
-                  border: "1px solid oklch(0.28 0.01 260 / 0.5)",
+                  background: "oklch(0.18 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.28 0.01 var(--neutral-hue) / 0.5)",
                 }}
                 aria-label="Close exercise info"
                 data-ocid="workout-session.exercise_info_close_button"
@@ -3682,7 +3693,7 @@ export function ExerciseInfoPanel({
                   <div
                     className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
                     style={{
-                      borderColor: "oklch(0.68 0.25 180 / 0.8)",
+                      borderColor: "oklch(var(--primary) / 0.8)",
                       borderTopColor: "transparent",
                     }}
                   />
@@ -3709,8 +3720,8 @@ export function ExerciseInfoPanel({
                   <div>
                     {effective.muscleGroups.length > 0 && (
                       <p
-                        className="text-[10px] font-display font-bold uppercase tracking-[0.18em] mb-2"
-                        style={{ color: "oklch(0.68 0.25 180)" }}
+                        className="text-xs font-display font-bold uppercase tracking-[0.18em] mb-2"
+                        style={{ color: "oklch(var(--primary))" }}
                       >
                         Muscle Focus
                       </p>
@@ -3719,11 +3730,11 @@ export function ExerciseInfoPanel({
                       {effective.muscleGroups.map((muscle) => (
                         <span
                           key={muscle}
-                          className="text-[11px] font-display font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg"
+                          className="text-xs font-display font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg"
                           style={{
-                            background: "oklch(0.68 0.25 180 / 0.12)",
-                            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
-                            color: "oklch(0.68 0.25 180)",
+                            background: "oklch(var(--primary) / 0.12)",
+                            border: "1px solid oklch(var(--primary) / 0.3)",
+                            color: "oklch(var(--primary))",
                           }}
                         >
                           {muscle}
@@ -3731,7 +3742,7 @@ export function ExerciseInfoPanel({
                       ))}
                       {effective.difficulty && (
                         <span
-                          className="text-[11px] font-display font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg"
+                          className="text-xs font-display font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg"
                           style={{
                             background: `${difficultyColor}18`,
                             border: `1px solid ${difficultyColor}50`,
@@ -3748,13 +3759,14 @@ export function ExerciseInfoPanel({
                   <div
                     className="rounded-2xl p-4"
                     style={{
-                      background: "oklch(0.16 0.01 260)",
-                      border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                      background: "oklch(0.16 0.01 var(--neutral-hue))",
+                      border:
+                        "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                     }}
                   >
                     <p
-                      className="text-[10px] font-display font-bold uppercase tracking-[0.18em] mb-2"
-                      style={{ color: "oklch(0.68 0.25 180)" }}
+                      className="text-xs font-display font-bold uppercase tracking-[0.18em] mb-2"
+                      style={{ color: "oklch(var(--primary))" }}
                     >
                       How to perform
                     </p>
@@ -3768,13 +3780,14 @@ export function ExerciseInfoPanel({
                     <div
                       className="rounded-2xl p-4"
                       style={{
-                        background: "oklch(0.16 0.01 260)",
-                        border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                        background: "oklch(0.16 0.01 var(--neutral-hue))",
+                        border:
+                          "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                       }}
                     >
                       <p
-                        className="text-[10px] font-display font-bold uppercase tracking-[0.18em] mb-3"
-                        style={{ color: "oklch(0.68 0.25 180)" }}
+                        className="text-xs font-display font-bold uppercase tracking-[0.18em] mb-3"
+                        style={{ color: "oklch(var(--primary))" }}
                       >
                         Key Points
                       </p>
@@ -3782,10 +3795,10 @@ export function ExerciseInfoPanel({
                         {effective.keyPoints.map((point, i) => (
                           <li key={point} className="flex items-start gap-2.5">
                             <span
-                              className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-display font-black mt-0.5"
+                              className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-display font-black mt-0.5"
                               style={{
-                                background: "oklch(0.68 0.25 180 / 0.15)",
-                                color: "oklch(0.68 0.25 180)",
+                                background: "oklch(var(--primary) / 0.15)",
+                                color: "oklch(var(--primary))",
                               }}
                             >
                               {i + 1}
@@ -3803,15 +3816,17 @@ export function ExerciseInfoPanel({
                   <div
                     className="rounded-2xl p-4 flex items-center gap-3"
                     style={{
-                      background: "oklch(0.16 0.01 260)",
-                      border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                      background: "oklch(0.16 0.01 var(--neutral-hue))",
+                      border:
+                        "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                     }}
                   >
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                       style={{
-                        background: "oklch(0.20 0.015 260)",
-                        border: "1px solid oklch(0.30 0.01 260 / 0.5)",
+                        background: "oklch(0.20 0.015 var(--neutral-hue))",
+                        border:
+                          "1px solid oklch(0.30 0.01 var(--neutral-hue) / 0.5)",
                       }}
                     >
                       <Video className="w-4 h-4 text-white/40" />

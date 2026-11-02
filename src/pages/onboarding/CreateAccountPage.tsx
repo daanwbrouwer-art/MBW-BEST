@@ -21,8 +21,8 @@ function SocialButton({
       onClick={onClick}
       className="w-full h-14 rounded-full flex items-center justify-center gap-3 font-display font-bold text-sm tracking-wide transition-smooth hover:opacity-90 active:scale-[0.98]"
       style={{
-        background: "oklch(0.96 0.002 260)",
-        color: "oklch(0.16 0.01 260)",
+        background: "oklch(0.96 0.002 var(--neutral-hue))",
+        color: "oklch(0.16 0.01 var(--neutral-hue))",
       }}
       data-ocid={ocid}
     >
@@ -46,7 +46,7 @@ export default function CreateAccountPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 55%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 55%)",
         }}
       />
 
@@ -61,10 +61,12 @@ export default function CreateAccountPage() {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <img
-          src="/assets/images/mbw-logo-white-icon.png"
+          src="/assets/images/mbw-logo-white-icon.webp"
           alt="MyBodyWeight"
           className="w-10 h-10 object-contain"
-          style={{ filter: "drop-shadow(0 0 10px oklch(0.68 0.25 180 / 0.3))" }}
+          style={{
+            filter: "drop-shadow(0 0 10px oklch(var(--primary) / 0.3))",
+          }}
         />
         <div className="w-10" />
       </header>
@@ -118,7 +120,7 @@ export default function CreateAccountPage() {
             </p>
           </div>
 
-          <p className="font-body text-[11px] text-white/30 text-center leading-relaxed">
+          <p className="font-body text-xs text-white/30 text-center leading-relaxed">
             By creating an account, I agree to the MyBodyWeight{" "}
             <button
               type="button"

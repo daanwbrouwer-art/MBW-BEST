@@ -2,6 +2,7 @@ import {
   SUIT_CONFIG,
   type SuitKey,
   resolveExerciseIllustration,
+  suitAccent,
 } from "@/data/exerciseAssets";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import type { WorkoutGender } from "@/hooks/use-workout";
@@ -21,10 +22,10 @@ interface PlayingCardProps {
 }
 
 // Near-black card body (#111111) with subtle teal border at ~18% opacity.
-const CARD_BODY_BG = "oklch(0.13 0.005 260)"; // ~#111111
-const TEAL_BORDER = "oklch(0.68 0.25 180 / 0.18)"; // #2dd4a0 @ 18%
+const CARD_BODY_BG = "oklch(0.13 0.005 var(--neutral-hue))"; // ~#111111
+const TEAL_BORDER = "oklch(var(--primary) / 0.18)";
 const CREAM_BG = "oklch(0.98 0.005 70)"; // ~#fafafa
-const TEAL_REP = "oklch(0.68 0.25 180)"; // #2dd4a0
+const TEAL_REP = "oklch(var(--primary))";
 
 /**
  * PlayingCard renders a single workout card.
@@ -97,13 +98,8 @@ export function PlayingCard({
           ? `x ${repCount} REPS`
           : "";
 
-  // Suit color: red for hearts/diamonds, white for spades/clubs, teal for joker.
-  const suitColor =
-    suit === "Hearts" || suit === "Diamonds"
-      ? "oklch(0.65 0.22 25)" // red
-      : suit === "Joker"
-        ? TEAL_REP
-        : "oklch(0.97 0.005 260)"; // white for spades/clubs
+  // Four-colour deck: every suit has its own palette colour.
+  const suitColor = suitAccent(suit);
 
   // Corner block: suit symbol stacked over the card value.
   const CornerBlock = ({ rotated = false }: { rotated?: boolean }) => (
@@ -111,7 +107,7 @@ export function PlayingCard({
       className={cn(
         "flex flex-col items-center leading-none",
         rotated && "rotate-180",
-        compact ? "text-[10px]" : "text-sm",
+        compact ? "text-xs" : "text-sm",
       )}
       style={{ color: suitColor }}
     >
@@ -127,7 +123,7 @@ export function PlayingCard({
       <span
         className={cn(
           "font-display font-black mt-0.5",
-          compact ? "text-[10px]" : "text-xs",
+          compact ? "text-xs" : "text-xs",
         )}
         style={{ lineHeight: 1 }}
       >
@@ -153,7 +149,7 @@ export function PlayingCard({
             border: `1px solid ${TEAL_BORDER}`,
             borderRadius: "14px",
             boxShadow:
-              "0 0 24px oklch(0.68 0.25 180 / 0.18), 0 8px 32px oklch(0 0 0 / 0.6)",
+              "0 0 24px oklch(var(--primary) / 0.18), 0 8px 32px oklch(0 0 0 / 0.6)",
           }}
         >
           {/* Top-left corner: suit symbol + value stacked */}
@@ -199,7 +195,7 @@ export function PlayingCard({
                     compact ? "text-sm" : "text-xl",
                   )}
                   style={{
-                    color: "oklch(0.15 0.01 260)",
+                    color: "oklch(0.15 0.01 var(--neutral-hue))",
                     letterSpacing: "-0.01em",
                   }}
                 >
@@ -225,10 +221,10 @@ export function PlayingCard({
             <div
               className={cn(
                 "font-display font-bold uppercase leading-tight truncate",
-                compact ? "text-[10px]" : "text-xs",
+                compact ? "text-xs" : "text-xs",
               )}
               style={{
-                color: "oklch(0.97 0.005 260)",
+                color: "oklch(0.97 0.005 var(--neutral-hue))",
                 letterSpacing: "0.02em",
               }}
             >
@@ -238,7 +234,7 @@ export function PlayingCard({
               <div
                 className={cn(
                   "font-display font-black leading-tight mt-0.5",
-                  compact ? "text-[11px]" : "text-sm",
+                  compact ? "text-xs" : "text-sm",
                 )}
                 style={{
                   color: TEAL_REP,
@@ -257,12 +253,12 @@ export function PlayingCard({
           style={{
             border: `1px solid ${TEAL_BORDER}`,
             boxShadow:
-              "0 0 40px oklch(0.68 0.25 180/0.2),0 8px 40px oklch(0 0 0/0.6)",
+              "0 0 40px oklch(var(--primary) / 0.2),0 8px 40px oklch(0 0 0/0.6)",
           }}
         >
           {/* Card back image */}
           <img
-            src="/assets/exercises/backside_of_card.png"
+            src="/assets/exercises/backside_of_card.webp"
             className="absolute inset-0 w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = "none";
@@ -274,14 +270,14 @@ export function PlayingCard({
             className="absolute inset-0 opacity-[0.07]"
             style={{
               backgroundImage:
-                "repeating-linear-gradient(0deg, oklch(0.68 0.25 180) 0px, oklch(0.68 0.25 180) 1px, transparent 1px, transparent 24px), repeating-linear-gradient(90deg, oklch(0.68 0.25 180) 0px, oklch(0.68 0.25 180) 1px, transparent 1px, transparent 24px)",
+                "repeating-linear-gradient(0deg, oklch(var(--primary)) 0px, oklch(var(--primary)) 1px, transparent 1px, transparent 24px), repeating-linear-gradient(90deg, oklch(var(--primary)) 0px, oklch(var(--primary)) 1px, transparent 1px, transparent 24px)",
             }}
           />
 
           {/* Diamond decorative border */}
           <div
             className="absolute inset-3 rounded-2xl border opacity-20"
-            style={{ borderColor: "oklch(0.68 0.25 180)" }}
+            style={{ borderColor: "oklch(var(--primary))" }}
           />
 
           {/* Center MBW logo mark */}
@@ -292,9 +288,9 @@ export function PlayingCard({
                 compact ? "w-10 h-10" : "w-16 h-16",
               )}
               style={{
-                borderColor: "oklch(0.68 0.25 180 / 0.5)",
-                background: "oklch(0.68 0.25 180 / 0.08)",
-                boxShadow: "0 0 20px oklch(0.68 0.25 180 / 0.3)",
+                borderColor: "oklch(var(--primary) / 0.5)",
+                background: "oklch(var(--primary) / 0.08)",
+                boxShadow: "0 0 20px oklch(var(--primary) / 0.3)",
               }}
             >
               <span
@@ -303,8 +299,8 @@ export function PlayingCard({
                   compact ? "text-sm" : "text-xl",
                 )}
                 style={{
-                  color: "oklch(0.68 0.25 180)",
-                  textShadow: "0 0 12px oklch(0.68 0.25 180 / 0.6)",
+                  color: "oklch(var(--primary))",
+                  textShadow: "0 0 12px oklch(var(--primary) / 0.6)",
                 }}
               >
                 MBW
@@ -328,7 +324,7 @@ export function PlayingCard({
               key={pos}
               className={cn("absolute w-3 h-3", pos)}
               style={{
-                borderColor: "oklch(0.68 0.25 180 / 0.4)",
+                borderColor: "oklch(var(--primary) / 0.4)",
                 borderWidth:
                   pos.includes("top") && pos.includes("left")
                     ? "2px 0 0 2px"

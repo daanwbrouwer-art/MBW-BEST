@@ -52,7 +52,7 @@ export default function AuthPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 55%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 55%)",
         }}
       />
 
@@ -67,10 +67,12 @@ export default function AuthPage() {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <img
-          src="/assets/images/mbw-logo-white-icon.png"
+          src="/assets/images/mbw-logo-white-icon.webp"
           alt="MyBodyWeight"
           className="w-10 h-10 object-contain"
-          style={{ filter: "drop-shadow(0 0 10px oklch(0.68 0.25 180 / 0.3))" }}
+          style={{
+            filter: "drop-shadow(0 0 10px oklch(var(--primary) / 0.3))",
+          }}
         />
         <div className="w-10" />
       </header>
@@ -102,8 +104,8 @@ export default function AuthPage() {
               <div
                 className="w-full h-14 rounded-2xl flex items-center px-4 gap-3 transition-smooth focus-within:border-primary/60"
                 style={{
-                  background: "oklch(0.17 0.012 260)",
-                  border: "1px solid oklch(0.28 0.01 260)",
+                  background: "oklch(0.17 0.012 var(--neutral-hue))",
+                  border: "1px solid oklch(0.28 0.01 var(--neutral-hue))",
                 }}
               >
                 <svg
@@ -114,7 +116,7 @@ export default function AuthPage() {
                   className="shrink-0"
                   role="img"
                   aria-hidden="true"
-                  style={{ color: "oklch(0.55 0.008 260)" }}
+                  style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
                 >
                   <path
                     d="M1 1h16v12H1V1zm0 0l8 7 8-7"
@@ -146,8 +148,8 @@ export default function AuthPage() {
               <div
                 className="w-full h-14 rounded-2xl flex items-center px-4 gap-3 transition-smooth focus-within:border-primary/60"
                 style={{
-                  background: "oklch(0.17 0.012 260)",
-                  border: "1px solid oklch(0.28 0.01 260)",
+                  background: "oklch(0.17 0.012 var(--neutral-hue))",
+                  border: "1px solid oklch(0.28 0.01 var(--neutral-hue))",
                 }}
               >
                 <svg
@@ -158,7 +160,7 @@ export default function AuthPage() {
                   className="shrink-0"
                   role="img"
                   aria-hidden="true"
-                  style={{ color: "oklch(0.55 0.008 260)" }}
+                  style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
                 >
                   <rect
                     x="1"
@@ -236,7 +238,7 @@ export default function AuthPage() {
               className="w-full h-14 font-display font-black text-sm tracking-widest-custom rounded-full uppercase mb-4"
               style={{
                 boxShadow:
-                  "0 0 32px oklch(0.68 0.25 180 / 0.3), 0 4px 16px oklch(0 0 0 / 0.25)",
+                  "0 0 32px oklch(var(--primary) / 0.3), 0 4px 16px oklch(0 0 0 / 0.25)",
               }}
               disabled={isLoading}
               data-ocid="onboarding-auth.login_button"

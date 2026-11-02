@@ -7,13 +7,13 @@
 // progress-related is cached.
 import { readSessions } from "@/lib/achievementSessionLog";
 import { getCardsDrawnThisWeek } from "@/lib/streak";
-import type { StreakData } from "@/types/streak";
 import type {
   ChallengeHistoryEntry,
   ChallengeProgress,
   ChallengeType,
   WeeklyChallengeRecord,
 } from "@/types/challenge";
+import type { StreakData } from "@/types/streak";
 import type { DeckDifficulty } from "@/types/workout";
 
 const CHALLENGE_ROTATION: ChallengeType[] = [
@@ -61,7 +61,9 @@ function addDays(date: Date, n: number): Date {
 const EPOCH_MONDAY = mondayOf(new Date(2024, 0, 1));
 
 function weekNumberFor(monday: Date): number {
-  return Math.round((monday.getTime() - EPOCH_MONDAY.getTime()) / (7 * 86_400_000));
+  return Math.round(
+    (monday.getTime() - EPOCH_MONDAY.getTime()) / (7 * 86_400_000),
+  );
 }
 
 // ─── Storage ────────────────────────────────────────────────────────────────
@@ -290,11 +292,17 @@ export function computeChallengeProgress(
   };
 }
 
-export function daysUntilReset(weekStart: string, now: Date = new Date()): number {
+export function daysUntilReset(
+  weekStart: string,
+  now: Date = new Date(),
+): number {
   const start = parseISODate(weekStart);
   const nextMonday = addDays(start, 7);
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  return Math.max(0, Math.ceil((nextMonday.getTime() - today.getTime()) / 86_400_000));
+  return Math.max(
+    0,
+    Math.ceil((nextMonday.getTime() - today.getTime()) / 86_400_000),
+  );
 }
 
 // ─── Completion processing ──────────────────────────────────────────────────

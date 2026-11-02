@@ -3,6 +3,7 @@ import { AchievementUnlockAnimation } from "@/components/AchievementUnlockAnimat
 import { Logo } from "@/components/Logo";
 import { PaywallModal } from "@/components/PaywallModal";
 import { Button } from "@/components/ui/button";
+import { suitAccent } from "@/data/exerciseAssets";
 import { useAchievementUnlockQueue } from "@/hooks/use-achievement-unlock-queue";
 import { useActor } from "@/hooks/use-local-actor";
 import { getPositionIfPermitted } from "@/hooks/use-location";
@@ -163,15 +164,6 @@ const CATEGORY_GROUP: Record<string, { label: string; emoji: string }> = {
   Legs: { label: "Legs", emoji: "🦵" },
 };
 
-// Suit → accent color token
-const SUIT_ACCENT: Record<string, string> = {
-  Hearts: "oklch(0.65 0.22 25)", // red
-  Spades: "oklch(0.72 0.0 260)", // light silver
-  Diamonds: "oklch(0.65 0.22 25)", // red
-  Clubs: "oklch(0.72 0.0 260)", // light silver
-  Joker: "oklch(0.85 0.18 85)", // gold
-};
-
 function buildBreakdown(playedCards: LocalSessionCard[]): {
   suitGroups: SuitGroup[];
   exerciseRows: ExerciseRepRow[];
@@ -264,18 +256,20 @@ function StatCard({
       className="rounded-2xl p-4 flex flex-col gap-2"
       style={{
         background: glow
-          ? "oklch(0.17 0.015 180 / 0.4)"
-          : "oklch(0.16 0.01 260)",
+          ? "oklch(0.17 0.015 var(--primary-h) / 0.4)"
+          : "oklch(0.16 0.01 var(--neutral-hue))",
         border: glow
-          ? "1px solid oklch(0.68 0.25 180 / 0.4)"
-          : "1px solid oklch(0.26 0.01 260 / 0.6)",
-        boxShadow: glow ? "0 0 24px oklch(0.68 0.25 180 / 0.18)" : "none",
+          ? "1px solid oklch(var(--primary) / 0.4)"
+          : "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
+        boxShadow: glow ? "0 0 24px oklch(var(--primary) / 0.18)" : "none",
       }}
       data-ocid="workout-summary.stat_card"
     >
       <div
         style={{
-          color: glow ? "oklch(0.68 0.25 180)" : "oklch(0.78 0.008 260)",
+          color: glow
+            ? "oklch(var(--primary))"
+            : "oklch(0.78 0.008 var(--neutral-hue))",
         }}
       >
         {icon}
@@ -284,8 +278,8 @@ function StatCard({
         {value}
       </p>
       <p
-        className="text-[10px] font-body uppercase tracking-wider"
-        style={{ color: "oklch(0.78 0.008 260)" }}
+        className="text-xs font-body uppercase tracking-wider"
+        style={{ color: "oklch(0.78 0.008 var(--neutral-hue))" }}
       >
         {label}
       </p>
@@ -596,7 +590,7 @@ export default function WorkoutSummaryPage() {
         className="pointer-events-none absolute inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse 90% 45% at 50% 0%, oklch(0.68 0.25 180 / 0.13) 0%, transparent 65%)",
+            "radial-gradient(ellipse 90% 45% at 50% 0%, oklch(var(--primary) / 0.13) 0%, transparent 65%)",
         }}
       />
 
@@ -605,10 +599,10 @@ export default function WorkoutSummaryPage() {
         <Logo size="md" showIcon />
         {deckLabel && (
           <span
-            className="text-[10px] font-display font-bold text-white/70 rounded-full px-3 py-1"
+            className="text-xs font-display font-bold text-white/70 rounded-full px-3 py-1"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
             }}
           >
             {deckLabel}
@@ -629,15 +623,15 @@ export default function WorkoutSummaryPage() {
           }}
           className="w-24 h-24 rounded-full flex items-center justify-center mb-5"
           style={{
-            background: "oklch(0.17 0.015 180 / 0.3)",
-            border: "2px solid oklch(0.68 0.25 180 / 0.5)",
+            background: "oklch(0.17 0.015 var(--primary-h) / 0.3)",
+            border: "2px solid oklch(var(--primary) / 0.5)",
             boxShadow:
-              "0 0 60px oklch(0.68 0.25 180 / 0.35), 0 0 120px oklch(0.68 0.25 180 / 0.1)",
+              "0 0 60px oklch(var(--primary) / 0.35), 0 0 120px oklch(var(--primary) / 0.1)",
           }}
         >
           <Trophy
             className="w-11 h-11"
-            style={{ color: "oklch(0.68 0.25 180)" }}
+            style={{ color: "oklch(var(--primary))" }}
           />
         </motion.div>
 
@@ -646,11 +640,11 @@ export default function WorkoutSummaryPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.5 }}
           className="font-display font-black text-4xl text-foreground tracking-tight mb-1 text-center"
-          style={{ textShadow: "0 0 24px oklch(0.68 0.25 180 / 0.4)" }}
+          style={{ textShadow: "0 0 24px oklch(var(--primary) / 0.4)" }}
         >
           WORKOUT
           <br />
-          <span style={{ color: "oklch(0.68 0.25 180)" }}>COMPLETE</span>
+          <span style={{ color: "oklch(var(--primary))" }}>COMPLETE</span>
         </motion.h1>
 
         <motion.p
@@ -671,18 +665,18 @@ export default function WorkoutSummaryPage() {
           transition={{ delay: 0.4, duration: 0.4 }}
           className="relative z-10 mx-5 mb-6 rounded-2xl px-5 py-4 flex items-center gap-3"
           style={{
-            background: "oklch(0.17 0.015 180 / 0.4)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+            background: "oklch(0.17 0.015 var(--primary-h) / 0.4)",
+            border: "1px solid oklch(var(--primary) / 0.3)",
           }}
           data-ocid="workout-summary.motivation_banner"
         >
           <Sparkles
             className="w-5 h-5 shrink-0"
-            style={{ color: "oklch(0.68 0.25 180)" }}
+            style={{ color: "oklch(var(--primary))" }}
           />
           <p
             className="font-display font-bold text-sm leading-snug"
-            style={{ color: "oklch(0.68 0.25 180)" }}
+            style={{ color: "oklch(var(--primary))" }}
           >
             {motivationalMsg}
           </p>
@@ -697,18 +691,18 @@ export default function WorkoutSummaryPage() {
           transition={{ delay: 0.38, duration: 0.4 }}
           className="relative z-10 mx-5 mb-6 rounded-2xl px-4 py-3 flex items-center gap-3"
           style={{
-            background: "oklch(0.2 0.05 60 / 0.15)",
-            border: "1px solid oklch(0.75 0.16 60 / 0.4)",
+            background: "oklch(0.2 0.05 var(--prestige-h) / 0.15)",
+            border: "1px solid oklch(var(--prestige) / 0.4)",
           }}
           data-ocid="workout-summary.invalid_session_warning"
         >
           <Zap
             className="w-4 h-4 shrink-0"
-            style={{ color: "oklch(0.75 0.16 60)" }}
+            style={{ color: "oklch(var(--prestige))" }}
           />
           <p
             className="font-body text-xs leading-snug"
-            style={{ color: "oklch(0.85 0.1 60)" }}
+            style={{ color: "oklch(var(--prestige))" }}
           >
             This session was completed too quickly to count toward achievements.
           </p>
@@ -753,14 +747,14 @@ export default function WorkoutSummaryPage() {
           className="relative z-10 mx-5 mb-6"
           data-ocid="workout-summary.reps_section"
         >
-          <p className="font-display font-bold text-[10px] uppercase tracking-widest mb-3 text-muted-foreground">
+          <p className="font-display font-bold text-xs uppercase tracking-widest mb-3 text-muted-foreground">
             Reps per Exercise
           </p>
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {exerciseRows.map((row, i) => (
@@ -770,7 +764,7 @@ export default function WorkoutSummaryPage() {
                 style={{
                   borderBottom:
                     i < exerciseRows.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`workout-summary.exercise.item.${i + 1}`}
@@ -787,14 +781,14 @@ export default function WorkoutSummaryPage() {
                   <span
                     className="font-display font-black text-lg leading-none"
                     style={{
-                      color: SUIT_ACCENT[row.suit] ?? "oklch(0.68 0.25 180)",
+                      color: suitAccent(row.suit),
                     }}
                   >
                     {row.reps}
                   </span>
                   <span
-                    className="font-body text-[10px] uppercase tracking-wide"
-                    style={{ color: "oklch(0.75 0.008 260)" }}
+                    className="font-body text-xs uppercase tracking-wide"
+                    style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                   >
                     reps
                   </span>
@@ -805,27 +799,28 @@ export default function WorkoutSummaryPage() {
             <div
               className="flex items-center justify-between px-5 py-4"
               style={{
-                borderTop: "1px solid oklch(0.26 0.01 260 / 0.6)",
-                background: "oklch(0.17 0.015 180 / 0.2)",
+                borderTop:
+                  "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
+                background: "oklch(0.17 0.015 var(--primary-h) / 0.2)",
               }}
               data-ocid="workout-summary.total_reps"
             >
               <span
                 className="font-display font-bold text-xs uppercase tracking-widest"
-                style={{ color: "oklch(0.78 0.008 260)" }}
+                style={{ color: "oklch(0.78 0.008 var(--neutral-hue))" }}
               >
                 Total Reps
               </span>
               <div className="flex items-baseline gap-1">
                 <span
                   className="font-display font-black text-2xl leading-none"
-                  style={{ color: "oklch(0.68 0.25 180)" }}
+                  style={{ color: "oklch(var(--primary))" }}
                 >
                   {totalReps}
                 </span>
                 <span
-                  className="font-body text-[10px] uppercase tracking-wide"
-                  style={{ color: "oklch(0.75 0.008 260)" }}
+                  className="font-body text-xs uppercase tracking-wide"
+                  style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                 >
                   reps
                 </span>
@@ -844,14 +839,14 @@ export default function WorkoutSummaryPage() {
           className="relative z-10 mx-5 mb-6"
           data-ocid="workout-summary.category_section"
         >
-          <p className="font-display font-bold text-[10px] uppercase tracking-widest mb-3 text-muted-foreground">
+          <p className="font-display font-bold text-xs uppercase tracking-widest mb-3 text-muted-foreground">
             Cards by Category
           </p>
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {suitGroups.map((g, i) => (
@@ -861,7 +856,7 @@ export default function WorkoutSummaryPage() {
                 style={{
                   borderBottom:
                     i < suitGroups.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`workout-summary.category.item.${i + 1}`}
@@ -875,13 +870,13 @@ export default function WorkoutSummaryPage() {
                 <div className="flex items-baseline gap-1">
                   <span
                     className="font-display font-black text-base leading-none"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    style={{ color: "oklch(var(--primary))" }}
                   >
                     {g.count}
                   </span>
                   <span
-                    className="font-body text-[10px] uppercase tracking-wide"
-                    style={{ color: "oklch(0.75 0.008 260)" }}
+                    className="font-body text-xs uppercase tracking-wide"
+                    style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                   >
                     cards
                   </span>
@@ -894,7 +889,7 @@ export default function WorkoutSummaryPage() {
                 style={{
                   borderTop:
                     suitGroups.length > 0
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid="workout-summary.joker_count"
@@ -910,8 +905,8 @@ export default function WorkoutSummaryPage() {
                     {jokerCount}
                   </span>
                   <span
-                    className="font-body text-[10px] uppercase tracking-wide"
-                    style={{ color: "oklch(0.75 0.008 260)" }}
+                    className="font-body text-xs uppercase tracking-wide"
+                    style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                   >
                     cards
                   </span>
@@ -931,14 +926,14 @@ export default function WorkoutSummaryPage() {
           className="relative z-10 mx-5 mb-6"
           data-ocid="workout-summary.achievements_earned_section"
         >
-          <p className="font-display font-bold text-[10px] uppercase tracking-widest mb-3 text-muted-foreground">
+          <p className="font-display font-bold text-xs uppercase tracking-widest mb-3 text-muted-foreground">
             Achievements Earned This Session
           </p>
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.17 0.015 180 / 0.25)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.35)",
+              background: "oklch(0.17 0.015 var(--primary-h) / 0.25)",
+              border: "1px solid oklch(var(--primary) / 0.35)",
             }}
           >
             {earnedThisSession.map((a, i) => (
@@ -948,7 +943,7 @@ export default function WorkoutSummaryPage() {
                 style={{
                   borderBottom:
                     i < earnedThisSession.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`workout-summary.achievement_earned.${i + 1}`}
@@ -974,18 +969,18 @@ export default function WorkoutSummaryPage() {
         <div
           className="relative z-10 mx-5 mb-6 rounded-2xl p-8 text-center"
           style={{
-            background: "oklch(0.16 0.01 260)",
-            border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+            background: "oklch(0.16 0.01 var(--neutral-hue))",
+            border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
           }}
           data-ocid="workout-summary.empty_state"
         >
           <div
             className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+            style={{ background: "oklch(var(--primary) / 0.1)" }}
           >
             <Trophy
               className="w-7 h-7"
-              style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+              style={{ color: "oklch(var(--primary) / 0.5)" }}
             />
           </div>
           <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -1009,15 +1004,15 @@ export default function WorkoutSummaryPage() {
             transition={{ delay: 0.65, duration: 0.4 }}
             className="rounded-2xl px-5 py-4 flex items-center gap-3 cursor-pointer"
             style={{
-              background: "oklch(0.17 0.015 260 / 0.6)",
-              border: "1px solid oklch(0.45 0.12 260 / 0.5)",
+              background: "oklch(0.17 0.015 var(--neutral-hue) / 0.6)",
+              border: "1px solid oklch(var(--pulse) / 0.5)",
             }}
             onClick={() => navigate({ to: "/onboarding/auth" })}
             data-ocid="workout-summary.guest_signin_banner"
           >
             <LogIn
               className="w-5 h-5 shrink-0"
-              style={{ color: "oklch(0.75 0.18 260)" }}
+              style={{ color: "oklch(var(--pulse))" }}
             />
             <div className="min-w-0">
               <p className="font-display font-bold text-sm text-white leading-snug">
@@ -1040,7 +1035,7 @@ export default function WorkoutSummaryPage() {
             className="w-full h-14 font-display font-black text-xl tracking-widest rounded-2xl"
             style={{
               boxShadow:
-                "0 0 40px oklch(0.68 0.25 180 / 0.35), 0 4px 20px oklch(0 0 0 / 0.3)",
+                "0 0 40px oklch(var(--primary) / 0.35), 0 4px 20px oklch(0 0 0 / 0.3)",
             }}
             onClick={handleNewWorkout}
             data-ocid="workout-summary.new_workout_button"
@@ -1060,8 +1055,8 @@ export default function WorkoutSummaryPage() {
             variant="outline"
             className="w-full h-14 font-display font-black text-xl tracking-widest rounded-2xl hover:border-primary/40"
             style={{
-              background: "oklch(0.16 0.01 260 / 0.8)",
-              border: "1px solid oklch(0.38 0.01 260 / 0.8)",
+              background: "oklch(0.16 0.01 var(--neutral-hue) / 0.8)",
+              border: "1px solid oklch(0.38 0.01 var(--neutral-hue) / 0.8)",
             }}
             onClick={handleHome}
             data-ocid="workout-summary.home_button"

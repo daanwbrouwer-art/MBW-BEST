@@ -32,7 +32,7 @@ export default function SplashPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 65% 55% at 50% 45%, oklch(0.22 0.06 180 / 0.35) 0%, oklch(0.15 0.02 220 / 0.1) 55%, transparent 75%)",
+            "radial-gradient(ellipse 65% 55% at 50% 45%, oklch(0.22 0.06 var(--primary-h) / 0.35) 0%, oklch(0.15 0.02 220 / 0.1) 55%, transparent 75%)",
         }}
       />
 
@@ -56,17 +56,17 @@ export default function SplashPage() {
           <div
             className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              background: "oklch(0.68 0.25 180 / 0.22)",
+              background: "oklch(var(--primary) / 0.22)",
               filter: "blur(24px)",
               transform: "scale(1.8)",
             }}
           />
           <img
-            src="/assets/images/mbw-logo-white-icon.png"
+            src="/assets/images/mbw-logo-white-icon.webp"
             alt="MyBodyWeight"
             className="relative w-24 h-24 object-contain"
             style={{
-              filter: "drop-shadow(0 0 18px oklch(0.68 0.25 180 / 0.45))",
+              filter: "drop-shadow(0 0 18px oklch(var(--primary) / 0.45))",
             }}
           />
         </motion.div>
@@ -97,17 +97,17 @@ export default function SplashPage() {
             className="h-px w-24"
             style={{
               background:
-                "linear-gradient(to right, transparent, oklch(0.68 0.25 180 / 0.5), transparent)",
+                "linear-gradient(to right, transparent, oklch(var(--primary) / 0.5), transparent)",
             }}
           />
-          <p className="font-display font-bold text-[11px] tracking-[0.2em] uppercase text-white/60">
+          <p className="font-display font-bold text-xs tracking-[0.2em] uppercase text-white/60">
             YOUR BODY. YOUR RULES.
           </p>
           <div
             className="h-px w-24"
             style={{
               background:
-                "linear-gradient(to right, transparent, oklch(0.68 0.25 180 / 0.5), transparent)",
+                "linear-gradient(to right, transparent, oklch(var(--primary) / 0.5), transparent)",
             }}
           />
         </motion.div>
@@ -130,7 +130,7 @@ export default function SplashPage() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
           }}
-          className="font-display text-[11px] tracking-[0.25em] uppercase text-white/50"
+          className="font-display text-xs tracking-[0.25em] uppercase text-white/50"
         >
           TAP TO CONTINUE
         </motion.p>
@@ -141,7 +141,7 @@ export default function SplashPage() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
           }}
-          style={{ color: "oklch(0.68 0.25 180 / 0.6)" }}
+          style={{ color: "oklch(var(--primary) / 0.6)" }}
         >
           <svg
             width="16"

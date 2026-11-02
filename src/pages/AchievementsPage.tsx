@@ -10,7 +10,7 @@ import { ArrowLeft, BarChart2, Trophy } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 
-const TEAL = "#1AD6A0";
+const TEAL = "oklch(var(--prestige))";
 
 const CATEGORIES: (AchievementCategory | "all")[] = [
   "all",
@@ -35,12 +35,11 @@ export default function AchievementsPage() {
     markSeen,
   } = useAchievements();
   const guestMode = useWorkoutStore((s) => s.guestMode);
-  const [activeCategory, setActiveCategory] = useState<AchievementCategory | "all">(
-    "all",
-  );
-  const [detailAchievement, setDetailAchievement] = useState<AchievementView | null>(
-    null,
-  );
+  const [activeCategory, setActiveCategory] = useState<
+    AchievementCategory | "all"
+  >("all");
+  const [detailAchievement, setDetailAchievement] =
+    useState<AchievementView | null>(null);
 
   // Visiting the page clears the nav bar's red "unseen unlock" dot.
   useEffect(() => {
@@ -68,11 +67,13 @@ export default function AchievementsPage() {
   });
 
   const overallPct =
-    totalVisibleCount > 0 ? Math.round((unlockedCount / totalVisibleCount) * 100) : 0;
+    totalVisibleCount > 0
+      ? Math.round((unlockedCount / totalVisibleCount) * 100)
+      : 0;
 
   return (
     <div
-      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto pb-24"
+      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto pb-28"
       data-ocid="achievements.page"
     >
       <AchievementDetailSheet
@@ -88,7 +89,7 @@ export default function AchievementsPage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 55%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--prestige-h) / 0.22) 0%, transparent 55%)",
         }}
       />
 
@@ -96,7 +97,7 @@ export default function AchievementsPage() {
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-prestige/50 hover:text-prestige transition-smooth"
           onClick={() => navigate({ to: "/home" })}
           data-ocid="achievements.back_button"
           aria-label="Go back"
@@ -106,7 +107,7 @@ export default function AchievementsPage() {
         <Logo size="sm" showIcon />
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-prestige/50 hover:text-prestige transition-smooth"
           onClick={() => navigate({ to: "/progress" })}
           data-ocid="achievements.progress_button"
           aria-label="View exercise progress"
@@ -118,7 +119,7 @@ export default function AchievementsPage() {
       {/* Title + count + overall progress bar */}
       <div className="relative z-10 px-5 pt-2 pb-5">
         <div className="flex items-center gap-3 mb-1">
-          <Trophy className="w-6 h-6 text-primary" />
+          <Trophy className="w-6 h-6 text-prestige" />
           <h1 className="font-display font-black text-2xl text-foreground">
             Achievements
           </h1>
@@ -128,12 +129,16 @@ export default function AchievementsPage() {
         </p>
         <div
           className="w-full h-1.5 rounded-full overflow-hidden"
-          style={{ background: "oklch(0.22 0.012 260)" }}
+          style={{ background: "oklch(0.22 0.012 var(--neutral-hue))" }}
           data-ocid="achievements.overall_progress_bar"
         >
           <div
             className="h-full rounded-full"
-            style={{ width: `${overallPct}%`, background: TEAL, boxShadow: `0 0 8px ${TEAL}` }}
+            style={{
+              width: `${overallPct}%`,
+              background: TEAL,
+              boxShadow: `0 0 8px ${TEAL}`,
+            }}
           />
         </div>
       </div>
@@ -145,14 +150,14 @@ export default function AchievementsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="relative z-10 mx-5 mb-4 rounded-2xl px-4 py-3 flex items-center gap-3"
           style={{
-            background: "oklch(0.17 0.015 180 / 0.25)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+            background: "oklch(0.17 0.015 var(--prestige-h) / 0.25)",
+            border: "1px solid oklch(var(--prestige) / 0.3)",
           }}
         >
-          <Trophy className="w-5 h-5 shrink-0 text-primary" />
+          <Trophy className="w-5 h-5 shrink-0 text-prestige" />
           <p className="text-sm text-foreground font-body">
-            Your progress is saved on this device. Create an account to keep it safe
-            everywhere you play.
+            Your progress is saved on this device. Create an account to keep it
+            safe everywhere you play.
           </p>
         </motion.div>
       )}
@@ -165,12 +170,17 @@ export default function AchievementsPage() {
         >
           {CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat;
-            const meta = cat === "all" ? { label: "All", emoji: "🏆" } : CATEGORY_META[cat];
+            const meta =
+              cat === "all"
+                ? { label: "All", emoji: "🏆" }
+                : CATEGORY_META[cat];
             const catAchievements =
               cat === "all"
                 ? achievements
                 : achievements.filter((a) => a.category === cat);
-            const catUnlocked = catAchievements.filter((a) => a.unlocked).length;
+            const catUnlocked = catAchievements.filter(
+              (a) => a.unlocked,
+            ).length;
             return (
               <button
                 key={cat}
@@ -179,20 +189,22 @@ export default function AchievementsPage() {
                 className="flex-shrink-0 rounded-xl px-3 py-2 flex items-center gap-1.5 transition-smooth"
                 style={{
                   background: isActive
-                    ? "oklch(0.68 0.25 180 / 0.15)"
-                    : "oklch(0.16 0.01 260)",
+                    ? "oklch(var(--prestige) / 0.15)"
+                    : "oklch(0.16 0.01 var(--neutral-hue))",
                   border: isActive
-                    ? "1px solid oklch(0.68 0.25 180 / 0.4)"
-                    : "1px solid oklch(0.26 0.01 260 / 0.5)",
-                  color: isActive ? "oklch(0.68 0.25 180)" : "oklch(0.78 0.008 260)",
+                    ? "1px solid oklch(var(--prestige) / 0.4)"
+                    : "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+                  color: isActive
+                    ? "oklch(var(--prestige))"
+                    : "oklch(0.78 0.008 var(--neutral-hue))",
                 }}
                 data-ocid={`achievements.filter.${cat}`}
               >
                 <span className="text-sm">{meta.emoji}</span>
-                <span className="font-display font-bold text-[11px] uppercase tracking-wider">
+                <span className="font-display font-bold text-xs uppercase tracking-wider">
                   {meta.label}
                 </span>
-                <span className="text-[10px] font-body opacity-60">
+                <span className="text-xs font-body opacity-60">
                   {catUnlocked}/{catAchievements.length}
                 </span>
               </button>
@@ -204,7 +216,7 @@ export default function AchievementsPage() {
       {/* Loading */}
       {isLoading && (
         <div className="relative z-10 flex-1 flex items-center justify-center">
-          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-prestige border-t-transparent animate-spin" />
         </div>
       )}
 
@@ -212,7 +224,7 @@ export default function AchievementsPage() {
       {!isLoading && (
         <div className="relative z-10 px-5">
           {activeCategory !== "all" && (
-            <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+            <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground mb-3">
               {CATEGORY_META[activeCategory].label} —{" "}
               {sorted.filter((a) => a.unlocked).length} unlocked
             </p>

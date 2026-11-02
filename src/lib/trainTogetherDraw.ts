@@ -82,9 +82,7 @@ function groupIntoUnits(steps: CustomWorkoutStep[]): CustomWorkoutStep[][] {
  * (see applyExerciseNameVariety below), so it must never be the only pass —
  * always follow it with that final exact-name guarantee.
  */
-function applyMovementVariety(
-  steps: CustomWorkoutStep[],
-): CustomWorkoutStep[] {
+function applyMovementVariety(steps: CustomWorkoutStep[]): CustomWorkoutStep[] {
   const units = groupIntoUnits(steps);
   const reordered = reorderNoConsecutiveCategories(units, (unit) =>
     getMovementCategory(unit[0]!.name),
@@ -165,7 +163,9 @@ export function drawTrainTogetherSteps(
   // intermediate draw batch — otherwise a reshuffle mid-draw (the
   // `shuffled.length === 0` branch above) could reintroduce a collision a
   // batch-level fix already resolved.
-  return applyExerciseNameVariety(applyMovementVariety(steps.slice(0, cardCount)));
+  return applyExerciseNameVariety(
+    applyMovementVariety(steps.slice(0, cardCount)),
+  );
 }
 
 export type { CustomWorkoutStep };

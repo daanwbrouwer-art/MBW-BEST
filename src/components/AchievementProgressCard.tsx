@@ -2,8 +2,8 @@ import type { AchievementView } from "@/lib/achievementEngine";
 import { CATEGORY_META } from "@/types/achievements";
 import { Lock } from "lucide-react";
 
-const TEAL = "#1AD6A0";
-const GOLD = "#f5c518";
+const TEAL = "oklch(var(--prestige))";
+const GOLD = "oklch(var(--prestige))";
 
 function formatUnlockedDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -46,14 +46,20 @@ export function AchievementProgressCard({
         type="button"
         onClick={onTap}
         className={baseClass}
-        style={{ background: "#1a1a1a", border: "1px solid oklch(0.26 0.01 260 / 0.5)" }}
+        style={{
+          background: "#1a1a1a",
+          border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+        }}
         data-ocid={`achievement.card.${achievement.id}`}
       >
-        <span className="text-4xl leading-none" style={{ color: "oklch(0.4 0.01 260)" }}>
+        <span
+          className="text-4xl leading-none"
+          style={{ color: "oklch(0.4 0.01 var(--neutral-hue))" }}
+        >
           ?
         </span>
         <span className="font-display font-bold text-sm text-white">???</span>
-        <span className="font-body text-[10px] italic" style={{ color: TEAL }}>
+        <span className="font-body text-xs italic" style={{ color: TEAL }}>
           Secret achievement
         </span>
       </button>
@@ -70,26 +76,38 @@ export function AchievementProgressCard({
         data-ocid={`achievement.card.${achievement.id}`}
       >
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-4xl leading-none" style={{ filter: "grayscale(0.3)", opacity: 0.75 }}>
+          <span
+            className="text-4xl leading-none"
+            style={{ filter: "grayscale(0.3)", opacity: 0.75 }}
+          >
             {emoji}
           </span>
         </div>
-        <span className="font-display font-bold text-xs text-white leading-tight">{name}</span>
+        <span className="font-display font-bold text-xs text-white leading-tight">
+          {name}
+        </span>
         <div
           className="w-full h-1.5 rounded-full overflow-hidden mt-1.5"
-          style={{ background: "oklch(0.22 0.012 260)" }}
+          style={{ background: "oklch(0.22 0.012 var(--neutral-hue))" }}
         >
           <div
             className="h-full rounded-full"
-            style={{ width: "100%", background: GOLD, boxShadow: `0 0 8px ${GOLD}` }}
+            style={{
+              width: "100%",
+              background: GOLD,
+              boxShadow: `0 0 8px ${GOLD}`,
+            }}
           />
         </div>
         <div
           className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 px-2"
-          style={{ background: "oklch(0.08 0.005 260 / 0.72)" }}
+          style={{ background: "oklch(0.08 0.005 var(--neutral-hue) / 0.72)" }}
         >
           <Lock className="w-5 h-5" style={{ color: GOLD }} />
-          <span className="font-display font-bold text-[10px] text-center" style={{ color: GOLD }}>
+          <span
+            className="font-display font-bold text-xs text-center"
+            style={{ color: GOLD }}
+          >
             Subscribe to unlock
           </span>
         </div>
@@ -105,21 +123,30 @@ export function AchievementProgressCard({
         className={baseClass}
         style={{
           background: "#1a1a1a",
-          border: hidden ? "1px solid #f59e0b99" : `1px solid ${TEAL}90`,
-          boxShadow: hidden ? "0 0 16px #f59e0b33" : `0 0 16px ${TEAL}22`,
+          border: hidden
+            ? "1px solid oklch(var(--prestige) / 0.60)"
+            : `1px solid oklch(var(--prestige) / 0.56)`,
+          boxShadow: hidden
+            ? "0 0 16px oklch(var(--prestige) / 0.20)"
+            : `0 0 16px oklch(var(--prestige) / 0.13)`,
         }}
         data-ocid={`achievement.card.${achievement.id}`}
       >
         <span
           className="absolute top-2 right-2 text-[8px] font-display font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full"
-          style={{ background: `${TEAL}22`, color: TEAL }}
+          style={{ background: `oklch(var(--prestige) / 0.13)`, color: TEAL }}
         >
           Unlocked
         </span>
         <span className="text-4xl leading-none">{emoji}</span>
-        <span className="font-display font-bold text-xs text-white leading-tight">{name}</span>
+        <span className="font-display font-bold text-xs text-white leading-tight">
+          {name}
+        </span>
         {unlockedAt && (
-          <span className="text-[9px] font-body" style={{ color: "oklch(0.55 0.008 260)" }}>
+          <span
+            className="text-xs font-body"
+            style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
+          >
             Unlocked {formatUnlockedDate(unlockedAt)}
           </span>
         )}
@@ -132,29 +159,44 @@ export function AchievementProgressCard({
       type="button"
       onClick={onTap}
       className={baseClass}
-      style={{ background: "#1a1a1a", border: "1px solid oklch(0.26 0.01 260 / 0.5)" }}
+      style={{
+        background: "#1a1a1a",
+        border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+      }}
       data-ocid={`achievement.card.${achievement.id}`}
     >
-      <span className="text-4xl leading-none" style={{ opacity: 0.6, filter: "saturate(0.5)" }}>
+      <span
+        className="text-4xl leading-none"
+        style={{ opacity: 0.6, filter: "saturate(0.5)" }}
+      >
         {emoji}
       </span>
-      <span className="font-display font-bold text-xs text-white leading-tight">{name}</span>
+      <span className="font-display font-bold text-xs text-white leading-tight">
+        {name}
+      </span>
       {isBinary ? (
-        <Lock className="w-4 h-4 mt-1" style={{ color: "oklch(0.45 0.008 260)" }} />
+        <Lock
+          className="w-4 h-4 mt-1"
+          style={{ color: "oklch(0.45 0.008 var(--neutral-hue))" }}
+        />
       ) : (
         <div className="w-full flex flex-col items-center gap-1 mt-1">
           <div
             className="w-full h-1.5 rounded-full overflow-hidden"
-            style={{ background: "oklch(0.22 0.012 260)" }}
+            style={{ background: "oklch(0.22 0.012 var(--neutral-hue))" }}
           >
             <div
               className="h-full rounded-full"
-              style={{ width: `${pct}%`, background: TEAL, boxShadow: `0 0 6px ${TEAL}` }}
+              style={{
+                width: `${pct}%`,
+                background: TEAL,
+                boxShadow: `0 0 6px ${TEAL}`,
+              }}
             />
           </div>
           <span
-            className="text-[9px] font-body tabular-nums"
-            style={{ color: "oklch(0.6 0.008 260)" }}
+            className="text-xs font-body tabular-nums"
+            style={{ color: "oklch(0.6 0.008 var(--neutral-hue))" }}
             data-ocid={`achievement.card.${achievement.id}.progress_text`}
           >
             {progress.toLocaleString("en-US")}/{target.toLocaleString("en-US")}

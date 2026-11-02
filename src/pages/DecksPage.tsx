@@ -26,8 +26,8 @@ const DIFFICULTIES: DeckDifficulty[] = ["Beginner", "Advanced", "Pro"];
 /** GREEN accent for the Beginner badge per spec. */
 const DIFFICULTY_COLOR: Record<DeckDifficulty, string> = {
   Beginner: "oklch(0.72 0.19 145)",
-  Advanced: "oklch(0.75 0.18 60)",
-  Pro: "oklch(0.65 0.22 30)",
+  Advanced: "oklch(var(--prestige))",
+  Pro: "oklch(var(--energy))",
 };
 
 export default function DecksPage() {
@@ -39,7 +39,11 @@ export default function DecksPage() {
   const [lockedDifficulty, setLockedDifficulty] =
     useState<DeckDifficulty | null>(null);
   const { goals, fitnessLevel, selfAssessment } = useOnboarding();
-  const recommendation = getRecommendation({ goals, fitnessLevel, selfAssessment });
+  const recommendation = getRecommendation({
+    goals,
+    fitnessLevel,
+    selfAssessment,
+  });
 
   const recommendedDifficulty =
     selectedCategory && selectedCategory === recommendation.category
@@ -86,7 +90,7 @@ export default function DecksPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.18) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.18) 0%, transparent 65%)",
         }}
       />
 
@@ -239,12 +243,12 @@ function DifficultyCard({
         background: proPreviewLocked
           ? "#141414"
           : effectiveLocked
-            ? "oklch(0.14 0.01 260)"
-            : "oklch(0.16 0.012 260)",
+            ? "oklch(0.14 0.01 var(--neutral-hue))"
+            : "oklch(0.16 0.012 var(--neutral-hue))",
         borderColor: proPreviewLocked
-          ? "oklch(0.68 0.25 180 / 0.22)"
+          ? "oklch(var(--primary) / 0.22)"
           : effectiveLocked
-            ? "oklch(0.28 0.01 260 / 0.5)"
+            ? "oklch(0.28 0.01 var(--neutral-hue) / 0.5)"
             : borderWithOpacity,
         boxShadow: effectiveLocked ? "none" : `0 4px 24px ${glowWithOpacity}`,
       }}
@@ -254,13 +258,13 @@ function DifficultyCard({
         <>
           <div
             className="absolute inset-0 z-10 rounded-3xl pointer-events-none"
-            style={{ background: "oklch(0.08 0.005 260 / 0.4)" }}
+            style={{ background: "oklch(0.08 0.005 var(--neutral-hue) / 0.4)" }}
           />
           <div
             className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center"
             style={{
-              background: "oklch(0.3 0.01 260 / 0.6)",
-              border: "1px solid oklch(0.4 0.01 260 / 0.6)",
+              background: "oklch(0.3 0.01 var(--neutral-hue) / 0.6)",
+              border: "1px solid oklch(0.4 0.01 var(--neutral-hue) / 0.6)",
             }}
             data-ocid="decks.difficulty.locked_icon"
           >
@@ -283,8 +287,8 @@ function DifficultyCard({
           <div
             className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center"
             style={{
-              background: "oklch(0.68 0.25 180 / 0.15)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.35)",
+              background: "oklch(var(--primary) / 0.15)",
+              border: "1px solid oklch(var(--primary) / 0.35)",
             }}
             data-ocid="decks.difficulty.pro_lock_icon"
           >
@@ -300,7 +304,9 @@ function DifficultyCard({
         <div
           className="w-1 self-stretch rounded-full shrink-0"
           style={{
-            background: effectiveLocked ? "oklch(0.28 0.01 260)" : accentColor,
+            background: effectiveLocked
+              ? "oklch(0.28 0.01 var(--neutral-hue))"
+              : accentColor,
           }}
         />
 
@@ -310,8 +316,8 @@ function DifficultyCard({
               className="font-display font-black text-lg leading-tight"
               style={{
                 color: effectiveLocked
-                  ? "oklch(0.5 0.01 260)"
-                  : "oklch(0.96 0.01 260)",
+                  ? "oklch(0.5 0.01 var(--neutral-hue))"
+                  : "oklch(0.96 0.01 var(--neutral-hue))",
               }}
             >
               {DECK_DIFFICULTY_LABEL[difficulty]}
@@ -319,11 +325,11 @@ function DifficultyCard({
             {/* GREEN Beginner badge — no lock icon for this open deck */}
             {recommended && (
               <span
-                className="px-2 py-0.5 rounded-full text-[9px] font-display font-black tracking-widest uppercase"
+                className="px-2 py-0.5 rounded-full text-xs font-display font-black tracking-widest uppercase"
                 style={{
-                  background: "oklch(0.68 0.25 180 / 0.15)",
-                  color: "oklch(0.68 0.25 180)",
-                  border: "1px solid oklch(0.68 0.25 180 / 0.35)",
+                  background: "oklch(var(--highlight) / 0.15)",
+                  color: "oklch(var(--highlight))",
+                  border: "1px solid oklch(var(--highlight) / 0.35)",
                 }}
                 data-ocid="decks.difficulty.recommended_badge"
               >
@@ -333,8 +339,8 @@ function DifficultyCard({
           </div>
           {proPreviewLocked && (
             <p
-              className="text-[11px] font-display font-bold uppercase tracking-wide mb-1"
-              style={{ color: "oklch(0.68 0.25 180)" }}
+              className="text-xs font-display font-bold uppercase tracking-wide mb-1"
+              style={{ color: "oklch(var(--primary))" }}
               data-ocid="decks.difficulty.pro_lock_label"
             >
               Subscriber only
@@ -342,8 +348,8 @@ function DifficultyCard({
           )}
           {effectiveLocked && (
             <p
-              className="text-[11px] font-display font-bold uppercase tracking-wide mb-1"
-              style={{ color: "oklch(0.55 0.008 260)" }}
+              className="text-xs font-display font-bold uppercase tracking-wide mb-1"
+              style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
               data-ocid="decks.difficulty.locked_label"
             >
               Register free to unlock
@@ -353,8 +359,8 @@ function DifficultyCard({
             className="text-sm font-body"
             style={{
               color: effectiveLocked
-                ? "oklch(0.4 0.008 260)"
-                : "oklch(0.6 0.01 260)",
+                ? "oklch(0.4 0.008 var(--neutral-hue))"
+                : "oklch(0.6 0.01 var(--neutral-hue))",
             }}
           >
             {DECK_DIFFICULTY_DESCRIPTION[difficulty]}
@@ -362,7 +368,7 @@ function DifficultyCard({
           {difficulty === "Advanced" && !effectiveLocked && (
             <p
               className="text-xs font-body italic mt-1.5"
-              style={{ color: "oklch(0.55 0.01 260)" }}
+              style={{ color: "oklch(0.55 0.01 var(--neutral-hue))" }}
               data-ocid="decks.difficulty.path_to_pro"
             >
               Master this deck and you'll be ready for Pro.
@@ -373,7 +379,7 @@ function DifficultyCard({
         {/* Tier badge — GREEN for Beginner, "AVAILABLE" since open to all; hidden on locked cards, which already communicate status via the lock icon + label above */}
         {!proPreviewLocked && !effectiveLocked && (
           <div
-            className="shrink-0 px-2.5 py-1 rounded-full text-[9px] font-display font-black tracking-widest uppercase"
+            className="shrink-0 px-2.5 py-1 rounded-full text-xs font-display font-black tracking-widest uppercase"
             style={{
               background: bgWithOpacity,
               color: accentColor,
@@ -408,7 +414,9 @@ function UpgradeModal({
   // (Pro has its own dedicated preview flow instead) — a free account alone
   // unlocks Advanced, so lead with "Register", not "Subscribe".
   const isGuestAdvancedCase = difficulty === "Advanced" && isGuest;
-  const title = isGuestAdvancedCase ? "Free Account Required" : "Subscriber Only";
+  const title = isGuestAdvancedCase
+    ? "Free Account Required"
+    : "Subscriber Only";
   const body = isGuestAdvancedCase
     ? "Advanced decks require a free account. Register now — it only takes a few seconds, and your progress carries right over."
     : difficulty === "Advanced"
@@ -434,17 +442,17 @@ function UpgradeModal({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-[420px] rounded-3xl overflow-hidden"
         style={{
-          background: "oklch(0.14 0.012 260)",
-          border: "1px solid oklch(0.75 0.18 60 / 0.25)",
+          background: "oklch(0.14 0.012 var(--neutral-hue))",
+          border: "1px solid oklch(var(--prestige) / 0.25)",
           boxShadow:
-            "0 -4px 60px oklch(0.75 0.18 60 / 0.12), 0 20px 60px oklch(0 0 0 / 0.6)",
+            "0 -4px 60px oklch(var(--prestige) / 0.12), 0 20px 60px oklch(0 0 0 / 0.6)",
         }}
       >
         <div
           className="h-1 w-full"
           style={{
             background:
-              "linear-gradient(90deg, transparent, oklch(0.72 0.18 60), oklch(0.68 0.25 180), transparent)",
+              "linear-gradient(90deg, transparent, oklch(var(--prestige)), oklch(var(--primary)), transparent)",
           }}
         />
         <div className="px-6 pt-6 pb-7">
@@ -454,8 +462,8 @@ function UpgradeModal({
                 className="w-10 h-10 rounded-2xl flex items-center justify-center"
                 style={{
                   background:
-                    "linear-gradient(135deg, oklch(0.72 0.18 60 / 0.2), oklch(0.62 0.20 55 / 0.1))",
-                  border: "1px solid oklch(0.72 0.18 60 / 0.3)",
+                    "linear-gradient(135deg, oklch(var(--prestige) / 0.2), oklch(var(--prestige) / 0.1))",
+                  border: "1px solid oklch(var(--prestige) / 0.3)",
                 }}
               >
                 <span className="text-base">🔒</span>
@@ -483,9 +491,9 @@ function UpgradeModal({
               className="w-full h-12 rounded-2xl font-display font-black text-sm tracking-widest uppercase transition-smooth"
               style={{
                 background:
-                  "linear-gradient(135deg, oklch(0.72 0.18 60), oklch(0.62 0.20 55))",
+                  "linear-gradient(135deg, oklch(var(--prestige)), oklch(var(--prestige)))",
                 color: "oklch(0.12 0.01 60)",
-                boxShadow: "0 4px 20px oklch(0.72 0.18 60 / 0.3)",
+                boxShadow: "0 4px 20px oklch(var(--prestige) / 0.3)",
               }}
               data-ocid="decks.upgrade.confirm_button"
             >

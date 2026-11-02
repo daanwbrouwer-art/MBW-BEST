@@ -1,3 +1,4 @@
+import { openTermsOfUse } from "@/lib/legal";
 import { PARK_ICON, TILE_ATTRIBUTION, TILE_URL } from "@/lib/mapTiles";
 import { PARK_EQUIPMENT_OPTIONS } from "@/lib/parkEquipment";
 import { ensureSupabaseSession, supabase } from "@/lib/supabaseClient";
@@ -172,7 +173,7 @@ export function AddParkSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[80] flex items-end justify-center"
-      style={{ background: "oklch(0.05 0.005 260 / 0.92)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.92)" }}
       data-ocid="add-park.sheet"
       onClick={onClose}
     >
@@ -183,8 +184,8 @@ export function AddParkSheet({
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
         className="w-full max-w-[430px] rounded-t-3xl overflow-hidden flex flex-col"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--pulse) / 0.3)",
           borderBottom: "none",
           boxShadow: "0 -20px 60px oklch(0 0 0 / 0.6)",
           maxHeight: "88vh",
@@ -193,7 +194,7 @@ export function AddParkSheet({
       >
         <div
           className="w-10 h-1 rounded-full mx-auto mt-3 mb-2 shrink-0"
-          style={{ background: "oklch(0.4 0.01 260)" }}
+          style={{ background: "oklch(0.4 0.01 var(--neutral-hue))" }}
         />
 
         <div className="px-5 pb-6 overflow-y-auto">
@@ -209,7 +210,7 @@ export function AddParkSheet({
             className="rounded-2xl overflow-hidden mb-1"
             style={{
               height: 200,
-              border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
             }}
           >
             <MapContainer center={position} zoom={15} className="w-full h-full">
@@ -222,7 +223,7 @@ export function AddParkSheet({
               />
             </MapContainer>
           </div>
-          <p className="text-[11px] text-muted-foreground font-body mb-4">
+          <p className="text-xs text-muted-foreground font-body mb-4">
             Drag the pin to the exact spot
           </p>
 
@@ -234,10 +235,10 @@ export function AddParkSheet({
               Name
             </label>
             <div
-              className="w-full h-14 rounded-2xl flex items-center px-4 transition-smooth focus-within:border-primary/60"
+              className="w-full h-14 rounded-2xl flex items-center px-4 transition-smooth focus-within:border-pulse/60"
               style={{
-                background: "oklch(0.17 0.012 260)",
-                border: "1px solid oklch(0.28 0.01 260)",
+                background: "oklch(0.17 0.012 var(--neutral-hue))",
+                border: "1px solid oklch(0.28 0.01 var(--neutral-hue))",
               }}
             >
               <input
@@ -268,14 +269,15 @@ export function AddParkSheet({
                     style={
                       selected
                         ? {
-                            background: "oklch(0.68 0.25 180 / 0.18)",
-                            color: "oklch(0.68 0.25 180)",
-                            border: "1px solid oklch(0.68 0.25 180 / 0.5)",
+                            background: "oklch(var(--pulse) / 0.18)",
+                            color: "oklch(var(--pulse))",
+                            border: "1px solid oklch(var(--pulse) / 0.5)",
                           }
                         : {
-                            background: "oklch(0.17 0.012 260)",
-                            color: "oklch(0.62 0.008 260)",
-                            border: "1px solid oklch(0.28 0.01 260)",
+                            background: "oklch(0.17 0.012 var(--neutral-hue))",
+                            color: "oklch(0.62 0.008 var(--neutral-hue))",
+                            border:
+                              "1px solid oklch(0.28 0.01 var(--neutral-hue))",
                           }
                     }
                     data-ocid={`add-park.equipment.${item.toLowerCase().replace(/\s+/g, "-")}`}
@@ -306,7 +308,9 @@ export function AddParkSheet({
                     type="button"
                     onClick={() => removePhoto(photo.id)}
                     className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{ background: "oklch(0.08 0.005 260 / 0.8)" }}
+                    style={{
+                      background: "oklch(0.08 0.005 var(--neutral-hue) / 0.8)",
+                    }}
                     aria-label="Remove photo"
                   >
                     <X className="w-3 h-3 text-white" />
@@ -324,9 +328,9 @@ export function AddParkSheet({
                   photos.length >= MAX_PHOTOS && "opacity-40",
                 )}
                 style={{
-                  background: "oklch(0.17 0.012 260)",
-                  border: "1px dashed oklch(0.32 0.01 260)",
-                  color: "oklch(0.75 0.01 260)",
+                  background: "oklch(0.17 0.012 var(--neutral-hue))",
+                  border: "1px dashed oklch(0.32 0.01 var(--neutral-hue))",
+                  color: "oklch(0.75 0.01 var(--neutral-hue))",
                 }}
                 data-ocid="add-park.take_photo_button"
               >
@@ -341,9 +345,9 @@ export function AddParkSheet({
                   photos.length >= MAX_PHOTOS && "opacity-40",
                 )}
                 style={{
-                  background: "oklch(0.17 0.012 260)",
-                  border: "1px dashed oklch(0.32 0.01 260)",
-                  color: "oklch(0.75 0.01 260)",
+                  background: "oklch(0.17 0.012 var(--neutral-hue))",
+                  border: "1px dashed oklch(0.32 0.01 var(--neutral-hue))",
+                  color: "oklch(0.75 0.01 var(--neutral-hue))",
                 }}
                 data-ocid="add-park.choose_library_button"
               >
@@ -353,11 +357,27 @@ export function AddParkSheet({
           </div>
 
           <div className="flex flex-col gap-3">
+            {/* Google Play UGC policy: users must accept the terms before
+                submitting content — guests reach this without the signup
+                screen's agreement, so it's stated at the point of submission. */}
+            <p className="text-xs text-muted-foreground font-body text-center leading-relaxed">
+              By submitting, you agree to our{" "}
+              <button
+                type="button"
+                onClick={openTermsOfUse}
+                className="underline hover:text-foreground"
+                data-ocid="add-park.terms_link"
+              >
+                Terms of Service
+              </button>{" "}
+              and confirm your photos show no identifiable people. Approved
+              parks and photos are visible to all users.
+            </p>
             <button
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || !name.trim()}
-              className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-sm tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
+              className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-sm tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
               data-ocid="add-park.submit_button"
             >
               {isSubmitting ? (

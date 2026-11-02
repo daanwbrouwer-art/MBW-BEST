@@ -1,4 +1,5 @@
 import { Logo } from "@/components/Logo";
+import { resolveExerciseIllustration, suitAccent } from "@/data/exerciseAssets";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { countProDeckPlays } from "@/hooks/use-trial";
 import {
@@ -7,26 +8,17 @@ import {
   buildProDeckExercises,
   pickFlagshipExercises,
 } from "@/lib/proDeckPreview";
-import { resolveExerciseIllustration } from "@/data/exerciseAssets";
 import { hasEverHadTrial, isWithinPostTrialNudgeWindow } from "@/lib/trial";
 import { useWorkoutStore } from "@/store/workout";
 import {
   DECK_CATEGORY_LABEL,
   DECK_DIFFICULTY_LABEL,
-  SUIT_COLOR,
   SUIT_SYMBOL,
 } from "@/types/workout";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Dumbbell } from "lucide-react";
 import { motion } from "motion/react";
 import { useMemo } from "react";
-
-function suitAccent(suit: string): string {
-  const color = SUIT_COLOR[suit];
-  if (color === "red") return "oklch(0.65 0.22 25)";
-  if (color === "joker") return "oklch(0.68 0.25 180)";
-  return "oklch(0.85 0.005 260)";
-}
 
 function repLabel(ex: ProPreviewExercise): string {
   if (ex.isChallenge) return "Challenge";
@@ -65,7 +57,7 @@ export default function ProDeckPreviewPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--prestige-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -76,7 +68,7 @@ export default function ProDeckPreviewPage() {
           animate={{ opacity: 1, x: 0 }}
           whileTap={{ scale: 0.92 }}
           onClick={() => navigate({ to: "/decks" })}
-          className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth shrink-0"
+          className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-prestige hover:border-prestige/45 transition-smooth shrink-0"
           data-ocid="pro-preview.back_button"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -92,11 +84,11 @@ export default function ProDeckPreviewPage() {
           className="mb-6"
         >
           <span
-            className="inline-block text-[10px] font-display font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-2"
+            className="inline-block text-xs font-display font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-2"
             style={{
-              background: "oklch(0.68 0.25 180 / 0.15)",
-              color: "oklch(0.68 0.25 180)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+              background: "oklch(var(--prestige) / 0.15)",
+              color: "oklch(var(--prestige))",
+              border: "1px solid oklch(var(--prestige) / 0.3)",
             }}
           >
             🔒 Subscriber only
@@ -116,15 +108,15 @@ export default function ProDeckPreviewPage() {
             transition={{ delay: 0.04 }}
             className="rounded-2xl px-4 py-3 mb-6"
             style={{
-              background: "oklch(0.17 0.04 180 / 0.3)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+              background: "oklch(0.17 0.04 var(--prestige-h) / 0.3)",
+              border: "1px solid oklch(var(--prestige) / 0.3)",
             }}
             data-ocid="pro-preview.trial_nudge"
           >
             <p className="text-sm text-foreground font-body leading-snug">
               You trained {deckTitle} {priorPlays}{" "}
-              {priorPlays === 1 ? "time" : "times"} during your trial. Pick
-              up where you left off →
+              {priorPlays === 1 ? "time" : "times"} during your trial. Pick up
+              where you left off →
             </p>
           </motion.div>
         )}
@@ -161,8 +153,8 @@ export default function ProDeckPreviewPage() {
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {exercises.map((ex, i) => (
@@ -172,7 +164,7 @@ export default function ProDeckPreviewPage() {
                 style={{
                   borderBottom:
                     i < exercises.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`pro-preview.exercise.${i + 1}`}
@@ -184,11 +176,14 @@ export default function ProDeckPreviewPage() {
                   {ex.illustrationComingSoon ? (
                     <Dumbbell
                       className="w-4 h-4"
-                      style={{ color: "oklch(0.7 0.01 260)" }}
+                      style={{ color: "oklch(0.7 0.01 var(--neutral-hue))" }}
                     />
                   ) : (
                     <img
-                      src={ex.imagePath || resolveExerciseIllustration(ex.name, gender)}
+                      src={
+                        ex.imagePath ||
+                        resolveExerciseIllustration(ex.name, gender)
+                      }
                       alt=""
                       className="w-full h-full object-contain p-0.5"
                       onError={(e) => {
@@ -207,19 +202,19 @@ export default function ProDeckPreviewPage() {
                       className="text-xs font-body"
                       style={{
                         color: ex.isChallenge
-                          ? "oklch(0.68 0.25 180)"
-                          : "oklch(0.6 0.01 260)",
+                          ? "oklch(var(--prestige))"
+                          : "oklch(0.6 0.01 var(--neutral-hue))",
                       }}
                     >
                       {repLabel(ex)}
                     </span>
                     {ex.requiresEquipment && (
                       <span
-                        className="flex items-center gap-1 text-[10px] font-body px-1.5 py-0.5 rounded-full shrink-0"
+                        className="flex items-center gap-1 text-xs font-body px-1.5 py-0.5 rounded-full shrink-0"
                         style={{
-                          background: "oklch(0.68 0.25 180 / 0.1)",
-                          color: "oklch(0.68 0.25 180)",
-                          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+                          background: "oklch(var(--prestige) / 0.1)",
+                          color: "oklch(var(--prestige))",
+                          border: "1px solid oklch(var(--prestige) / 0.25)",
                         }}
                         data-ocid={`pro-preview.exercise.${i + 1}.equipment_badge`}
                       >
@@ -248,8 +243,8 @@ export default function ProDeckPreviewPage() {
           transition={{ delay: 0.2 }}
           className="rounded-2xl p-5 text-center"
           style={{
-            background: "oklch(0.17 0.04 180 / 0.35)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+            background: "oklch(0.17 0.04 var(--prestige-h) / 0.35)",
+            border: "1px solid oklch(var(--prestige) / 0.3)",
           }}
         >
           <h2 className="font-display font-black text-lg text-foreground mb-1">
@@ -261,7 +256,7 @@ export default function ProDeckPreviewPage() {
           <button
             type="button"
             onClick={handleSubscribe}
-            className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-sm tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98] mb-3"
+            className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-sm tracking-wide bg-prestige text-background transition-smooth hover:opacity-90 active:scale-[0.98] mb-3"
             data-ocid="pro-preview.subscribe_button"
           >
             Subscribe
@@ -291,10 +286,10 @@ function FlagshipCard({
     <div
       className="shrink-0 w-[150px] rounded-2xl overflow-hidden snap-start flex flex-col"
       style={{
-        background: "oklch(0.13 0.005 260)",
-        border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+        background: "oklch(0.13 0.005 var(--neutral-hue))",
+        border: "1px solid oklch(var(--prestige) / 0.3)",
         boxShadow:
-          "0 0 20px oklch(0.68 0.25 180 / 0.15), 0 8px 24px oklch(0 0 0 / 0.5)",
+          "0 0 20px oklch(var(--prestige) / 0.15), 0 8px 24px oklch(0 0 0 / 0.5)",
       }}
       data-ocid="pro-preview.flagship_card"
     >
@@ -304,10 +299,13 @@ function FlagshipCard({
       >
         {exercise.illustrationComingSoon ? (
           <div className="flex flex-col items-center gap-1 px-2 text-center">
-            <Dumbbell className="w-5 h-5" style={{ color: "oklch(0.6 0.01 260)" }} />
+            <Dumbbell
+              className="w-5 h-5"
+              style={{ color: "oklch(0.6 0.01 var(--neutral-hue))" }}
+            />
             <span
               className="text-[8px] font-bold uppercase tracking-wide"
-              style={{ color: "oklch(0.5 0.01 260)" }}
+              style={{ color: "oklch(0.5 0.01 var(--neutral-hue))" }}
             >
               Coming soon
             </span>
@@ -315,7 +313,8 @@ function FlagshipCard({
         ) : (
           <img
             src={
-              exercise.imagePath || resolveExerciseIllustration(exercise.name, gender)
+              exercise.imagePath ||
+              resolveExerciseIllustration(exercise.name, gender)
             }
             alt=""
             className="w-full h-full object-contain p-2"
@@ -330,12 +329,12 @@ function FlagshipCard({
           {exercise.name}
         </p>
         <p
-          className="font-display font-bold text-[11px]"
-          style={{ color: "oklch(0.68 0.25 180)" }}
+          className="font-display font-bold text-xs"
+          style={{ color: "oklch(var(--prestige))" }}
         >
           {repLabel(exercise)}
         </p>
-        <p className="text-[10px] text-muted-foreground font-body leading-snug">
+        <p className="text-xs text-muted-foreground font-body leading-snug">
           {exercise.description}
         </p>
       </div>

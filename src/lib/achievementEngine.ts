@@ -12,10 +12,10 @@ import {
   readSessions,
 } from "@/lib/achievementSessionLog";
 import {
+  type ReferralRecord,
   countReferredUsersWithSessions,
   getCurrentEmail,
   getReferralRecord,
-  type ReferralRecord,
 } from "@/lib/referral";
 import {
   ALL_ACHIEVEMENTS,
@@ -221,9 +221,20 @@ function computeGhostDayStreak(
 
 // ─── Metric dispatch ────────────────────────────────────────────────────
 
-function computeMetric(metric: AchievementMetric, ctx: AchievementContext): number {
-  const { validSessions, sessions, streak, firstCardEver, appOpens, referral, referredActiveFriends, isGuest } =
-    ctx;
+function computeMetric(
+  metric: AchievementMetric,
+  ctx: AchievementContext,
+): number {
+  const {
+    validSessions,
+    sessions,
+    streak,
+    firstCardEver,
+    appOpens,
+    referral,
+    referredActiveFriends,
+    isGuest,
+  } = ctx;
 
   switch (metric) {
     case "cardsDrawnTotal":
@@ -259,8 +270,9 @@ function computeMetric(metric: AchievementMetric, ctx: AchievementContext): numb
     case "validSessionsCount":
       return validSessions.length;
     case "fullDeckNoSkipCount":
-      return validSessions.filter((s) => s.isFullDeckSession && s.skipsCount === 0)
-        .length;
+      return validSessions.filter(
+        (s) => s.isFullDeckSession && s.skipsCount === 0,
+      ).length;
     case "hasComebackGap":
       return hasComebackGap(validSessions) ? 1 : 0;
     case "earlyBirdCount":
@@ -272,7 +284,9 @@ function computeMetric(metric: AchievementMetric, ctx: AchievementContext): numb
     case "speedDemonCount":
       return validSessions.some(
         (s) =>
-          s.totalCardsInSession >= 20 && s.cardsDrawn >= 20 && s.durationSeconds < 600,
+          s.totalCardsInSession >= 20 &&
+          s.cardsDrawn >= 20 &&
+          s.durationSeconds < 600,
       )
         ? 1
         : 0;
@@ -294,11 +308,14 @@ function computeMetric(metric: AchievementMetric, ctx: AchievementContext): numb
       return validSessions.some((s) => s.equipmentSnapshot.weightVest) ? 1 : 0;
     case "bandSessionCount":
       return validSessions.filter(
-        (s) => s.equipmentSnapshot.resistanceBandLong || s.equipmentSnapshot.resistanceBandShort,
+        (s) =>
+          s.equipmentSnapshot.resistanceBandLong ||
+          s.equipmentSnapshot.resistanceBandShort,
       ).length;
     case "ringsFullSessionCount":
       return validSessions.some(
-        (s) => s.equipmentSnapshot.rings && s.cardsDrawn >= s.totalCardsInSession,
+        (s) =>
+          s.equipmentSnapshot.rings && s.cardsDrawn >= s.totalCardsInSession,
       )
         ? 1
         : 0;
@@ -437,7 +454,11 @@ export function processSessionAchievements(
     if (!v.earned || claim?.claimed) continue;
 
     if (isSubscriber) {
-      claims[v.id] = { claimed: true, claimedAt: new Date().toISOString(), seen: false };
+      claims[v.id] = {
+        claimed: true,
+        claimedAt: new Date().toISOString(),
+        seen: false,
+      };
       newlyUnlocked.push(v);
     } else if (!claim?.notifiedAlmost) {
       claims[v.id] = {
@@ -465,7 +486,11 @@ export function reconcileAchievementsOnSubscribe(
   for (const v of views) {
     const claim = claims[v.id];
     if (v.earned && !claim?.claimed) {
-      claims[v.id] = { claimed: true, claimedAt: new Date().toISOString(), seen: false };
+      claims[v.id] = {
+        claimed: true,
+        claimedAt: new Date().toISOString(),
+        seen: false,
+      };
       granted.push(v);
     }
   }

@@ -1,6 +1,5 @@
 import { AchievementProgressCard } from "@/components/AchievementProgressCard";
 import { AchievementUnlockAnimation } from "@/components/AchievementUnlockAnimation";
-import { BottomNav } from "@/components/BottomNav";
 import { HowToPlayModal } from "@/components/HowToPlayModal";
 import { RecoveryTip } from "@/components/RecoveryTip";
 import { UsageIndicator } from "@/components/UsageIndicator";
@@ -118,7 +117,11 @@ export default function HomePage() {
     )[0];
   })();
 
-  const recommendation = getRecommendation({ goals, fitnessLevel, selfAssessment });
+  const recommendation = getRecommendation({
+    goals,
+    fitnessLevel,
+    selfAssessment,
+  });
   // Capped to what this tier can actually play — otherwise a guest could
   // get recommended (and one-tap start) an Advanced/Pro deck the difficulty
   // selector itself would never let them choose.
@@ -190,7 +193,7 @@ export default function HomePage() {
         />
       )}
       <div
-        className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto overflow-x-hidden pb-24"
+        className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto overflow-x-hidden pb-28"
         data-ocid="home.page"
       >
         {/* Ambient glow */}
@@ -198,7 +201,7 @@ export default function HomePage() {
           className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
           style={{
             background:
-              "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 55%)",
+              "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.22) 0%, transparent 55%)",
           }}
         />
 
@@ -209,7 +212,7 @@ export default function HomePage() {
               <User className="w-5 h-5 text-white/60" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[11px] text-muted-foreground font-body leading-none mb-0.5">
+              <span className="text-xs text-muted-foreground font-body leading-none mb-0.5">
                 Welcome back,
               </span>
               <span className="font-display font-black text-sm text-white leading-none">
@@ -254,7 +257,7 @@ export default function HomePage() {
           className="flex flex-col items-center py-6"
         >
           <img
-            src="/assets/images/mbw-logo-white-icon.png"
+            src="/assets/images/mbw-logo-white-icon.webp"
             alt="MyBodyWeight logo"
             className="w-16 h-16 object-contain"
             onError={(e) => {
@@ -276,9 +279,9 @@ export default function HomePage() {
           <div
             className="w-full rounded-2xl p-4"
             style={{
-              background: "oklch(0.17 0.04 180 / 0.35)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.35)",
-              boxShadow: "0 0 24px oklch(0.68 0.25 180 / 0.1)",
+              background: "oklch(0.17 0.04 var(--primary-h) / 0.35)",
+              border: "1px solid oklch(var(--primary) / 0.35)",
+              boxShadow: "0 0 24px oklch(var(--primary) / 0.1)",
             }}
             data-ocid="home.recommended_deck_card"
           >
@@ -286,18 +289,18 @@ export default function HomePage() {
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                 style={{
-                  background: "oklch(0.68 0.25 180 / 0.15)",
-                  border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+                  background: "oklch(var(--primary) / 0.15)",
+                  border: "1px solid oklch(var(--primary) / 0.3)",
                 }}
               >
                 <Sparkles className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <span
-                  className="inline-block text-[9px] font-display font-black uppercase tracking-widest px-2 py-0.5 rounded-full mb-1"
+                  className="inline-block text-xs font-display font-black uppercase tracking-widest px-2 py-0.5 rounded-full mb-1"
                   style={{
-                    background: "oklch(0.68 0.25 180 / 0.2)",
-                    color: "oklch(0.68 0.25 180)",
+                    background: "oklch(var(--highlight) / 0.2)",
+                    color: "oklch(var(--highlight))",
                   }}
                 >
                   Recommended
@@ -316,8 +319,8 @@ export default function HomePage() {
               onClick={handleStartRecommended}
               className="w-full h-11 rounded-xl font-display font-bold text-sm tracking-wide flex items-center justify-center gap-1.5 transition-smooth active:scale-[0.98]"
               style={{
-                background: "oklch(0.68 0.25 180)",
-                color: "oklch(0.08 0.005 260)",
+                background: "oklch(var(--primary))",
+                color: "oklch(0.08 0.005 var(--neutral-hue))",
               }}
               data-ocid="home.recommended_deck_button"
             >
@@ -343,7 +346,10 @@ export default function HomePage() {
         )}
 
         {/* 2d. STREAK BADGE */}
-        <StreakBadge streak={streak} onViewHistory={() => navigate({ to: "/streak" })} />
+        <StreakBadge
+          streak={streak}
+          onViewHistory={() => navigate({ to: "/streak" })}
+        />
 
         {/* 2e. WEEKLY CHALLENGE CELEBRATION */}
         {challengeCelebration && (
@@ -397,22 +403,22 @@ export default function HomePage() {
             onClick={() => navigate({ to: "/custom-workout" })}
             className="relative w-full overflow-hidden rounded-2xl border text-left p-4 flex items-center gap-3.5 transition-smooth"
             style={{
-              borderColor: "oklch(0.76 0.22 60 / 0.35)",
+              borderColor: "oklch(var(--prestige) / 0.35)",
               background:
-                "linear-gradient(135deg, oklch(0.19 0.03 60 / 0.5) 0%, oklch(0.16 0.015 260 / 0.6) 100%)",
+                "linear-gradient(135deg, oklch(0.19 0.03 var(--prestige-h) / 0.5) 0%, oklch(0.16 0.015 var(--neutral-hue) / 0.6) 100%)",
             }}
             data-ocid="home.custom_workout_banner"
           >
             <div
               className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
               style={{
-                background: "oklch(0.76 0.22 60 / 0.15)",
-                border: "1px solid oklch(0.76 0.22 60 / 0.35)",
+                background: "oklch(var(--prestige) / 0.15)",
+                border: "1px solid oklch(var(--prestige) / 0.35)",
               }}
             >
               <Crown
                 className="w-5 h-5"
-                style={{ color: "oklch(0.76 0.22 60)" }}
+                style={{ color: "oklch(var(--prestige))" }}
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -424,15 +430,15 @@ export default function HomePage() {
                   <span
                     className="text-[8px] font-display font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full"
                     style={{
-                      background: "oklch(0.76 0.22 60 / 0.2)",
-                      color: "oklch(0.76 0.22 60)",
+                      background: "oklch(var(--prestige) / 0.2)",
+                      color: "oklch(var(--prestige))",
                     }}
                   >
                     Premium
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-muted-foreground font-body mt-0.5 leading-snug">
+              <p className="text-xs text-muted-foreground font-body mt-0.5 leading-snug">
                 Pick your own exercises and train your way
               </p>
             </div>
@@ -496,8 +502,6 @@ export default function HomePage() {
         </footer>
       </div>
 
-      <BottomNav active="home" />
-
       <AnimatePresence>
         {showTrialExpiredModal && (
           <TrialExpiredModal
@@ -513,15 +517,31 @@ export default function HomePage() {
 
 // ─── Streak badge ─────────────────────────────────────────────────────────
 
-function StatChip({ label }: { label: string }) {
+/** Grey while there's nothing yet; "highlight" for a streak/record to show
+ *  off; "success" green once a goal is completed. */
+function StatChip({
+  label,
+  tone,
+}: {
+  label: string;
+  tone?: "highlight" | "success";
+}) {
   return (
     <span
-      className="inline-block text-[10px] font-body px-2 py-1 rounded-full truncate max-w-full"
-      style={{
-        background: "oklch(0.2 0.01 260 / 0.6)",
-        color: "oklch(0.72 0.008 260)",
-        border: "1px solid oklch(0.3 0.01 260 / 0.5)",
-      }}
+      className="inline-block text-xs font-body leading-snug px-2 py-1 rounded-xl max-w-full"
+      style={
+        tone
+          ? {
+              background: `oklch(var(--${tone}) / 0.14)`,
+              color: `oklch(var(--${tone}))`,
+              border: `1px solid oklch(var(--${tone}) / 0.4)`,
+            }
+          : {
+              background: "oklch(0.2 0.01 var(--neutral-hue) / 0.6)",
+              color: "oklch(0.72 0.008 var(--neutral-hue))",
+              border: "1px solid oklch(0.3 0.01 var(--neutral-hue) / 0.5)",
+            }
+      }
     >
       {label}
     </span>
@@ -554,6 +574,7 @@ function StreakBadge({
   const bestExerciseLabel = streak.bestExercise
     ? `${streak.bestExercise.name} PR: ${streak.bestExercise.reps} reps`
     : "No PR yet — go set one";
+  const weekGoalMet = streak.currentWeekTrainingDays >= streak.weeklyGoal;
 
   return (
     <motion.div
@@ -565,8 +586,8 @@ function StreakBadge({
       <div
         className="w-full rounded-2xl p-4 flex items-start gap-3"
         style={{
-          background: "oklch(0.15 0.01 260)",
-          border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+          background: "oklch(0.15 0.01 var(--neutral-hue))",
+          border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
         }}
         data-ocid="home.streak_badge"
       >
@@ -575,31 +596,50 @@ function StreakBadge({
             🔥
           </span>
           <span
-            className="font-display font-black text-2xl text-white leading-none mt-1"
+            className="font-display font-black text-2xl leading-none mt-1"
+            style={{
+              color:
+                streak.current > 0
+                  ? "oklch(var(--highlight))"
+                  : "oklch(var(--muted-foreground))",
+            }}
             data-ocid="home.streak_badge.weeks"
           >
             {streak.current}
           </span>
-          <span className="text-[9px] text-muted-foreground uppercase tracking-wide mt-0.5 whitespace-nowrap">
+          <span className="text-xs text-muted-foreground uppercase tracking-wide mt-0.5 whitespace-nowrap">
             week streak
           </span>
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col gap-2">
-          <p className="text-xs text-white/70 font-body">
-            {streak.currentWeekTrainingDays}/{streak.weeklyGoal} days this
-            week
+          <p
+            className="text-xs font-body"
+            style={{
+              color: weekGoalMet
+                ? "oklch(var(--success))"
+                : "oklch(var(--muted-foreground))",
+            }}
+            data-ocid="home.streak_badge.week_progress"
+          >
+            {streak.currentWeekTrainingDays}/{streak.weeklyGoal} days this week
+            {weekGoalMet && " ✓"}
           </p>
           <div className="flex gap-1.5 flex-wrap">
-            <StatChip label={`${streak.totalTrainingDaysThisYear} days this year`} />
-            <StatChip label={bestExerciseLabel} />
+            <StatChip
+              label={`${streak.totalTrainingDaysThisYear} days this year`}
+            />
+            <StatChip
+              label={bestExerciseLabel}
+              tone={streak.bestExercise ? "highlight" : undefined}
+            />
           </div>
         </div>
 
         <button
           type="button"
           onClick={onViewHistory}
-          className="shrink-0 text-xs font-display font-bold text-primary hover:opacity-75 transition-smooth whitespace-nowrap"
+          className="shrink-0 text-xs font-display font-bold text-energy hover:opacity-75 transition-smooth whitespace-nowrap"
           data-ocid="home.streak_badge.view_history"
         >
           View history →
@@ -628,9 +668,9 @@ function StreakCelebration({
       exit={{ opacity: 0 }}
       className="mx-5 mb-4 rounded-2xl p-4 flex items-center gap-3"
       style={{
-        background: "oklch(0.2 0.06 180 / 0.35)",
-        border: "1px solid oklch(0.68 0.25 180 / 0.5)",
-        boxShadow: "0 0 30px oklch(0.68 0.25 180 / 0.25)",
+        background: "oklch(0.2 0.06 var(--energy-h) / 0.35)",
+        border: "1px solid oklch(var(--energy) / 0.5)",
+        boxShadow: "0 0 30px oklch(var(--energy) / 0.25)",
       }}
       data-ocid="home.streak_celebration"
     >
@@ -646,7 +686,12 @@ function StreakCelebration({
         <motion.p
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.15, type: "spring", stiffness: 300, damping: 15 }}
+          transition={{
+            delay: 0.15,
+            type: "spring",
+            stiffness: 300,
+            damping: 15,
+          }}
           className="font-display font-black text-lg text-white"
         >
           {celebration.weeks}-week streak!
@@ -683,20 +728,20 @@ function StreakEndedNudge({
       animate={{ opacity: 1, y: 0 }}
       className="mx-5 mb-4 rounded-2xl p-4 flex items-start gap-3"
       style={{
-        background: "oklch(0.18 0.02 260 / 0.7)",
-        border: "1px solid oklch(0.4 0.02 260 / 0.6)",
+        background: "oklch(0.18 0.02 var(--neutral-hue) / 0.7)",
+        border: "1px solid oklch(0.4 0.02 var(--neutral-hue) / 0.6)",
       }}
       data-ocid="home.streak_ended_nudge"
     >
       <div className="flex-1 min-w-0">
         <p className="text-sm text-white/85 font-body leading-relaxed">
-          Your {endedNudge.endedFromWeeks}-week streak ended — you trained
-          fewer than {endedNudge.weeklyGoal} days last week. Want to start a
-          new one today, or{" "}
+          Your {endedNudge.endedFromWeeks}-week streak ended — you trained fewer
+          than {endedNudge.weeklyGoal} days last week. Want to start a new one
+          today, or{" "}
           <button
             type="button"
             onClick={onAdjustGoal}
-            className="text-primary font-bold underline hover:opacity-75 transition-smooth"
+            className="text-energy font-bold underline hover:opacity-75 transition-smooth"
             data-ocid="home.streak_ended_nudge.adjust_goal"
           >
             adjust your weekly goal
@@ -738,8 +783,8 @@ function TrialBanner({
         animate={{ opacity: 1, y: 0 }}
         className="mx-5 mt-2 mb-1 rounded-xl px-4 py-2.5 flex items-center justify-between gap-3"
         style={{
-          background: "oklch(0.16 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+          background: "oklch(0.16 0.01 var(--neutral-hue))",
+          border: "1px solid oklch(var(--primary) / 0.3)",
         }}
         data-ocid="home.trial_banner"
       >
@@ -750,7 +795,7 @@ function TrialBanner({
         <button
           type="button"
           onClick={onLearnMore}
-          className="shrink-0 text-[11px] font-display font-bold text-primary hover:opacity-75 transition-smooth"
+          className="shrink-0 text-xs font-display font-bold text-primary hover:opacity-75 transition-smooth"
           data-ocid="home.trial_banner.learn_more"
         >
           Learn more
@@ -766,9 +811,9 @@ function TrialBanner({
         animate={{ opacity: 1, y: 0 }}
         className="mx-5 mt-2 mb-1 rounded-2xl px-4 py-3.5 flex items-center gap-3"
         style={{
-          background: "oklch(0.18 0.03 180 / 0.4)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.55)",
-          boxShadow: "0 0 24px oklch(0.68 0.25 180 / 0.15)",
+          background: "oklch(0.18 0.03 var(--primary-h) / 0.4)",
+          border: "1px solid oklch(var(--primary) / 0.55)",
+          boxShadow: "0 0 24px oklch(var(--primary) / 0.15)",
         }}
         data-ocid="home.trial_banner"
       >
@@ -794,9 +839,9 @@ function TrialBanner({
       animate={{ opacity: 1, y: 0 }}
       className="mx-5 mt-2 mb-1 rounded-2xl px-4 py-3.5 flex items-center gap-3"
       style={{
-        background: "oklch(0.22 0.08 60 / 0.22)",
-        border: "1px solid #f59e0b",
-        boxShadow: "0 0 24px #f59e0b33",
+        background: "oklch(0.22 0.08 var(--prestige-h) / 0.22)",
+        border: "1px solid oklch(var(--prestige))",
+        boxShadow: "0 0 24px oklch(var(--prestige) / 0.20)",
       }}
       data-ocid="home.trial_banner"
     >
@@ -807,7 +852,7 @@ function TrialBanner({
         type="button"
         onClick={onSubscribe}
         className="shrink-0 px-4 h-9 rounded-full font-display font-bold text-xs tracking-wide transition-smooth hover:opacity-90 active:scale-[0.98]"
-        style={{ background: "#f59e0b", color: "#1a1200" }}
+        style={{ background: "oklch(var(--prestige))", color: "#1a1200" }}
         data-ocid="home.trial_banner.subscribe"
       >
         Subscribe
@@ -823,7 +868,7 @@ function TrialStatLine({ text }: { text: string }) {
     <div className="flex items-center gap-2.5">
       <span
         className="w-1.5 h-1.5 rounded-full shrink-0"
-        style={{ background: "oklch(0.68 0.25 180)" }}
+        style={{ background: "oklch(var(--primary))" }}
       />
       <p className="text-sm text-white/85 font-body">{text}</p>
     </div>
@@ -845,7 +890,7 @@ function TrialExpiredModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[60] flex items-center justify-center px-5"
-      style={{ background: "oklch(0.05 0.005 260 / 0.92)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.92)" }}
       data-ocid="home.trial_expired_modal"
     >
       <motion.div
@@ -855,8 +900,8 @@ function TrialExpiredModal({
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
         className="w-full max-w-[400px] rounded-3xl overflow-hidden"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--primary) / 0.3)",
           boxShadow: "0 20px 60px oklch(0 0 0 / 0.6)",
         }}
       >
@@ -866,7 +911,9 @@ function TrialExpiredModal({
           </h2>
 
           <div className="flex flex-col gap-2.5 mb-6">
-            <TrialStatLine text={`In 7 days, you drew ${stats.cardsDrawn} cards`} />
+            <TrialStatLine
+              text={`In 7 days, you drew ${stats.cardsDrawn} cards`}
+            />
             <TrialStatLine
               text={`You completed ${stats.workoutsCompleted} workouts`}
             />
@@ -885,8 +932,8 @@ function TrialExpiredModal({
           <div
             className="rounded-2xl p-4 mb-6 flex flex-col gap-2"
             style={{
-              background: "oklch(0.17 0.015 180 / 0.25)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+              background: "oklch(0.17 0.015 var(--primary-h) / 0.25)",
+              border: "1px solid oklch(var(--primary) / 0.25)",
             }}
           >
             <p className="text-xs text-white/70 font-body leading-relaxed">
@@ -933,7 +980,7 @@ function StatCard({
   return (
     <div
       className="rounded-xl bg-card p-4 flex flex-col"
-      style={{ border: "1px solid oklch(0.22 0.01 260 / 0.5)" }}
+      style={{ border: "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)" }}
       data-ocid={ocid}
     >
       <span className="font-display font-black text-2xl text-white leading-none">
@@ -981,8 +1028,8 @@ function HomeDeckCard({
         <span
           className="absolute top-2.5 right-2.5 flex items-center gap-0.5 text-[8px] font-display font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full z-10"
           style={{
-            background: "oklch(0.68 0.25 180 / 0.2)",
-            color: "oklch(0.68 0.25 180)",
+            background: "oklch(var(--highlight) / 0.2)",
+            color: "oklch(var(--highlight))",
           }}
           data-ocid="home.deck_card.recommended_tag"
         >
@@ -994,15 +1041,15 @@ function HomeDeckCard({
         className="absolute top-0 right-0 w-14 h-14 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 100% 0%, oklch(0.68 0.25 180 / 0.1) 0%, transparent 70%)",
+            "radial-gradient(circle at 100% 0%, oklch(var(--primary) / 0.1) 0%, transparent 70%)",
         }}
       />
       {/* Icon badge */}
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
         style={{
-          background: "oklch(0.18 0.015 180 / 0.5)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+          background: "oklch(0.18 0.015 var(--primary-h) / 0.5)",
+          border: "1px solid oklch(var(--primary) / 0.25)",
         }}
       >
         {DECK_CATEGORY_ICON[category]}
@@ -1012,7 +1059,7 @@ function HomeDeckCard({
         <h3 className="font-display font-black text-sm text-foreground leading-tight">
           {DECK_CATEGORY_LABEL[category]}
         </h3>
-        <p className="text-[10px] text-muted-foreground font-body mt-0.5 leading-snug line-clamp-2">
+        <p className="text-xs text-muted-foreground font-body mt-0.5 leading-snug line-clamp-2">
           {DECK_CATEGORY_DESCRIPTION[category]}
         </p>
       </div>
@@ -1021,7 +1068,7 @@ function HomeDeckCard({
         {suits.map((s) => (
           <span
             key={s}
-            className="text-[9px] text-muted-foreground/50 font-display"
+            className="text-xs text-muted-foreground/50 font-display"
           >
             {s}
           </span>

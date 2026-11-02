@@ -66,8 +66,8 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
             transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-x-0 bottom-0 z-[60] max-w-[430px] mx-auto rounded-t-3xl overflow-hidden flex flex-col max-h-[88vh]"
             style={{
-              background: "oklch(0.14 0.012 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+              background: "oklch(0.14 0.012 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
               borderBottom: "none",
               boxShadow: "0 -16px 60px oklch(0 0 0 / 0.55)",
             }}
@@ -79,7 +79,9 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
             <div className="flex justify-center pt-3 pb-1 shrink-0">
               <div
                 className="w-9 h-1 rounded-full"
-                style={{ background: "oklch(0.36 0.01 260 / 0.7)" }}
+                style={{
+                  background: "oklch(0.36 0.01 var(--neutral-hue) / 0.7)",
+                }}
               />
             </div>
 
@@ -87,8 +89,8 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
             <div className="flex items-center justify-between px-6 pt-2 pb-4 shrink-0">
               <div>
                 <p
-                  className="text-[10px] font-display font-bold tracking-[0.22em] uppercase mb-0.5"
-                  style={{ color: "oklch(0.68 0.25 180)" }}
+                  className="text-xs font-display font-bold tracking-[0.22em] uppercase mb-0.5"
+                  style={{ color: "oklch(var(--primary))" }}
                 >
                   Upper Body Deck
                 </p>
@@ -101,8 +103,8 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
                 onClick={onClose}
                 className="w-9 h-9 rounded-xl flex items-center justify-center transition-smooth text-muted-foreground hover:text-foreground"
                 style={{
-                  background: "oklch(0.20 0.01 260)",
-                  border: "1px solid oklch(0.30 0.01 260 / 0.5)",
+                  background: "oklch(0.20 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.30 0.01 var(--neutral-hue) / 0.5)",
                 }}
                 aria-label="Close"
                 data-ocid="how-to-play.close_button"
@@ -114,7 +116,9 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
             {/* Divider */}
             <div
               className="mx-6 h-px shrink-0"
-              style={{ background: "oklch(0.26 0.01 260 / 0.5)" }}
+              style={{
+                background: "oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+              }}
             />
 
             {/* Scrollable content — steps + tip card. Constrained by the sheet's
@@ -133,22 +137,22 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
                           style={{
                             background:
                               i === 0
-                                ? "oklch(0.68 0.25 180)"
-                                : "oklch(0.20 0.01 260)",
+                                ? "oklch(var(--primary))"
+                                : "oklch(0.20 0.01 var(--neutral-hue))",
                             border: `1px solid ${
                               i === 0
-                                ? "oklch(0.68 0.25 180)"
-                                : "oklch(0.32 0.01 260 / 0.6)"
+                                ? "oklch(var(--primary))"
+                                : "oklch(0.32 0.01 var(--neutral-hue) / 0.6)"
                             }`,
                           }}
                         >
                           <span
-                            className="font-display font-black text-[11px]"
+                            className="font-display font-black text-xs"
                             style={{
                               color:
                                 i === 0
-                                  ? "oklch(0.12 0.008 260)"
-                                  : "oklch(0.65 0.008 260)",
+                                  ? "oklch(0.12 0.008 var(--neutral-hue))"
+                                  : "oklch(0.65 0.008 var(--neutral-hue))",
                             }}
                           >
                             {step.number}
@@ -158,7 +162,8 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
                           <div
                             className="w-px flex-1 min-h-[20px]"
                             style={{
-                              background: "oklch(0.28 0.01 260 / 0.5)",
+                              background:
+                                "oklch(0.28 0.01 var(--neutral-hue) / 0.5)",
                             }}
                           />
                         )}
@@ -187,13 +192,13 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
                 <div
                   className="rounded-2xl px-4 py-3.5"
                   style={{
-                    background: "oklch(0.68 0.25 180 / 0.08)",
-                    border: "1px solid oklch(0.68 0.25 180 / 0.2)",
+                    background: "oklch(var(--primary) / 0.08)",
+                    border: "1px solid oklch(var(--primary) / 0.2)",
                   }}
                 >
                   <p
-                    className="text-[10px] font-display font-bold tracking-[0.18em] uppercase mb-1"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    className="text-xs font-display font-bold tracking-[0.18em] uppercase mb-1"
+                    style={{ color: "oklch(var(--primary))" }}
                   >
                     Fun Tip
                   </p>

@@ -10,8 +10,8 @@ import { motion } from "motion/react";
 /** Difficulty badge color tokens. Beginner is GREEN per spec. */
 const DIFFICULTY_BADGE_COLOR: Record<DeckDifficulty, string> = {
   Beginner: "oklch(0.72 0.19 145)",
-  Advanced: "oklch(0.75 0.18 60)",
-  Pro: "oklch(0.65 0.22 30)",
+  Advanced: "oklch(var(--prestige))",
+  Pro: "oklch(var(--energy))",
 };
 
 /** CategoryDeckCard — used in future contexts where a DeckCard component is needed externally */
@@ -39,7 +39,7 @@ export function DeckCard({
   const suits = ["♥", "♠", "♦", "♣"];
   const badgeColor = difficulty
     ? DIFFICULTY_BADGE_COLOR[difficulty]
-    : "oklch(0.68 0.25 180)";
+    : "oklch(var(--primary))";
   const badgeBorder = badgeColor.replace(")", " / 0.35)");
   const badgeBg = badgeColor.replace(")", " / 0.14)");
 
@@ -71,7 +71,7 @@ export function DeckCard({
           className="absolute inset-0 pointer-events-none rounded-3xl"
           style={{
             background:
-              "radial-gradient(ellipse at 20% 50%, oklch(0.68 0.25 180 / 0.12) 0%, transparent 65%)",
+              "radial-gradient(ellipse at 20% 50%, oklch(var(--primary) / 0.12) 0%, transparent 65%)",
           }}
         />
       )}
@@ -81,14 +81,14 @@ export function DeckCard({
         className="absolute top-0 right-0 w-16 h-16 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 100% 0%, oklch(0.68 0.25 180 / 0.08) 0%, transparent 70%)",
+            "radial-gradient(circle at 100% 0%, oklch(var(--primary) / 0.08) 0%, transparent 70%)",
         }}
       />
 
       {/* Difficulty badge — top-right. GREEN for Beginner. */}
       {difficulty && (
         <span
-          className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full text-[9px] font-display font-black tracking-widest uppercase"
+          className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full text-xs font-display font-black tracking-widest uppercase"
           style={{
             background: badgeBg,
             color: badgeColor,
@@ -105,12 +105,12 @@ export function DeckCard({
         className="relative w-10 h-10 rounded-2xl flex items-center justify-center text-xl shrink-0"
         style={{
           background: selected
-            ? "oklch(0.18 0.02 180 / 0.6)"
-            : "oklch(0.18 0.015 180 / 0.4)",
+            ? "oklch(0.18 0.02 var(--primary-h) / 0.6)"
+            : "oklch(0.18 0.015 var(--primary-h) / 0.4)",
           border: selected
-            ? "1px solid oklch(0.68 0.25 180 / 0.4)"
-            : "1px solid oklch(0.68 0.25 180 / 0.2)",
-          color: "oklch(0.68 0.25 180)",
+            ? "1px solid oklch(var(--primary) / 0.4)"
+            : "1px solid oklch(var(--primary) / 0.2)",
+          color: "oklch(var(--primary))",
         }}
       >
         {DECK_CATEGORY_ICON[category]}
@@ -121,12 +121,14 @@ export function DeckCard({
         <h3
           className="font-display font-black text-base leading-tight"
           style={{
-            color: selected ? "oklch(0.96 0.02 180)" : "oklch(0.94 0.01 260)",
+            color: selected
+              ? "oklch(0.96 0.02 var(--primary-h))"
+              : "oklch(0.94 0.01 var(--neutral-hue))",
           }}
         >
           {DECK_CATEGORY_LABEL[category]}
         </h3>
-        <p className="text-[11px] text-muted-foreground font-body mt-1 leading-snug line-clamp-2">
+        <p className="text-xs text-muted-foreground font-body mt-1 leading-snug line-clamp-2">
           {DECK_CATEGORY_DESCRIPTION[category]}
         </p>
       </div>
@@ -136,11 +138,11 @@ export function DeckCard({
         {suits.map((s) => (
           <span
             key={s}
-            className="text-[10px] font-display"
+            className="text-xs font-display"
             style={{
               color: selected
-                ? "oklch(0.68 0.25 180 / 0.7)"
-                : "oklch(0.45 0.01 260)",
+                ? "oklch(var(--primary) / 0.7)"
+                : "oklch(0.45 0.01 var(--neutral-hue))",
             }}
           >
             {s}
@@ -151,8 +153,8 @@ export function DeckCard({
       {/* Lock indicator — only shown when explicitly locked (not for open decks) */}
       {locked && (
         <span
-          className="absolute bottom-3 right-3 text-[10px] font-display font-bold uppercase tracking-wider"
-          style={{ color: "oklch(0.75 0.18 60)" }}
+          className="absolute bottom-3 right-3 text-xs font-display font-bold uppercase tracking-wider"
+          style={{ color: "oklch(var(--prestige))" }}
         >
           Sub
         </span>

@@ -24,7 +24,7 @@ export default function WelcomePage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.22 0.05 180 / 0.28) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.22 0.05 var(--primary-h) / 0.28) 0%, transparent 60%)",
         }}
       />
 
@@ -34,8 +34,8 @@ export default function WelcomePage() {
           animate={{ opacity: 1, y: 0 }}
           className="relative z-10 w-full mt-4 mb-2 px-4 py-3 rounded-xl flex items-center justify-between"
           style={{
-            background: "oklch(0.22 0.04 180 / 0.3)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+            background: "oklch(0.22 0.04 var(--primary-h) / 0.3)",
+            border: "1px solid oklch(var(--primary) / 0.3)",
           }}
         >
           <p className="font-body text-sm text-white">
@@ -59,11 +59,11 @@ export default function WelcomePage() {
         className="relative z-10 pt-16 pb-6"
       >
         <img
-          src="/assets/images/mbw-logo-white-icon.png"
+          src="/assets/images/mbw-logo-white-icon.webp"
           alt="MyBodyWeight"
           className="w-20 h-20 object-contain mx-auto"
           style={{
-            filter: "drop-shadow(0 0 14px oklch(0.68 0.25 180 / 0.35))",
+            filter: "drop-shadow(0 0 14px oklch(var(--primary) / 0.35))",
           }}
         />
       </motion.div>

@@ -1,7 +1,15 @@
 import { Logo } from "@/components/Logo";
 import { useTier } from "@/hooks/use-tier";
-import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
-import { paymentService } from "@/lib/payments";
+import {
+  openPrivacyPolicy,
+  openSubscriptionTerms,
+  openTermsOfUse,
+} from "@/lib/legal";
+import {
+  type StorePrice,
+  getStorePrices,
+  paymentService,
+} from "@/lib/payments";
 import {
   computeDiscountPct,
   ensureReferralCode,
@@ -16,16 +24,16 @@ import {
   SUBSCRIPTION_TIERS,
   type SubscriptionTier,
   type SubscriptionTierId,
-  applyDiscount,
   formatEUR,
   monthlyEquivalentTotal,
   weeklyPrice,
 } from "@/types/subscription";
 import { Capacitor } from "@capacitor/core";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 /** "Apple ID account" on iOS, "Google Play account" everywhere else (including
@@ -37,7 +45,7 @@ const storeAccountLabel =
     ? "Apple ID account"
     : "Google Play account";
 
-const TEAL = "oklch(0.68 0.25 180)";
+const TEAL = "oklch(var(--prestige))";
 
 export default function SubscribePage() {
   const navigate = useNavigate();
@@ -51,14 +59,19 @@ export default function SubscribePage() {
   const referral = email ? getReferralRecord(email) : null;
   const discountPct = computeDiscountPct(referral);
 
+  // Store-localized prices when RevenueCat has them (Play requires the store
+  // price/currency); hardcoded EUR otherwise (web dev, products not set up).
+  const { data: storePrices = {} } = useQuery({
+    queryKey: ["store-prices"],
+    queryFn: getStorePrices,
+    staleTime: 60 * 60 * 1000,
+  });
+  const priceOf = (tier: SubscriptionTier) =>
+    storePrices[tier.id]?.price ?? formatEUR(tier.price);
+
   const trialEligible = !hasEverHadTrial();
   const selectedTier = SUBSCRIPTION_TIERS.find((t) => t.id === selectedTierId)!;
   const showTrial = selectedTier.hasTrial && trialEligible;
-
-  const discountedPrice = useMemo(
-    () => applyDiscount(selectedTier.price, discountPct),
-    [selectedTier, discountPct],
-  );
 
   const handlePurchase = async () => {
     setIsPurchasing(true);
@@ -77,7 +90,7 @@ export default function SubscribePage() {
           showTrial ? "Your free trial has started!" : "You're subscribed!",
           {
             description: showTrial
-              ? `Full access for 7 days, then ${formatEUR(selectedTier.price)}/year.`
+              ? `Full access for 7 days, then ${priceOf(selectedTier)}/year.`
               : `Welcome to MyBodyWeight ${selectedTier.label}.`,
             duration: 4500,
           },
@@ -103,7 +116,7 @@ export default function SubscribePage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--prestige-h) / 0.22) 0%, transparent 65%)",
         }}
       />
 
@@ -111,7 +124,7 @@ export default function SubscribePage() {
         <button
           type="button"
           onClick={() => navigate({ to: "/home" })}
-          className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth"
+          className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-prestige hover:border-prestige/45 transition-smooth"
           data-ocid="subscribe.back_button"
           aria-label="Go back"
         >
@@ -141,19 +154,18 @@ export default function SubscribePage() {
             animate={{ opacity: 1, y: 0 }}
             className="rounded-2xl px-4 py-3 mb-5 flex items-center gap-2.5"
             style={{
-              background: "oklch(0.17 0.04 180 / 0.3)",
-              border: "1px solid oklch(0.68 0.25 180 / 0.35)",
+              background: "oklch(0.17 0.04 var(--prestige-h) / 0.3)",
+              border: "1px solid oklch(var(--prestige) / 0.35)",
             }}
             data-ocid="subscribe.referral_banner"
           >
             <Sparkles className="w-4 h-4 shrink-0" style={{ color: TEAL }} />
             <p className="text-xs text-foreground font-body leading-snug">
-              Referral benefit:{" "}
+              You pay the regular store price shown below. Your{" "}
               <span className="font-display font-bold" style={{ color: TEAL }}>
-                {discountPct}% off
+                {discountPct}% referral reward
               </span>{" "}
-              credited to your account after purchase — the App Store/Google
-              Play charge below is the full price.
+              is a separate credit added to your account after purchase.
             </p>
           </motion.div>
         )}
@@ -166,6 +178,7 @@ export default function SubscribePage() {
               index={i}
               selected={tier.id === selectedTierId}
               trialEligible={trialEligible}
+              storePrice={storePrices[tier.id]}
               onSelect={() => setSelectedTierId(tier.id)}
             />
           ))}
@@ -176,8 +189,8 @@ export default function SubscribePage() {
           animate={{ opacity: 1, y: 0 }}
           className="rounded-2xl p-4 mb-5"
           style={{
-            background: "oklch(0.16 0.01 260)",
-            border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+            background: "oklch(0.16 0.01 var(--neutral-hue))",
+            border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
           }}
           data-ocid="subscribe.summary"
         >
@@ -186,7 +199,7 @@ export default function SubscribePage() {
               {selectedTier.label} plan
             </span>
             <span className="text-sm text-muted-foreground font-body tabular-nums">
-              {formatEUR(selectedTier.price)}
+              {priceOf(selectedTier)}
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-body">
@@ -197,15 +210,15 @@ export default function SubscribePage() {
             <p
               className="text-xs font-body mt-2 pt-2 flex items-center gap-1.5"
               style={{
-                borderTop: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                borderTop:
+                  "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                 color: TEAL,
               }}
               data-ocid="subscribe.summary.referral_benefit"
             >
               <Sparkles className="w-3 h-3 shrink-0" />
-              Referral benefit —{" "}
-              {formatEUR(selectedTier.price - discountedPrice)} ({discountPct}%)
-              credited to your account, not deducted here
+              Referral benefit — {discountPct}% credited to your account
+              separately — not deducted from this charge
             </p>
           )}
         </motion.div>
@@ -216,7 +229,7 @@ export default function SubscribePage() {
           animate={{ opacity: 1, y: 0 }}
           onClick={handlePurchase}
           disabled={isPurchasing}
-          className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-sm tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98] disabled:opacity-60 mb-3"
+          className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-sm tracking-wide bg-prestige text-background transition-smooth hover:opacity-90 active:scale-[0.98] disabled:opacity-60 mb-3"
           data-ocid="subscribe.purchase_button"
         >
           {isPurchasing ? (
@@ -227,18 +240,17 @@ export default function SubscribePage() {
           ) : showTrial ? (
             "Start 7-day free trial"
           ) : (
-            `Subscribe — ${formatEUR(selectedTier.price)}`
+            `Subscribe — ${priceOf(selectedTier)}`
           )}
         </motion.button>
 
         {showTrial && (
           <p className="text-center text-xs text-muted-foreground font-body mb-3">
-            Free for 7 days, then {formatEUR(selectedTier.price)}/year. Cancel
-            anytime.
+            Free for 7 days, then {priceOf(selectedTier)}/year. Cancel anytime.
           </p>
         )}
 
-        <p className="text-center text-[11px] text-muted-foreground/70 font-body leading-relaxed">
+        <p className="text-center text-xs text-muted-foreground/70 font-body leading-relaxed">
           Payment will be charged to your {storeAccountLabel} at confirmation of
           purchase. Subscriptions automatically renew unless auto-renew is
           turned off at least 24 hours before the end of the current period —
@@ -247,7 +259,7 @@ export default function SubscribePage() {
           auto-renewal may be turned off, by going to your account settings
           after purchase.
         </p>
-        <p className="text-center text-[11px] text-muted-foreground/70 font-body mt-2">
+        <p className="text-center text-xs text-muted-foreground/70 font-body mt-2">
           <button
             type="button"
             onClick={openTermsOfUse}
@@ -255,6 +267,15 @@ export default function SubscribePage() {
             data-ocid="subscribe.terms_link"
           >
             Terms of Use
+          </button>
+          {" · "}
+          <button
+            type="button"
+            onClick={openSubscriptionTerms}
+            className="underline hover:text-muted-foreground transition-smooth"
+            data-ocid="subscribe.subscription_terms_link"
+          >
+            Subscription Terms
           </button>
           {" · "}
           <button
@@ -278,12 +299,14 @@ function PlanCard({
   index,
   selected,
   trialEligible,
+  storePrice,
   onSelect,
 }: {
   tier: SubscriptionTier;
   index: number;
   selected: boolean;
   trialEligible: boolean;
+  storePrice?: StorePrice;
   onSelect: () => void;
 }) {
   const isAnnual = tier.id === ANNUAL_TIER.id;
@@ -301,19 +324,19 @@ function PlanCard({
       className="relative w-full rounded-3xl border text-left transition-smooth overflow-hidden"
       style={{
         background: isAnnual
-          ? "oklch(0.17 0.03 180 / 0.4)"
-          : "oklch(0.16 0.012 260)",
+          ? "oklch(0.17 0.03 var(--prestige-h) / 0.4)"
+          : "oklch(0.16 0.012 var(--neutral-hue))",
         borderColor: selected
           ? isAnnual
-            ? "oklch(0.68 0.25 180 / 0.85)"
-            : "oklch(0.68 0.25 180 / 0.5)"
-          : "oklch(0.26 0.01 260 / 0.5)",
+            ? "oklch(var(--prestige) / 0.85)"
+            : "oklch(var(--prestige) / 0.5)"
+          : "oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
         boxShadow: isAnnual
           ? selected
-            ? "0 0 32px oklch(0.68 0.25 180 / 0.4), 0 4px 20px oklch(0 0 0 / 0.3)"
-            : "0 0 20px oklch(0.68 0.25 180 / 0.18)"
+            ? "0 0 32px oklch(var(--prestige) / 0.4), 0 4px 20px oklch(0 0 0 / 0.3)"
+            : "0 0 20px oklch(var(--prestige) / 0.18)"
           : selected
-            ? "0 0 16px oklch(0.68 0.25 180 / 0.18)"
+            ? "0 0 16px oklch(var(--prestige) / 0.18)"
             : "none",
       }}
       data-ocid={`subscribe.plan_card.${tier.id}`}
@@ -321,17 +344,20 @@ function PlanCard({
       {isAnnual && (
         <div
           className="px-4 py-1.5 flex items-center justify-between"
-          style={{ background: "oklch(0.68 0.25 180 / 0.18)" }}
+          style={{ background: "oklch(var(--prestige) / 0.18)" }}
         >
           <span
-            className="text-[10px] font-display font-black uppercase tracking-widest"
+            className="text-xs font-display font-black uppercase tracking-widest"
             style={{ color: TEAL }}
           >
             ⭐ Best Value
           </span>
           <span
-            className="text-[10px] font-display font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
-            style={{ background: TEAL, color: "oklch(0.1 0.01 260)" }}
+            className="text-xs font-display font-black uppercase tracking-widest px-2 py-0.5 rounded-full"
+            style={{
+              background: TEAL,
+              color: "oklch(0.1 0.01 var(--neutral-hue))",
+            }}
           >
             Save {tier.savingsVsMonthlyPct}%
           </span>
@@ -344,13 +370,15 @@ function PlanCard({
           className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
           style={{
             background: selected ? TEAL : "transparent",
-            border: selected ? "none" : "1.5px solid oklch(0.4 0.01 260)",
+            border: selected
+              ? "none"
+              : "1.5px solid oklch(0.4 0.01 var(--neutral-hue))",
           }}
         >
           {selected && (
             <Check
               className="w-3 h-3"
-              style={{ color: "oklch(0.08 0.005 260)" }}
+              style={{ color: "oklch(0.08 0.005 var(--neutral-hue))" }}
               strokeWidth={3}
             />
           )}
@@ -363,9 +391,9 @@ function PlanCard({
             </h3>
             {!isAnnual && tier.savingsVsMonthlyPct > 0 && (
               <span
-                className="text-[9px] font-display font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                className="text-xs font-display font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full"
                 style={{
-                  background: "oklch(0.68 0.25 180 / 0.15)",
+                  background: "oklch(var(--prestige) / 0.15)",
                   color: TEAL,
                 }}
               >
@@ -374,10 +402,10 @@ function PlanCard({
             )}
             {showTrialTag && (
               <span
-                className="text-[9px] font-display font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                className="text-xs font-display font-black uppercase tracking-wide px-1.5 py-0.5 rounded-full"
                 style={{
-                  background: "oklch(0.72 0.18 60 / 0.18)",
-                  color: "oklch(0.78 0.18 60)",
+                  background: "oklch(var(--prestige) / 0.18)",
+                  color: "oklch(var(--prestige))",
                 }}
               >
                 7-day trial
@@ -386,13 +414,13 @@ function PlanCard({
           </div>
 
           <div className="flex items-baseline gap-2 flex-wrap">
-            {isAnnual && (
+            {isAnnual && !storePrice && (
               <span className="text-xs text-muted-foreground/60 font-body line-through">
                 {formatEUR(monthlyEquivalentTotal(tier))}
               </span>
             )}
             <span className="font-display font-black text-lg text-white">
-              {formatEUR(tier.price)}
+              {storePrice?.price ?? formatEUR(tier.price)}
             </span>
             <span className="text-xs text-muted-foreground font-body">
               {tier.billingPeriodLabel}
@@ -400,9 +428,11 @@ function PlanCard({
           </div>
 
           {!isMonthly && (
-            <p className="text-[11px] text-muted-foreground/80 font-body mt-0.5">
-              ≈ {formatEUR(tier.perMonthEquivalent)}/month
-              {isAnnual && ` · just ${formatEUR(weeklyPrice(tier))}/week`}
+            <p className="text-xs text-muted-foreground/80 font-body mt-0.5">
+              ≈ {storePrice?.perMonth ?? formatEUR(tier.perMonthEquivalent)}
+              /month
+              {isAnnual &&
+                ` · just ${storePrice?.perWeek ?? formatEUR(weeklyPrice(tier))}/week`}
             </p>
           )}
         </div>

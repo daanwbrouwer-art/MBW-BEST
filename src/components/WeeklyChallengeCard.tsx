@@ -1,12 +1,16 @@
 import { daysUntilReset } from "@/lib/challenge";
 import type { ChallengeTier } from "@/lib/challenge";
-import type { ChallengeProgress, WeeklyChallengeRecord } from "@/types/challenge";
+import type {
+  ChallengeProgress,
+  WeeklyChallengeRecord,
+} from "@/types/challenge";
 import { useNavigate } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { motion } from "motion/react";
 
-const TEAL = "#1AD6A0";
-const GOLD = "#f59e0b";
+const TEAL = "oklch(var(--prestige))";
+// Completed reads as "done" green in every theme.
+const DONE = "oklch(var(--success))";
 
 export function WeeklyChallengeCard({
   challenge,
@@ -33,26 +37,26 @@ export function WeeklyChallengeCard({
         className="relative w-full rounded-2xl overflow-hidden pl-5 pr-4 py-4"
         style={{
           background: "#1a1a1a",
-          border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+          border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
         }}
         data-ocid="home.weekly_challenge_card"
       >
         <div
           className="absolute left-0 top-0 bottom-0 w-1"
-          style={{ background: completed ? GOLD : TEAL }}
+          style={{ background: completed ? DONE : TEAL }}
         />
 
         <div className="flex items-center justify-between mb-2">
           <span
-            className="text-[10px] font-display font-black uppercase tracking-widest"
+            className="text-xs font-display font-black uppercase tracking-widest"
             style={{ color: TEAL }}
           >
             Weekly Challenge
           </span>
           {completed && (
             <span
-              className="flex items-center gap-1 text-[11px] font-display font-bold"
-              style={{ color: GOLD }}
+              className="flex items-center gap-1 text-xs font-display font-bold"
+              style={{ color: DONE }}
               data-ocid="home.weekly_challenge_card.completed_badge"
             >
               <Check className="w-3.5 h-3.5" /> Completed
@@ -66,7 +70,7 @@ export function WeeklyChallengeCard({
 
         <div
           className="w-full h-1.5 rounded-full overflow-hidden mb-1.5"
-          style={{ background: "oklch(0.22 0.012 260)" }}
+          style={{ background: "oklch(0.22 0.012 var(--neutral-hue))" }}
         >
           <motion.div
             className="h-full rounded-full"
@@ -74,8 +78,8 @@ export function WeeklyChallengeCard({
             animate={{ width: `${pct}%` }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: completed ? GOLD : TEAL,
-              boxShadow: completed ? `0 0 8px ${GOLD}` : `0 0 6px ${TEAL}`,
+              background: completed ? DONE : TEAL,
+              boxShadow: completed ? `0 0 8px ${DONE}` : `0 0 6px ${TEAL}`,
             }}
           />
         </div>
@@ -83,14 +87,14 @@ export function WeeklyChallengeCard({
         <div className="flex items-center justify-between">
           <span
             className="text-xs font-body"
-            style={{ color: "oklch(0.6 0.008 260)" }}
+            style={{ color: "oklch(0.6 0.008 var(--neutral-hue))" }}
             data-ocid="home.weekly_challenge_card.progress_text"
           >
             {progress.current} / {progress.target} {challenge.unitLabel}
           </span>
           <span
-            className="text-[10px] font-body"
-            style={{ color: "oklch(0.5 0.008 260)" }}
+            className="text-xs font-body"
+            style={{ color: "oklch(0.5 0.008 var(--neutral-hue))" }}
           >
             {daysLeft <= 0
               ? "Resets today"
@@ -100,10 +104,10 @@ export function WeeklyChallengeCard({
 
         {completed && tier === "registered" && (
           <p
-            className="text-[11px] font-body mt-3 pt-3"
+            className="text-xs font-body mt-3 pt-3"
             style={{
-              color: "oklch(0.55 0.008 260)",
-              borderTop: "1px solid oklch(0.24 0.01 260 / 0.6)",
+              color: "oklch(0.55 0.008 var(--neutral-hue))",
+              borderTop: "1px solid oklch(0.24 0.01 var(--neutral-hue) / 0.6)",
             }}
             data-ocid="home.weekly_challenge_card.registered_note"
           >
@@ -113,10 +117,10 @@ export function WeeklyChallengeCard({
 
         {completed && tier === "guest" && (
           <p
-            className="text-[11px] font-body mt-3 pt-3"
+            className="text-xs font-body mt-3 pt-3"
             style={{
-              color: "oklch(0.6 0.008 260)",
-              borderTop: "1px solid oklch(0.24 0.01 260 / 0.6)",
+              color: "oklch(0.6 0.008 var(--neutral-hue))",
+              borderTop: "1px solid oklch(0.24 0.01 var(--neutral-hue) / 0.6)",
             }}
             data-ocid="home.weekly_challenge_card.guest_note"
           >

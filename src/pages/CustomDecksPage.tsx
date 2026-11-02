@@ -38,7 +38,7 @@ export default function CustomDecksPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -68,11 +68,11 @@ export default function CustomDecksPage() {
         <div className="flex items-center gap-1.5 mt-1">
           <Crown
             className="w-3.5 h-3.5"
-            style={{ color: "oklch(0.76 0.22 60)" }}
+            style={{ color: "oklch(var(--prestige))" }}
           />
           <p
-            className="text-[11px] font-display font-bold uppercase tracking-widest"
-            style={{ color: "oklch(0.76 0.22 60)" }}
+            className="text-xs font-display font-bold uppercase tracking-widest"
+            style={{ color: "oklch(var(--prestige))" }}
           >
             Premium Feature
           </p>
@@ -88,8 +88,8 @@ export default function CustomDecksPage() {
           onClick={handleNewDeck}
           className="w-full h-14 rounded-2xl flex items-center justify-center gap-2 mb-4 font-display font-bold text-sm tracking-wide uppercase transition-smooth hover:opacity-90 active:scale-[0.98]"
           style={{
-            border: "1.5px dashed oklch(0.68 0.25 180 / 0.5)",
-            color: "oklch(0.68 0.25 180)",
+            border: "1.5px dashed oklch(var(--primary) / 0.5)",
+            color: "oklch(var(--primary))",
           }}
           data-ocid="custom-decks.new_deck_button"
         >
@@ -104,8 +104,8 @@ export default function CustomDecksPage() {
                 key={i}
                 className="rounded-2xl h-16 animate-pulse"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px solid oklch(0.24 0.01 260 / 0.5)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.24 0.01 var(--neutral-hue) / 0.5)",
                 }}
                 data-ocid={`custom-decks.skeleton.${i + 1}`}
               />
@@ -115,18 +115,18 @@ export default function CustomDecksPage() {
           <div
             className="rounded-2xl px-5 py-10 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
             }}
             data-ocid="custom-decks.empty_state"
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+              style={{ background: "oklch(var(--primary) / 0.1)" }}
             >
               <Layers
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--primary) / 0.5)" }}
               />
             </div>
             <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -140,8 +140,8 @@ export default function CustomDecksPage() {
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {decks.map((deck, i) => (
@@ -153,7 +153,7 @@ export default function CustomDecksPage() {
                 style={{
                   borderBottom:
                     i < decks.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`custom-decks.item.${i + 1}`}

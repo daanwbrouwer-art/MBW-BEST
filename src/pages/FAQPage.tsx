@@ -26,7 +26,7 @@ export default function FAQPage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
@@ -67,8 +67,8 @@ export default function FAQPage() {
             transition={{ delay: 0.05, duration: 0.4 }}
             className="rounded-2xl p-4"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="faq.item.streak_reset"
           >
@@ -92,8 +92,8 @@ export default function FAQPage() {
             transition={{ delay: 0.1, duration: 0.4 }}
             className="rounded-2xl p-4"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="faq.item.reinstalled"
           >
@@ -131,8 +131,8 @@ export default function FAQPage() {
             transition={{ delay: 0.15, duration: 0.4 }}
             className="rounded-2xl p-4"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="faq.item.cancel_subscription"
           >
@@ -155,8 +155,8 @@ export default function FAQPage() {
             transition={{ delay: 0.2, duration: 0.4 }}
             className="rounded-2xl p-4"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
             data-ocid="faq.item.calorie_estimate"
           >

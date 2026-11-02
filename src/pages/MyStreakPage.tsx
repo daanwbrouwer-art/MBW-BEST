@@ -40,16 +40,16 @@ function LockedSection({
       </div>
       <div
         className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-8"
-        style={{ background: "oklch(0.08 0.005 260 / 0.6)" }}
+        style={{ background: "oklch(0.08 0.005 var(--neutral-hue) / 0.6)" }}
       >
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center"
           style={{
-            background: "oklch(0.68 0.25 180 / 0.15)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.35)",
+            background: "oklch(var(--energy) / 0.15)",
+            border: "1px solid oklch(var(--energy) / 0.35)",
           }}
         >
-          <Lock className="w-5 h-5" style={{ color: "oklch(0.68 0.25 180)" }} />
+          <Lock className="w-5 h-5" style={{ color: "oklch(var(--energy))" }} />
         </div>
         <p className="font-display font-bold text-sm text-white leading-snug max-w-[220px]">
           {showTrialNudge
@@ -59,7 +59,7 @@ function LockedSection({
         <button
           type="button"
           onClick={onSubscribe}
-          className="px-5 h-10 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+          className="px-5 h-10 rounded-full font-display font-bold text-xs tracking-wide bg-energy text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
           data-ocid="my-streak.subscribe_button"
         >
           Subscribe
@@ -120,14 +120,14 @@ export default function MyStreakPage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--energy-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-energy/50 hover:text-energy transition-smooth"
           onClick={() => navigate({ to: "/home" })}
           data-ocid="my-streak.back_button"
           aria-label="Go back"
@@ -150,7 +150,13 @@ export default function MyStreakPage() {
             🔥
           </span>
           <p
-            className="font-display font-black text-4xl text-white mt-2 leading-none"
+            className="font-display font-black text-4xl mt-2 leading-none"
+            style={{
+              color:
+                streak.current > 0
+                  ? "oklch(var(--highlight))"
+                  : "oklch(var(--muted-foreground))",
+            }}
             data-ocid="my-streak.current_weeks"
           >
             {streak.current}
@@ -158,9 +164,17 @@ export default function MyStreakPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-widest font-display font-bold mt-1">
             week streak
           </p>
-          <p className="text-sm text-white/60 font-body mt-3">
-            {streak.currentWeekTrainingDays}/{streak.weeklyGoal} days this
-            week
+          <p
+            className="text-sm font-body mt-3"
+            style={{
+              color:
+                streak.currentWeekTrainingDays >= streak.weeklyGoal
+                  ? "oklch(var(--success))"
+                  : "oklch(var(--muted-foreground))",
+            }}
+          >
+            {streak.currentWeekTrainingDays}/{streak.weeklyGoal} days this week
+            {streak.currentWeekTrainingDays >= streak.weeklyGoal && " ✓"}
           </p>
         </motion.div>
 
@@ -174,30 +188,37 @@ export default function MyStreakPage() {
           <div
             className="rounded-2xl p-3.5 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
             }}
             data-ocid="my-streak.stat.year_days"
           >
             <p className="font-display font-black text-xl text-foreground leading-none">
               {streak.totalTrainingDaysThisYear}
             </p>
-            <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wide mt-1.5">
+            <p className="text-xs text-muted-foreground font-body uppercase tracking-wide mt-1.5">
               training days this year
             </p>
           </div>
           <div
             className="rounded-2xl p-3.5 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
             }}
             data-ocid="my-streak.stat.best_exercise"
           >
-            <p className="font-display font-black text-sm text-foreground leading-tight">
+            <p
+              className="font-display font-black text-sm leading-tight"
+              style={{
+                color: streak.bestExercise
+                  ? "oklch(var(--highlight))"
+                  : "oklch(var(--foreground))",
+              }}
+            >
               {bestExerciseLabel}
             </p>
-            <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wide mt-1.5">
+            <p className="text-xs text-muted-foreground font-body uppercase tracking-wide mt-1.5">
               strongest move
             </p>
           </div>
@@ -216,15 +237,23 @@ export default function MyStreakPage() {
             <div
               className="rounded-2xl p-3.5 text-center mb-4"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
               }}
               data-ocid="my-streak.stat.longest"
             >
-              <p className="font-display font-black text-xl text-foreground leading-none">
+              <p
+                className="font-display font-black text-xl leading-none"
+                style={{
+                  color:
+                    streak.longest > 0
+                      ? "oklch(var(--highlight))"
+                      : "oklch(var(--foreground))",
+                }}
+              >
                 {streak.longest}
               </p>
-              <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wide mt-1.5">
+              <p className="text-xs text-muted-foreground font-body uppercase tracking-wide mt-1.5">
                 longest streak (weeks)
               </p>
             </div>
@@ -232,26 +261,26 @@ export default function MyStreakPage() {
             {/* Calendar */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
-                <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground">
+                <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground">
                   Streak History
                 </p>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={goPrevMonth}
-                    className="w-6 h-6 rounded-md flex items-center justify-center text-muted-foreground hover:text-primary transition-smooth"
+                    className="w-6 h-6 rounded-md flex items-center justify-center text-muted-foreground hover:text-energy transition-smooth"
                     aria-label="Previous month"
                     data-ocid="my-streak.calendar.prev_month"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
-                  <span className="text-[10px] font-display font-bold text-white/70 w-24 text-center">
+                  <span className="text-xs font-display font-bold text-white/70 w-24 text-center">
                     {monthLabel}
                   </span>
                   <button
                     type="button"
                     onClick={goNextMonth}
-                    className="w-6 h-6 rounded-md flex items-center justify-center text-muted-foreground hover:text-primary transition-smooth"
+                    className="w-6 h-6 rounded-md flex items-center justify-center text-muted-foreground hover:text-energy transition-smooth"
                     aria-label="Next month"
                     data-ocid="my-streak.calendar.next_month"
                   >
@@ -262,15 +291,15 @@ export default function MyStreakPage() {
               <div
                 className="rounded-2xl p-3"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                 }}
               >
                 <div className="grid grid-cols-7 gap-1.5 mb-1.5">
                   {WEEKDAY_LABELS.map((d, i) => (
                     <span
                       key={`${d}-${i}`}
-                      className="text-[9px] text-center text-muted-foreground font-body"
+                      className="text-xs text-center text-muted-foreground font-body"
                     >
                       {d}
                     </span>
@@ -280,19 +309,19 @@ export default function MyStreakPage() {
                   {days.map((day) => (
                     <div
                       key={day.date}
-                      className="aspect-square rounded-md flex items-center justify-center text-[9px] font-body"
+                      className="aspect-square rounded-md flex items-center justify-center text-xs font-body"
                       style={{
                         background: !day.inMonth
                           ? "transparent"
                           : day.intensity === "full"
-                            ? "oklch(0.68 0.25 180)"
+                            ? "oklch(var(--energy))"
                             : day.intensity === "light"
-                              ? "oklch(0.68 0.25 180 / 0.35)"
-                              : "oklch(0.2 0.012 260)",
+                              ? "oklch(var(--energy) / 0.35)"
+                              : "oklch(0.2 0.012 var(--neutral-hue))",
                         color:
                           day.inMonth && day.intensity === "full"
-                            ? "oklch(0.08 0.005 260)"
-                            : "oklch(0.55 0.008 260)",
+                            ? "oklch(0.08 0.005 var(--neutral-hue))"
+                            : "oklch(0.55 0.008 var(--neutral-hue))",
                         opacity: day.inMonth ? 1 : 0.12,
                       }}
                     >
@@ -301,17 +330,17 @@ export default function MyStreakPage() {
                   ))}
                 </div>
                 <div className="flex items-center gap-3 mt-3 justify-end">
-                  <span className="flex items-center gap-1 text-[9px] text-muted-foreground">
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <span
                       className="w-2.5 h-2.5 rounded-sm inline-block"
-                      style={{ background: "oklch(0.68 0.25 180 / 0.35)" }}
+                      style={{ background: "oklch(var(--energy) / 0.35)" }}
                     />
                     short
                   </span>
-                  <span className="flex items-center gap-1 text-[9px] text-muted-foreground">
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <span
                       className="w-2.5 h-2.5 rounded-sm inline-block"
-                      style={{ background: "oklch(0.68 0.25 180)" }}
+                      style={{ background: "oklch(var(--energy))" }}
                     />
                     long
                   </span>
@@ -321,15 +350,16 @@ export default function MyStreakPage() {
 
             {/* Weekly goal log */}
             <div>
-              <p className="font-display font-bold text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+              <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground mb-3">
                 Weekly Goal Log
               </p>
               {weeklyLog.length > 0 ? (
                 <div
                   className="rounded-2xl overflow-hidden"
                   style={{
-                    background: "oklch(0.16 0.01 260)",
-                    border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                    background: "oklch(0.16 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                   }}
                 >
                   {weeklyLog.map((w, i) => (
@@ -339,7 +369,7 @@ export default function MyStreakPage() {
                       style={{
                         borderBottom:
                           i < weeklyLog.length - 1
-                            ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                            ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                             : "none",
                       }}
                       data-ocid={`my-streak.weekly_log.item.${i + 1}`}
@@ -349,7 +379,10 @@ export default function MyStreakPage() {
                           Week of {formatDateLabel(w.weekStart)}
                         </p>
                         {w.isMilestone && (
-                          <p className="text-[10px] text-primary font-body mt-0.5">
+                          <p
+                            className="text-xs font-body mt-0.5"
+                            style={{ color: "oklch(var(--highlight))" }}
+                          >
                             🔥 {w.streakAtWeek}-week streak reached
                           </p>
                         )}
@@ -358,11 +391,12 @@ export default function MyStreakPage() {
                         className="text-xs font-display font-bold shrink-0"
                         style={{
                           color: w.goalMet
-                            ? "oklch(0.68 0.25 180)"
-                            : "oklch(0.55 0.008 260)",
+                            ? "oklch(var(--success))"
+                            : "oklch(0.55 0.008 var(--neutral-hue))",
                         }}
                       >
-                        {w.daysTrained}/{streak.weeklyGoal} {w.goalMet ? "✓" : "✗"}
+                        {w.daysTrained}/{streak.weeklyGoal}{" "}
+                        {w.goalMet ? "✓" : "✗"}
                       </span>
                     </div>
                   ))}
@@ -371,8 +405,9 @@ export default function MyStreakPage() {
                 <div
                   className="rounded-2xl px-5 py-8 text-center"
                   style={{
-                    background: "oklch(0.16 0.01 260)",
-                    border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+                    background: "oklch(0.16 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
                   }}
                 >
                   <p className="text-xs text-muted-foreground font-body">

@@ -191,7 +191,7 @@ export default function CustomWorkoutBuilderPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -221,11 +221,11 @@ export default function CustomWorkoutBuilderPage() {
         <div className="flex items-center gap-1.5 mt-1">
           <Crown
             className="w-3.5 h-3.5"
-            style={{ color: "oklch(0.76 0.22 60)" }}
+            style={{ color: "oklch(var(--prestige))" }}
           />
           <p
-            className="text-[11px] font-display font-bold uppercase tracking-widest"
-            style={{ color: "oklch(0.76 0.22 60)" }}
+            className="text-xs font-display font-bold uppercase tracking-widest"
+            style={{ color: "oklch(var(--prestige))" }}
           >
             Premium Feature
           </p>
@@ -293,8 +293,8 @@ export default function CustomWorkoutBuilderPage() {
                 key={i}
                 className="rounded-2xl border overflow-hidden aspect-square animate-pulse"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  borderColor: "oklch(0.24 0.01 260 / 0.5)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  borderColor: "oklch(0.24 0.01 var(--neutral-hue) / 0.5)",
                 }}
                 data-ocid={`custom-workout.exercise_card.skeleton.${i + 1}`}
               />
@@ -318,7 +318,7 @@ export default function CustomWorkoutBuilderPage() {
                     <p className="text-xs font-display font-bold uppercase tracking-widest text-muted-foreground">
                       {BODY_REGION_LABEL[region]}
                     </p>
-                    <span className="text-[10px] text-muted-foreground/60 font-body">
+                    <span className="text-xs text-muted-foreground/60 font-body">
                       {items.length}
                     </span>
                   </div>
@@ -370,7 +370,7 @@ export default function CustomWorkoutBuilderPage() {
                   key={ex.name}
                   className="shrink-0 flex items-center gap-2 rounded-xl pl-3 pr-2 h-10 bg-card border border-border/50"
                 >
-                  <span className="text-[11px] font-body text-foreground max-w-[90px] truncate">
+                  <span className="text-xs font-body text-foreground max-w-[90px] truncate">
                     {ex.name}
                   </span>
                   <div className="flex items-center gap-1">
@@ -383,7 +383,7 @@ export default function CustomWorkoutBuilderPage() {
                     >
                       <Minus className="w-2.5 h-2.5" />
                     </button>
-                    <span className="text-[11px] font-display font-bold text-primary tabular-nums w-9 text-center">
+                    <span className="text-xs font-display font-bold text-primary tabular-nums w-9 text-center">
                       {ex.value}
                       {ex.isIsometric ? "s" : ""}
                     </span>
@@ -494,7 +494,7 @@ function ExerciseCatalogCard({
     >
       <div
         className="relative w-full aspect-square overflow-hidden"
-        style={{ background: "oklch(0.16 0.01 260)" }}
+        style={{ background: "oklch(0.16 0.01 var(--neutral-hue))" }}
       >
         <img
           src={resolveExerciseIllustration(exercise.name, gender)}
@@ -505,15 +505,17 @@ function ExerciseCatalogCard({
         {!isPremium && (
           <div
             className="absolute inset-0"
-            style={{ background: "oklch(0.05 0.005 260 / 0.35)" }}
+            style={{
+              background: "oklch(0.05 0.005 var(--neutral-hue) / 0.35)",
+            }}
           />
         )}
         {exercise.isIsometric && (
           <span
             className="absolute top-1.5 left-1.5 flex items-center gap-0.5 text-[8px] font-display font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full"
             style={{
-              background: "oklch(0.68 0.25 180 / 0.85)",
-              color: "oklch(0.05 0.005 260)",
+              background: "oklch(var(--primary) / 0.85)",
+              color: "oklch(0.05 0.005 var(--neutral-hue))",
             }}
           >
             <Timer className="w-2 h-2" /> Hold
@@ -522,17 +524,17 @@ function ExerciseCatalogCard({
         {picked && (
           <div
             className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ background: "oklch(0.68 0.25 180)" }}
+            style={{ background: "oklch(var(--primary))" }}
           >
             <Check className="w-3 h-3 text-background" strokeWidth={3} />
           </div>
         )}
       </div>
       <div className="px-2.5 py-2">
-        <p className="text-[11px] font-display font-bold text-foreground leading-tight line-clamp-2">
+        <p className="text-xs font-display font-bold text-foreground leading-tight line-clamp-2">
           {exercise.name}
         </p>
-        <p className="text-[9px] text-muted-foreground font-body mt-0.5 uppercase tracking-wide">
+        <p className="text-xs text-muted-foreground font-body mt-0.5 uppercase tracking-wide">
           {DECK_CATEGORY_ICON[exercise.bodyRegion]}{" "}
           {exercise.isIsometric
             ? `${exercise.defaultHoldSeconds ?? 20}s`

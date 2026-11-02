@@ -9,6 +9,9 @@ import type {
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+/** A King never halves a hold below this (matches customWorkoutBuilder). */
+const MIN_HOLD_SECONDS = 5;
+
 export interface LocalCard {
   id: string;
   rank: string;
@@ -183,18 +186,30 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         const nextRaw = shuffledDeck[nextIndex];
         if (!nextRaw) return;
 
-        // Resolve ACE / KING reps from previousCard
+        // Resolve ACE (×2) / KING (÷2) from the previous card. A timed
+        // exercise (Pike Hold 20s) stays timed: the modifier scales the
+        // seconds (Ace → 40s), it doesn't turn the hold into reps.
         let resolvedReps = nextRaw.reps;
         let resolvedExercise = nextRaw.exerciseName;
         let resolvedEquipment = nextRaw.requiresEquipment;
-        if (nextRaw.isAce && currentCard) {
-          resolvedReps = currentCard.reps * 2;
+        let resolvedHoldSeconds = nextRaw.holdSeconds;
+        let resolvedEachLeg = nextRaw.eachLeg;
+        let resolvedEachSide = nextRaw.eachSide;
+        if ((nextRaw.isAce || nextRaw.isKing) && currentCard) {
+          const prevHold = currentCard.card.holdSeconds;
+          if (nextRaw.isAce) {
+            resolvedReps = currentCard.reps * 2;
+            resolvedHoldSeconds = prevHold ? prevHold * 2 : undefined;
+          } else {
+            resolvedReps = Math.max(1, Math.ceil(currentCard.reps / 2));
+            resolvedHoldSeconds = prevHold
+              ? Math.max(MIN_HOLD_SECONDS, Math.round(prevHold / 2))
+              : undefined;
+          }
           resolvedExercise = currentCard.card.exercise;
           resolvedEquipment = currentCard.card.requiresEquipment;
-        } else if (nextRaw.isKing && currentCard) {
-          resolvedReps = Math.max(1, Math.ceil(currentCard.reps / 2));
-          resolvedExercise = currentCard.card.exercise;
-          resolvedEquipment = currentCard.card.requiresEquipment;
+          resolvedEachLeg = currentCard.card.eachLeg;
+          resolvedEachSide = currentCard.card.eachSide;
         }
 
         const nextCard: LocalSessionCard = {
@@ -204,9 +219,9 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
             suit: nextRaw.suit,
             exercise: resolvedExercise,
             videoUrl: nextRaw.videoUrl,
-            eachLeg: nextRaw.eachLeg,
-            eachSide: nextRaw.eachSide,
-            holdSeconds: nextRaw.holdSeconds,
+            eachLeg: resolvedEachLeg,
+            eachSide: resolvedEachSide,
+            holdSeconds: resolvedHoldSeconds,
             specialInstruction: nextRaw.specialInstruction,
             imagePath: nextRaw.imagePath,
             illustrationComingSoon: nextRaw.illustrationComingSoon,

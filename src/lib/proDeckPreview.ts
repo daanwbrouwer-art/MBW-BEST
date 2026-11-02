@@ -52,7 +52,8 @@ function upsert(
   existing.minReps = Math.min(existing.minReps, reps);
   existing.maxReps = Math.max(existing.maxReps, reps);
   existing.isChallenge = existing.isChallenge && isChallenge;
-  if (entry.requiresEquipment) existing.requiresEquipment = entry.requiresEquipment;
+  if (entry.requiresEquipment)
+    existing.requiresEquipment = entry.requiresEquipment;
 }
 
 /** Every distinct exercise in a Pro deck, deduped by name with a min-max rep range across all its card occurrences — mirrors the real in-game rep math (reps = card rank value) rather than inventing numbers. */
@@ -89,21 +90,67 @@ export function buildProDeckExercises(
 // match wins. Descriptions are short, on-brand taglines for the "flagship"
 // highlight cards, not exhaustive coaching cues.
 const FLAGSHIP_KEYWORDS: { match: string; description: string }[] = [
-  { match: "muscle-up", description: "The ultimate test of upper body pulling and pushing power." },
-  { match: "planche", description: "Requires exceptional shoulder strength and full-body control." },
-  { match: "one-arm", description: "The pinnacle of single-limb pulling or pushing strength." },
-  { match: "human flag", description: "A raw display of full-body core and shoulder strength." },
-  { match: "front lever", description: "Elite-level static back and core strength." },
-  { match: "freestanding handstand", description: "Balance and body control with zero support." },
-  { match: "full pistol squat", description: "Single-leg strength, balance and control in one movement." },
-  { match: "full dragon flag", description: "A brutal, full-body core finisher." },
-  { match: "handstand push-up", description: "Vertical pressing power at its hardest." },
-  { match: "explosive pull-up", description: "Pure power output in a single pull." },
-  { match: "man maker", description: "A brutal full-body strength-and-power combo." },
-  { match: "burpee chin-up", description: "Total-body conditioning meets pulling strength." },
-  { match: "shrimp squat", description: "Single-leg strength most people can't even attempt." },
-  { match: "straddle planche", description: "One of the rarest static holds in calisthenics." },
-  { match: "full toes to bar", description: "Elite hanging core control, start to finish." },
+  {
+    match: "muscle-up",
+    description: "The ultimate test of upper body pulling and pushing power.",
+  },
+  {
+    match: "planche",
+    description:
+      "Requires exceptional shoulder strength and full-body control.",
+  },
+  {
+    match: "one-arm",
+    description: "The pinnacle of single-limb pulling or pushing strength.",
+  },
+  {
+    match: "human flag",
+    description: "A raw display of full-body core and shoulder strength.",
+  },
+  {
+    match: "front lever",
+    description: "Elite-level static back and core strength.",
+  },
+  {
+    match: "freestanding handstand",
+    description: "Balance and body control with zero support.",
+  },
+  {
+    match: "full pistol squat",
+    description: "Single-leg strength, balance and control in one movement.",
+  },
+  {
+    match: "full dragon flag",
+    description: "A brutal, full-body core finisher.",
+  },
+  {
+    match: "handstand push-up",
+    description: "Vertical pressing power at its hardest.",
+  },
+  {
+    match: "explosive pull-up",
+    description: "Pure power output in a single pull.",
+  },
+  {
+    match: "man maker",
+    description: "A brutal full-body strength-and-power combo.",
+  },
+  {
+    match: "burpee chin-up",
+    description: "Total-body conditioning meets pulling strength.",
+  },
+  {
+    match: "shrimp squat",
+    description: "Single-leg strength most people can't even attempt.",
+  },
+  {
+    match: "straddle planche",
+    description: "One of the rarest static holds in calisthenics.",
+  },
+  {
+    match: "full toes to bar",
+    description: "Elite hanging core control, start to finish.",
+  },
 ];
 
 const FLAGSHIP_EXCLUDE = new Set(["Joker Combo", "Combo Finisher"]);
@@ -141,7 +188,10 @@ export function pickFlagshipExercises(
       .sort((a, b) => a.minReps - b.minReps);
     for (const e of remaining) {
       if (picked.length >= 4) break;
-      picked.push({ ...e, description: "One of the toughest moves in this deck." });
+      picked.push({
+        ...e,
+        description: "One of the toughest moves in this deck.",
+      });
       usedNames.add(e.name);
     }
   }

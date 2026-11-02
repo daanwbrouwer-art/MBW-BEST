@@ -24,6 +24,7 @@ import {
   supabase,
 } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
+import { Capacitor } from "@capacitor/core";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import L from "leaflet";
@@ -72,10 +73,10 @@ function clusterIcon(cluster: L.MarkerCluster) {
     className: "",
     html: `<div style="
       width: 38px; height: 38px; border-radius: 9999px;
-      background: oklch(0.68 0.25 180 / 0.92); border: 2px solid oklch(0.08 0.005 260);
+      background: oklch(var(--pulse) / 0.92); border: 2px solid oklch(0.08 0.005 var(--neutral-hue));
       box-shadow: 0 2px 12px oklch(0 0 0 / 0.45);
       display: flex; align-items: center; justify-content: center;
-      font-family: inherit; font-weight: 800; font-size: 13px; color: oklch(0.08 0.005 260);
+      font-family: inherit; font-weight: 800; font-size: 13px; color: oklch(0.08 0.005 var(--neutral-hue));
     ">${count}</div>`,
     iconSize: [38, 38],
   });
@@ -199,6 +200,7 @@ export default function MapPage() {
     watchedPosition,
     startWatching,
     refreshPermission,
+    requestPermission,
   } = useLocation();
 
   // EU centroid is just the *initial* paint — never blocks rendering while
@@ -379,15 +381,50 @@ export default function MapPage() {
     });
   };
 
+  /** "Location is off" banner. Native: deep-link to the app's OS settings.
+   * Web has no settings page to open, so ask the browser again — and say
+   * why when it can't: browsers only expose location on https/localhost,
+   * so a LAN test link (http://192.168…) is blocked outright. */
+  const handleEnableLocationTap = async () => {
+    if (Capacitor.isNativePlatform()) {
+      openAppSettings();
+      return;
+    }
+    if (!window.isSecureContext) {
+      toast("Location is blocked on this link", {
+        description:
+          "Browsers only share location over https or localhost. It works in the app.",
+        duration: 6000,
+      });
+      return;
+    }
+    if (await requestPermission()) {
+      setShowLocationDeniedBanner(false);
+      centerOnUser();
+      return;
+    }
+    toast("Location is blocked in this browser", {
+      description:
+        "Tap the padlock next to the address, allow Location, then try again.",
+      duration: 6000,
+    });
+  };
+
   const handleAddParkTap = async () => {
     // No account required — this transparently starts an anonymous Supabase
     // session (or reuses a real one, if signed in) so anyone can contribute
     // a park. See ensureSupabaseSession() in supabaseClient.ts.
     const userId = await ensureSupabaseSession();
     if (!userId) {
-      toast("Couldn't start a session", {
-        description: "Check your connection and try again in a moment.",
-        duration: 3500,
+      // Fails when Supabase "Anonymous Sign-Ins" is off — then a free
+      // account is the way in.
+      toast("Create a free account to add parks", {
+        description: "Submitted parks are reviewed before they go live.",
+        duration: 6000,
+        action: {
+          label: "Sign up",
+          onClick: () => navigate({ to: "/onboarding/create-account" }),
+        },
       });
       return;
     }
@@ -405,21 +442,21 @@ export default function MapPage() {
 
   return (
     <div
-      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto relative"
+      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto relative pb-24"
       data-ocid="map.page"
     >
       <div
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--pulse-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-pulse/50 hover:text-pulse transition-smooth"
           onClick={() => navigate({ to: "/home" })}
           data-ocid="map.back_button"
           aria-label="Go back to home"
@@ -447,10 +484,10 @@ export default function MapPage() {
 
         <form onSubmit={handleSearchSubmit} className="mb-3">
           <div
-            className="w-full h-11 rounded-xl flex items-center px-3 gap-2 transition-smooth focus-within:border-primary/60"
+            className="w-full h-11 rounded-xl flex items-center px-3 gap-2 transition-smooth focus-within:border-pulse/60"
             style={{
-              background: "oklch(0.17 0.012 260)",
-              border: "1px solid oklch(0.28 0.01 260)",
+              background: "oklch(0.17 0.012 var(--neutral-hue))",
+              border: "1px solid oklch(0.28 0.01 var(--neutral-hue))",
             }}
           >
             <button
@@ -461,7 +498,7 @@ export default function MapPage() {
               data-ocid="map.search_submit_button"
             >
               {isGeocoding ? (
-                <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                <div className="w-4 h-4 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
               ) : (
                 <Search className="w-4 h-4 text-muted-foreground" />
               )}
@@ -477,7 +514,7 @@ export default function MapPage() {
           </div>
           {searchError && (
             <p
-              className="text-[11px] mt-1.5 px-1 font-body"
+              className="text-xs mt-1.5 px-1 font-body"
               style={{ color: "oklch(0.65 0.2 25)" }}
               data-ocid="map.search_error"
             >
@@ -490,8 +527,8 @@ export default function MapPage() {
           className="relative flex-1 rounded-2xl overflow-hidden"
           style={{
             minHeight: 420,
-            border: "1px solid oklch(0.26 0.01 260 / 0.6)",
-            background: "oklch(0.13 0.01 260)",
+            border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
+            background: "oklch(var(--background))",
           }}
           data-ocid="map.container"
         >
@@ -544,10 +581,10 @@ export default function MapPage() {
                     ]}
                     radius={watchedPosition.accuracy}
                     pathOptions={{
-                      color: "oklch(0.62 0.19 255)",
+                      color: "oklch(var(--pulse))",
                       weight: 1,
                       opacity: 0.25,
-                      fillColor: "oklch(0.62 0.19 255)",
+                      fillColor: "oklch(var(--pulse))",
                       fillOpacity: 0.08,
                     }}
                   />
@@ -570,9 +607,9 @@ export default function MapPage() {
             <div
               className="absolute inset-x-3 bottom-3 rounded-xl px-3 py-2.5 text-center text-xs font-body z-[500]"
               style={{
-                background: "oklch(0.1 0.008 260 / 0.92)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.6)",
-                color: "oklch(0.7 0.01 260)",
+                background: "oklch(0.1 0.008 var(--neutral-hue) / 0.92)",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
+                color: "oklch(0.7 0.01 var(--neutral-hue))",
               }}
               data-ocid="map.unconfigured_notice"
             >
@@ -583,9 +620,9 @@ export default function MapPage() {
             <div
               className="absolute inset-x-3 bottom-3 rounded-xl px-3 py-2.5 text-center text-xs font-body z-[500]"
               style={{
-                background: "oklch(0.1 0.008 260 / 0.92)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.6)",
-                color: "oklch(0.7 0.01 260)",
+                background: "oklch(0.1 0.008 var(--neutral-hue) / 0.92)",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
+                color: "oklch(0.7 0.01 var(--neutral-hue))",
               }}
               data-ocid="map.error_notice"
             >
@@ -594,19 +631,19 @@ export default function MapPage() {
           )}
           {isSupabaseConfigured && isLoading && (
             <div className="absolute top-3 right-3 z-[500]">
-              <div className="w-5 h-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              <div className="w-5 h-5 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
             </div>
           )}
 
           {showLocationDeniedBanner && (
             <button
               type="button"
-              onClick={() => openAppSettings()}
+              onClick={handleEnableLocationTap}
               className="absolute top-3 inset-x-3 rounded-xl px-3 py-2.5 text-center text-xs font-body font-medium transition-smooth hover:opacity-90 z-[500]"
               style={{
-                background: "oklch(0.1 0.008 260 / 0.92)",
-                border: "1px solid oklch(0.75 0.16 60 / 0.5)",
-                color: "oklch(0.85 0.14 60)",
+                background: "oklch(0.1 0.008 var(--neutral-hue) / 0.92)",
+                border: "1px solid oklch(var(--prestige) / 0.5)",
+                color: "oklch(var(--prestige))",
                 boxShadow: "0 4px 16px oklch(0 0 0 / 0.4)",
               }}
               data-ocid="map.location_denied_banner"
@@ -624,9 +661,9 @@ export default function MapPage() {
                 showLocationDeniedBanner ? "top-14" : "top-3",
               )}
               style={{
-                background: "oklch(0.13 0.01 260 / 0.95)",
-                color: "oklch(0.68 0.25 180)",
-                border: "1px solid oklch(0.68 0.25 180 / 0.4)",
+                background: "oklch(var(--background) / 0.95)",
+                color: "oklch(var(--pulse))",
+                border: "1px solid oklch(var(--pulse) / 0.4)",
                 boxShadow: "0 4px 16px oklch(0 0 0 / 0.4)",
               }}
               data-ocid="map.search_area_button"
@@ -641,9 +678,9 @@ export default function MapPage() {
             onClick={handleLocateButtonTap}
             className="absolute bottom-4 left-4 w-12 h-12 rounded-full flex items-center justify-center transition-smooth hover:opacity-90 active:scale-[0.96] z-[500]"
             style={{
-              background: "oklch(0.18 0.012 260 / 0.92)",
-              color: "oklch(0.68 0.25 180)",
-              border: "1px solid oklch(0.28 0.01 260)",
+              background: "oklch(0.18 0.012 var(--neutral-hue) / 0.92)",
+              color: "oklch(var(--pulse))",
+              border: "1px solid oklch(0.28 0.01 var(--neutral-hue))",
             }}
             data-ocid="map.locate_button"
             aria-label="Center on my location"
@@ -656,9 +693,9 @@ export default function MapPage() {
             onClick={handleAddParkTap}
             className="absolute bottom-4 right-4 w-14 h-14 rounded-full flex items-center justify-center transition-smooth hover:opacity-90 active:scale-[0.96] z-[500]"
             style={{
-              background: "oklch(0.68 0.25 180)",
-              color: "oklch(0.08 0.005 260)",
-              boxShadow: "0 4px 20px oklch(0.68 0.25 180 / 0.4)",
+              background: "oklch(var(--pulse))",
+              color: "oklch(0.08 0.005 var(--neutral-hue))",
+              boxShadow: "0 4px 20px oklch(var(--pulse) / 0.4)",
             }}
             data-ocid="map.add_park_button"
             aria-label="Add a park"

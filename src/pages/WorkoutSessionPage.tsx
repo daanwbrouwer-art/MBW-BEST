@@ -63,7 +63,7 @@ function StatPill({ icon, value, label, accent }: StatPillProps) {
         <div className="font-display font-bold text-xs text-foreground leading-none tabular-nums select-none">
           {value}
         </div>
-        <div className="text-[10px] text-white/60 font-body uppercase tracking-wider mt-0.5">
+        <div className="text-xs text-white/60 font-body uppercase tracking-wider mt-0.5">
           {label}
         </div>
       </div>
@@ -95,16 +95,16 @@ function PauseExerciseBreakdown() {
   return (
     <div className="px-6 mb-5">
       <p
-        className="font-display font-bold text-[10px] uppercase tracking-widest mb-3"
-        style={{ color: "oklch(0.90 0.008 260)" }}
+        className="font-display font-bold text-xs uppercase tracking-widest mb-3"
+        style={{ color: "oklch(0.90 0.008 var(--neutral-hue))" }}
       >
         Reps So Far
       </p>
       <div
         className="rounded-2xl overflow-hidden"
         style={{
-          background: "oklch(0.16 0.01 260)",
-          border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+          background: "oklch(0.16 0.01 var(--neutral-hue))",
+          border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
         }}
         data-ocid="workout-session.pause_reps_list"
       >
@@ -115,7 +115,7 @@ function PauseExerciseBreakdown() {
             style={{
               borderBottom:
                 i < rows.length - 1
-                  ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                  ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                   : "none",
             }}
             data-ocid={`workout-session.pause_reps.item.${i + 1}`}
@@ -126,13 +126,13 @@ function PauseExerciseBreakdown() {
             <div className="flex items-baseline gap-1 shrink-0">
               <span
                 className="font-display font-black text-base leading-none"
-                style={{ color: "oklch(0.68 0.25 180)" }}
+                style={{ color: "oklch(var(--primary))" }}
               >
                 {reps}
               </span>
               <span
-                className="font-body text-[10px] uppercase tracking-wide"
-                style={{ color: "oklch(0.82 0.008 260)" }}
+                className="font-body text-xs uppercase tracking-wide"
+                style={{ color: "oklch(0.82 0.008 var(--neutral-hue))" }}
               >
                 reps
               </span>
@@ -420,7 +420,7 @@ export default function WorkoutSessionPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 45% at 50% 0%, oklch(0.22 0.04 180 / 0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 30% at 50% 100%, oklch(0.18 0.03 180 / 0.12) 0%, transparent 60%)",
+            "radial-gradient(ellipse 70% 45% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 30% at 50% 100%, oklch(0.18 0.03 var(--primary-h) / 0.12) 0%, transparent 60%)",
         }}
       />
 
@@ -759,10 +759,10 @@ export default function WorkoutSessionPage() {
           style={{
             background:
               screenFlash.type === "gold"
-                ? "oklch(0.76 0.22 60)"
+                ? "oklch(var(--prestige))"
                 : screenFlash.type === "blue"
-                  ? "oklch(0.55 0.18 250)"
-                  : "oklch(0.68 0.25 180)",
+                  ? "oklch(var(--pulse))"
+                  : "oklch(var(--primary))",
           }}
           aria-hidden="true"
         />
@@ -814,8 +814,8 @@ export default function WorkoutSessionPage() {
               transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
               className="fixed inset-x-0 bottom-0 z-50 max-w-[430px] mx-auto rounded-t-3xl overflow-hidden"
               style={{
-                background: "oklch(0.14 0.012 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.6)",
+                background: "oklch(0.14 0.012 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
                 borderBottom: "none",
                 boxShadow: "0 -16px 60px oklch(0 0 0 / 0.55)",
               }}
@@ -825,7 +825,9 @@ export default function WorkoutSessionPage() {
               <div className="flex justify-center pt-3 pb-1">
                 <div
                   className="w-9 h-1 rounded-full"
-                  style={{ background: "oklch(0.36 0.01 260 / 0.7)" }}
+                  style={{
+                    background: "oklch(0.36 0.01 var(--neutral-hue) / 0.7)",
+                  }}
                 />
               </div>
 
@@ -833,8 +835,8 @@ export default function WorkoutSessionPage() {
               <div className="flex items-center justify-between px-6 pt-2 pb-4">
                 <div>
                   <p
-                    className="text-[10px] font-display font-bold tracking-[0.22em] uppercase mb-0.5"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    className="text-xs font-display font-bold tracking-[0.22em] uppercase mb-0.5"
+                    style={{ color: "oklch(var(--primary))" }}
                   >
                     Paused
                   </p>
@@ -847,8 +849,9 @@ export default function WorkoutSessionPage() {
                   onClick={() => setIsPaused(false)}
                   className="w-9 h-9 rounded-xl flex items-center justify-center transition-smooth text-white/70 hover:text-white"
                   style={{
-                    background: "oklch(0.20 0.01 260)",
-                    border: "1px solid oklch(0.30 0.01 260 / 0.5)",
+                    background: "oklch(0.20 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.30 0.01 var(--neutral-hue) / 0.5)",
                   }}
                   aria-label="Close pause menu"
                   data-ocid="workout-session.pause_close_button"
@@ -860,7 +863,9 @@ export default function WorkoutSessionPage() {
               {/* Divider */}
               <div
                 className="mx-6 h-px mb-5"
-                style={{ background: "oklch(0.26 0.01 260 / 0.5)" }}
+                style={{
+                  background: "oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+                }}
               />
 
               {/* Stats grid */}
@@ -869,13 +874,14 @@ export default function WorkoutSessionPage() {
                 <div
                   className="rounded-2xl p-4"
                   style={{
-                    background: "oklch(0.16 0.01 260)",
-                    border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                    background: "oklch(0.16 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                   }}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
                     <Clock className="w-3.5 h-3.5 text-white/60" />
-                    <span className="text-[10px] font-body uppercase tracking-wider text-white/70">
+                    <span className="text-xs font-body uppercase tracking-wider text-white/70">
                       Elapsed
                     </span>
                   </div>
@@ -887,17 +893,17 @@ export default function WorkoutSessionPage() {
                 <div
                   className="rounded-2xl p-4"
                   style={{
-                    background: "oklch(0.17 0.015 180 / 0.4)",
-                    border: "1px solid oklch(0.68 0.25 180 / 0.35)",
-                    boxShadow: "0 0 20px oklch(0.68 0.25 180 / 0.12)",
+                    background: "oklch(0.17 0.015 var(--primary-h) / 0.4)",
+                    border: "1px solid oklch(var(--primary) / 0.35)",
+                    boxShadow: "0 0 20px oklch(var(--primary) / 0.12)",
                   }}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
                     <CheckCircle2
                       className="w-3.5 h-3.5"
-                      style={{ color: "oklch(0.68 0.25 180)" }}
+                      style={{ color: "oklch(var(--primary))" }}
                     />
-                    <span className="text-[10px] font-body uppercase tracking-wider text-white/70">
+                    <span className="text-xs font-body uppercase tracking-wider text-white/70">
                       Progress
                     </span>
                   </div>
@@ -910,13 +916,14 @@ export default function WorkoutSessionPage() {
                 <div
                   className="rounded-2xl p-4"
                   style={{
-                    background: "oklch(0.16 0.01 260)",
-                    border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                    background: "oklch(0.16 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                   }}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
                     <ArrowLeft className="w-3.5 h-3.5 text-white/60" />
-                    <span className="text-[10px] font-body uppercase tracking-wider text-white/70">
+                    <span className="text-xs font-body uppercase tracking-wider text-white/70">
                       Remaining
                     </span>
                   </div>
@@ -928,13 +935,14 @@ export default function WorkoutSessionPage() {
                 <div
                   className="rounded-2xl p-4"
                   style={{
-                    background: "oklch(0.16 0.01 260)",
-                    border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                    background: "oklch(0.16 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                   }}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
                     <Flame className="w-3.5 h-3.5 text-orange-400" />
-                    <span className="text-[10px] font-body uppercase tracking-wider text-white/70">
+                    <span className="text-xs font-body uppercase tracking-wider text-white/70">
                       Calories
                     </span>
                   </div>
@@ -951,7 +959,7 @@ export default function WorkoutSessionPage() {
               <div className="px-6 pb-10 flex flex-col gap-3">
                 <Button
                   className="w-full h-12 font-display font-black text-base tracking-[0.12em] rounded-2xl"
-                  style={{ boxShadow: "0 0 28px oklch(0.68 0.25 180 / 0.3)" }}
+                  style={{ boxShadow: "0 0 28px oklch(var(--primary) / 0.3)" }}
                   onClick={() => setIsPaused(false)}
                   data-ocid="workout-session.pause_resume_button"
                 >

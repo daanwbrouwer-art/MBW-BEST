@@ -202,7 +202,8 @@ function MiniIllustration({
   flexBasis?: string;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const src = step.imagePath ?? resolveExerciseIllustration(step.exerciseName, gender);
+  const src =
+    step.imagePath ?? resolveExerciseIllustration(step.exerciseName, gender);
 
   return (
     <div
@@ -242,7 +243,7 @@ function MiniIllustration({
           style={{
             fontSize: "8px",
             fontWeight: "700",
-            color: "oklch(0.20 0.01 260)",
+            color: "oklch(0.20 0.01 var(--neutral-hue))",
             textAlign: "center",
             lineHeight: 1.2,
             padding: "2px",
@@ -367,7 +368,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         style={{
           ...cardWrapper,
           cursor: "pointer",
-          background: "oklch(0.10 0.015 260)",
+          background: "oklch(0.10 0.015 var(--neutral-hue))",
           border: "none",
           padding: 0,
         }}
@@ -375,7 +376,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         data-ocid="exercise-card"
       >
         <img
-          src="/assets/exercises/backside_of_card.png"
+          src="/assets/exercises/backside_of_card.webp"
           alt="Card back"
           style={{
             width: "100%",
@@ -389,7 +390,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             const p = el.parentElement;
             if (p)
               p.style.background =
-                "linear-gradient(160deg, oklch(0.10 0.015 260) 0%, oklch(0.14 0.02 260) 100%)";
+                "linear-gradient(160deg, oklch(0.10 0.015 var(--neutral-hue)) 0%, oklch(0.14 0.02 var(--neutral-hue)) 100%)";
           }}
         />
       </button>
@@ -400,7 +401,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
     const exerciseName = sessionCard.card.exercise || "";
     const jokerComboList = sessionCard.card.jokerComboList ?? [];
     const isComboJoker = jokerComboList.length > 0;
-    const jokerAccent = "oklch(0.68 0.25 180)";
+    const jokerAccent = "oklch(var(--primary))";
 
     return (
       <div
@@ -409,10 +410,10 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         style={{
           ...cardWrapper,
           background:
-            "linear-gradient(160deg, oklch(0.08 0.02 260) 0%, oklch(0.10 0.025 255) 50%, oklch(0.08 0.025 255) 100%)",
+            "linear-gradient(160deg, oklch(0.08 0.02 var(--neutral-hue)) 0%, oklch(0.10 0.025 var(--neutral-hue)) 50%, oklch(0.08 0.025 var(--neutral-hue)) 100%)",
           border: `1.5px solid ${jokerAccent.replace(")", " / 0.5)").replace("oklch(", "oklch(")}`,
           boxShadow:
-            "0 0 40px oklch(0.68 0.25 180 / 0.4), 0 0 80px oklch(0.68 0.25 180 / 0.15), 0 8px 32px oklch(0 0 0 / 0.8)",
+            "0 0 40px oklch(var(--primary) / 0.4), 0 0 80px oklch(var(--primary) / 0.15), 0 8px 32px oklch(0 0 0 / 0.8)",
         }}
         data-ocid="exercise-card"
       >
@@ -453,14 +454,14 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               fontSize: "26px",
               fontWeight: "900",
               color: jokerAccent,
-              textShadow: "0 0 12px oklch(0.68 0.25 180 / 0.9)",
+              textShadow: "0 0 12px oklch(var(--primary) / 0.9)",
             }}
           >
             {"\u2605"}
           </span>
           <span
             style={{
-              fontSize: "9px",
+              fontSize: "12px",
               letterSpacing: "3px",
               color: jokerAccent,
               fontWeight: "700",
@@ -474,7 +475,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               fontSize: "26px",
               fontWeight: "900",
               color: jokerAccent,
-              textShadow: "0 0 12px oklch(0.68 0.25 180 / 0.9)",
+              textShadow: "0 0 12px oklch(var(--primary) / 0.9)",
             }}
           >
             {"★"}
@@ -487,7 +488,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               fontWeight: "900",
               letterSpacing: "6px",
               color: jokerAccent,
-              textShadow: "0 0 20px oklch(0.68 0.25 180 / 0.9)",
+              textShadow: "0 0 20px oklch(var(--primary) / 0.9)",
             }}
           >
             JOKER
@@ -498,8 +499,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             margin: "0 16px",
             borderRadius: "10px",
             overflow: "hidden",
-            background: "oklch(0.68 0.25 180 / 0.04)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.2)",
+            background: "oklch(var(--primary) / 0.04)",
+            border: "1px solid oklch(var(--primary) / 0.2)",
             flex: 1,
             minHeight: 0,
             display: "flex",
@@ -540,7 +541,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </div>
         <div
           style={{
-            background: "oklch(0.08 0.005 260)",
+            background: "oklch(0.08 0.005 var(--neutral-hue))",
             padding: "10px 14px",
             textAlign: "center",
           }}
@@ -549,8 +550,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <>
               <div
                 style={{
-                  fontSize: "9px",
-                  color: "oklch(0.68 0.25 180 / 0.6)",
+                  fontSize: "12px",
+                  color: "oklch(var(--primary) / 0.6)",
                   letterSpacing: "2px",
                   textTransform: "uppercase",
                   marginBottom: "4px",
@@ -562,7 +563,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 <div
                   key={`${step.exerciseName}-${i}`}
                   style={{
-                    fontSize: "9px",
+                    fontSize: "12px",
                     fontWeight: "700",
                     color: jokerAccent,
                     letterSpacing: "0.5px",
@@ -577,8 +578,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           ) : (
             <div
               style={{
-                fontSize: "9px",
-                color: "oklch(0.68 0.25 180 / 0.6)",
+                fontSize: "12px",
+                color: "oklch(var(--primary) / 0.6)",
                 letterSpacing: "2px",
                 textTransform: "uppercase",
               }}
@@ -592,14 +593,14 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
   }
 
   const accentColor = isAce
-    ? "oklch(0.76 0.22 60)"
+    ? "oklch(var(--prestige))"
     : isKing
-      ? "oklch(0.78 0.04 240)"
+      ? "oklch(0.78 0.04 var(--neutral-hue))"
       : suitCfg.accent;
   const glowColor = isAce
-    ? "oklch(0.76 0.22 60 / 0.4)"
+    ? "oklch(var(--prestige) / 0.4)"
     : isKing
-      ? "oklch(0.78 0.04 240 / 0.3)"
+      ? "oklch(0.78 0.04 var(--neutral-hue) / 0.3)"
       : suitCfg.glowColor;
 
   return (
@@ -622,7 +623,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(ellipse at center 30%, oklch(0.76 0.22 60 / 0.12) 0%, transparent 70%)",
+              "radial-gradient(ellipse at center 30%, oklch(var(--prestige) / 0.12) 0%, transparent 70%)",
             pointerEvents: "none",
             zIndex: 0,
           }}
@@ -634,7 +635,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             position: "absolute",
             inset: 0,
             background:
-              "radial-gradient(ellipse at center 30%, oklch(0.78 0.04 240 / 0.08) 0%, transparent 70%)",
+              "radial-gradient(ellipse at center 30%, oklch(0.78 0.04 var(--neutral-hue) / 0.08) 0%, transparent 70%)",
             pointerEvents: "none",
             zIndex: 0,
           }}
@@ -676,7 +677,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           </div>
         </div>
         <img
-          src="/assets/images/mbw-logo-white-icon.png"
+          src="/assets/images/mbw-logo-white-icon.webp"
           alt="MBW"
           style={{
             width: "24px",
@@ -726,11 +727,11 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <span style={{ fontSize: "26px", opacity: 0.5 }}>🎨</span>
             <span
               style={{
-                fontSize: "11px",
+                fontSize: "12px",
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: "oklch(0.35 0.01 260)",
+                color: "oklch(0.35 0.01 var(--neutral-hue))",
               }}
             >
               Illustration coming soon
@@ -759,7 +760,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
       {/* Bottom strip — original black strip design with white typography */}
       <div
         style={{
-          background: "var(--card-black, oklch(0.08 0.005 260))",
+          background: "var(--card-black, oklch(0.08 0.005 var(--neutral-hue)))",
           padding: "8px 12px 10px",
           position: "relative",
           zIndex: 1,
@@ -768,37 +769,37 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         {isAce && (
           <div
             style={{
-              fontSize: "9px",
+              fontSize: "12px",
               letterSpacing: "2px",
-              color: "oklch(0.76 0.22 60)",
+              color: "oklch(var(--prestige))",
               fontWeight: "700",
-              background: "oklch(0.76 0.22 60 / 0.12)",
-              border: "1px solid oklch(0.76 0.22 60 / 0.3)",
+              background: "oklch(var(--prestige) / 0.12)",
+              border: "1px solid oklch(var(--prestige) / 0.3)",
               borderRadius: "3px",
               display: "inline-block",
               padding: "2px 6px",
               marginBottom: "3px",
             }}
           >
-            ACE — DOUBLE REPS
+            ACE — DOUBLE {sessionCard.card.holdSeconds ? "TIME" : "REPS"}
           </div>
         )}
         {isKing && (
           <div
             style={{
-              fontSize: "9px",
+              fontSize: "12px",
               letterSpacing: "2px",
-              color: "oklch(0.78 0.04 240)",
+              color: "oklch(0.78 0.04 var(--neutral-hue))",
               fontWeight: "700",
-              background: "oklch(0.78 0.04 240 / 0.08)",
-              border: "1px solid oklch(0.78 0.04 240 / 0.25)",
+              background: "oklch(0.78 0.04 var(--neutral-hue) / 0.08)",
+              border: "1px solid oklch(0.78 0.04 var(--neutral-hue) / 0.25)",
               borderRadius: "3px",
               display: "inline-block",
               padding: "2px 6px",
               marginBottom: "3px",
             }}
           >
-            KING — HALF REPS
+            KING — HALF {sessionCard.card.holdSeconds ? "TIME" : "REPS"}
           </div>
         )}
         {/* Reps or isometric hold seconds — the full cue text lives in the
@@ -810,7 +811,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               style={{
                 fontSize: "42px",
                 fontWeight: "900",
-                color: "oklch(0.68 0.25 180)",
+                color: "oklch(var(--primary))",
                 lineHeight: 1,
                 textShadow: "0 2px 8px oklch(0 0 0 / 0.5)",
                 letterSpacing: "-1px",
@@ -823,7 +824,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               style={{
                 fontSize: "14px",
                 fontWeight: "700",
-                color: "oklch(0.68 0.25 180 / 0.8)",
+                color: "oklch(var(--primary) / 0.8)",
                 fontFamily: "var(--font-display, 'Space Grotesk', sans-serif)",
               }}
             >
@@ -839,8 +840,8 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
                   fontSize: "16px",
                   fontWeight: "700",
                   color: isAce
-                    ? "oklch(0.76 0.22 60 / 0.8)"
-                    : "oklch(0.78 0.04 240 / 0.8)",
+                    ? "oklch(var(--prestige) / 0.8)"
+                    : "oklch(0.78 0.04 var(--neutral-hue) / 0.8)",
                 }}
               >
                 {isAce ? "\u00d72" : "\u00f72"}
@@ -850,7 +851,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               style={{
                 fontSize: "42px",
                 fontWeight: "900",
-                color: "oklch(0.97 0.005 260)",
+                color: "oklch(0.97 0.005 var(--neutral-hue))",
                 lineHeight: 1,
                 textShadow: "0 2px 8px oklch(0 0 0 / 0.5)",
                 letterSpacing: "-1px",
@@ -863,9 +864,9 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         )}
         <div
           style={{
-            fontSize: "11px",
+            fontSize: "12px",
             fontWeight: "700",
-            color: "oklch(0.92 0.01 260)",
+            color: "oklch(0.92 0.01 var(--neutral-hue))",
             textTransform: "uppercase",
             letterSpacing: "0.5px",
             lineHeight: 1.2,
@@ -882,14 +883,14 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           return (
             <div
               style={{
-                fontSize: "9px",
+                fontSize: "12px",
                 fontWeight: "700",
-                color: "oklch(0.76 0.22 60)",
+                color: "oklch(var(--prestige))",
                 letterSpacing: "1px",
                 textTransform: "uppercase",
                 marginTop: "2px",
-                background: "oklch(0.76 0.22 60 / 0.12)",
-                border: "1px solid oklch(0.76 0.22 60 / 0.3)",
+                background: "oklch(var(--prestige) / 0.12)",
+                border: "1px solid oklch(var(--prestige) / 0.3)",
                 borderRadius: "3px",
                 display: "inline-block",
                 padding: "1px 5px",
@@ -906,9 +907,9 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
           return (
             <div
               style={{
-                fontSize: "9px",
+                fontSize: "12px",
                 fontWeight: "600",
-                color: "oklch(0.68 0.25 180 / 0.85)",
+                color: "oklch(var(--primary) / 0.85)",
                 letterSpacing: "0.5px",
                 textTransform: "uppercase",
                 marginTop: "2px",
@@ -922,9 +923,9 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         {(sessionCard.card.eachLeg || sessionCard.card.eachSide) && (
           <div
             style={{
-              fontSize: "9px",
+              fontSize: "12px",
               fontWeight: "600",
-              color: "oklch(0.68 0.25 180 / 0.8)",
+              color: "oklch(var(--primary) / 0.8)",
               letterSpacing: "1px",
               textTransform: "uppercase",
               marginTop: "1px",
@@ -941,7 +942,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
             marginTop: "3px",
           }}
         >
-          <span style={{ fontSize: "11px", color: suitCfg.accent }}>
+          <span style={{ fontSize: "12px", color: suitCfg.accent }}>
             {suitCfg.symbol}
           </span>
         </div>
@@ -971,7 +972,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </div>
         <div
           style={{
-            fontSize: "11px",
+            fontSize: "12px",
             color: accentColor,
             opacity: 0.5,
             lineHeight: 1,

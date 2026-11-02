@@ -94,7 +94,7 @@ export default function CustomDeckDetailPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -146,8 +146,8 @@ export default function CustomDeckDetailPage() {
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {deck.exercises.map((ex, i) => (
@@ -157,7 +157,7 @@ export default function CustomDeckDetailPage() {
                 style={{
                   borderBottom:
                     i < deck.exercises.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`custom-deck-detail.exercise.${i + 1}`}
@@ -178,7 +178,7 @@ export default function CustomDeckDetailPage() {
                 </div>
                 <span
                   className="shrink-0 font-display font-bold text-sm tabular-nums"
-                  style={{ color: "oklch(0.68 0.25 180)" }}
+                  style={{ color: "oklch(var(--primary))" }}
                 >
                   {ex.value}
                   {ex.isIsometric ? "s" : ""}

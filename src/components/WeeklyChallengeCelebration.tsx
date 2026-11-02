@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
 
-const GOLD = "#f59e0b";
+const GOLD = "oklch(var(--prestige))";
 
 export function WeeklyChallengeCelebration({
   celebration,
@@ -27,7 +27,7 @@ export function WeeklyChallengeCelebration({
       exit={{ opacity: 0 }}
       className="mx-5 mb-4 rounded-2xl p-4 flex items-start gap-3"
       style={{
-        background: "oklch(0.22 0.08 60 / 0.25)",
+        background: "oklch(0.22 0.08 var(--prestige-h) / 0.25)",
         border: `1px solid ${GOLD}`,
         boxShadow: `0 0 30px ${GOLD}33`,
       }}

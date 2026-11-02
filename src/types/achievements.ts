@@ -461,8 +461,7 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   {
     id: "st_07",
     name: "Groundhog Day",
-    description:
-      "Complete the exact same deck and card count 7 days in a row",
+    description: "Complete the exact same deck and card count 7 days in a row",
     rarity: "epic",
     category: "streaks",
     metric: "identicalSessionDayStreak",

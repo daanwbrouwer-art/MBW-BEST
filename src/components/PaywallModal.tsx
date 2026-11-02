@@ -28,7 +28,7 @@ export function PaywallModal({ onDismiss }: { onDismiss: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-center justify-center px-5"
-      style={{ background: "oklch(0.05 0.005 260 / 0.92)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.92)" }}
       data-ocid="paywall.modal"
     >
       <motion.div
@@ -38,8 +38,8 @@ export function PaywallModal({ onDismiss }: { onDismiss: () => void }) {
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
         className="w-full max-w-[400px] rounded-3xl overflow-hidden"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--prestige) / 0.3)",
           boxShadow: "0 20px 60px oklch(0 0 0 / 0.6)",
         }}
       >
@@ -57,8 +57,8 @@ export function PaywallModal({ onDismiss }: { onDismiss: () => void }) {
                 key={prop.text}
                 className="flex items-center gap-3 rounded-2xl px-4 py-3"
                 style={{
-                  background: "oklch(0.17 0.015 180 / 0.25)",
-                  border: "1px solid oklch(0.68 0.25 180 / 0.2)",
+                  background: "oklch(0.17 0.015 var(--prestige-h) / 0.25)",
+                  border: "1px solid oklch(var(--prestige) / 0.2)",
                 }}
               >
                 <span className="text-xl shrink-0" aria-hidden="true">
@@ -74,7 +74,7 @@ export function PaywallModal({ onDismiss }: { onDismiss: () => void }) {
           <button
             type="button"
             onClick={handleSubscribe}
-            className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-base tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98] mb-3"
+            className="w-full h-14 rounded-full flex items-center justify-center font-display font-bold text-base tracking-wide bg-prestige text-background transition-smooth hover:opacity-90 active:scale-[0.98] mb-3"
             data-ocid="paywall.subscribe_button"
           >
             Subscribe now

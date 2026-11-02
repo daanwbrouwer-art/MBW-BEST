@@ -2,7 +2,7 @@ import { getSuggestionsForExercise } from "@/data/equipmentMapping";
 import type { Direction, EquipmentTier } from "@/types/equipment";
 
 const DIRECTION_STYLE: Record<Direction, { color: string; icon: string }> = {
-  easier: { color: "#1AD6A0", icon: "↓" },
+  easier: { color: "oklch(var(--primary))", icon: "↓" },
   harder: { color: "#f97316", icon: "↑" },
   enables: { color: "#a3a3a3", icon: "⊕" },
 };

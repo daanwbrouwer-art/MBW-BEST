@@ -26,7 +26,7 @@ export function ProgressBar({
             {label}
           </span>
           <span className="text-xs font-display font-bold">
-            <span style={{ color: "oklch(0.68 0.25 180)" }}>{remaining}</span>
+            <span style={{ color: "oklch(var(--primary))" }}>{remaining}</span>
             <span className="text-muted-foreground font-normal"> left</span>
           </span>
         </div>
@@ -48,13 +48,13 @@ export function ProgressBar({
                   )}
                   animate={{
                     backgroundColor: isComplete
-                      ? "oklch(0.68 0.25 180)"
-                      : "oklch(0.22 0.01 260)",
+                      ? "oklch(var(--primary))"
+                      : "oklch(0.22 0.01 var(--neutral-hue))",
                   }}
                   transition={{ duration: 0.4 }}
                   style={{
                     boxShadow: isCurrent
-                      ? "0 0 8px oklch(0.68 0.25 180 / 0.9), 0 0 20px oklch(0.68 0.25 180 / 0.4)"
+                      ? "0 0 8px oklch(var(--primary) / 0.9), 0 0 20px oklch(var(--primary) / 0.4)"
                       : undefined,
                   }}
                 />
@@ -66,7 +66,7 @@ export function ProgressBar({
         // Continuous bar for 52-card decks
         <div
           className="relative h-2 rounded-full overflow-hidden"
-          style={{ background: "oklch(0.22 0.01 260)" }}
+          style={{ background: "oklch(0.22 0.01 var(--neutral-hue))" }}
         >
           <motion.div
             className="absolute inset-y-0 left-0 rounded-full"
@@ -75,9 +75,9 @@ export function ProgressBar({
             transition={{ duration: 0.6, ease: "easeOut" }}
             style={{
               background:
-                "linear-gradient(90deg, oklch(0.55 0.2 180) 0%, oklch(0.72 0.28 180) 100%)",
+                "linear-gradient(90deg, oklch(var(--primary)) 0%, oklch(var(--primary)) 100%)",
               boxShadow:
-                "0 0 12px oklch(0.68 0.25 180 / 0.7), 0 0 24px oklch(0.68 0.25 180 / 0.3)",
+                "0 0 12px oklch(var(--primary) / 0.7), 0 0 24px oklch(var(--primary) / 0.3)",
             }}
           />
           {/* Shimmer overlay */}

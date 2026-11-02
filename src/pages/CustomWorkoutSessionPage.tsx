@@ -109,13 +109,13 @@ export default function CustomWorkoutSessionPage() {
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
           style={{
-            background: "oklch(0.68 0.25 180 / 0.15)",
-            border: "2px solid oklch(0.68 0.25 180 / 0.4)",
+            background: "oklch(var(--primary) / 0.15)",
+            border: "2px solid oklch(var(--primary) / 0.4)",
           }}
         >
           <Trophy
             className="w-9 h-9"
-            style={{ color: "oklch(0.68 0.25 180)" }}
+            style={{ color: "oklch(var(--primary))" }}
           />
         </motion.div>
         <h1 className="font-display font-black text-2xl text-foreground mb-2">
@@ -144,7 +144,7 @@ export default function CustomWorkoutSessionPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -195,12 +195,12 @@ export default function CustomWorkoutSessionPage() {
               className="relative w-full rounded-3xl overflow-hidden mb-4"
               style={{
                 aspectRatio: "1 / 1",
-                background: "oklch(0.16 0.01 260)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
                 border: current.modifier
-                  ? `1.5px solid ${current.modifier === "double" ? "oklch(0.76 0.22 60 / 0.4)" : "oklch(0.78 0.04 240 / 0.35)"}`
-                  : "1px solid oklch(0.68 0.25 180 / 0.2)",
+                  ? `1.5px solid ${current.modifier === "double" ? "oklch(var(--prestige) / 0.4)" : "oklch(0.78 0.04 var(--neutral-hue) / 0.35)"}`
+                  : "1px solid oklch(var(--primary) / 0.2)",
                 boxShadow: current.modifier
-                  ? `0 0 24px ${current.modifier === "double" ? "oklch(0.76 0.22 60 / 0.25)" : "oklch(0.78 0.04 240 / 0.2)"}`
+                  ? `0 0 24px ${current.modifier === "double" ? "oklch(var(--prestige) / 0.25)" : "oklch(0.78 0.04 var(--neutral-hue) / 0.2)"}`
                   : undefined,
               }}
             >
@@ -211,13 +211,13 @@ export default function CustomWorkoutSessionPage() {
               />
               {current.modifier && (
                 <div
-                  className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-display font-black uppercase tracking-[0.15em] px-2.5 py-1 rounded-full"
+                  className="absolute top-3 left-3 flex items-center gap-1 text-xs font-display font-black uppercase tracking-[0.15em] px-2.5 py-1 rounded-full"
                   style={{
                     background:
                       current.modifier === "double"
-                        ? "oklch(0.76 0.22 60 / 0.9)"
-                        : "oklch(0.78 0.04 240 / 0.85)",
-                    color: "oklch(0.08 0.005 260)",
+                        ? "oklch(var(--prestige) / 0.9)"
+                        : "oklch(0.78 0.04 var(--neutral-hue) / 0.85)",
+                    color: "oklch(0.08 0.005 var(--neutral-hue))",
                   }}
                   data-ocid="custom-workout.modifier_banner"
                 >
@@ -248,8 +248,8 @@ export default function CustomWorkoutSessionPage() {
                     style={{
                       color:
                         current.modifier === "double"
-                          ? "oklch(0.76 0.22 60)"
-                          : "oklch(0.78 0.04 240)",
+                          ? "oklch(var(--prestige))"
+                          : "oklch(0.78 0.04 var(--neutral-hue))",
                     }}
                   >
                     {current.modifier === "double"

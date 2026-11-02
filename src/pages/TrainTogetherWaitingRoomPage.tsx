@@ -152,7 +152,7 @@ function WorkoutSetupSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-end justify-center"
-      style={{ background: "oklch(0.05 0.005 260 / 0.85)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.85)" }}
       data-ocid="train-together.setup_sheet"
     >
       <motion.div
@@ -161,8 +161,8 @@ function WorkoutSetupSheet({
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
         className="w-full max-w-[430px] rounded-t-3xl px-5 pt-5 pb-8 max-h-[88dvh] overflow-y-auto"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--pulse) / 0.25)",
         }}
       >
         <div className="flex items-center justify-between mb-5">
@@ -188,7 +188,7 @@ function WorkoutSetupSheet({
             className={cn(
               "flex-1 h-10 rounded-xl text-xs font-display font-bold uppercase tracking-wide transition-smooth border",
               deckMode === "builtin"
-                ? "bg-primary text-background border-primary"
+                ? "bg-pulse text-background border-pulse"
                 : "bg-card text-muted-foreground border-border/50",
             )}
             data-ocid="train-together.deck_mode.builtin"
@@ -201,7 +201,7 @@ function WorkoutSetupSheet({
             className={cn(
               "flex-1 h-10 rounded-xl text-xs font-display font-bold uppercase tracking-wide transition-smooth border",
               deckMode === "custom"
-                ? "bg-primary text-background border-primary"
+                ? "bg-pulse text-background border-pulse"
                 : "bg-card text-muted-foreground border-border/50",
             )}
             data-ocid="train-together.deck_mode.custom"
@@ -216,8 +216,8 @@ function WorkoutSetupSheet({
               <div
                 className="rounded-2xl px-4 py-5 text-center"
                 style={{
-                  background: "oklch(0.16 0.01 260)",
-                  border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+                  background: "oklch(0.16 0.01 var(--neutral-hue))",
+                  border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
                 }}
                 data-ocid="train-together.custom_deck.empty"
               >
@@ -240,7 +240,7 @@ function WorkoutSetupSheet({
                     className={cn(
                       "flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5 border text-left transition-smooth",
                       selectedDeckId === deck.id
-                        ? "border-primary bg-primary/10"
+                        ? "border-pulse bg-pulse/10"
                         : "border-border/50 bg-card",
                     )}
                     data-ocid={`train-together.custom_deck.${deck.id}`}
@@ -249,14 +249,14 @@ function WorkoutSetupSheet({
                       <p className="font-display font-bold text-sm text-foreground truncate">
                         {deck.name}
                       </p>
-                      <p className="text-[11px] text-muted-foreground font-body">
+                      <p className="text-xs text-muted-foreground font-body">
                         {deck.exercises.length}{" "}
                         {deck.exercises.length === 1 ? "exercise" : "exercises"}
                       </p>
                     </div>
                     {selectedDeckId === deck.id && (
                       <Check
-                        className="w-4 h-4 text-primary shrink-0"
+                        className="w-4 h-4 text-pulse shrink-0"
                         strokeWidth={3}
                       />
                     )}
@@ -283,7 +283,7 @@ function WorkoutSetupSheet({
                       "shrink-0 px-3.5 h-9 rounded-full text-xs font-display font-bold uppercase tracking-wide transition-smooth border flex items-center gap-1.5",
                       disabled && "opacity-40",
                       category === cat
-                        ? "bg-primary text-background border-primary"
+                        ? "bg-pulse text-background border-pulse"
                         : "bg-card text-muted-foreground border-border/50",
                     )}
                     data-ocid={`train-together.deck.${cat}`}
@@ -311,7 +311,7 @@ function WorkoutSetupSheet({
                   className={cn(
                     "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
                     !useCustomCount && cardCount === count
-                      ? "bg-primary text-background border-primary"
+                      ? "bg-pulse text-background border-pulse"
                       : "bg-card text-muted-foreground border-border/50",
                   )}
                   data-ocid={`train-together.card_count.${count}`}
@@ -325,7 +325,7 @@ function WorkoutSetupSheet({
                 className={cn(
                   "flex-1 h-11 rounded-xl text-sm font-display font-bold uppercase tracking-wide transition-smooth border",
                   useCustomCount
-                    ? "bg-primary text-background border-primary"
+                    ? "bg-pulse text-background border-pulse"
                     : "bg-card text-muted-foreground border-border/50",
                 )}
                 data-ocid="train-together.card_count.custom"
@@ -344,7 +344,7 @@ function WorkoutSetupSheet({
                   className="flex-1"
                   data-ocid="train-together.card_count_slider"
                 />
-                <span className="font-display font-black text-lg text-primary tabular-nums w-10 text-right">
+                <span className="font-display font-black text-lg text-pulse tabular-nums w-10 text-right">
                   {cardCount}
                 </span>
               </div>
@@ -352,7 +352,7 @@ function WorkoutSetupSheet({
             {poolSize > 0 && poolSize < cardCount && (
               <p
                 className="text-xs mb-3"
-                style={{ color: "oklch(0.75 0.15 60)" }}
+                style={{ color: "oklch(var(--prestige))" }}
               >
                 Only {poolSize} exercises available with your exclusions — some
                 will repeat to fill {cardCount} cards.
@@ -403,7 +403,7 @@ function WorkoutSetupSheet({
                         "w-5 h-5 rounded-md border flex items-center justify-center shrink-0",
                         isExcluded
                           ? "border-border/50"
-                          : "border-primary bg-primary",
+                          : "border-pulse bg-pulse",
                       )}
                     >
                       {!isExcluded && (
@@ -421,6 +421,7 @@ function WorkoutSetupSheet({
         )}
 
         <Button
+          variant="pulse"
           className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase"
           onClick={() => saveMutation.mutate()}
           disabled={saveMutation.isPending || !canSave}
@@ -521,7 +522,7 @@ export default function TrainTogetherWaitingRoomPage() {
   if (!session || participantsQuery.isLoading) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center max-w-[430px] mx-auto">
-        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -532,7 +533,7 @@ export default function TrainTogetherWaitingRoomPage() {
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--pulse-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -580,12 +581,12 @@ export default function TrainTogetherWaitingRoomPage() {
         <div
           className="rounded-2xl px-4 py-3.5 flex items-center justify-between gap-3 mb-4"
           style={{
-            background: "oklch(0.17 0.015 180 / 0.2)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+            background: "oklch(0.17 0.015 var(--pulse-h) / 0.2)",
+            border: "1px solid oklch(var(--pulse) / 0.25)",
           }}
         >
           <div className="min-w-0">
-            <p className="text-[11px] text-muted-foreground font-body">
+            <p className="text-xs text-muted-foreground font-body">
               Invite code
             </p>
             <p className="font-display font-black text-xl tracking-[0.2em] text-foreground">
@@ -605,8 +606,8 @@ export default function TrainTogetherWaitingRoomPage() {
               }}
               className="w-9 h-9 rounded-full flex items-center justify-center"
               style={{
-                background: "oklch(0.68 0.25 180 / 0.15)",
-                color: "oklch(0.68 0.25 180)",
+                background: "oklch(var(--pulse) / 0.15)",
+                color: "oklch(var(--pulse))",
               }}
               data-ocid="train-together.waiting_copy_code"
             >
@@ -643,7 +644,7 @@ export default function TrainTogetherWaitingRoomPage() {
                   </>
                 )}
               </p>
-              <p className="text-[11px] text-muted-foreground font-body">
+              <p className="text-xs text-muted-foreground font-body">
                 Tap to change the workout
               </p>
             </div>
@@ -669,11 +670,11 @@ export default function TrainTogetherWaitingRoomPage() {
                 )}
               </span>
               <span
-                className="flex items-center gap-1.5 text-[11px] font-display font-bold uppercase tracking-wider shrink-0"
+                className="flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider shrink-0"
                 style={{
                   color: p.isReady
-                    ? "oklch(0.68 0.25 180)"
-                    : "oklch(0.6 0.02 260)",
+                    ? "oklch(var(--pulse))"
+                    : "oklch(0.6 0.02 var(--neutral-hue))",
                 }}
               >
                 {p.isReady ? <Check className="w-3.5 h-3.5" /> : null}
@@ -690,7 +691,7 @@ export default function TrainTogetherWaitingRoomPage() {
               <span className="font-body text-sm text-muted-foreground truncate">
                 {p.username}
               </span>
-              <span className="text-[10px] font-display font-bold uppercase tracking-wider text-muted-foreground shrink-0">
+              <span className="text-xs font-display font-bold uppercase tracking-wider text-muted-foreground shrink-0">
                 Invited
               </span>
             </div>

@@ -1,3 +1,6 @@
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { useStreak } from "@/hooks/use-streak";
+import { useTier } from "@/hooks/use-tier";
 import {
   type ChallengeCelebrationInfo,
   computeChallengeProgress,
@@ -5,10 +8,10 @@ import {
   getOrCreateWeeklyChallenge,
 } from "@/lib/challenge";
 import { getRecommendedDifficulty } from "@/lib/recommendation";
-import { useOnboarding } from "@/hooks/use-onboarding";
-import { useStreak } from "@/hooks/use-streak";
-import { useTier } from "@/hooks/use-tier";
-import type { ChallengeProgress, WeeklyChallengeRecord } from "@/types/challenge";
+import type {
+  ChallengeProgress,
+  WeeklyChallengeRecord,
+} from "@/types/challenge";
 import { useCallback, useState } from "react";
 
 export function useWeeklyChallenge() {
@@ -28,10 +31,18 @@ export function useWeeklyChallenge() {
     streak,
   );
 
-  const [celebration, setCelebration] = useState<ChallengeCelebrationInfo | null>(
-    () => consumePendingChallengeCelebration(isGuest),
-  );
+  const [celebration, setCelebration] =
+    useState<ChallengeCelebrationInfo | null>(() =>
+      consumePendingChallengeCelebration(isGuest),
+    );
   const dismissCelebration = useCallback(() => setCelebration(null), []);
 
-  return { challenge, progress, isGuest, tier: effectiveTier, celebration, dismissCelebration };
+  return {
+    challenge,
+    progress,
+    isGuest,
+    tier: effectiveTier,
+    celebration,
+    dismissCelebration,
+  };
 }

@@ -61,7 +61,7 @@ function CardOwnerPicker({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[70] flex items-end justify-center"
-      style={{ background: "oklch(0.05 0.005 260 / 0.85)" }}
+      style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.85)" }}
       data-ocid="train-together.card_owner_picker"
     >
       <motion.div
@@ -71,8 +71,8 @@ function CardOwnerPicker({
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.3 }}
         className="w-full max-w-[430px] rounded-t-3xl px-5 pt-5 pb-8"
         style={{
-          background: "oklch(0.13 0.01 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+          background: "oklch(var(--background))",
+          border: "1px solid oklch(var(--pulse) / 0.25)",
         }}
       >
         <h2 className="font-display font-black text-lg text-foreground mb-4">
@@ -146,11 +146,11 @@ function SessionSummary({
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
         className="w-20 h-20 rounded-full flex items-center justify-center mb-5"
         style={{
-          background: "oklch(0.68 0.25 180 / 0.15)",
-          border: "2px solid oklch(0.68 0.25 180 / 0.4)",
+          background: "oklch(var(--pulse) / 0.15)",
+          border: "2px solid oklch(var(--pulse) / 0.4)",
         }}
       >
-        <Trophy className="w-9 h-9" style={{ color: "oklch(0.68 0.25 180)" }} />
+        <Trophy className="w-9 h-9" style={{ color: "oklch(var(--pulse))" }} />
       </motion.div>
       <h1 className="font-display font-black text-2xl text-foreground mb-1">
         Session complete!
@@ -173,17 +173,17 @@ function SessionSummary({
               <p className="font-display font-bold text-sm text-foreground truncate">
                 {p.username}
               </p>
-              <p className="text-[11px] text-muted-foreground font-body">
+              <p className="text-xs text-muted-foreground font-body">
                 {p.cardsCompleted}/{total} cards ·{" "}
                 {formatDuration(p.totalSeconds)}
               </p>
             </div>
             <div className="text-right shrink-0">
-              <p className="font-display font-black text-sm text-primary tabular-nums">
+              <p className="font-display font-black text-sm text-pulse tabular-nums">
                 {p.totalReps} reps
               </p>
               {p.totalHoldSeconds > 0 && (
-                <p className="text-[11px] text-muted-foreground font-body tabular-nums">
+                <p className="text-xs text-muted-foreground font-body tabular-nums">
                   {Math.round(p.totalHoldSeconds)}s held
                 </p>
               )}
@@ -193,6 +193,7 @@ function SessionSummary({
       </div>
 
       <Button
+        variant="pulse"
         className="w-full h-14 font-display font-black text-base tracking-[0.1em] rounded-2xl uppercase"
         onClick={() => navigate({ to: "/train-together" })}
         data-ocid="train-together.session_finish"
@@ -322,7 +323,7 @@ function SessionRunner({
         className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--pulse-h) / 0.2) 0%, transparent 65%)",
         }}
       />
 
@@ -377,12 +378,12 @@ function SessionRunner({
               className="relative w-full rounded-3xl overflow-hidden mb-4"
               style={{
                 aspectRatio: "1 / 1",
-                background: "oklch(0.16 0.01 260)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
                 border: current.modifier
-                  ? `1.5px solid ${current.modifier === "double" ? "oklch(0.76 0.22 60 / 0.4)" : "oklch(0.78 0.04 240 / 0.35)"}`
-                  : "1px solid oklch(0.68 0.25 180 / 0.2)",
+                  ? `1.5px solid ${current.modifier === "double" ? "oklch(var(--prestige) / 0.4)" : "oklch(0.78 0.04 var(--neutral-hue) / 0.35)"}`
+                  : "1px solid oklch(var(--pulse) / 0.2)",
                 boxShadow: current.modifier
-                  ? `0 0 24px ${current.modifier === "double" ? "oklch(0.76 0.22 60 / 0.25)" : "oklch(0.78 0.04 240 / 0.2)"}`
+                  ? `0 0 24px ${current.modifier === "double" ? "oklch(var(--prestige) / 0.25)" : "oklch(0.78 0.04 var(--neutral-hue) / 0.2)"}`
                   : undefined,
               }}
             >
@@ -393,13 +394,13 @@ function SessionRunner({
               />
               {current.modifier && (
                 <div
-                  className="absolute top-3 left-3 flex items-center gap-1 text-[10px] font-display font-black uppercase tracking-[0.15em] px-2.5 py-1 rounded-full"
+                  className="absolute top-3 left-3 flex items-center gap-1 text-xs font-display font-black uppercase tracking-[0.15em] px-2.5 py-1 rounded-full"
                   style={{
                     background:
                       current.modifier === "double"
-                        ? "oklch(0.76 0.22 60 / 0.9)"
-                        : "oklch(0.78 0.04 240 / 0.85)",
-                    color: "oklch(0.08 0.005 260)",
+                        ? "oklch(var(--prestige) / 0.9)"
+                        : "oklch(0.78 0.04 var(--neutral-hue) / 0.85)",
+                    color: "oklch(0.08 0.005 var(--neutral-hue))",
                   }}
                   data-ocid="train-together.modifier_banner"
                 >
@@ -416,7 +417,7 @@ function SessionRunner({
                 {owner && (
                   <p
                     className="text-xs font-display font-bold uppercase tracking-widest mb-1"
-                    style={{ color: "oklch(0.68 0.25 180)" }}
+                    style={{ color: "oklch(var(--pulse))" }}
                     data-ocid="train-together.current_owner_label"
                   >
                     {owner.username}'s turn
@@ -437,8 +438,8 @@ function SessionRunner({
                     style={{
                       color:
                         current.modifier === "double"
-                          ? "oklch(0.76 0.22 60)"
-                          : "oklch(0.78 0.04 240)",
+                          ? "oklch(var(--prestige))"
+                          : "oklch(0.78 0.04 var(--neutral-hue))",
                     }}
                   >
                     {current.modifier === "double"
@@ -450,12 +451,12 @@ function SessionRunner({
               <div className="text-right shrink-0">
                 {current.isIsometric ? (
                   holdComplete ? (
-                    <div className="font-display font-black text-2xl text-primary leading-none tabular-nums text-shadow-glow">
+                    <div className="font-display font-black text-2xl text-pulse leading-none tabular-nums text-shadow-glow">
                       Hold complete!
                     </div>
                   ) : (
                     <>
-                      <div className="font-display font-black text-5xl text-primary leading-none text-shadow-glow tabular-nums">
+                      <div className="font-display font-black text-5xl text-pulse leading-none text-shadow-glow tabular-nums">
                         {holdCountdown}
                       </div>
                       <div className="text-xs font-body text-white/60 uppercase tracking-widest mt-1">
@@ -465,7 +466,7 @@ function SessionRunner({
                   )
                 ) : (
                   <>
-                    <div className="font-display font-black text-5xl text-primary leading-none text-shadow-glow tabular-nums">
+                    <div className="font-display font-black text-5xl text-pulse leading-none text-shadow-glow tabular-nums">
                       {current.value}
                     </div>
                     <div className="text-xs font-body text-white/60 uppercase tracking-widest mt-1">
@@ -482,6 +483,7 @@ function SessionRunner({
       <div className="px-5 pt-1 pb-6">
         <motion.div whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}>
           <Button
+            variant="pulse"
             className="w-full h-14 font-display font-black text-xl tracking-[0.15em] rounded-2xl uppercase shadow-[0_0_40px_oklch(0.68_0.25_180/0.35)]"
             onClick={handleFinishCard}
             disabled={isAdvancing || needsOwner}
@@ -539,7 +541,7 @@ export default function TrainTogetherSessionPage() {
   if (!sessionId || !sessionQuery.data) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center max-w-[430px] mx-auto">
-        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
       </div>
     );
   }

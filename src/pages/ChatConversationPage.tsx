@@ -181,7 +181,7 @@ export default function ChatConversationPage() {
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4 shrink-0">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-pulse/50 hover:text-pulse transition-smooth"
           onClick={() => navigate({ to: "/chat" })}
           data-ocid="chat-conversation.back_button"
           aria-label="Go back to messages"
@@ -238,18 +238,18 @@ export default function ChatConversationPage() {
             <div
               className="rounded-2xl px-5 py-10 text-center"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
               }}
               data-ocid="chat-conversation.error_state"
             >
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+                style={{ background: "oklch(var(--pulse) / 0.1)" }}
               >
                 <WifiOff
                   className="w-7 h-7"
-                  style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                  style={{ color: "oklch(var(--pulse) / 0.5)" }}
                 />
               </div>
               <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -261,7 +261,7 @@ export default function ChatConversationPage() {
               <button
                 type="button"
                 onClick={handleRetryLoad}
-                className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+                className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
                 data-ocid="chat-conversation.error_retry_button"
               >
                 Try again
@@ -282,12 +282,14 @@ export default function ChatConversationPage() {
                 style={{
                   alignSelf: isMe ? "flex-end" : "flex-start",
                   background: isMe
-                    ? "oklch(0.68 0.25 180)"
-                    : "oklch(0.16 0.01 260)",
+                    ? "oklch(var(--pulse))"
+                    : "oklch(0.16 0.01 var(--neutral-hue))",
                   border: isMe
                     ? "none"
-                    : "1px solid oklch(0.26 0.01 260 / 0.5)",
-                  color: isMe ? "oklch(0.08 0.005 260)" : undefined,
+                    : "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+                  color: isMe
+                    ? "oklch(0.08 0.005 var(--neutral-hue))"
+                    : undefined,
                 }}
                 data-ocid="chat-conversation.message"
               >
@@ -303,7 +305,9 @@ export default function ChatConversationPage() {
 
       <div
         className="relative z-10 px-5 pb-8 pt-3 shrink-0 flex items-center gap-2"
-        style={{ borderTop: "1px solid oklch(0.22 0.01 260 / 0.5)" }}
+        style={{
+          borderTop: "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)",
+        }}
       >
         <input
           type="text"
@@ -315,8 +319,8 @@ export default function ChatConversationPage() {
           placeholder="Message…"
           className="flex-1 h-12 rounded-full px-4 font-body text-sm text-white placeholder:text-white/25 outline-none"
           style={{
-            background: "oklch(0.17 0.012 260)",
-            border: "1px solid oklch(0.28 0.01 260)",
+            background: "oklch(0.17 0.012 var(--neutral-hue))",
+            border: "1px solid oklch(0.28 0.01 var(--neutral-hue))",
           }}
           data-ocid="chat-conversation.composer_input"
         />
@@ -324,7 +328,7 @@ export default function ChatConversationPage() {
           type="button"
           onClick={handleSend}
           disabled={!draft.trim() || isSending}
-          className="w-12 h-12 rounded-full flex items-center justify-center bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.96] disabled:opacity-40 shrink-0"
+          className="w-12 h-12 rounded-full flex items-center justify-center bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.96] disabled:opacity-40 shrink-0"
           aria-label="Send message"
           data-ocid="chat-conversation.send_button"
         >

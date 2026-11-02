@@ -17,5 +17,7 @@ export function isSessionValid(
   cardsDrawn: number,
 ): boolean {
   if (cardsDrawn <= 0) return false;
-  return computeAvgTimePerCard(durationSeconds, cardsDrawn) >= MIN_SECONDS_PER_CARD;
+  return (
+    computeAvgTimePerCard(durationSeconds, cardsDrawn) >= MIN_SECONDS_PER_CARD
+  );
 }

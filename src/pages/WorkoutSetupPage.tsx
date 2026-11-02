@@ -71,8 +71,8 @@ const CARD_COUNTS = [
     time: "~40 min",
     calories: "~240 cal",
     badgeStyle: {
-      background: "oklch(0.68 0.25 180 / 0.2)",
-      color: "oklch(0.68 0.25 180)",
+      background: "oklch(var(--primary) / 0.2)",
+      color: "oklch(var(--primary))",
     },
   },
   {
@@ -83,8 +83,8 @@ const CARD_COUNTS = [
     time: "~90 min",
     calories: "~550 cal",
     badgeStyle: {
-      background: "oklch(0.65 0.22 40 / 0.2)",
-      color: "oklch(0.65 0.22 40)",
+      background: "oklch(var(--energy) / 0.2)",
+      color: "oklch(var(--energy))",
     },
   },
 ];
@@ -303,7 +303,7 @@ export default function WorkoutSetupPage() {
           className="pointer-events-none fixed inset-0 max-w-[430px] mx-auto"
           style={{
             background:
-              "radial-gradient(ellipse 70% 35% at 50% 0%, oklch(0.22 0.04 180 / 0.16) 0%, transparent 65%)",
+              "radial-gradient(ellipse 70% 35% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.16) 0%, transparent 65%)",
           }}
         />
 
@@ -340,7 +340,7 @@ export default function WorkoutSetupPage() {
                 aria-label="View exercises"
                 data-ocid="workout-setup.exercise_preview_button"
               >
-                <Info className="w-4 h-4 text-[#2dd4a0]" />
+                <Info className="w-4 h-4 text-[oklch(var(--primary))]" />
               </button>
             </div>
           </motion.div>
@@ -356,7 +356,7 @@ export default function WorkoutSetupPage() {
         >
           <p
             className="font-display font-black text-xs tracking-[0.28em] uppercase"
-            style={{ color: "oklch(0.68 0.25 180)" }}
+            style={{ color: "oklch(var(--primary))" }}
           >
             SHUFFLE. DRAW. CONQUER.
           </p>
@@ -421,18 +421,18 @@ export default function WorkoutSetupPage() {
                     className="w-full text-left rounded-2xl border transition-smooth relative overflow-hidden"
                     style={{
                       background: locked
-                        ? "oklch(0.14 0.01 260)"
+                        ? "oklch(0.14 0.01 var(--neutral-hue))"
                         : isSelected
-                          ? "oklch(0.17 0.015 180 / 0.5)"
-                          : "oklch(0.16 0.01 260)",
+                          ? "oklch(0.17 0.015 var(--primary-h) / 0.5)"
+                          : "oklch(0.16 0.01 var(--neutral-hue))",
                       borderColor: locked
-                        ? "oklch(0.28 0.01 260 / 0.5)"
+                        ? "oklch(0.28 0.01 var(--neutral-hue) / 0.5)"
                         : isSelected
-                          ? "oklch(0.68 0.25 180 / 0.6)"
-                          : "oklch(0.26 0.01 260 / 0.6)",
+                          ? "oklch(var(--primary) / 0.6)"
+                          : "oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
                       boxShadow:
                         isSelected && !locked
-                          ? "0 0 28px oklch(0.68 0.25 180 / 0.2), inset 0 1px 0 oklch(0.68 0.25 180 / 0.1)"
+                          ? "0 0 28px oklch(var(--primary) / 0.2), inset 0 1px 0 oklch(var(--primary) / 0.1)"
                           : "none",
                     }}
                     data-ocid={`workout-setup.card-count.item.${i + 1}`}
@@ -442,7 +442,7 @@ export default function WorkoutSetupPage() {
                         className="absolute inset-0 pointer-events-none"
                         style={{
                           background:
-                            "radial-gradient(ellipse at 0% 50%, oklch(0.68 0.25 180 / 0.08) 0%, transparent 70%)",
+                            "radial-gradient(ellipse at 0% 50%, oklch(var(--primary) / 0.08) 0%, transparent 70%)",
                         }}
                       />
                     )}
@@ -451,8 +451,10 @@ export default function WorkoutSetupPage() {
                       <div
                         className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full flex items-center justify-center"
                         style={{
-                          background: "oklch(0.3 0.01 260 / 0.6)",
-                          border: "1px solid oklch(0.4 0.01 260 / 0.6)",
+                          background:
+                            "oklch(0.3 0.01 var(--neutral-hue) / 0.6)",
+                          border:
+                            "1px solid oklch(0.4 0.01 var(--neutral-hue) / 0.6)",
                         }}
                         data-ocid={`workout-setup.card-count.item.${i + 1}.lock_icon`}
                       >
@@ -471,11 +473,11 @@ export default function WorkoutSetupPage() {
                         style={{
                           borderColor:
                             isSelected && !locked
-                              ? "oklch(0.68 0.25 180)"
-                              : "oklch(0.38 0.01 260)",
+                              ? "oklch(var(--primary))"
+                              : "oklch(0.38 0.01 var(--neutral-hue))",
                           background:
                             isSelected && !locked
-                              ? "oklch(0.68 0.25 180)"
+                              ? "oklch(var(--primary))"
                               : "transparent",
                         }}
                       >
@@ -484,7 +486,10 @@ export default function WorkoutSetupPage() {
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             className="w-2 h-2 rounded-full"
-                            style={{ background: "oklch(0.12 0.008 260)" }}
+                            style={{
+                              background:
+                                "oklch(0.12 0.008 var(--neutral-hue))",
+                            }}
                           />
                         )}
                       </div>
@@ -496,23 +501,25 @@ export default function WorkoutSetupPage() {
                             className="font-display font-black text-lg leading-none"
                             style={{
                               color: locked
-                                ? "oklch(0.5 0.01 260)"
+                                ? "oklch(0.5 0.01 var(--neutral-hue))"
                                 : isSelected
-                                  ? "oklch(0.68 0.25 180)"
-                                  : "oklch(0.92 0.01 260)",
+                                  ? "oklch(var(--primary))"
+                                  : "oklch(0.92 0.01 var(--neutral-hue))",
                             }}
                           >
                             {label}
                           </span>
                           {!locked && (
                             <span
-                              className="text-[10px] font-display font-black tracking-widest px-2 py-0.5 rounded"
+                              className="text-xs font-display font-black tracking-widest px-2 py-0.5 rounded"
                               style={
                                 isSelected
                                   ? badgeStyle
                                   : {
-                                      background: "oklch(0.22 0.01 260 / 0.8)",
-                                      color: "oklch(0.55 0.008 260)",
+                                      background:
+                                        "oklch(0.22 0.01 var(--neutral-hue) / 0.8)",
+                                      color:
+                                        "oklch(0.55 0.008 var(--neutral-hue))",
                                     }
                               }
                             >
@@ -522,8 +529,8 @@ export default function WorkoutSetupPage() {
                         </div>
                         {locked ? (
                           <p
-                            className="text-[11px] font-display font-bold uppercase tracking-wide"
-                            style={{ color: "oklch(0.68 0.25 180)" }}
+                            className="text-xs font-display font-bold uppercase tracking-wide"
+                            style={{ color: "oklch(var(--primary))" }}
                             data-ocid={`workout-setup.card-count.item.${i + 1}.unlock_label`}
                           >
                             {unlockLabel}
@@ -533,7 +540,7 @@ export default function WorkoutSetupPage() {
                             <span className="text-xs text-muted-foreground font-body">
                               {sub}
                             </span>
-                            <span className="flex items-center gap-1 text-[10px] text-muted-foreground font-body">
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground font-body">
                               <Clock className="w-3 h-3" />
                               {time}
                             </span>
@@ -548,16 +555,16 @@ export default function WorkoutSetupPage() {
                             className="w-3.5 h-3.5"
                             style={{
                               color: isSelected
-                                ? "oklch(0.68 0.25 180)"
-                                : "oklch(0.55 0.008 260)",
+                                ? "oklch(var(--primary))"
+                                : "oklch(0.55 0.008 var(--neutral-hue))",
                             }}
                           />
                           <span
                             className="text-xs font-display font-bold"
                             style={{
                               color: isSelected
-                                ? "oklch(0.68 0.25 180)"
-                                : "oklch(0.55 0.008 260)",
+                                ? "oklch(var(--primary))"
+                                : "oklch(0.55 0.008 var(--neutral-hue))",
                             }}
                           >
                             {calories}
@@ -579,20 +586,20 @@ export default function WorkoutSetupPage() {
               className="w-full rounded-2xl border transition-smooth relative overflow-hidden cursor-pointer"
               style={{
                 background: customLocked
-                  ? "oklch(0.14 0.01 260)"
+                  ? "oklch(0.14 0.01 var(--neutral-hue))"
                   : isCustomSelected
-                    ? "oklch(0.17 0.015 180 / 0.5)"
-                    : "oklch(0.16 0.01 260)",
+                    ? "oklch(0.17 0.015 var(--primary-h) / 0.5)"
+                    : "oklch(0.16 0.01 var(--neutral-hue))",
                 borderColor: customLocked
-                  ? "oklch(0.28 0.01 260 / 0.5)"
+                  ? "oklch(0.28 0.01 var(--neutral-hue) / 0.5)"
                   : customError
                     ? "oklch(0.65 0.22 25 / 0.7)"
                     : isCustomSelected
-                      ? "oklch(0.68 0.25 180 / 0.6)"
-                      : "oklch(0.26 0.01 260 / 0.6)",
+                      ? "oklch(var(--primary) / 0.6)"
+                      : "oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
                 boxShadow:
                   isCustomSelected && !customError && !customLocked
-                    ? "0 0 28px oklch(0.68 0.25 180 / 0.2), inset 0 1px 0 oklch(0.68 0.25 180 / 0.1)"
+                    ? "0 0 28px oklch(var(--primary) / 0.2), inset 0 1px 0 oklch(var(--primary) / 0.1)"
                     : customError && !customLocked
                       ? "0 0 16px oklch(0.65 0.22 25 / 0.15)"
                       : "none",
@@ -604,7 +611,7 @@ export default function WorkoutSetupPage() {
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background:
-                      "radial-gradient(ellipse at 0% 50%, oklch(0.68 0.25 180 / 0.08) 0%, transparent 70%)",
+                      "radial-gradient(ellipse at 0% 50%, oklch(var(--primary) / 0.08) 0%, transparent 70%)",
                   }}
                 />
               )}
@@ -612,8 +619,9 @@ export default function WorkoutSetupPage() {
                 <div
                   className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full flex items-center justify-center"
                   style={{
-                    background: "oklch(0.3 0.01 260 / 0.6)",
-                    border: "1px solid oklch(0.4 0.01 260 / 0.6)",
+                    background: "oklch(0.3 0.01 var(--neutral-hue) / 0.6)",
+                    border:
+                      "1px solid oklch(0.4 0.01 var(--neutral-hue) / 0.6)",
                   }}
                   data-ocid="workout-setup.card-count.custom.lock_icon"
                 >
@@ -632,11 +640,11 @@ export default function WorkoutSetupPage() {
                     borderColor: customError
                       ? "oklch(0.65 0.22 25)"
                       : isCustomSelected
-                        ? "oklch(0.68 0.25 180)"
-                        : "oklch(0.38 0.01 260)",
+                        ? "oklch(var(--primary))"
+                        : "oklch(0.38 0.01 var(--neutral-hue))",
                     background:
                       isCustomSelected && !customError
-                        ? "oklch(0.68 0.25 180)"
+                        ? "oklch(var(--primary))"
                         : "transparent",
                   }}
                 >
@@ -645,7 +653,9 @@ export default function WorkoutSetupPage() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className="w-2 h-2 rounded-full"
-                      style={{ background: "oklch(0.12 0.008 260)" }}
+                      style={{
+                        background: "oklch(0.12 0.008 var(--neutral-hue))",
+                      }}
                     />
                   )}
                 </button>
@@ -658,19 +668,19 @@ export default function WorkoutSetupPage() {
                       style={{
                         color:
                           isCustomSelected && !customError
-                            ? "oklch(0.68 0.25 180)"
+                            ? "oklch(var(--primary))"
                             : customError
                               ? "oklch(0.65 0.22 25)"
-                              : "oklch(0.92 0.01 260)",
+                              : "oklch(0.92 0.01 var(--neutral-hue))",
                       }}
                     >
                       Custom
                     </span>
                     <span
-                      className="text-[10px] font-display font-black tracking-widest px-2 py-0.5 rounded"
+                      className="text-xs font-display font-black tracking-widest px-2 py-0.5 rounded"
                       style={{
-                        background: "oklch(0.22 0.01 260 / 0.8)",
-                        color: "oklch(0.55 0.008 260)",
+                        background: "oklch(0.22 0.01 var(--neutral-hue) / 0.8)",
+                        color: "oklch(0.55 0.008 var(--neutral-hue))",
                       }}
                     >
                       YOUR CHOICE
@@ -678,8 +688,8 @@ export default function WorkoutSetupPage() {
                   </div>
                   {customLocked ? (
                     <p
-                      className="text-[11px] font-display font-bold uppercase tracking-wide"
-                      style={{ color: "oklch(0.68 0.25 180)" }}
+                      className="text-xs font-display font-bold uppercase tracking-wide"
+                      style={{ color: "oklch(var(--primary))" }}
                       data-ocid="workout-setup.card-count.custom.unlock_label"
                     >
                       Subscribe to unlock
@@ -696,20 +706,20 @@ export default function WorkoutSetupPage() {
                         placeholder="2 – 52 cards"
                         className="w-32 h-8 rounded-lg px-3 font-display font-bold text-sm text-foreground outline-none transition-smooth"
                         style={{
-                          background: "oklch(0.12 0.008 260)",
+                          background: "oklch(0.12 0.008 var(--neutral-hue))",
                           border: `1px solid ${
                             customError
                               ? "oklch(0.65 0.22 25 / 0.7)"
                               : isCustomSelected
-                                ? "oklch(0.68 0.25 180 / 0.5)"
-                                : "oklch(0.30 0.01 260 / 0.6)"
+                                ? "oklch(var(--primary) / 0.5)"
+                                : "oklch(0.30 0.01 var(--neutral-hue) / 0.6)"
                           }`,
                         }}
                         data-ocid="workout-setup.custom_count_input"
                       />
                       {customError ? (
                         <span
-                          className="text-[10px] font-body"
+                          className="text-xs font-body"
                           style={{ color: "oklch(0.65 0.22 25)" }}
                         >
                           {customError}
@@ -740,15 +750,15 @@ export default function WorkoutSetupPage() {
             onClick={() => setShowExcludeModal(true)}
             className="w-full h-12 rounded-2xl flex items-center justify-center gap-2 font-display font-black text-sm tracking-widest transition-smooth relative overflow-hidden"
             style={{
-              background: "oklch(0.14 0.01 260)",
-              border: `1.5px solid ${excludedCount > 0 ? "oklch(0.68 0.25 180 / 0.9)" : "oklch(0.68 0.25 180 / 0.35)"}`,
+              background: "oklch(0.14 0.01 var(--neutral-hue))",
+              border: `1.5px solid ${excludedCount > 0 ? "oklch(var(--primary) / 0.9)" : "oklch(var(--primary) / 0.35)"}`,
               color:
                 excludedCount > 0
-                  ? "oklch(0.68 0.25 180)"
-                  : "oklch(0.82 0.01 260)",
+                  ? "oklch(var(--primary))"
+                  : "oklch(0.82 0.01 var(--neutral-hue))",
               boxShadow:
                 excludedCount > 0
-                  ? "0 0 20px oklch(0.68 0.25 180 / 0.18), inset 0 1px 0 oklch(0.68 0.25 180 / 0.1)"
+                  ? "0 0 20px oklch(var(--primary) / 0.18), inset 0 1px 0 oklch(var(--primary) / 0.1)"
                   : "none",
             }}
             data-ocid="workout-setup.exclude_exercises_button"
@@ -757,11 +767,11 @@ export default function WorkoutSetupPage() {
             EXCLUDE EXERCISES
             {excludedCount > 0 && (
               <span
-                className="ml-1 px-2 py-0.5 rounded-full font-display font-black text-[10px] tracking-widest"
+                className="ml-1 px-2 py-0.5 rounded-full font-display font-black text-xs tracking-widest"
                 style={{
-                  background: "oklch(0.68 0.25 180 / 0.2)",
-                  color: "oklch(0.68 0.25 180)",
-                  border: "1px solid oklch(0.68 0.25 180 / 0.4)",
+                  background: "oklch(var(--primary) / 0.2)",
+                  color: "oklch(var(--primary))",
+                  border: "1px solid oklch(var(--primary) / 0.4)",
                 }}
               >
                 {excludedCount} excluded
@@ -777,18 +787,18 @@ export default function WorkoutSetupPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mx-5 mb-4 rounded-2xl px-4 py-3 flex items-start gap-3"
             style={{
-              background: "oklch(0.2 0.05 60 / 0.15)",
-              border: "1px solid oklch(0.75 0.16 60 / 0.4)",
+              background: "oklch(0.2 0.05 var(--prestige-h) / 0.15)",
+              border: "1px solid oklch(var(--prestige) / 0.4)",
             }}
             data-ocid="workout-setup.low_cards_warning"
           >
             <Zap
               className="w-4 h-4 shrink-0 mt-0.5"
-              style={{ color: "oklch(0.75 0.16 60)" }}
+              style={{ color: "oklch(var(--prestige))" }}
             />
             <p
               className="text-xs font-body leading-snug"
-              style={{ color: "oklch(0.85 0.1 60)" }}
+              style={{ color: "oklch(var(--prestige))" }}
             >
               You have {remainingCards}{" "}
               {remainingCards === 1 ? "card" : "cards"} left this week. This
@@ -808,7 +818,7 @@ export default function WorkoutSetupPage() {
               className="w-full h-14 font-display font-black text-xl tracking-widest rounded-2xl disabled:shadow-none disabled:opacity-30 transition-smooth"
               style={{
                 boxShadow: canStart
-                  ? "0 0 40px oklch(0.68 0.25 180 / 0.35), 0 4px 20px oklch(0 0 0 / 0.3)"
+                  ? "0 0 40px oklch(var(--primary) / 0.35), 0 4px 20px oklch(0 0 0 / 0.3)"
                   : "none",
               }}
               disabled={!canStart}
@@ -919,14 +929,14 @@ function ExercisePreviewModal({
     >
       <motion.div
         className="absolute inset-0"
-        style={{ background: "oklch(0.06 0.008 260 / 0.85)" }}
+        style={{ background: "oklch(0.06 0.008 var(--neutral-hue) / 0.85)" }}
         onClick={onClose}
       />
       <motion.div
         className="relative flex flex-col rounded-2xl overflow-hidden w-[85%] max-w-[360px]"
         style={{
-          background: "oklch(0.13 0.012 260)",
-          border: "1.5px solid oklch(0.26 0.01 260 / 0.8)",
+          background: "oklch(var(--background))",
+          border: "1.5px solid oklch(0.26 0.01 var(--neutral-hue) / 0.8)",
           boxShadow: "0 16px 60px oklch(0 0 0 / 0.5)",
           maxHeight: "70dvh",
         }}
@@ -937,18 +947,20 @@ function ExercisePreviewModal({
       >
         <div
           className="flex items-center justify-between px-5 py-4 shrink-0"
-          style={{ borderBottom: "1px solid oklch(0.22 0.01 260 / 0.6)" }}
+          style={{
+            borderBottom: "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.6)",
+          }}
         >
           <div>
             <h2
               className="font-display font-black text-base tracking-widest uppercase"
-              style={{ color: "oklch(0.95 0.01 260)" }}
+              style={{ color: "oklch(0.95 0.01 var(--neutral-hue))" }}
             >
               Exercises in this deck
             </h2>
             <p
               className="text-xs font-body mt-0.5"
-              style={{ color: "oklch(0.55 0.008 260)" }}
+              style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
             >
               {deckName}
             </p>
@@ -959,9 +971,9 @@ function ExercisePreviewModal({
             onClick={onClose}
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-smooth"
             style={{
-              background: "oklch(0.20 0.01 260)",
-              border: "1px solid oklch(0.28 0.01 260 / 0.6)",
-              color: "oklch(0.65 0.008 260)",
+              background: "oklch(0.20 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.28 0.01 var(--neutral-hue) / 0.6)",
+              color: "oklch(0.65 0.008 var(--neutral-hue))",
             }}
             data-ocid="exercise-preview.close_button"
           >
@@ -973,7 +985,7 @@ function ExercisePreviewModal({
           {exercises.length === 0 ? (
             <p
               className="text-sm font-body text-center py-8"
-              style={{ color: "oklch(0.55 0.008 260)" }}
+              style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
             >
               No exercises found for this deck.
             </p>
@@ -984,23 +996,24 @@ function ExercisePreviewModal({
                   key={exercise}
                   className="flex items-center gap-3 py-2.5 px-3 rounded-xl"
                   style={{
-                    background: "oklch(0.16 0.01 260)",
-                    border: "1px solid oklch(0.22 0.01 260 / 0.6)",
+                    background: "oklch(0.16 0.01 var(--neutral-hue))",
+                    border:
+                      "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.6)",
                   }}
                   data-ocid={`exercise-preview.item.${i + 1}`}
                 >
                   <span
-                    className="w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-[10px] shrink-0"
+                    className="w-6 h-6 rounded-full flex items-center justify-center font-display font-black text-xs shrink-0"
                     style={{
-                      background: "oklch(0.68 0.25 180 / 0.15)",
-                      color: "oklch(0.68 0.25 180)",
+                      background: "oklch(var(--primary) / 0.15)",
+                      color: "oklch(var(--primary))",
                     }}
                   >
                     {i + 1}
                   </span>
                   <span
                     className="font-display font-bold text-sm tracking-wide"
-                    style={{ color: "oklch(0.92 0.01 260)" }}
+                    style={{ color: "oklch(0.92 0.01 var(--neutral-hue))" }}
                   >
                     {exercise}
                   </span>
@@ -1012,13 +1025,15 @@ function ExercisePreviewModal({
 
         <div
           className="px-5 py-4 shrink-0"
-          style={{ borderTop: "1px solid oklch(0.20 0.01 260 / 0.6)" }}
+          style={{
+            borderTop: "1px solid oklch(0.20 0.01 var(--neutral-hue) / 0.6)",
+          }}
         >
           <Button
             className="w-full h-12 font-display font-black text-base tracking-widest rounded-2xl"
             style={{
               boxShadow:
-                "0 0 32px oklch(0.68 0.25 180 / 0.3), 0 4px 16px oklch(0 0 0 / 0.3)",
+                "0 0 32px oklch(var(--primary) / 0.3), 0 4px 16px oklch(0 0 0 / 0.3)",
             }}
             onClick={onClose}
             data-ocid="exercise-preview.done_button"
@@ -1068,14 +1083,14 @@ function ExcludeExercisesModal({
     >
       <motion.div
         className="absolute inset-0"
-        style={{ background: "oklch(0.06 0.008 260 / 0.85)" }}
+        style={{ background: "oklch(0.06 0.008 var(--neutral-hue) / 0.85)" }}
         onClick={onClose}
       />
       <motion.div
         className="relative flex flex-col rounded-t-3xl overflow-hidden"
         style={{
-          background: "oklch(0.13 0.012 260)",
-          border: "1.5px solid oklch(0.26 0.01 260 / 0.8)",
+          background: "oklch(var(--background))",
+          border: "1.5px solid oklch(0.26 0.01 var(--neutral-hue) / 0.8)",
           borderBottom: "none",
           boxShadow: "0 -16px 60px oklch(0 0 0 / 0.5)",
           maxHeight: "85dvh",
@@ -1088,17 +1103,19 @@ function ExcludeExercisesModal({
         <div className="flex justify-center pt-3 pb-1 shrink-0">
           <div
             className="w-10 h-1 rounded-full"
-            style={{ background: "oklch(0.35 0.01 260)" }}
+            style={{ background: "oklch(0.35 0.01 var(--neutral-hue))" }}
           />
         </div>
         <div
           className="flex items-center justify-between px-5 py-4 shrink-0"
-          style={{ borderBottom: "1px solid oklch(0.22 0.01 260 / 0.6)" }}
+          style={{
+            borderBottom: "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.6)",
+          }}
         >
           <div>
             <h2
               className="font-display font-black text-base tracking-widest uppercase"
-              style={{ color: "oklch(0.95 0.01 260)" }}
+              style={{ color: "oklch(0.95 0.01 var(--neutral-hue))" }}
             >
               Exclude Exercises
             </h2>
@@ -1107,8 +1124,8 @@ function ExcludeExercisesModal({
               style={{
                 color:
                   includedCount < exercises.length
-                    ? "oklch(0.68 0.25 180)"
-                    : "oklch(0.55 0.008 260)",
+                    ? "oklch(var(--primary))"
+                    : "oklch(0.55 0.008 var(--neutral-hue))",
               }}
               data-ocid="exclude-exercises.counter"
             >
@@ -1121,9 +1138,9 @@ function ExcludeExercisesModal({
             onClick={onClose}
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-smooth"
             style={{
-              background: "oklch(0.20 0.01 260)",
-              border: "1px solid oklch(0.28 0.01 260 / 0.6)",
-              color: "oklch(0.65 0.008 260)",
+              background: "oklch(0.20 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.28 0.01 var(--neutral-hue) / 0.6)",
+              color: "oklch(0.65 0.008 var(--neutral-hue))",
             }}
             data-ocid="exclude-exercises.close_button"
           >
@@ -1134,7 +1151,9 @@ function ExcludeExercisesModal({
         {/* Exclude All / Include All */}
         <div
           className="flex gap-3 px-5 pt-4 pb-3 shrink-0"
-          style={{ borderBottom: "1px solid oklch(0.20 0.01 260 / 0.5)" }}
+          style={{
+            borderBottom: "1px solid oklch(0.20 0.01 var(--neutral-hue) / 0.5)",
+          }}
         >
           <motion.button
             type="button"
@@ -1142,7 +1161,7 @@ function ExcludeExercisesModal({
             onClick={onExcludeAll}
             className="flex-1 h-10 rounded-xl font-display font-black text-xs tracking-widest uppercase transition-smooth"
             style={{
-              background: "oklch(0.16 0.01 260)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
               border: "1.5px solid oklch(0.65 0.22 25 / 0.5)",
               color: "oklch(0.65 0.22 25)",
             }}
@@ -1156,9 +1175,9 @@ function ExcludeExercisesModal({
             onClick={onIncludeAll}
             className="flex-1 h-10 rounded-xl font-display font-black text-xs tracking-widest uppercase transition-smooth"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1.5px solid oklch(0.68 0.25 180 / 0.5)",
-              color: "oklch(0.68 0.25 180)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1.5px solid oklch(var(--primary) / 0.5)",
+              color: "oklch(var(--primary))",
             }}
             data-ocid="exclude-exercises.include_all_button"
           >
@@ -1171,14 +1190,14 @@ function ExcludeExercisesModal({
           <div
             className="mx-5 mt-3 px-4 py-3 rounded-xl shrink-0"
             style={{
-              background: "oklch(0.55 0.22 40 / 0.12)",
-              border: "1px solid oklch(0.65 0.22 40 / 0.4)",
+              background: "oklch(var(--energy) / 0.12)",
+              border: "1px solid oklch(var(--energy) / 0.4)",
             }}
             data-ocid="exclude-exercises.warning"
           >
             <p
               className="text-xs font-body leading-snug"
-              style={{ color: "oklch(0.78 0.18 40)" }}
+              style={{ color: "oklch(var(--energy))" }}
             >
               Too few exercises selected for this session length. Include at
               least {minRequired} exercises or reduce the card count.
@@ -1194,13 +1213,13 @@ function ExcludeExercisesModal({
             >
               <p
                 className="font-display font-black text-sm tracking-widest uppercase mb-2"
-                style={{ color: "oklch(0.68 0.25 180)" }}
+                style={{ color: "oklch(var(--primary))" }}
               >
                 No exercises yet
               </p>
               <p
                 className="text-xs font-body leading-relaxed max-w-[240px]"
-                style={{ color: "oklch(0.55 0.008 260)" }}
+                style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
               >
                 This deck doesn&apos;t have exercise content yet. Exercises will
                 appear here once the deck is populated.
@@ -1222,7 +1241,7 @@ function ExcludeExercisesModal({
                   style={{
                     borderBottom:
                       i < exercises.length - 1
-                        ? "1px solid oklch(0.20 0.01 260 / 0.6)"
+                        ? "1px solid oklch(0.20 0.01 var(--neutral-hue) / 0.6)"
                         : "none",
                   }}
                   data-ocid={`exclude-exercises.item.${i + 1}`}
@@ -1231,25 +1250,27 @@ function ExcludeExercisesModal({
                     className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center transition-smooth"
                     style={{
                       background: isIncluded
-                        ? "oklch(0.68 0.25 180)"
-                        : "oklch(0.18 0.01 260)",
+                        ? "oklch(var(--primary))"
+                        : "oklch(0.18 0.01 var(--neutral-hue))",
                       border: isIncluded
-                        ? "2px solid oklch(0.68 0.25 180)"
-                        : "2px solid oklch(0.32 0.01 260 / 0.8)",
+                        ? "2px solid oklch(var(--primary))"
+                        : "2px solid oklch(0.32 0.01 var(--neutral-hue) / 0.8)",
                       boxShadow: isIncluded
-                        ? "0 0 12px oklch(0.68 0.25 180 / 0.3)"
+                        ? "0 0 12px oklch(var(--primary) / 0.3)"
                         : "none",
                     }}
                   >
                     {isIncluded ? (
                       <Check
                         className="w-3.5 h-3.5"
-                        style={{ color: "oklch(0.1 0.008 260)" }}
+                        style={{ color: "oklch(0.1 0.008 var(--neutral-hue))" }}
                       />
                     ) : (
                       <X
                         className="w-3 h-3"
-                        style={{ color: "oklch(0.45 0.008 260)" }}
+                        style={{
+                          color: "oklch(0.45 0.008 var(--neutral-hue))",
+                        }}
                       />
                     )}
                   </div>
@@ -1259,21 +1280,21 @@ function ExcludeExercisesModal({
                     )}
                     style={{
                       color: isIncluded
-                        ? "oklch(0.92 0.01 260)"
-                        : "oklch(0.42 0.008 260)",
+                        ? "oklch(0.92 0.01 var(--neutral-hue))"
+                        : "oklch(0.42 0.008 var(--neutral-hue))",
                       textDecoration: isIncluded ? "none" : "line-through",
                     }}
                   >
                     {exercise}
                   </span>
                   <span
-                    className="text-[10px] font-display font-black tracking-widest px-2 py-0.5 rounded shrink-0"
+                    className="text-xs font-display font-black tracking-widest px-2 py-0.5 rounded shrink-0"
                     style={{
                       background: isIncluded
-                        ? "oklch(0.68 0.25 180 / 0.15)"
+                        ? "oklch(var(--primary) / 0.15)"
                         : "oklch(0.65 0.22 25 / 0.12)",
                       color: isIncluded
-                        ? "oklch(0.68 0.25 180)"
+                        ? "oklch(var(--primary))"
                         : "oklch(0.65 0.22 25 / 0.7)",
                     }}
                   >
@@ -1286,14 +1307,16 @@ function ExcludeExercisesModal({
         </div>
         <div
           className="px-5 py-5 shrink-0"
-          style={{ borderTop: "1px solid oklch(0.20 0.01 260 / 0.6)" }}
+          style={{
+            borderTop: "1px solid oklch(0.20 0.01 var(--neutral-hue) / 0.6)",
+          }}
         >
           <Button
             className="w-full h-14 font-display font-black text-base tracking-widest rounded-2xl disabled:shadow-none disabled:opacity-50"
             style={{
               boxShadow: tooFew
                 ? "none"
-                : "0 0 32px oklch(0.68 0.25 180 / 0.3), 0 4px 16px oklch(0 0 0 / 0.3)",
+                : "0 0 32px oklch(var(--primary) / 0.3), 0 4px 16px oklch(0 0 0 / 0.3)",
             }}
             disabled={tooFew}
             onClick={onClose}
@@ -1304,7 +1327,7 @@ function ExcludeExercisesModal({
           {tooFew && (
             <p
               className="text-center text-xs font-body mt-2"
-              style={{ color: "oklch(0.55 0.008 260)" }}
+              style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
             >
               Resolve the warning above to continue
             </p>
@@ -1432,9 +1455,9 @@ function IdleShufflePreview({
         aria-label={isPaused ? "Resume idle shuffle" : "Pause idle shuffle"}
         data-ocid="idle_shuffle.empty_state.button"
         style={{
-          border: "1px solid oklch(0.26 0.01 260)",
+          border: "1px solid oklch(0.26 0.01 var(--neutral-hue))",
           background:
-            "radial-gradient(circle at 50% 30%, oklch(0.16 0.01 260), oklch(0.12 0.008 260))",
+            "radial-gradient(circle at 50% 30%, oklch(0.16 0.01 var(--neutral-hue)), oklch(0.12 0.008 var(--neutral-hue)))",
           boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
           padding: "8px",
           width: "100%",
@@ -1457,14 +1480,14 @@ function IdleShufflePreview({
             width: "20px",
             height: "20px",
             borderRadius: "50%",
-            background: "oklch(0.12 0.008 260 / 0.6)",
+            background: "oklch(0.12 0.008 var(--neutral-hue) / 0.6)",
             transition: "opacity 200ms ease",
           }}
         >
           {isPaused ? (
-            <Play size={12} color="oklch(0.68 0.25 180)" />
+            <Play size={12} color="oklch(var(--primary))" />
           ) : (
-            <Pause size={12} color="oklch(0.68 0.25 180)" />
+            <Pause size={12} color="oklch(var(--primary))" />
           )}
         </div>
       </button>
@@ -1481,9 +1504,9 @@ function IdleShufflePreview({
       data-ocid="idle_shuffle.button"
       className="group relative block w-full cursor-pointer rounded-2xl p-2"
       style={{
-        border: "1px solid oklch(0.26 0.01 260)",
+        border: "1px solid oklch(0.26 0.01 var(--neutral-hue))",
         background:
-          "radial-gradient(circle at 50% 30%, oklch(0.16 0.01 260), oklch(0.12 0.008 260))",
+          "radial-gradient(circle at 50% 30%, oklch(0.16 0.01 var(--neutral-hue)), oklch(0.12 0.008 var(--neutral-hue)))",
         boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
       }}
     >
@@ -1502,12 +1525,12 @@ function IdleShufflePreview({
       <div
         data-ocid="idle_shuffle.pause_button"
         className="absolute right-2.5 top-2.5 flex h-5 w-5 items-center justify-center rounded-full opacity-30 transition-opacity duration-200 group-hover:opacity-60"
-        style={{ background: "oklch(0.12 0.008 260 / 0.6)" }}
+        style={{ background: "oklch(0.12 0.008 var(--neutral-hue) / 0.6)" }}
       >
         {isPaused ? (
-          <Play size={12} color="oklch(0.68 0.25 180)" />
+          <Play size={12} color="oklch(var(--primary))" />
         ) : (
-          <Pause size={12} color="oklch(0.68 0.25 180)" />
+          <Pause size={12} color="oklch(var(--primary))" />
         )}
       </div>
     </button>

@@ -34,7 +34,8 @@ function timeAgoLabel(iso: string): string {
 }
 
 function distanceLabel(km: number): string {
-  return km < 1 ? "< 1 km away" : `~${km.toFixed(1)} km away`;
+  // nearby_profiles returns whole km (rounded up) so locations can't be triangulated.
+  return km <= 1 ? "< 1 km away" : `~${Math.round(km)} km away`;
 }
 
 export default function NearbyPage() {
@@ -130,14 +131,14 @@ export default function NearbyPage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--pulse-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-pulse/50 hover:text-pulse transition-smooth"
           onClick={() => navigate({ to: "/profile" })}
           data-ocid="nearby.back_button"
           aria-label="Go back to profile"
@@ -168,7 +169,7 @@ export default function NearbyPage() {
             icon={
               <Users
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--pulse) / 0.5)" }}
               />
             }
             title="Sign in required"
@@ -182,7 +183,7 @@ export default function NearbyPage() {
             icon={
               <Users
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--pulse) / 0.5)" }}
               />
             }
             title="Visibility is off"
@@ -196,7 +197,7 @@ export default function NearbyPage() {
             icon={
               <Users
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--pulse) / 0.5)" }}
               />
             }
             title="Location needed"
@@ -213,8 +214,8 @@ export default function NearbyPage() {
               transition={{ delay: 0.1, duration: 0.4 }}
               className="rounded-2xl p-4 mb-5"
               style={{
-                background: "oklch(0.16 0.01 260)",
-                border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                background: "oklch(0.16 0.01 var(--neutral-hue))",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
               }}
               data-ocid="nearby.radius_control"
             >
@@ -224,7 +225,7 @@ export default function NearbyPage() {
                 </span>
                 <span
                   className="font-display font-black text-sm"
-                  style={{ color: "oklch(0.68 0.25 180)" }}
+                  style={{ color: "oklch(var(--pulse))" }}
                 >
                   {radiusKm} km
                 </span>
@@ -241,14 +242,14 @@ export default function NearbyPage() {
 
             {isLoading ? (
               <div className="flex justify-center py-10">
-                <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                <div className="w-6 h-6 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
               </div>
             ) : hasError ? (
               <EmptyState
                 icon={
                   <Users
                     className="w-7 h-7"
-                    style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                    style={{ color: "oklch(var(--pulse) / 0.5)" }}
                   />
                 }
                 title="Can't connect right now"
@@ -262,7 +263,7 @@ export default function NearbyPage() {
                 icon={
                   <Users
                     className="w-7 h-7"
-                    style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                    style={{ color: "oklch(var(--pulse) / 0.5)" }}
                   />
                 }
                 title="No one nearby right now"
@@ -282,16 +283,17 @@ export default function NearbyPage() {
                     }}
                     className="rounded-2xl p-4 flex items-center gap-3"
                     style={{
-                      background: "oklch(0.16 0.01 260)",
-                      border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+                      background: "oklch(0.16 0.01 var(--neutral-hue))",
+                      border:
+                        "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                     }}
                     data-ocid={`nearby.card.${i + 1}`}
                   >
                     <div
                       className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-display font-black text-sm"
                       style={{
-                        background: "oklch(0.68 0.25 180 / 0.15)",
-                        color: "oklch(0.68 0.25 180)",
+                        background: "oklch(var(--pulse) / 0.15)",
+                        color: "oklch(var(--pulse))",
                       }}
                     >
                       {athlete.username.slice(0, 2).toUpperCase()}
@@ -303,10 +305,11 @@ export default function NearbyPage() {
                         </p>
                         {athlete.gender && (
                           <span
-                            className="text-[10px] font-display font-bold px-2 py-0.5 rounded-full shrink-0"
+                            className="text-xs font-display font-bold px-2 py-0.5 rounded-full shrink-0"
                             style={{
-                              background: "oklch(0.28 0.01 260 / 0.6)",
-                              color: "oklch(0.7 0.008 260)",
+                              background:
+                                "oklch(0.28 0.01 var(--neutral-hue) / 0.6)",
+                              color: "oklch(0.7 0.008 var(--neutral-hue))",
                             }}
                           >
                             {athlete.gender}
@@ -321,7 +324,7 @@ export default function NearbyPage() {
                     <button
                       type="button"
                       onClick={() => handleSayHi(athlete)}
-                      className="shrink-0 px-3.5 h-9 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+                      className="shrink-0 px-3.5 h-9 rounded-full font-display font-bold text-xs tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
                       data-ocid={`nearby.say_hi.${i + 1}`}
                     >
                       Say hi
@@ -387,14 +390,14 @@ function EmptyState({
     <div
       className="rounded-2xl px-5 py-10 text-center"
       style={{
-        background: "oklch(0.16 0.01 260)",
-        border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+        background: "oklch(0.16 0.01 var(--neutral-hue))",
+        border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
       }}
       data-ocid={ocid}
     >
       <div
         className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-        style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+        style={{ background: "oklch(var(--pulse) / 0.1)" }}
       >
         {icon}
       </div>
@@ -406,7 +409,7 @@ function EmptyState({
         <button
           type="button"
           onClick={onAction}
-          className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+          className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
         >
           {actionLabel}
         </button>

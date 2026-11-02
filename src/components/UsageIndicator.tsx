@@ -2,8 +2,8 @@ import type { AppTier } from "@/hooks/use-tier";
 import { useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
-const TEAL = "#1AD6A0";
-const ORANGE = "#f59e0b";
+const TEAL = "oklch(var(--primary))";
+const ORANGE = "oklch(var(--prestige))";
 const RED = "#ef4444";
 
 /** Weekly card-usage bar + tier-specific nudges — never rendered for subscribers (unlimited, no banners). */
@@ -21,7 +21,8 @@ export function UsageIndicator({
   const atLimit = cardsUsed >= limit;
   const barColor = atLimit ? RED : pct > 75 ? ORANGE : TEAL;
   const remaining = Math.max(0, limit - cardsUsed);
-  const showRemainingCounter = tier === "registered" && !atLimit && cardsUsed >= 15;
+  const showRemainingCounter =
+    tier === "registered" && !atLimit && cardsUsed >= 15;
 
   return (
     <motion.div
@@ -34,8 +35,8 @@ export function UsageIndicator({
         <div
           className="rounded-2xl px-4 py-3.5 mb-3 flex items-center justify-between gap-3"
           style={{
-            background: "oklch(0.17 0.015 180 / 0.3)",
-            border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+            background: "oklch(0.17 0.015 var(--primary-h) / 0.3)",
+            border: "1px solid oklch(var(--primary) / 0.3)",
           }}
           data-ocid="home.guest_signup_banner"
         >
@@ -45,8 +46,11 @@ export function UsageIndicator({
           <button
             type="button"
             onClick={() => navigate({ to: "/onboarding/create-account" })}
-            className="shrink-0 px-3.5 h-8 rounded-full font-display font-bold text-[11px] tracking-wide transition-smooth hover:opacity-90 active:scale-[0.98]"
-            style={{ background: TEAL, color: "oklch(0.08 0.005 260)" }}
+            className="shrink-0 px-3.5 h-8 rounded-full font-display font-bold text-xs tracking-wide transition-smooth hover:opacity-90 active:scale-[0.98]"
+            style={{
+              background: TEAL,
+              color: "oklch(0.08 0.005 var(--neutral-hue))",
+            }}
             data-ocid="home.guest_signup_banner.cta"
           >
             Sign Up Free
@@ -57,13 +61,13 @@ export function UsageIndicator({
       <div
         className="rounded-2xl px-4 py-3"
         style={{
-          background: "oklch(0.16 0.01 260)",
-          border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+          background: "oklch(0.16 0.01 var(--neutral-hue))",
+          border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
         }}
       >
         <div
           className="w-full h-1.5 rounded-full overflow-hidden mb-2"
-          style={{ background: "oklch(0.22 0.012 260)" }}
+          style={{ background: "oklch(0.22 0.012 var(--neutral-hue))" }}
         >
           <motion.div
             className="h-full rounded-full"
@@ -76,7 +80,9 @@ export function UsageIndicator({
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <span
             className="text-xs font-body"
-            style={{ color: atLimit ? RED : "oklch(0.6 0.008 260)" }}
+            style={{
+              color: atLimit ? RED : "oklch(0.6 0.008 var(--neutral-hue))",
+            }}
             data-ocid="home.usage_indicator.text"
           >
             {atLimit

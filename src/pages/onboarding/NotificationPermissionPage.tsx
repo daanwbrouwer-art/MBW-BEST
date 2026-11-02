@@ -14,23 +14,23 @@ function PhoneMockup({ previewBody }: { previewBody: string }) {
       <div
         className="absolute inset-0 rounded-full pointer-events-none"
         style={{
-          background: "oklch(0.68 0.25 180 / 0.16)",
+          background: "oklch(var(--primary) / 0.16)",
           filter: "blur(40px)",
         }}
       />
       <div
         className="relative w-full h-full rounded-[34px] overflow-hidden"
         style={{
-          border: "6px solid oklch(0.2 0.01 260)",
+          border: "6px solid oklch(0.2 0.01 var(--neutral-hue))",
           background:
-            "linear-gradient(180deg, oklch(0.15 0.015 220) 0%, oklch(0.1 0.01 240) 100%)",
+            "linear-gradient(180deg, oklch(0.15 0.015 220) 0%, oklch(0.1 0.01 var(--neutral-hue)) 100%)",
           boxShadow: "0 20px 50px oklch(0 0 0 / 0.45)",
         }}
       >
         {/* Notch */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-4 rounded-b-xl z-10"
-          style={{ background: "oklch(0.08 0.005 240)" }}
+          style={{ background: "oklch(0.08 0.005 var(--neutral-hue))" }}
         />
 
         {/* Status bar spacer */}
@@ -43,33 +43,33 @@ function PhoneMockup({ previewBody }: { previewBody: string }) {
           transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="mx-3 rounded-2xl px-3 py-2.5 flex gap-2.5 items-start"
           style={{
-            background: "oklch(0.24 0.015 260 / 0.92)",
-            border: "1px solid oklch(0.38 0.01 260 / 0.5)",
+            background: "oklch(0.24 0.015 var(--neutral-hue) / 0.92)",
+            border: "1px solid oklch(0.38 0.01 var(--neutral-hue) / 0.5)",
             backdropFilter: "blur(6px)",
           }}
         >
           <div
             className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-            style={{ background: "oklch(0.68 0.25 180 / 0.18)" }}
+            style={{ background: "oklch(var(--primary) / 0.18)" }}
           >
             <img
-              src="/assets/images/mbw-logo-white-icon.png"
+              src="/assets/images/mbw-logo-white-icon.webp"
               alt=""
               className="w-4 h-4 object-contain"
             />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[9px] font-display font-bold text-white/70 uppercase tracking-wide">
+              <span className="text-xs font-display font-bold text-white/70 uppercase tracking-wide">
                 MyBodyWeight
               </span>
               <span className="text-[8px] text-white/35 shrink-0">now</span>
             </div>
-            <p className="text-[11px] font-display font-bold text-white mt-0.5 leading-snug">
+            <p className="text-xs font-display font-bold text-white mt-0.5 leading-snug">
               {DAILY_NOTIFICATION_TITLE}
             </p>
             <p
-              className="text-[10px] text-white/60 mt-0.5 leading-snug"
+              className="text-xs text-white/60 mt-0.5 leading-snug"
               style={{ filter: "blur(1.5px)" }}
             >
               {previewBody}
@@ -104,7 +104,7 @@ export default function NotificationPermissionPage() {
         try {
           new Notification(DAILY_NOTIFICATION_TITLE, {
             body: previewBody,
-            icon: "/assets/images/mbw-logo-white-icon.png",
+            icon: "/assets/images/mbw-logo-white-icon.webp",
           });
         } catch {
           // Notification construction can fail in some contexts (e.g. no
@@ -132,7 +132,7 @@ export default function NotificationPermissionPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 45% at 50% 0%, oklch(0.22 0.05 180 / 0.28) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 45% at 50% 0%, oklch(0.22 0.05 var(--primary-h) / 0.28) 0%, transparent 60%)",
         }}
       />
 

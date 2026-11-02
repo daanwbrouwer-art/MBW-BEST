@@ -13,7 +13,7 @@ export default function VerifyEmailConfirmationPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.2) 0%, transparent 55%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--primary-h) / 0.2) 0%, transparent 55%)",
         }}
       />
 
@@ -25,11 +25,11 @@ export default function VerifyEmailConfirmationPage() {
           className="mb-8"
         >
           <img
-            src="/assets/images/mbw-logo-white-icon.png"
+            src="/assets/images/mbw-logo-white-icon.webp"
             alt="MyBodyWeight"
             className="w-16 h-16 object-contain mx-auto"
             style={{
-              filter: "drop-shadow(0 0 10px oklch(0.68 0.25 180 / 0.3))",
+              filter: "drop-shadow(0 0 10px oklch(var(--primary) / 0.3))",
             }}
           />
         </motion.div>

@@ -110,8 +110,8 @@ function getAthleteCount(): number {
 }
 
 const infoCardStyle = {
-  background: "oklch(0.17 0.04 180 / 0.35)",
-  border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+  background: "oklch(0.17 0.04 var(--primary-h) / 0.35)",
+  border: "1px solid oklch(var(--primary) / 0.25)",
 };
 
 export default function OnboardingPage() {
@@ -215,7 +215,7 @@ export default function OnboardingPage() {
         className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full opacity-20"
         style={{
           background:
-            "radial-gradient(ellipse, oklch(0.68 0.25 180) 0%, transparent 70%)",
+            "radial-gradient(ellipse, oklch(var(--primary)) 0%, transparent 70%)",
         }}
       />
 
@@ -351,7 +351,7 @@ function GenderStep({
               <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                 <Check
                   className="w-3 h-3"
-                  style={{ color: "oklch(0.08 0.005 260)" }}
+                  style={{ color: "oklch(0.08 0.005 var(--neutral-hue))" }}
                   strokeWidth={3}
                 />
               </div>
@@ -399,8 +399,8 @@ function BodyMetricsStep({
           A bit about your body
         </h1>
         <p className="text-sm text-muted-foreground">
-          We use this to calculate your BMI and a more accurate calorie burn
-          for every workout.
+          We use this to calculate your BMI and a more accurate calorie burn for
+          every workout.
         </p>
       </div>
       <div className="flex-1 flex flex-col justify-center gap-7">
@@ -668,7 +668,9 @@ function EquipmentStep({
             >
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
-                style={{ background: "oklch(0.18 0.015 180 / 0.5)" }}
+                style={{
+                  background: "oklch(0.18 0.015 var(--primary-h) / 0.5)",
+                }}
               >
                 {eq.icon}
               </div>
@@ -809,7 +811,7 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
             y1="150"
             x2="20"
             y2="10"
-            stroke="oklch(0.32 0.01 260)"
+            stroke="oklch(0.32 0.01 var(--neutral-hue))"
             strokeWidth="1"
           />
           <line
@@ -817,14 +819,14 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
             y1="150"
             x2="280"
             y2="150"
-            stroke="oklch(0.32 0.01 260)"
+            stroke="oklch(0.32 0.01 var(--neutral-hue))"
             strokeWidth="1"
           />
           <text
             x="150"
             y="170"
             textAnchor="middle"
-            fill="oklch(0.55 0.008 260)"
+            fill="oklch(0.55 0.008 var(--neutral-hue))"
             fontSize="9"
           >
             Time
@@ -834,7 +836,7 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
             y="80"
             textAnchor="middle"
             transform="rotate(-90 8 80)"
-            fill="oklch(0.55 0.008 260)"
+            fill="oklch(0.55 0.008 var(--neutral-hue))"
             fontSize="9"
           >
             Fitness
@@ -845,19 +847,29 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
             y1="10"
             x2="280"
             y2="150"
-            stroke="oklch(0.4 0.01 260)"
+            stroke="oklch(0.4 0.01 var(--neutral-hue))"
             strokeWidth="1"
             strokeDasharray="4 4"
           />
 
           <path
             d="M20,130 Q150,125 270,120"
-            stroke="oklch(0.45 0.008 260)"
+            stroke="oklch(0.45 0.008 var(--neutral-hue))"
             strokeWidth="2"
             fill="none"
           />
-          <circle cx="270" cy="120" r="4" fill="oklch(0.45 0.008 260)" />
-          <text x="30" y="145" fontSize="8" fill="oklch(0.6 0.008 260)">
+          <circle
+            cx="270"
+            cy="120"
+            r="4"
+            fill="oklch(0.45 0.008 var(--neutral-hue))"
+          />
+          <text
+            x="30"
+            y="145"
+            fontSize="8"
+            fill="oklch(0.6 0.008 var(--neutral-hue))"
+          >
             You without MyBodyWeight
           </text>
 
@@ -875,7 +887,7 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
             cx="270"
             cy="20"
             r="5"
-            fill="oklch(0.68 0.25 180)"
+            fill="oklch(var(--primary))"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.9 }}

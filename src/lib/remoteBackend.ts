@@ -116,9 +116,9 @@ async function getCurrentUserId(): Promise<string | null> {
   return data.user.id;
 }
 
-/** Rounds to ~3 decimal places (~100m precision) — never store/serve a user's exact GPS point. */
+/** Rounds to 2 decimal places (~1 km precision) — never store/serve a user's exact GPS point. The profiles_guard_writes trigger enforces the same grid server-side. */
 function roundCoord(value: number): number {
-  return Math.round(value * 1000) / 1000;
+  return Math.round(value * 100) / 100;
 }
 
 /**
@@ -162,7 +162,9 @@ export const remoteBackend: backendInterface = {
     if (error || !data.user) {
       return {
         __kind__: "err",
-        err: error ? friendlyAuthErrorMessage(error.message) : "Invalid email or password",
+        err: error
+          ? friendlyAuthErrorMessage(error.message)
+          : "Invalid email or password",
       };
     }
     const { data: profile, error: profileError } = await supabase
@@ -330,15 +332,17 @@ export async function updateActivityPing(
   }
 }
 
-/** Flips the "Visible to nearby athletes" flag. Turning it off doesn't clear the last-known coordinates, just stops exposing them (nearby_profiles filters on discoverable = true). */
+/** Flips the "Visible to nearby athletes" flag. Turning it off also erases the stored coordinates — the Privacy Policy promises location is only kept while you're visible. */
 export async function setDiscoverable(
   discoverable: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const userId = await getCurrentUserId();
   if (!userId) return { ok: false, error: "Not authenticated" };
-  return runOp(
-    supabase.from("profiles").update({ discoverable }).eq("id", userId),
-  );
+  const update: Database["public"]["Tables"]["profiles"]["Update"] =
+    discoverable
+      ? { discoverable }
+      : { discoverable, last_lat: null, last_lng: null };
+  return runOp(supabase.from("profiles").update(update).eq("id", userId));
 }
 
 export interface NearbyAthlete {

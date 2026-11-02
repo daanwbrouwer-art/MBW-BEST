@@ -120,7 +120,7 @@ export function JokerOverlay({
           className="fixed inset-0 z-50 flex flex-col items-center justify-start overflow-y-auto py-8"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 30%, oklch(0.2 0.07 180) 0%, oklch(0.08 0.015 260) 100%)",
+              "radial-gradient(ellipse at 50% 30%, oklch(0.2 0.07 var(--primary-h)) 0%, oklch(0.08 0.015 var(--neutral-hue)) 100%)",
           }}
           data-ocid="joker-overlay"
         >
@@ -128,7 +128,7 @@ export function JokerOverlay({
           {flash && (
             <div
               className="absolute inset-0 pointer-events-none z-10"
-              style={{ background: "oklch(0.68 0.25 180 / 0.15)" }}
+              style={{ background: "oklch(var(--primary) / 0.15)" }}
             />
           )}
 
@@ -138,7 +138,7 @@ export function JokerOverlay({
               <motion.div
                 key={i}
                 className="absolute rounded-full"
-                style={{ border: "1px solid oklch(0.68 0.25 180 / 0.3)" }}
+                style={{ border: "1px solid oklch(var(--primary) / 0.3)" }}
                 initial={{ width: 100, height: 100, opacity: 0.8 }}
                 animate={{ width: 700, height: 700, opacity: 0 }}
                 transition={{
@@ -174,9 +174,9 @@ export function JokerOverlay({
             <h2
               className="font-display font-black text-6xl mb-1 tracking-tight"
               style={{
-                color: "oklch(0.68 0.25 180)",
+                color: "oklch(var(--primary))",
                 textShadow:
-                  "0 0 30px oklch(0.68 0.25 180 / 0.7), 0 0 60px oklch(0.68 0.25 180 / 0.3)",
+                  "0 0 30px oklch(var(--primary) / 0.7), 0 0 60px oklch(var(--primary) / 0.3)",
               }}
             >
               JOKER!
@@ -189,10 +189,10 @@ export function JokerOverlay({
             <div
               className="rounded-2xl px-5 py-5 mb-5 backdrop-blur-md border"
               style={{
-                background: "oklch(0.14 0.02 260 / 0.85)",
-                borderColor: "oklch(0.68 0.25 180 / 0.35)",
+                background: "oklch(0.14 0.02 var(--neutral-hue) / 0.85)",
+                borderColor: "oklch(var(--primary) / 0.35)",
                 boxShadow:
-                  "0 0 30px oklch(0.68 0.25 180 / 0.12), inset 0 0 40px oklch(0.68 0.25 180 / 0.04)",
+                  "0 0 30px oklch(var(--primary) / 0.12), inset 0 0 40px oklch(var(--primary) / 0.04)",
               }}
             >
               <div className="text-4xl mb-2">{challengeEmoji}</div>
@@ -209,8 +209,8 @@ export function JokerOverlay({
                   <div
                     className="mx-auto mb-3 rounded-xl p-2"
                     style={{
-                      background: "oklch(0.16 0.015 260)",
-                      border: "1px solid oklch(0.68 0.25 180 / 0.18)",
+                      background: "oklch(0.16 0.015 var(--neutral-hue))",
+                      border: "1px solid oklch(var(--primary) / 0.18)",
                     }}
                   >
                     <div
@@ -237,13 +237,13 @@ export function JokerOverlay({
                       style={{
                         borderBottom:
                           i < jokerComboList!.length - 1
-                            ? "1px solid oklch(0.68 0.25 180 / 0.15)"
+                            ? "1px solid oklch(var(--primary) / 0.15)"
                             : "none",
                       }}
                     >
                       <span
                         className="font-display font-black text-base shrink-0 w-6 text-center"
-                        style={{ color: "oklch(0.68 0.25 180)" }}
+                        style={{ color: "oklch(var(--primary))" }}
                       >
                         {i + 1}.
                       </span>
@@ -251,8 +251,8 @@ export function JokerOverlay({
                         {step.reps}× {step.exerciseName}
                         {step.eachLeg && (
                           <span
-                            className="text-[10px] font-body font-normal ml-1"
-                            style={{ color: "oklch(0.68 0.25 180 / 0.7)" }}
+                            className="text-xs font-body font-normal ml-1"
+                            style={{ color: "oklch(var(--primary) / 0.7)" }}
                           >
                             (each leg)
                           </span>
@@ -260,7 +260,7 @@ export function JokerOverlay({
                       </span>
                     </div>
                   ))}
-                  <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-wider font-body">
+                  <p className="text-xs text-muted-foreground mt-2 uppercase tracking-wider font-body">
                     No rest between exercises
                   </p>
                 </div>
@@ -280,7 +280,7 @@ export function JokerOverlay({
                         cy="50"
                         r="44"
                         fill="none"
-                        stroke="oklch(0.26 0.01 260)"
+                        stroke="oklch(0.26 0.01 var(--neutral-hue))"
                         strokeWidth="5"
                       />
                       <motion.circle
@@ -288,7 +288,7 @@ export function JokerOverlay({
                         cy="50"
                         r="44"
                         fill="none"
-                        stroke="oklch(0.68 0.25 180)"
+                        stroke="oklch(var(--primary))"
                         strokeWidth="5"
                         strokeLinecap="round"
                         strokeDasharray={circumference}
@@ -296,7 +296,7 @@ export function JokerOverlay({
                         transition={{ duration: 0.9, ease: "easeOut" }}
                         style={{
                           filter:
-                            "drop-shadow(0 0 8px oklch(0.68 0.25 180 / 0.9)) drop-shadow(0 0 16px oklch(0.68 0.25 180 / 0.4))",
+                            "drop-shadow(0 0 8px oklch(var(--primary) / 0.9)) drop-shadow(0 0 16px oklch(var(--primary) / 0.4))",
                         }}
                       />
                     </svg>
@@ -316,9 +316,9 @@ export function JokerOverlay({
                       onClick={handleStart}
                       className="font-display font-bold tracking-widest text-sm px-6"
                       style={{
-                        background: "oklch(0.68 0.25 180)",
-                        color: "oklch(0.12 0.008 260)",
-                        boxShadow: "0 0 20px oklch(0.68 0.25 180 / 0.4)",
+                        background: "oklch(var(--primary))",
+                        color: "oklch(0.12 0.008 var(--neutral-hue))",
+                        boxShadow: "0 0 20px oklch(var(--primary) / 0.4)",
                       }}
                       data-ocid="joker-overlay.start_timer_button"
                     >
@@ -329,8 +329,8 @@ export function JokerOverlay({
                     <p
                       className="text-xs font-display font-bold uppercase tracking-[0.2em] pulse-accent"
                       style={{
-                        color: "oklch(0.68 0.25 180)",
-                        textShadow: "0 0 10px oklch(0.68 0.25 180 / 0.7)",
+                        color: "oklch(var(--primary))",
+                        textShadow: "0 0 10px oklch(var(--primary) / 0.7)",
                       }}
                     >
                       Hold position!
@@ -352,15 +352,15 @@ export function JokerOverlay({
               style={{
                 background:
                   countdown === 0 || !running
-                    ? "oklch(0.68 0.25 180)"
-                    : "oklch(0.26 0.01 260)",
+                    ? "oklch(var(--primary))"
+                    : "oklch(0.26 0.01 var(--neutral-hue))",
                 color:
                   countdown === 0 || !running
-                    ? "oklch(0.12 0.008 260)"
-                    : "oklch(0.55 0.008 260)",
+                    ? "oklch(0.12 0.008 var(--neutral-hue))"
+                    : "oklch(0.55 0.008 var(--neutral-hue))",
                 boxShadow:
                   countdown === 0 || !running
-                    ? "0 0 30px oklch(0.68 0.25 180 / 0.4)"
+                    ? "0 0 30px oklch(var(--primary) / 0.4)"
                     : "none",
               }}
               onClick={handleDone}
@@ -391,14 +391,15 @@ function OverlayMiniIllustration({
   gender: WorkoutGender;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const src = step.imagePath ?? resolveExerciseIllustration(step.exerciseName, gender);
+  const src =
+    step.imagePath ?? resolveExerciseIllustration(step.exerciseName, gender);
 
   return (
     <div
       className="relative rounded-lg flex items-center justify-center"
       style={{
         background: "#fafafa",
-        border: "1px solid oklch(0.68 0.25 180 / 0.18)",
+        border: "1px solid oklch(var(--primary) / 0.18)",
         padding: "8px",
         aspectRatio: "1 / 1",
         minHeight: 0,
@@ -408,8 +409,8 @@ function OverlayMiniIllustration({
       <span
         className="absolute top-1 left-1.5 font-display font-black"
         style={{
-          fontSize: "10px",
-          color: "oklch(0.68 0.25 180)",
+          fontSize: "12px",
+          color: "oklch(var(--primary))",
           zIndex: 2,
         }}
       >
@@ -419,8 +420,8 @@ function OverlayMiniIllustration({
         <span
           className="text-center font-display font-bold uppercase leading-tight px-1"
           style={{
-            fontSize: "10px",
-            color: "oklch(0.20 0.01 260)",
+            fontSize: "12px",
+            color: "oklch(0.20 0.01 var(--neutral-hue))",
             letterSpacing: "0.3px",
           }}
         >

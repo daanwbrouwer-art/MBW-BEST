@@ -25,14 +25,14 @@ export function WorkoutStats({
         icon={<Clock className="w-3.5 h-3.5" />}
         value={elapsed}
         label="Time"
-        glowColor="oklch(0.68 0.25 180 / 0.25)"
+        glowColor="oklch(var(--primary) / 0.25)"
       />
       <StatPill
         icon={<Flame className="w-3.5 h-3.5" />}
         value={String(calories)}
         label="kcal"
         accent="amber"
-        glowColor="oklch(0.83 0.19 84 / 0.3)"
+        glowColor="oklch(var(--prestige) / 0.3)"
       />
       <StatPill
         icon={<CheckCircle2 className="w-3.5 h-3.5" />}
@@ -54,24 +54,24 @@ interface StatPillProps {
 }
 
 const ACCENT_ICON_COLOR: Record<string, string> = {
-  amber: "oklch(0.83 0.19 84)",
+  amber: "oklch(var(--prestige))",
   green: "oklch(0.72 0.19 145)",
-  cyan: "oklch(0.68 0.25 180)",
+  cyan: "oklch(var(--primary))",
 };
 
 function StatPill({ icon, value, label, accent, glowColor }: StatPillProps) {
   const iconColor = accent
     ? ACCENT_ICON_COLOR[accent]
-    : "oklch(0.55 0.008 260)";
+    : "oklch(0.55 0.008 var(--neutral-hue))";
 
   return (
     <div
       className="flex flex-1 items-center gap-2 rounded-2xl px-3 py-2.5 border backdrop-blur-sm"
       style={{
-        background: "oklch(0.16 0.01 260 / 0.85)",
+        background: "oklch(0.16 0.01 var(--neutral-hue) / 0.85)",
         borderColor: glowColor
           ? glowColor.replace("0.25)", "0.25)").replace("0.3)", "0.3)")
-          : "oklch(0.26 0.01 260)",
+          : "oklch(0.26 0.01 var(--neutral-hue))",
         boxShadow: glowColor ? `0 0 16px ${glowColor}` : undefined,
       }}
     >

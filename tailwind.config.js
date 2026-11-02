@@ -25,6 +25,30 @@ export default {
           DEFAULT: "oklch(var(--primary) / <alpha-value>)",
           foreground: "oklch(var(--primary-foreground))",
         },
+        // Four-colour deck (src/theme/palettes.ts): primary ♠, energy ♥,
+        // prestige ♦, pulse ♣. All four carry dark text on top.
+        energy: {
+          DEFAULT: "oklch(var(--energy) / <alpha-value>)",
+          foreground: "oklch(var(--on-brand))",
+        },
+        prestige: {
+          DEFAULT: "oklch(var(--prestige) / <alpha-value>)",
+          foreground: "oklch(var(--on-brand))",
+        },
+        pulse: {
+          DEFAULT: "oklch(var(--pulse) / <alpha-value>)",
+          foreground: "oklch(var(--on-brand))",
+        },
+        // Completed / goal met — fixed across themes (index.css).
+        success: {
+          DEFAULT: "oklch(var(--success) / <alpha-value>)",
+          foreground: "oklch(var(--on-brand))",
+        },
+        // Fifth accent, outside the suits: "Recommended", unseen dots, etc.
+        highlight: {
+          DEFAULT: "oklch(var(--highlight) / <alpha-value>)",
+          foreground: "oklch(var(--on-brand))",
+        },
         secondary: {
           DEFAULT: "oklch(var(--secondary) / <alpha-value>)",
           foreground: "oklch(var(--secondary-foreground))",

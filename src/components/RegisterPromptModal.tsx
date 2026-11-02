@@ -41,10 +41,10 @@ export function RegisterPromptModal({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-[420px] rounded-3xl overflow-hidden"
         style={{
-          background: "oklch(0.14 0.012 260)",
-          border: "1px solid oklch(0.68 0.25 180 / 0.25)",
+          background: "oklch(0.14 0.012 var(--neutral-hue))",
+          border: "1px solid oklch(var(--primary) / 0.25)",
           boxShadow:
-            "0 -4px 60px oklch(0.68 0.25 180 / 0.12), 0 20px 60px oklch(0 0 0 / 0.6)",
+            "0 -4px 60px oklch(var(--primary) / 0.12), 0 20px 60px oklch(0 0 0 / 0.6)",
         }}
       >
         <div className="px-6 pt-6 pb-7">
@@ -52,8 +52,8 @@ export function RegisterPromptModal({
             <div
               className="w-10 h-10 rounded-2xl flex items-center justify-center"
               style={{
-                background: "oklch(0.68 0.25 180 / 0.15)",
-                border: "1px solid oklch(0.68 0.25 180 / 0.3)",
+                background: "oklch(var(--primary) / 0.15)",
+                border: "1px solid oklch(var(--primary) / 0.3)",
               }}
             >
               <span className="text-base">🔒</span>
@@ -70,7 +70,7 @@ export function RegisterPromptModal({
               type="button"
               onClick={handleRegister}
               className="w-full h-12 rounded-2xl font-display font-black text-sm tracking-widest uppercase transition-smooth bg-primary text-background"
-              style={{ boxShadow: "0 4px 20px oklch(0.68 0.25 180 / 0.3)" }}
+              style={{ boxShadow: "0 4px 20px oklch(var(--primary) / 0.3)" }}
               data-ocid="register-prompt.primary_button"
             >
               Register Free

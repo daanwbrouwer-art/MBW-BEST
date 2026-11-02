@@ -1,3 +1,5 @@
+import { BottomNav, NAV_TAB_PATHS } from "@/components/BottomNav";
+import { RouteError } from "@/components/RouteError";
 import { Toaster } from "@/components/ui/sonner";
 import { useInternetIdentity } from "@/hooks/use-local-identity";
 import { getPositionIfPermitted } from "@/hooks/use-location";
@@ -13,12 +15,21 @@ import {
   createRoute,
   createRouter,
   useNavigate,
+  useRouterState,
 } from "@tanstack/react-router";
-import { Suspense, lazy, useEffect } from "react";
+import { MotionConfig } from "motion/react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import AchievementsPage from "./pages/AchievementsPage";
 
+// Bottom-nav tab pages: lazy, but preloaded in the background (RootLayout).
+const loadHome = () => import("@/pages/HomePage");
+const loadTrainTogether = () => import("@/pages/TrainTogetherHubPage");
+const loadMap = () => import("@/pages/MapPage");
+const loadProfile = () => import("@/pages/ProfilePage");
+const TAB_PAGE_IMPORTS = [loadHome, loadTrainTogether, loadMap, loadProfile];
+
 const SplashPage = lazy(() => import("@/pages/SplashPage"));
-const HomePage = lazy(() => import("@/pages/HomePage"));
+const HomePage = lazy(loadHome);
 const DecksPage = lazy(() => import("@/pages/DecksPage"));
 const WorkoutSetupPage = lazy(() => import("@/pages/WorkoutSetupPage"));
 const WorkoutSessionPage = lazy(() => import("@/pages/WorkoutSessionPage"));
@@ -34,9 +45,9 @@ const EmailSignUpPage = lazy(
 const NotificationPermissionPage = lazy(
   () => import("@/pages/onboarding/NotificationPermissionPage"),
 );
-const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const ProfilePage = lazy(loadProfile);
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
-const MapPage = lazy(() => import("@/pages/MapPage"));
+const MapPage = lazy(loadMap);
 const ExerciseProgressPage = lazy(() => import("@/pages/ExerciseProgressPage"));
 const NearbyPage = lazy(() => import("@/pages/NearbyPage"));
 const ChatThreadsPage = lazy(() => import("@/pages/ChatThreadsPage"));
@@ -54,6 +65,7 @@ const OnboardingFlowPage = lazy(() => import("@/pages/OnboardingPage"));
 const MyStreakPage = lazy(() => import("@/pages/MyStreakPage"));
 const ProDeckPreviewPage = lazy(() => import("@/pages/ProDeckPreviewPage"));
 const SubscribePage = lazy(() => import("@/pages/SubscribePage"));
+const PaletteLabPage = lazy(() => import("@/pages/PaletteLabPage"));
 const CustomWorkoutBuilderPage = lazy(
   () => import("@/pages/CustomWorkoutBuilderPage"),
 );
@@ -62,7 +74,7 @@ const CustomDeckDetailPage = lazy(() => import("@/pages/CustomDeckDetailPage"));
 const CustomWorkoutSessionPage = lazy(
   () => import("@/pages/CustomWorkoutSessionPage"),
 );
-const TrainTogetherHubPage = lazy(() => import("@/pages/TrainTogetherHubPage"));
+const TrainTogetherHubPage = lazy(loadTrainTogether);
 const TrainTogetherWaitingRoomPage = lazy(
   () => import("@/pages/TrainTogetherWaitingRoomPage"),
 );
@@ -72,6 +84,34 @@ const TrainTogetherSessionPage = lazy(
 
 function RootLayout() {
   const guestMode = useWorkoutStore((s) => s.guestMode);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const tabIndex = NAV_TAB_PATHS.indexOf(pathname);
+
+  // Tab-to-tab navigation slides the new page in from the side you moved
+  // towards (Home → Together slides in from the right, and back).
+  const prevTabIndex = useRef(tabIndex);
+  const slideDir =
+    tabIndex >= 0 && prevTabIndex.current >= 0
+      ? Math.sign(tabIndex - prevTabIndex.current)
+      : 0;
+  useEffect(() => {
+    prevTabIndex.current = tabIndex;
+  }, [tabIndex]);
+
+  // Fetch the other tab pages in the background once the app is idle, so
+  // switching tabs never waits on a network chunk.
+  useEffect(() => {
+    const preload = () => {
+      for (const load of TAB_PAGE_IMPORTS) load();
+    };
+    const id = window.requestIdleCallback
+      ? window.requestIdleCallback(preload)
+      : window.setTimeout(preload, 1500);
+    return () =>
+      window.cancelIdleCallback
+        ? window.cancelIdleCallback(id)
+        : window.clearTimeout(id);
+  }, []);
 
   // Once-per-day app-open log, keyed to whichever bucket is active right
   // now — powers the "Ghost" secret achievement (opened the app daily for
@@ -100,8 +140,33 @@ function RootLayout() {
           </div>
         }
       >
-        <Outlet />
+        {/* Respect the OS "reduce motion" setting for every motion animation. */}
+        <MotionConfig reducedMotion="user">
+          <div className="overflow-x-clip">
+            {/* CSS animation, not motion: a motion mount animation is lost
+                when a lazy page suspends underneath it, leaving the page
+                stuck invisible. A CSS animation simply starts on reveal. */}
+            <div
+              key={tabIndex >= 0 ? pathname : "page"}
+              className={slideDir ? "tab-slide-in" : undefined}
+              style={
+                slideDir
+                  ? ({
+                      "--slide-from": `${slideDir * 28}%`,
+                    } as React.CSSProperties)
+                  : undefined
+              }
+            >
+              <Outlet />
+            </div>
+          </div>
+        </MotionConfig>
       </Suspense>
+      {tabIndex >= 0 && (
+        <MotionConfig reducedMotion="user">
+          <BottomNav activeIndex={tabIndex} />
+        </MotionConfig>
+      )}
       <Toaster />
     </div>
   );
@@ -349,6 +414,12 @@ const proDeckPreviewRoute = createRoute({
   ),
 });
 
+const paletteLabRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/palette-lab",
+  component: PaletteLabPage,
+});
+
 const subscribeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/subscribe",
@@ -492,9 +563,13 @@ const routeTree = rootRoute.addChildren([
   trainTogetherRoute,
   trainTogetherWaitingRoute,
   trainTogetherSessionRoute,
+  paletteLabRoute,
 ]);
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  defaultErrorComponent: RouteError,
+});
 
 declare module "@tanstack/react-router" {
   interface Register {

@@ -42,14 +42,14 @@ export default function ChatThreadsPage() {
         className="absolute inset-0 pointer-events-none max-w-[430px] mx-auto"
         style={{
           background:
-            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 180 / 0.22) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 40% at 50% 0%, oklch(0.22 0.04 var(--pulse-h) / 0.22) 0%, transparent 60%)",
         }}
       />
 
       <header className="relative z-10 flex items-center justify-between px-5 pt-12 pb-4">
         <button
           type="button"
-          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-smooth"
+          className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-pulse/50 hover:text-pulse transition-smooth"
           onClick={() => navigate({ to: "/profile" })}
           data-ocid="chat-threads.back_button"
           aria-label="Go back to profile"
@@ -79,18 +79,18 @@ export default function ChatThreadsPage() {
           <div
             className="rounded-2xl px-5 py-10 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
             }}
             data-ocid="chat-threads.signin_required"
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+              style={{ background: "oklch(var(--pulse) / 0.1)" }}
             >
               <MessageCircle
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--pulse) / 0.5)" }}
               />
             </div>
             <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -102,31 +102,31 @@ export default function ChatThreadsPage() {
             <button
               type="button"
               onClick={() => navigate({ to: "/onboarding/auth" })}
-              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
             >
               Sign in
             </button>
           </div>
         ) : isLoading ? (
           <div className="flex justify-center py-10">
-            <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+            <div className="w-6 h-6 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
           </div>
         ) : hasError ? (
           <div
             className="rounded-2xl px-5 py-10 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
             }}
             data-ocid="chat-threads.error_state"
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+              style={{ background: "oklch(var(--pulse) / 0.1)" }}
             >
               <WifiOff
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--pulse) / 0.5)" }}
               />
             </div>
             <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -138,7 +138,7 @@ export default function ChatThreadsPage() {
             <button
               type="button"
               onClick={() => refetch()}
-              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
               data-ocid="chat-threads.error_retry_button"
             >
               Try again
@@ -148,18 +148,18 @@ export default function ChatThreadsPage() {
           <div
             className="rounded-2xl px-5 py-10 text-center"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.4)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.4)",
             }}
             data-ocid="chat-threads.empty_state"
           >
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: "oklch(0.68 0.25 180 / 0.1)" }}
+              style={{ background: "oklch(var(--pulse) / 0.1)" }}
             >
               <MessageCircle
                 className="w-7 h-7"
-                style={{ color: "oklch(0.68 0.25 180 / 0.5)" }}
+                style={{ color: "oklch(var(--pulse) / 0.5)" }}
               />
             </div>
             <p className="font-display font-bold text-sm text-foreground mb-1">
@@ -171,7 +171,7 @@ export default function ChatThreadsPage() {
             <button
               type="button"
               onClick={() => navigate({ to: "/nearby" })}
-              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-primary text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
+              className="px-5 h-11 rounded-full font-display font-bold text-xs tracking-wide bg-pulse text-background transition-smooth hover:opacity-90 active:scale-[0.98]"
             >
               Find nearby athletes
             </button>
@@ -180,8 +180,8 @@ export default function ChatThreadsPage() {
           <div
             className="rounded-2xl overflow-hidden"
             style={{
-              background: "oklch(0.16 0.01 260)",
-              border: "1px solid oklch(0.26 0.01 260 / 0.5)",
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
             }}
           >
             {threads.map((thread, i) => (
@@ -198,7 +198,7 @@ export default function ChatThreadsPage() {
                 style={{
                   borderBottom:
                     i < threads.length - 1
-                      ? "1px solid oklch(0.22 0.01 260 / 0.5)"
+                      ? "1px solid oklch(0.22 0.01 var(--neutral-hue) / 0.5)"
                       : "none",
                 }}
                 data-ocid={`chat-threads.item.${i + 1}`}
@@ -206,8 +206,8 @@ export default function ChatThreadsPage() {
                 <div
                   className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-display font-black text-sm"
                   style={{
-                    background: "oklch(0.68 0.25 180 / 0.15)",
-                    color: "oklch(0.68 0.25 180)",
+                    background: "oklch(var(--pulse) / 0.15)",
+                    color: "oklch(var(--pulse))",
                   }}
                 >
                   {thread.otherUsername.slice(0, 2).toUpperCase()}
@@ -227,13 +227,13 @@ export default function ChatThreadsPage() {
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
-                  <span className="text-[10px] text-muted-foreground font-body">
+                  <span className="text-xs text-muted-foreground font-body">
                     {timeAgoLabel(thread.lastMessageAt)}
                   </span>
                   {thread.isUnread && (
                     <span
                       className="w-2 h-2 rounded-full"
-                      style={{ background: "oklch(0.68 0.25 180)" }}
+                      style={{ background: "oklch(var(--pulse))" }}
                       data-ocid={`chat-threads.unread_dot.${i + 1}`}
                     />
                   )}
