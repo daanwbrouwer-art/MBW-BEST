@@ -79,6 +79,33 @@ export type Database = {
           },
         ];
       };
+      custom_decks: {
+        Row: {
+          created_at: string;
+          exercises: Json;
+          id: string;
+          name: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          exercises: Json;
+          id: string;
+          name: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          exercises?: Json;
+          id?: string;
+          name?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       chat_threads: {
         Row: {
           created_at: string;
@@ -209,6 +236,8 @@ export type Database = {
       };
       profiles: {
         Row: {
+          onboarding: Json | null;
+          onboarding_completed_at: string | null;
           ace_cards_drawn: number
           created_at: string
           current_streak: number
@@ -239,6 +268,8 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          onboarding?: Json | null;
+          onboarding_completed_at?: string | null;
           ace_cards_drawn?: number
           created_at?: string
           current_streak?: number
@@ -269,6 +300,8 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          onboarding?: Json | null;
+          onboarding_completed_at?: string | null;
           ace_cards_drawn?: number
           created_at?: string
           current_streak?: number
@@ -862,6 +895,20 @@ export type Database = {
           other_user_id: string;
           other_username: string;
           thread_id: string;
+        }[];
+      };
+      find_profile_by_username: {
+        Args: { p_username: string };
+        Returns: {
+          id: string;
+          username: string;
+        }[];
+      };
+      get_usernames: {
+        Args: { p_ids: string[] };
+        Returns: {
+          id: string;
+          username: string;
         }[];
       };
       get_thread_peer: {
@@ -1622,6 +1669,10 @@ export type Database = {
         Returns: undefined;
       };
       unlockrows: { Args: { "": string }; Returns: number };
+      username_available: {
+        Args: { p_username: string };
+        Returns: boolean;
+      };
       updategeometrysrid: {
         Args: {
           catalogn_name: string;

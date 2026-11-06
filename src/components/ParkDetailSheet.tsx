@@ -1,9 +1,9 @@
 import {
-import { parkDisplayName, parkEquipmentLabels } from "@/lib/parkLabels";
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { parkDisplayName, parkEquipmentLabels } from "@/lib/parkLabels";
 import { supabase } from "@/lib/supabaseClient";
 import { Browser } from "@capacitor/browser";
 import { useQuery } from "@tanstack/react-query";

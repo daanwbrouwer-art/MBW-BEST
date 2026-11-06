@@ -4,6 +4,7 @@
 // Body measurements (weight, height, age) never leave the device: the
 // privacy policy promises that, and the server rejects them anyway (see the
 // profiles_onboarding_shape check in 20261106130000).
+import type { Json, TablesUpdate } from "@/lib/database.types";
 import { supabase } from "@/lib/supabaseClient";
 import type { OnboardingData } from "@/types/user";
 
@@ -51,8 +52,8 @@ export async function pushOnboarding(
   const uid = userId ?? (await currentUserId());
   if (!uid) return;
   const completedAt = new Date(data.completedAt ?? Date.now()).toISOString();
-  const update: Record<string, unknown> = {
-    onboarding: toServerOnboarding(data),
+  const update: TablesUpdate<"profiles"> = {
+    onboarding: toServerOnboarding(data) as Json,
     onboarding_completed_at: completedAt,
   };
   // gender is locked server-side once set (profiles_guard_writes), so this
