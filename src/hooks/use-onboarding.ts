@@ -67,7 +67,11 @@ export function useOnboarding() {
         gender: "male",
         hasCompletedOnboarding: false,
       };
-      const updated: OnboardingData = { ...base, ...patch };
+      const updated: OnboardingData = {
+        ...base,
+        ...patch,
+        updatedAt: Date.now(),
+      };
       writeOnboarding(isGuest, updated);
       setData(updated);
       // Signed-in users keep their answers on the account (minus body

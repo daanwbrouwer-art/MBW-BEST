@@ -110,13 +110,15 @@ export default function EmailSignUpPage() {
       if ("ok" in result) {
         const loginResult = await (actor as any).loginUser(email, password);
         if ("ok" in loginResult) {
-          // Clears a previous account's leftovers and links RevenueCat to
-          // the new account before guest progress is copied across.
-          await completeSignIn(loginResult.ok);
-          migrateGuestOnboarding();
-          migrateGuestStreak();
-          migrateGuestAchievements();
-          migrateGuestWeeklyChallenge();
+          // Clears a previous account's leftovers, copies the guest's
+          // progress onto the new account, then links RevenueCat and syncs
+          // (so the copied onboarding answers are uploaded right away).
+          await completeSignIn(loginResult.ok, () => {
+            migrateGuestOnboarding();
+            migrateGuestStreak();
+            migrateGuestAchievements();
+            migrateGuestWeeklyChallenge();
+          });
           ensureReferralCode(email);
           if (referralCode.trim()) redeemReferralCode(email, referralCode);
           setGuestMode(false);

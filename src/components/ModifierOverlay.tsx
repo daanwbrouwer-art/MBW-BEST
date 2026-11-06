@@ -28,6 +28,13 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAce = type === "ace";
   const isShowing = visible && type !== null;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Move focus to the panel when it appears, so keyboard and screen-reader
+  // users land on it (Enter / Space / Escape dismiss it).
+  useEffect(() => {
+    if (isShowing) panelRef.current?.focus();
+  }, [isShowing]);
 
   useEffect(() => {
     if (!isShowing) return;
@@ -53,6 +60,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
     <AnimatePresence>
       {isShowing && (
         <motion.div
+          ref={panelRef}
           key={`modifier-${type}`}
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -63,7 +71,7 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             damping: 26,
             duration: 0.4,
           }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center cursor-pointer select-none"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center cursor-pointer select-none outline-none"
           style={{
             background: isAce
               ? "radial-gradient(ellipse 70% 60% at 50% 40%, oklch(var(--energy)) 0%, oklch(0.10 0.02 20) 45%, oklch(0.08 0.008 var(--neutral-hue)) 70%)"

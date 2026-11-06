@@ -33,6 +33,7 @@ import {
 } from "@/lib/calories";
 import { readChallengeHistory } from "@/lib/challenge";
 import { signOut } from "@/lib/accountSession";
+import { startRetake } from "@/lib/retakeAssessment";
 import { deleteAccount } from "@/lib/deleteAccount";
 import {
   openManageSubscriptions,
@@ -309,9 +310,10 @@ export default function ProfilePage() {
     saveOnboarding({ age: clamp(value, min, max) });
   };
 
-  // Onboarding stays complete during a retake: OnboardingPage sees it is
-  // already finished, prefills the old answers, and Back returns here.
+  // Onboarding stays complete during a retake: OnboardingPage sees the
+  // retake flag, prefills the old answers, and Back or Finish return here.
   const handleRetakeAssessment = () => {
+    startRetake();
     navigate({ to: "/onboarding" });
   };
 

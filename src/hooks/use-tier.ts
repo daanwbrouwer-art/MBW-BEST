@@ -3,6 +3,7 @@ import {
   queuePendingUnlockAnimations,
   reconcileAchievementsOnSubscribe,
 } from "@/lib/achievementEngine";
+import { purchasesReady } from "@/lib/accountSession";
 import { ENTITLEMENT_ID, tierIdForProductId } from "@/lib/payments";
 import { readStreak } from "@/lib/streak";
 import { activateTrial, getTrialStatus, markTrialConverted } from "@/lib/trial";
@@ -113,7 +114,10 @@ export function useTier() {
       if (!cancelled) setSubscription(subscriptionFromCustomerInfo(info));
     };
 
-    Purchases.getCustomerInfo()
+    // Wait until the signed-in account is linked to RevenueCat, so a paying
+    // user isn't shown the anonymous (free) state first.
+    purchasesReady
+      .then(() => Purchases.getCustomerInfo())
       .then(({ customerInfo }) => applyCustomerInfo(customerInfo))
       .finally(() => {
         if (!cancelled) setIsLoading(false);

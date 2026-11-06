@@ -3,6 +3,7 @@ import { WeeklyGoalPicker } from "@/components/WeeklyGoalPicker";
 import { Slider } from "@/components/ui/slider";
 import { DEFAULT_EQUIPMENT, useOnboarding } from "@/hooks/use-onboarding";
 import { calculateBMI, getBMICategory } from "@/lib/calories";
+import { endRetake, isRetakeRequested } from "@/lib/retakeAssessment";
 import {
   readStreak,
   setWeeklyGoal as setWeeklyGoalLib,
@@ -123,10 +124,9 @@ export default function OnboardingPage() {
   const { saveOnboarding } = onboarding;
   const guestMode = useWorkoutStore((s) => s.guestMode);
   const isSignedIn = localStorage.getItem("mbw_user") !== null;
-  // Opening the questionnaire after finishing it means "Retake assessment"
-  // from Profile: onboarding stays complete, Back and Finish return to
-  // Profile, and the answers start from what the user picked last time.
-  const isRetake = onboarding.hasCompletedOnboarding;
+  // "Retake assessment" from Profile: onboarding stays complete, Back and
+  // Finish return to Profile, and the answers start from the previous ones.
+  const isRetake = onboarding.hasCompletedOnboarding && isRetakeRequested();
 
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState("");
@@ -179,7 +179,10 @@ export default function OnboardingPage() {
 
   const goBack = () => {
     if (step === 1) {
-      if (isRetake) navigate({ to: "/profile" });
+      if (isRetake) {
+        endRetake();
+        navigate({ to: "/profile" });
+      }
       // A signed-in user has nowhere before the first question: the
       // welcome screen is the sign-up / sign-in page.
       else if (!isSignedIn) navigate({ to: "/onboarding/welcome" });
@@ -204,6 +207,7 @@ export default function OnboardingPage() {
     });
     const isEmailAuth = localStorage.getItem("mbw_user") !== null;
     setWeeklyGoalLib(guestMode && !isEmailAuth, weeklyGoal);
+    endRetake();
     navigate({ to: isRetake ? "/profile" : "/home" });
   };
 

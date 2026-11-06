@@ -346,8 +346,11 @@ export default function WorkoutSummaryPage() {
 
   const stats = getWorkoutStats();
   const completedCards = stats.completedCards;
+  // Measured to when the last card was finished (workoutEndTime), so the
+  // duration doesn't keep growing if the summary is shown again later.
+  const workoutEndTime = useWorkoutStore((s) => s.workoutEndTime);
   const duration = workoutStartTime
-    ? Math.floor((Date.now() - workoutStartTime) / 1000)
+    ? Math.floor(((workoutEndTime ?? Date.now()) - workoutStartTime) / 1000)
     : 0;
   const calories = stats.estimatedCalories;
   const hasSummary = completedCards > 0;
@@ -376,7 +379,6 @@ export default function WorkoutSummaryPage() {
       !guestMode
     ) {
       hasSaved.current = true;
-      if (workoutId) useWorkoutStore.getState().markWorkoutSaved(workoutId);
       const repsBySuit = { hearts: 0, spades: 0, clubs: 0, diamonds: 0 };
       let totalRepsCount = 0;
       for (const sc of playedForSave) {
@@ -427,7 +429,24 @@ export default function WorkoutSummaryPage() {
           BigInt(row.reps),
         ]),
       };
-      saveMutation.mutate(entry);
+      // Marked saved only once the server confirms. On failure the summary
+      // can try again (on the next render or reload); the server ignores a
+      // second row with the same id, so retrying never duplicates.
+      saveMutation.mutate(entry, {
+        onSuccess: (result) => {
+          if (result && "ok" in result) {
+            if (workoutId)
+              useWorkoutStore.getState().markWorkoutSaved(workoutId);
+          } else {
+            hasSaved.current = false;
+            console.warn("Workout not saved:", result?.err);
+          }
+        },
+        onError: (err) => {
+          hasSaved.current = false;
+          console.warn("Workout not saved:", err);
+        },
+      });
       // Nearby-athletes activity ping — this whole block is already gated
       // to registered (non-guest) users above. Never prompts for location;
       // no-ops unless the user has opted into "Visible to nearby athletes".

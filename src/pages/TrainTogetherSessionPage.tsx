@@ -1,4 +1,5 @@
 import { PartyUnavailable } from "@/components/PartyUnavailable";
+import { cn } from "@/lib/utils";
 import { Logo } from "@/components/Logo";
 import { ProgressBar } from "@/components/ProgressBar";
 import {
@@ -52,19 +53,26 @@ function CardOwnerPicker({
   isAssigning,
   onPick,
   onLeave,
+  hidden,
 }: {
   participants: TrainTogetherParticipant[];
   isAssigning: boolean;
   onPick: (userId: string) => void;
   /** The sheet covers the header's quit button, so it offers its own. */
   onLeave: () => void;
+  /** Hidden instantly (no exit animation) while the quit dialog is open, so
+   * the sheet never sits on top of the dialog. */
+  hidden: boolean;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[70] flex items-end justify-center"
+      className={cn(
+        "fixed inset-0 z-[70] flex items-end justify-center",
+        hidden && "hidden",
+      )}
       style={{ background: "oklch(0.05 0.005 var(--neutral-hue) / 0.85)" }}
       data-ocid="train-together.card_owner_picker"
     >
@@ -347,6 +355,7 @@ function SessionRunner({
               type="button"
               className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-destructive transition-smooth shrink-0"
               data-ocid="train-together.session_quit"
+              aria-label="Quit session"
             >
               <X className="w-4 h-4" />
             </button>
@@ -518,12 +527,13 @@ function SessionRunner({
       </div>
 
       <AnimatePresence>
-        {needsOwner && !quitOpen && (
+        {needsOwner && (
           <CardOwnerPicker
             participants={participants}
             isAssigning={isAssigning}
             onPick={handleAssignOwner}
             onLeave={() => setQuitOpen(true)}
+            hidden={quitOpen}
           />
         )}
       </AnimatePresence>
@@ -567,7 +577,9 @@ export default function TrainTogetherSessionPage() {
 
   if (
     !sessionId ||
-    sessionQuery.isError ||
+    // A failed background refetch keeps the last data: only a party we never
+    // loaded counts as missing.
+    (sessionQuery.isError && !session) ||
     (sessionQuery.isSuccess && session === null)
   ) {
     return <PartyUnavailable reason="missing" />;

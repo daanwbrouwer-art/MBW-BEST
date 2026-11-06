@@ -476,9 +476,12 @@ export default function TrainTogetherWaitingRoomPage() {
     const unsubSession = subscribeToSession(sessionId, (updated) => {
       queryClient.setQueryData(["train-together-session", sessionId], updated);
       if (updated.status === "active") {
+        // replace: Back from the session must not land on a waiting room
+        // that immediately forwards to the session again.
         navigate({
           to: "/train-together/session/$sessionId",
           params: { sessionId },
+          replace: true,
         });
       }
     });
@@ -520,9 +523,13 @@ export default function TrainTogetherWaitingRoomPage() {
   const canStart =
     isHost && accepted.length >= 2 && accepted.every((p) => p.isReady);
 
-  // A party that already started belongs on the session screen.
+  // A party that already started (or finished, to show its results) belongs
+  // on the session screen.
   useEffect(() => {
-    if (session?.status === "active" && sessionId) {
+    if (
+      (session?.status === "active" || session?.status === "completed") &&
+      sessionId
+    ) {
       navigate({
         to: "/train-together/session/$sessionId",
         params: { sessionId },
@@ -533,15 +540,21 @@ export default function TrainTogetherWaitingRoomPage() {
 
   if (
     !sessionId ||
-    sessionQuery.isError ||
+    // A failed background refetch keeps the last data: only a party we never
+    // loaded counts as missing.
+    (sessionQuery.isError && !session) ||
     (sessionQuery.isSuccess && session === null)
   ) {
     return <PartyUnavailable reason="missing" />;
   }
-  if (session?.status === "cancelled" || session?.status === "completed") {
+  if (session?.status === "cancelled") {
     return <PartyUnavailable reason="ended" />;
   }
-  if (!session || participantsQuery.isLoading) {
+  if (
+    !session ||
+    session.status !== "waiting" ||
+    participantsQuery.isLoading
+  ) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center max-w-[430px] mx-auto">
         <div className="w-8 h-8 rounded-full border-2 border-pulse border-t-transparent animate-spin" />

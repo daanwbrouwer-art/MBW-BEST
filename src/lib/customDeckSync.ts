@@ -4,8 +4,18 @@
 // The device copy (store/customWorkout.ts) stays the source the app reads
 // from, so decks keep working offline. Every save, rename and delete is sent
 // to the server in the background; pullCustomDecks() reconciles both sides on
-// sign-in and app start (newest edit wins; deletions made offline are
-// remembered in `deletedIds` and replayed).
+// sign-in, app start and sign-out:
+//  - newest edit wins;
+//  - a deck that was synced before but is gone from the account was deleted
+//    on another device, so it is dropped here too;
+//  - deletions made here that the server hasn't confirmed are kept in
+//    `deletedIds` and replayed, and never come back from the server.
+import {
+  type AccountScope,
+  OWNER_KEY,
+  captureScope,
+  isScopeCurrent,
+} from "@/lib/accountScope";
 import type { Json } from "@/lib/database.types";
 import { supabase } from "@/lib/supabaseClient";
 import {
@@ -22,10 +32,13 @@ interface CustomDeckRow {
   updated_at: string;
 }
 
-async function signedInUserId(): Promise<string | null> {
+/** The signed-in account this device belongs to, or null (guest/signed out). */
+async function activeScope(): Promise<AccountScope | null> {
   if (localStorage.getItem("mbw_user") === null) return null;
   const { data } = await supabase.auth.getSession();
-  return data.session?.user.id ?? null;
+  const userId = data.session?.user.id;
+  if (!userId || localStorage.getItem(OWNER_KEY) !== userId) return null;
+  return captureScope(userId);
 }
 
 function deckUpdatedAt(deck: CustomDeck): number {
@@ -55,7 +68,8 @@ async function upsertRemote(deck: CustomDeck, userId: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-function markSynced(deckId: string): void {
+function markSynced(scope: AccountScope, deckId: string): void {
+  if (!isScopeCurrent(scope)) return;
   useCustomWorkoutStore.setState((s) => ({
     decks: s.decks.map((d) => (d.id === deckId ? { ...d, synced: true } : d)),
   }));
@@ -64,10 +78,10 @@ function markSynced(deckId: string): void {
 /** Background push of one saved or edited deck. Never throws. */
 export async function pushDeck(deck: CustomDeck): Promise<void> {
   try {
-    const userId = await signedInUserId();
-    if (!userId) return;
-    await upsertRemote(deck, userId);
-    markSynced(deck.id);
+    const scope = await activeScope();
+    if (!scope) return;
+    await upsertRemote(deck, scope.userId);
+    markSynced(scope, deck.id);
   } catch (err) {
     console.warn("Couldn't sync custom deck:", err);
   }
@@ -76,13 +90,14 @@ export async function pushDeck(deck: CustomDeck): Promise<void> {
 /** Background delete of one deck. If it fails, pullCustomDecks retries. */
 export async function pushDeckDelete(deckId: string): Promise<void> {
   try {
-    const userId = await signedInUserId();
-    if (!userId) return;
+    const scope = await activeScope();
+    if (!scope) return;
     const { error } = await supabase
       .from("custom_decks")
       .delete()
       .eq("id", deckId);
     if (error) throw new Error(error.message);
+    if (!isScopeCurrent(scope)) return;
     useCustomWorkoutStore.setState((s) => ({
       deletedIds: s.deletedIds.filter((id) => id !== deckId),
     }));
@@ -91,16 +106,13 @@ export async function pushDeckDelete(deckId: string): Promise<void> {
   }
 }
 
-/** Reconciles this device's decks with the account. */
-export async function pullCustomDecks(): Promise<void> {
-  const userId = await signedInUserId();
-  if (!userId) return;
-
-  const { deletedIds } = useCustomWorkoutStore.getState();
-  const stillDeleted: string[] = [];
-  for (const id of deletedIds) {
+/** Reconciles this device's decks with the account in `scope`. */
+export async function pullCustomDecks(scope: AccountScope): Promise<void> {
+  // Replay deletions the server hasn't confirmed yet.
+  const confirmedDeleted: string[] = [];
+  for (const id of useCustomWorkoutStore.getState().deletedIds) {
     const { error } = await supabase.from("custom_decks").delete().eq("id", id);
-    if (error) stillDeleted.push(id);
+    if (!error) confirmedDeleted.push(id);
   }
 
   const { data, error } = await supabase
@@ -108,17 +120,20 @@ export async function pullCustomDecks(): Promise<void> {
     .select("id, name, exercises, created_at, updated_at")
     .order("created_at", { ascending: true });
   if (error) throw new Error(error.message);
+  if (!isScopeCurrent(scope)) return;
 
+  // Read the store again: the user may have edited or deleted decks while we
+  // waited. Anything deleted here (confirmed or not) must not come back.
+  const { decks: local, deletedIds } = useCustomWorkoutStore.getState();
+  const deletedHere = new Set([...deletedIds, ...confirmedDeleted]);
   const remote = new Map(
     ((data ?? []) as CustomDeckRow[])
-      .filter((row) => !stillDeleted.includes(row.id))
+      .filter((row) => !deletedHere.has(row.id))
       .map((row) => [row.id, rowToDeck(row)]),
   );
-  // Read the store again: the user may have edited decks while we waited.
-  const local = useCustomWorkoutStore.getState().decks;
+
   const merged = new Map<string, CustomDeck>();
   const toPush: CustomDeck[] = [];
-
   for (const deck of local) {
     const theirs = remote.get(deck.id);
     // Synced before but gone from the account: deleted on another device.
@@ -139,13 +154,13 @@ export async function pullCustomDecks(): Promise<void> {
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     ),
-    deletedIds: stillDeleted,
+    deletedIds: deletedIds.filter((id) => !confirmedDeleted.includes(id)),
   });
 
   for (const deck of toPush) {
     try {
-      await upsertRemote(deck, userId);
-      markSynced(deck.id);
+      await upsertRemote(deck, scope.userId);
+      markSynced(scope, deck.id);
     } catch (err) {
       console.warn("Couldn't upload custom deck:", err);
     }

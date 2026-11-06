@@ -22,8 +22,8 @@ export function useInternetIdentity(): LocalIdentity {
       // screens (/onboarding/auth, /onboarding/create-account) to sign in.
     },
     clear: () => {
+      // mbw_first_login is per device (first-launch tips), not per account.
       localStorage.removeItem("mbw_user");
-      localStorage.removeItem("mbw_first_login");
     },
     loginStatus: isEmailAuth ? "success" : "idle",
     identity: null,

@@ -178,7 +178,27 @@ export default function WorkoutSessionPage() {
   const isActive = shuffledDeck.length > 0 && !isSummary;
   const { formatted, elapsed } = useTimer(
     isActive && !jokerActive && !isPaused,
+    // A resumed workout continues its clock instead of restarting at 00:00.
+    useWorkoutStore.getState().workoutStartTime
+      ? Math.max(
+          0,
+          Math.floor(
+            (Date.now() - (useWorkoutStore.getState().workoutStartTime ?? 0)) /
+              1000,
+          ),
+        )
+      : 0,
   );
+
+  // Keep lastActivityAt fresh while the workout screen is open, so a later
+  // resume only discounts the time the app was actually closed.
+  useEffect(() => {
+    if (!isActive) return;
+    const touch = () => useWorkoutStore.getState().touchActivity();
+    touch();
+    const id = window.setInterval(touch, 15_000);
+    return () => window.clearInterval(id);
+  }, [isActive]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashPress, setFlashPress] = useState(false);
   const [holdCountdown, setHoldCountdown] = useState(0);

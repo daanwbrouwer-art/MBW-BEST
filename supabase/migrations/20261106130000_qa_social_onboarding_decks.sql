@@ -243,7 +243,9 @@ begin
     if existing.status = 'accepted' then
       raise exception 'You''re already friends.';
     end if;
-    if existing.requester_id = them and existing.status = 'pending' then
+    -- They asked me (still pending, or I declined earlier and changed my
+    -- mind): accept their request.
+    if existing.requester_id = them then
       update public.friendships set status = 'accepted' where id = existing.id;
       return 'accepted';
     end if;
@@ -251,9 +253,6 @@ begin
       -- Pending, or declined by them: either way, no second request.
       raise exception 'You''ve already sent this person a request.';
     end if;
-    -- They asked before and I declined: asking now replaces that with a
-    -- request from me to them.
-    delete from public.friendships where id = existing.id;
   end loop;
 
   insert into public.friendships (requester_id, addressee_id)

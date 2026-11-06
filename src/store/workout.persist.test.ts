@@ -79,4 +79,40 @@ describe("resuming after a reload", () => {
     expect(s.guestMode).toBe(true);
     expect(s.shuffledDeck).toEqual([]);
   });
+
+  it("doesn't count the time the app was closed as training time", async () => {
+    const start = Date.now() - 60 * 60 * 1000; // started an hour ago
+    const lastUsed = Date.now() - 50 * 60 * 1000; // app closed 50 min ago
+    localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        state: {
+          shuffledDeck: [{ id: "a" }],
+          deckIndex: 0,
+          totalCards: 10,
+          isSummary: false,
+          workoutStartTime: start,
+          lastActivityAt: lastUsed,
+          workoutId: "33333333-3333-4333-8333-333333333333",
+        },
+        version: 0,
+      }),
+    );
+    await useWorkoutStore.persist.rehydrate();
+    const s = useWorkoutStore.getState();
+    const trainedMs = Date.now() - (s.workoutStartTime ?? 0);
+    expect(trainedMs).toBeGreaterThan(9 * 60 * 1000);
+    expect(trainedMs).toBeLessThan(11 * 60 * 1000);
+  });
+
+  it("fixes the end time when the last card is done", () => {
+    const store = useWorkoutStore.getState();
+    store.reset();
+    store.setWorkoutStartTime(Date.now());
+    store.setIsSummary(true);
+    const end = useWorkoutStore.getState().workoutEndTime;
+    expect(end).not.toBeNull();
+    store.setIsSummary(true);
+    expect(useWorkoutStore.getState().workoutEndTime).toBe(end);
+  });
 });

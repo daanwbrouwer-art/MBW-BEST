@@ -81,6 +81,12 @@ interface WorkoutState {
   shuffledDeck: LocalCard[];
   deckIndex: number;
   workoutStartTime: number | null;
+  /** When the last card was finished; the summary measures up to here. */
+  workoutEndTime: number | null;
+  /** Last time the workout screen was in use. On resume after the app was
+   * closed, the start time moves forward by the time away, so it doesn't
+   * count as training time. */
+  lastActivityAt: number | null;
   /** Unique id for the workout in progress, created when it starts. Saved
    * history rows use it, so saving the same workout twice is a no-op. */
   workoutId: string | null;
@@ -116,6 +122,8 @@ interface WorkoutActions {
   goBackCard: () => void;
   setWorkoutStartTime: (t: number | null) => void;
   markWorkoutSaved: (workoutId: string) => void;
+  /** Records that the workout screen is in use (see lastActivityAt). */
+  touchActivity: () => void;
   markWorkoutRecorded: (workoutId: string) => void;
   setIsShuffling: (v: boolean) => void;
   setIsFlipping: (v: boolean) => void;
@@ -138,6 +146,8 @@ const initialState: WorkoutState = {
   shuffledDeck: [],
   deckIndex: -1,
   workoutStartTime: null,
+  workoutEndTime: null,
+  lastActivityAt: null,
   workoutId: null,
   savedWorkoutId: null,
   recordedWorkoutId: null,
@@ -195,7 +205,10 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         const { shuffledDeck, deckIndex, currentCard, totalCards } = get();
         const nextIndex = deckIndex + 1;
         if (nextIndex >= totalCards) {
-          set({ isSummary: true });
+          set({
+            isSummary: true,
+            workoutEndTime: get().workoutEndTime ?? Date.now(),
+          });
           return;
         }
         const nextRaw = shuffledDeck[nextIndex];
@@ -278,7 +291,17 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
 
       // Starting a workout (t set) gives it a fresh id.
       setWorkoutStartTime: (t) =>
-        set(t === null ? { workoutStartTime: null } : { workoutStartTime: t, workoutId: crypto.randomUUID() }),
+        set(
+          t === null
+            ? { workoutStartTime: null, workoutEndTime: null }
+            : {
+                workoutStartTime: t,
+                workoutEndTime: null,
+                lastActivityAt: t,
+                workoutId: crypto.randomUUID(),
+              },
+        ),
+      touchActivity: () => set({ lastActivityAt: Date.now() }),
       markWorkoutSaved: (workoutId) => set({ savedWorkoutId: workoutId }),
       markWorkoutRecorded: (workoutId) =>
         set({ recordedWorkoutId: workoutId }),
@@ -286,7 +309,12 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
       setIsFlipping: (v) => set({ isFlipping: v }),
       setJokerActive: (v) => set({ jokerActive: v }),
       setJokerChallenge: (c) => set({ jokerChallenge: c }),
-      setIsSummary: (v) => set({ isSummary: v }),
+      setIsSummary: (v) =>
+        set(
+          v
+            ? { isSummary: true, workoutEndTime: get().workoutEndTime ?? Date.now() }
+            : { isSummary: false },
+        ),
       setGuestMode: (v) => set({ guestMode: v }),
       setInfoPanelOpen: (v) => set({ infoPanelOpen: v }),
       // savedWorkoutId survives a reset so a summary that renders again
@@ -315,6 +343,8 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         shuffledDeck: state.shuffledDeck,
         deckIndex: state.deckIndex,
         workoutStartTime: state.workoutStartTime,
+        workoutEndTime: state.workoutEndTime,
+        lastActivityAt: state.lastActivityAt,
         workoutId: state.workoutId,
         savedWorkoutId: state.savedWorkoutId,
         recordedWorkoutId: state.recordedWorkoutId,
@@ -328,15 +358,29 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
       }),
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<WorkoutState>;
+        const lastUsed = saved.lastActivityAt ?? saved.workoutStartTime;
         const stale =
-          saved.workoutStartTime != null &&
-          Date.now() - saved.workoutStartTime > STALE_WORKOUT_MS;
+          lastUsed != null && Date.now() - lastUsed > STALE_WORKOUT_MS;
         if (stale) {
           return {
             ...current,
             guestMode: saved.guestMode ?? current.guestMode,
             savedWorkoutId: saved.savedWorkoutId ?? null,
             recordedWorkoutId: saved.recordedWorkoutId ?? null,
+          };
+        }
+        // Resuming: time the app was closed doesn't count as training.
+        if (
+          saved.workoutStartTime != null &&
+          saved.lastActivityAt != null &&
+          !saved.isSummary
+        ) {
+          const away = Math.max(0, Date.now() - saved.lastActivityAt);
+          return {
+            ...current,
+            ...saved,
+            workoutStartTime: saved.workoutStartTime + away,
+            lastActivityAt: Date.now(),
           };
         }
         return { ...current, ...saved };

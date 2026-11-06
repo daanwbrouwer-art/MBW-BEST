@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export function useTimer(running: boolean) {
-  const [elapsed, setElapsed] = useState(0);
+/** Counts seconds while `running`, starting from `initialSeconds` (used when
+ * a workout resumes after the app was closed). */
+export function useTimer(running: boolean, initialSeconds = 0) {
+  const [elapsed, setElapsed] = useState(initialSeconds);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const reset = useCallback(() => {

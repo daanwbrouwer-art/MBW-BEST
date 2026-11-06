@@ -20,6 +20,8 @@ export interface OnboardingData {
   equipmentAccess?: string[];
   selfAssessment?: string;
   completedAt?: number;
+  /** Last change to any answer (ms). Syncing between devices keeps the newest. */
+  updatedAt?: number;
   /** Which specific gear the user owns — drives card auto-substitution. */
   equipment?: EquipmentProfile;
   /** Body weight in kilograms, from the onboarding body-metrics step — feeds

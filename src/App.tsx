@@ -9,7 +9,8 @@ import { resumeSignedInSession } from "@/lib/accountSession";
 import { recordAppOpen } from "@/lib/achievementSessionLog";
 import { updateActivityPing } from "@/lib/remoteBackend";
 import { useWorkoutStore } from "@/store/workout";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   RouterProvider,
@@ -588,14 +589,6 @@ declare module "@tanstack/react-router" {
   }
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 30_000,
-    },
-  },
-});
 
 export default function App() {
   return (
