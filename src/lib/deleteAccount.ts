@@ -1,4 +1,5 @@
-import { signOut } from "./accountSession";
+import { reloadCustomDecks } from "@/store/customWorkout";
+import { signOut, wipeAccountData } from "./accountSession";
 import { supabase } from "./supabaseClient";
 
 // Account deletion (Google Play / App Store requirement). The server side
@@ -46,7 +47,10 @@ export async function deleteAccount(): Promise<DeleteAccountResult> {
   // The account no longer exists server-side: end the local session, log
   // RevenueCat out and reset the in-memory stores, then remove everything
   // else (guest data and settings too) except the trial marker.
-  await signOut();
+  // No flush: there is no account left to upload to.
+  await signOut({ flush: false });
+  wipeAccountData();
   wipeLocalAppData();
+  reloadCustomDecks();
   return { ok: true };
 }

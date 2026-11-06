@@ -13,7 +13,25 @@
 // `selected` directly) — see CustomDecksPage.tsx / CustomDeckDetailPage.tsx.
 import { pushDeck, pushDeckDelete } from "@/lib/customDeckSync";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+
+const STORE_KEY = "mbw_custom_workout_draft";
+
+/**
+ * Signed-in accounts and guest mode keep separate decks on the device: the
+ * store reads and writes STORE_KEY while signed in and STORE_KEY + "_guest"
+ * otherwise. Call reloadCustomDecks() after signing in or out so the store
+ * shows the right set.
+ */
+function scopedKey(name: string): string {
+  return localStorage.getItem("mbw_user") !== null ? name : `${name}_guest`;
+}
+
+const scopedStorage = createJSONStorage(() => ({
+  getItem: (name) => localStorage.getItem(scopedKey(name)),
+  setItem: (name, value) => localStorage.setItem(scopedKey(name), value),
+  removeItem: (name) => localStorage.removeItem(scopedKey(name)),
+}));
 
 export interface CustomWorkoutExercise {
   name: string;
@@ -135,6 +153,38 @@ export const useCustomWorkoutStore = create<CustomWorkoutState>()(
       deletedIds: [],
     };
     },
-    { name: "mbw_custom_workout_draft" },
+    { name: STORE_KEY, storage: scopedStorage },
   ),
 );
+
+/** Loads the decks for whoever is using the device now (account or guest). */
+export function reloadCustomDecks(): void {
+  let saved: Partial<
+    Pick<CustomWorkoutState, "selected" | "decks" | "deletedIds">
+  > = {};
+  try {
+    const raw = localStorage.getItem(scopedKey(STORE_KEY));
+    saved = raw ? (JSON.parse(raw).state ?? {}) : {};
+  } catch {
+    saved = {};
+  }
+  useCustomWorkoutStore.setState({
+    selected: saved.selected ?? [],
+    decks: saved.decks ?? [],
+    deletedIds: saved.deletedIds ?? [],
+  });
+}
+
+/**
+ * Sign-up: gives the new account the decks made in guest mode (a trial can
+ * build decks), unless the account already has some on this device.
+ */
+export function migrateGuestCustomDecks(): void {
+  const guestKey = `${STORE_KEY}_guest`;
+  const guestRaw = localStorage.getItem(guestKey);
+  if (!guestRaw) return;
+  if (!localStorage.getItem(STORE_KEY)) {
+    localStorage.setItem(STORE_KEY, guestRaw);
+  }
+  localStorage.removeItem(guestKey);
+}

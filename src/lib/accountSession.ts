@@ -5,17 +5,21 @@
 // web mock subscription) used to be shared by whoever signed in on the phone.
 // This module ties it to one account (mbw_owner, see lib/accountScope.ts):
 //
-//  - signing in as a different account than the data belongs to wipes it
-//    first. Data an older app version left with no owner is adopted, not
-//    wiped: streaks and achievements exist only on the phone, and on almost
-//    every phone the returning user is the same person;
+//  - a different account signing in wipes the previous account's data first.
+//    A brand-new account also wipes data with no owner (it can't be theirs).
+//    An existing account signing in adopts ownerless data left by an older
+//    app version: streaks and achievements exist only on the phone, and on
+//    almost every phone the returning user is the same person;
 //  - signing out uploads anything not yet synced (best effort, time
 //    limited), ends the Supabase session, logs RevenueCat out and clears the
 //    in-progress workout and caches. The account's data stays on the phone
-//    under its owner (guests use separate keys and can't see it), so signing
-//    back in keeps the streak; a different account signing in wipes it;
+//    under its owner; guest mode uses separate keys (including separate
+//    custom decks), so a guest can't see or change it. Signing back in keeps
+//    the streak; a different account signing in wipes it;
 //  - signing in (and every app start while signed in) links RevenueCat to the
-//    account id first, then syncs onboarding answers and custom decks.
+//    account id first, then syncs onboarding answers and custom decks. Both
+//    are time limited for the sign-in screen; the sync carries on in the
+//    background, guarded so it never writes into another account's data.
 import {
   OWNER_KEY,
   bumpGeneration,
@@ -26,7 +30,7 @@ import { pullCustomDecks } from "@/lib/customDeckSync";
 import { syncOnboardingWithServer } from "@/lib/onboardingSync";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabaseClient";
-import { useCustomWorkoutStore } from "@/store/customWorkout";
+import { reloadCustomDecks } from "@/store/customWorkout";
 import { useWorkoutStore } from "@/store/workout";
 import { Capacitor } from "@capacitor/core";
 import { Purchases } from "@revenuecat/purchases-capacitor";
@@ -62,7 +66,11 @@ function accountKeys(): string[] {
   return keys;
 }
 
-/** Removes every account-specific mbw_* key and resets the in-memory state. */
+/**
+ * Removes every account-specific mbw_* key and resets the in-memory state.
+ * Custom decks are reloaded for whoever uses the device afterwards (call
+ * reloadCustomDecks() again once mbw_user is set).
+ */
 export function wipeAccountData(): void {
   for (const key of accountKeys()) localStorage.removeItem(key);
   useWorkoutStore.getState().reset();
@@ -71,11 +79,22 @@ export function wipeAccountData(): void {
     savedWorkoutId: null,
     recordedWorkoutId: null,
   });
-  useCustomWorkoutStore.setState({ selected: [], decks: [], deletedIds: [] });
+  reloadCustomDecks();
   queryClient.clear();
 }
 
 const isNative = Capacitor.isNativePlatform();
+
+/** Waits for `promise` up to `ms`, never rejecting. */
+function withinMs(promise: Promise<unknown>, ms: number): Promise<void> {
+  return Promise.race([
+    promise.then(
+      () => undefined,
+      () => undefined,
+    ),
+    new Promise<void>((resolve) => setTimeout(resolve, ms)),
+  ]);
+}
 
 // useTier waits for this before asking RevenueCat who is subscribed, so a
 // paying user never sees the anonymous (free) state while the account is
@@ -89,20 +108,22 @@ export const purchasesReady = new Promise<void>((resolve) => {
 
 async function linkPurchases(userId: string): Promise<void> {
   if (!isNative) return;
-  try {
-    await Purchases.logIn({ appUserID: userId });
-  } catch (err) {
-    console.warn("RevenueCat logIn failed:", err);
-  }
+  await withinMs(
+    Purchases.logIn({ appUserID: userId }).catch((err) =>
+      console.warn("RevenueCat logIn failed:", err),
+    ),
+    4000,
+  );
 }
 
 async function unlinkPurchases(): Promise<void> {
   if (!isNative) return;
-  try {
-    await Purchases.logOut();
-  } catch {
-    // logOut throws when the current user is already anonymous.
-  }
+  await withinMs(
+    Purchases.logOut().catch(() => {
+      // logOut throws when the current user is already anonymous.
+    }),
+    4000,
+  );
 }
 
 /** Syncs onboarding answers and custom decks for `userId`. Never throws. */
@@ -118,37 +139,52 @@ async function syncAccount(userId: string): Promise<void> {
   ]);
 }
 
+export interface CompleteSignInOptions {
+  /** True right after sign-up: data with no owner can't be this account's. */
+  isNewAccount?: boolean;
+  /** Runs after the device is marked as this account's, before the first
+   * sync (sign-up copies guest progress across here so it is uploaded). */
+  afterLocalSetup?: () => void;
+}
+
 /**
  * Finishes a sign-in or sign-up, before navigating:
- *  1. wipes another account's data (or ownerless data from an older build);
- *  2. marks the device as this account's (mbw_owner, mbw_user);
- *  3. runs `afterLocalSetup` (sign-up copies guest progress across here, so
- *     the sync below uploads it);
+ *  1. wipes another account's data (and ownerless data for a new account);
+ *  2. marks the device as this account's (mbw_owner, mbw_user), leaves
+ *     guest mode, and loads this account's custom decks;
+ *  3. runs `afterLocalSetup`;
  *  4. links RevenueCat, then syncs onboarding answers and custom decks.
- * Never throws: a sync problem must not block signing in.
+ * Waits at most a few seconds for the network; never throws.
  */
 export async function completeSignIn(
   profile: unknown,
-  afterLocalSetup?: () => void,
+  options: CompleteSignInOptions = {},
 ): Promise<void> {
   const { data } = await supabase.auth.getSession();
   const userId = data.session?.user.id;
   bumpGeneration();
   if (userId) {
     const owner = localStorage.getItem(OWNER_KEY);
-    if (owner && owner !== userId) wipeAccountData();
+    if (owner !== userId && (owner !== null || options.isNewAccount)) {
+      wipeAccountData();
+    }
     localStorage.setItem(OWNER_KEY, userId);
   }
   // bigints in the profile serialise via the BigInt toJSON patch in main.tsx.
   localStorage.setItem("mbw_user", JSON.stringify(profile));
-  afterLocalSetup?.();
+  useWorkoutStore.setState({ guestMode: false });
+  options.afterLocalSetup?.();
+  reloadCustomDecks();
+  queryClient.clear();
   if (!userId) {
     resolvePurchasesReady();
     return;
   }
   await linkPurchases(userId);
   resolvePurchasesReady();
-  await syncAccount(userId);
+  // Keep the sign-in screen responsive on a bad connection: wait up to 5 s,
+  // the rest of the sync finishes in the background.
+  await withinMs(syncAccount(userId), 5000);
 }
 
 /** Once per app start: same linking and syncing while already signed in. */
@@ -165,6 +201,7 @@ export async function resumeSignedInSession(): Promise<void> {
       const signedIn = localStorage.getItem("mbw_user");
       wipeAccountData();
       if (signedIn) localStorage.setItem("mbw_user", signedIn);
+      reloadCustomDecks();
     }
     // First start after updating while signed in: adopt the existing data.
     localStorage.setItem(OWNER_KEY, userId);
@@ -177,15 +214,9 @@ export async function resumeSignedInSession(): Promise<void> {
   }
 }
 
-/** Waits for `promise` up to `ms`, never rejecting. */
-function withinMs(promise: Promise<unknown>, ms: number): Promise<void> {
-  return Promise.race([
-    promise.then(
-      () => undefined,
-      () => undefined,
-    ),
-    new Promise<void>((resolve) => setTimeout(resolve, ms)),
-  ]);
+export interface SignOutOptions {
+  /** Upload unsynced changes first (skip when the account was deleted). */
+  flush?: boolean;
 }
 
 /**
@@ -194,27 +225,26 @@ function withinMs(promise: Promise<unknown>, ms: number): Promise<void> {
  * clears the in-progress workout and cached server data. The account's
  * local data stays, owned by the account (see the module comment).
  */
-export async function signOut(): Promise<void> {
-  const { data } = await supabase.auth.getSession();
-  const userId = data.session?.user.id;
-  if (userId && localStorage.getItem(OWNER_KEY) === userId) {
-    const scope = captureScope(userId);
+export async function signOut({ flush = true }: SignOutOptions = {}): Promise<void> {
+  // The owner key says who is signed in without a network round trip (an
+  // expired token would otherwise be refreshed first, which can take long).
+  const owner = localStorage.getItem(OWNER_KEY);
+  if (flush && owner && localStorage.getItem("mbw_user") !== null) {
+    const scope = captureScope(owner);
     if (isScopeCurrent(scope)) {
       await withinMs(
-        Promise.all([
-          syncOnboardingWithServer(scope),
-          pullCustomDecks(scope),
-        ]),
+        Promise.all([syncOnboardingWithServer(scope), pullCustomDecks(scope)]),
         4000,
       );
     }
   }
   bumpGeneration();
-  try {
-    await supabase.auth.signOut({ scope: "local" });
-  } catch (err) {
-    console.warn("Supabase signOut failed:", err);
-  }
+  await withinMs(
+    supabase.auth.signOut({ scope: "local" }).catch((err) =>
+      console.warn("Supabase signOut failed:", err),
+    ),
+    4000,
+  );
   await unlinkPurchases();
   localStorage.removeItem("mbw_user");
   // The web-only mock subscription belongs to whoever bought it on this
@@ -222,6 +252,6 @@ export async function signOut(): Promise<void> {
   localStorage.removeItem("mbw_subscription");
   useWorkoutStore.getState().reset();
   useWorkoutStore.setState({ guestMode: false });
-  useCustomWorkoutStore.setState({ selected: [] });
+  reloadCustomDecks();
   queryClient.clear();
 }

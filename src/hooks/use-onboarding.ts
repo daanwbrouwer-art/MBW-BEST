@@ -63,10 +63,13 @@ export function useOnboarding() {
   // through correctly leaves the user un-onboarded next time they return.
   const saveOnboarding = useCallback(
     async (patch: Partial<OnboardingData>) => {
-      const base: OnboardingData = data ?? {
-        gender: "male",
-        hasCompletedOnboarding: false,
-      };
+      // Build on what is stored now, not this component's copy: a background
+      // sync may have written newer answers since it mounted.
+      const base: OnboardingData = readOnboarding(isGuest) ??
+        data ?? {
+          gender: "male",
+          hasCompletedOnboarding: false,
+        };
       const updated: OnboardingData = {
         ...base,
         ...patch,

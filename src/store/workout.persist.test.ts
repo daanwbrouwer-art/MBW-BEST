@@ -99,10 +99,24 @@ describe("resuming after a reload", () => {
       }),
     );
     await useWorkoutStore.persist.rehydrate();
+    // Loading alone changes nothing: the user may still be on Home.
+    expect(useWorkoutStore.getState().workoutStartTime).toBe(start);
+    // Opening the workout screen discounts the time away.
+    useWorkoutStore.getState().resumeActivity();
     const s = useWorkoutStore.getState();
     const trainedMs = Date.now() - (s.workoutStartTime ?? 0);
     expect(trainedMs).toBeGreaterThan(9 * 60 * 1000);
     expect(trainedMs).toBeLessThan(11 * 60 * 1000);
+  });
+
+  it("ignores short gaps such as switching screens", () => {
+    const store = useWorkoutStore.getState();
+    store.reset();
+    store.setWorkoutStartTime(Date.now() - 60_000);
+    useWorkoutStore.setState({ lastActivityAt: Date.now() - 5_000 });
+    const before = useWorkoutStore.getState().workoutStartTime;
+    store.resumeActivity();
+    expect(useWorkoutStore.getState().workoutStartTime).toBe(before);
   });
 
   it("fixes the end time when the last card is done", () => {

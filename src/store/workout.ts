@@ -124,6 +124,9 @@ interface WorkoutActions {
   markWorkoutSaved: (workoutId: string) => void;
   /** Records that the workout screen is in use (see lastActivityAt). */
   touchActivity: () => void;
+  /** Call when the workout screen opens: time since it was last in use
+   * (app closed, or elsewhere in the app) doesn't count as training. */
+  resumeActivity: () => void;
   markWorkoutRecorded: (workoutId: string) => void;
   setIsShuffling: (v: boolean) => void;
   setIsFlipping: (v: boolean) => void;
@@ -134,6 +137,9 @@ interface WorkoutActions {
   setInfoPanelOpen: (v: boolean) => void;
   reset: () => void;
 }
+
+/** A gap shorter than this (normal screen changes) still counts as training. */
+const RESUME_GAP_MS = 20 * 1000;
 
 /** An unfinished workout older than this is discarded instead of resumed. */
 const STALE_WORKOUT_MS = 6 * 60 * 60 * 1000;
@@ -302,6 +308,17 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
               },
         ),
       touchActivity: () => set({ lastActivityAt: Date.now() }),
+      resumeActivity: () => {
+        const { workoutStartTime, lastActivityAt, isSummary } = get();
+        const now = Date.now();
+        if (workoutStartTime == null || isSummary) return;
+        const away = lastActivityAt == null ? 0 : now - lastActivityAt;
+        set(
+          away > RESUME_GAP_MS
+            ? { workoutStartTime: workoutStartTime + away, lastActivityAt: now }
+            : { lastActivityAt: now },
+        );
+      },
       markWorkoutSaved: (workoutId) => set({ savedWorkoutId: workoutId }),
       markWorkoutRecorded: (workoutId) =>
         set({ recordedWorkoutId: workoutId }),
@@ -369,20 +386,8 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
             recordedWorkoutId: saved.recordedWorkoutId ?? null,
           };
         }
-        // Resuming: time the app was closed doesn't count as training.
-        if (
-          saved.workoutStartTime != null &&
-          saved.lastActivityAt != null &&
-          !saved.isSummary
-        ) {
-          const away = Math.max(0, Date.now() - saved.lastActivityAt);
-          return {
-            ...current,
-            ...saved,
-            workoutStartTime: saved.workoutStartTime + away,
-            lastActivityAt: Date.now(),
-          };
-        }
+        // Time away is subtracted when the workout screen opens again
+        // (resumeActivity), not here: the user may sit on Home first.
         return { ...current, ...saved };
       },
     },

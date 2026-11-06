@@ -11,6 +11,7 @@ import { completeSignIn } from "@/lib/accountSession";
 import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
 import { ensureReferralCode, redeemReferralCode } from "@/lib/referral";
 import { supabase } from "@/lib/supabaseClient";
+import { migrateGuestCustomDecks } from "@/store/customWorkout";
 import { useWorkoutStore } from "@/store/workout";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -113,11 +114,15 @@ export default function EmailSignUpPage() {
           // Clears a previous account's leftovers, copies the guest's
           // progress onto the new account, then links RevenueCat and syncs
           // (so the copied onboarding answers are uploaded right away).
-          await completeSignIn(loginResult.ok, () => {
-            migrateGuestOnboarding();
-            migrateGuestStreak();
-            migrateGuestAchievements();
-            migrateGuestWeeklyChallenge();
+          await completeSignIn(loginResult.ok, {
+            isNewAccount: true,
+            afterLocalSetup: () => {
+              migrateGuestOnboarding();
+              migrateGuestStreak();
+              migrateGuestAchievements();
+              migrateGuestWeeklyChallenge();
+              migrateGuestCustomDecks();
+            },
           });
           ensureReferralCode(email);
           if (referralCode.trim()) redeemReferralCode(email, referralCode);

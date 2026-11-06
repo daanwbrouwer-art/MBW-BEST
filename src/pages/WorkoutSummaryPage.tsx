@@ -288,6 +288,9 @@ function StatCard({
   );
 }
 
+/** How many times a failed history save is retried while the summary is open. */
+const MAX_SAVE_RETRIES = 3;
+
 // ─── Main page ────────────────────────────────────────────────────────────
 export default function WorkoutSummaryPage() {
   const navigate = useNavigate();
@@ -321,6 +324,8 @@ export default function WorkoutSummaryPage() {
     avgTimePerCard: number;
   } | null>(null);
   const [showPaywall, setShowPaywall] = useState(false);
+  // Bumped to retry a failed history save (see the save effect).
+  const [saveRetry, setSaveRetry] = useState(0);
 
   const saveMutation = useMutation({
     mutationFn: (entry: WorkoutHistoryEntry) =>
@@ -432,25 +437,33 @@ export default function WorkoutSummaryPage() {
       // Marked saved only once the server confirms. On failure the summary
       // can try again (on the next render or reload); the server ignores a
       // second row with the same id, so retrying never duplicates.
+      // A failed save is retried a few times with growing gaps (and again on
+      // the next visit to the summary); it is never retried in a tight loop.
+      const retryLater = (reason: unknown) => {
+        console.warn("Workout not saved:", reason);
+        if (saveRetry >= MAX_SAVE_RETRIES) return;
+        window.setTimeout(
+          () => {
+            hasSaved.current = false;
+            setSaveRetry((n) => n + 1);
+          },
+          5000 * (saveRetry + 1),
+        );
+      };
       saveMutation.mutate(entry, {
         onSuccess: (result) => {
-          if (result && "ok" in result) {
-            if (workoutId)
-              useWorkoutStore.getState().markWorkoutSaved(workoutId);
-          } else {
-            hasSaved.current = false;
-            console.warn("Workout not saved:", result?.err);
+          if (!result || !("ok" in result)) {
+            retryLater(result?.err);
+            return;
           }
+          if (workoutId) useWorkoutStore.getState().markWorkoutSaved(workoutId);
+          // Nearby-athletes activity ping (registered users only, this block
+          // is gated above). Never prompts for location; no-ops unless the
+          // user has opted into "Visible to nearby athletes".
+          getPositionIfPermitted().then(updateActivityPing);
         },
-        onError: (err) => {
-          hasSaved.current = false;
-          console.warn("Workout not saved:", err);
-        },
+        onError: retryLater,
       });
-      // Nearby-athletes activity ping — this whole block is already gated
-      // to registered (non-guest) users above. Never prompts for location;
-      // no-ops unless the user has opted into "Visible to nearby athletes".
-      getPositionIfPermitted().then(updateActivityPing);
     }
   }, [
     calories,
@@ -462,6 +475,7 @@ export default function WorkoutSummaryPage() {
     hasSummary,
     actor,
     guestMode,
+    saveRetry,
   ]);
   const completionPct =
     totalCards > 0 ? Math.round((completedCards / totalCards) * 100) : 0;

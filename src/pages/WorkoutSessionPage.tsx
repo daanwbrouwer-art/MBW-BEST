@@ -176,18 +176,18 @@ export default function WorkoutSessionPage() {
 
   const [isPaused, setIsPaused] = useState(false);
   const isActive = shuffledDeck.length > 0 && !isSummary;
+  // Opening the workout screen: discount time spent away (app closed or
+  // elsewhere in the app), then continue the clock from there instead of
+  // restarting at 00:00. Runs once, before the timer starts.
+  const [resumedSeconds] = useState(() => {
+    const store = useWorkoutStore.getState();
+    store.resumeActivity();
+    const start = useWorkoutStore.getState().workoutStartTime;
+    return start ? Math.max(0, Math.floor((Date.now() - start) / 1000)) : 0;
+  });
   const { formatted, elapsed } = useTimer(
     isActive && !jokerActive && !isPaused,
-    // A resumed workout continues its clock instead of restarting at 00:00.
-    useWorkoutStore.getState().workoutStartTime
-      ? Math.max(
-          0,
-          Math.floor(
-            (Date.now() - (useWorkoutStore.getState().workoutStartTime ?? 0)) /
-              1000,
-          ),
-        )
-      : 0,
+    resumedSeconds,
   );
 
   // Keep lastActivityAt fresh while the workout screen is open, so a later

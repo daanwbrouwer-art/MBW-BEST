@@ -259,12 +259,16 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
-    // Ends the server session, logs RevenueCat out and removes this
-    // account's data from the device (lib/accountSession.ts).
-    await signOut();
-    clear();
-    queryClient.clear();
-    navigate({ to: "/onboarding/welcome", replace: true });
+    try {
+      // Uploads unsynced changes, ends the server session and logs
+      // RevenueCat out (lib/accountSession.ts).
+      await signOut();
+    } finally {
+      clear();
+      queryClient.clear();
+      setIsLoggingOut(false);
+      navigate({ to: "/onboarding/welcome", replace: true });
+    }
   };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
