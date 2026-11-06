@@ -20,8 +20,10 @@ import { useTier } from "@/hooks/use-tier";
 import { cn } from "@/lib/utils";
 import {
   type CustomWorkoutExercise,
+  MAX_CUSTOM_DECKS,
   useCustomWorkoutStore,
 } from "@/store/customWorkout";
+import { toast } from "sonner";
 import { DECK_CATEGORY_ICON } from "@/types/workout";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
@@ -169,6 +171,12 @@ export default function CustomWorkoutBuilderPage() {
       saveSelectedToDeck(deckId!);
       clear();
       navigate(backDestination);
+      return;
+    }
+    if (useCustomWorkoutStore.getState().decks.length >= MAX_CUSTOM_DECKS) {
+      toast("Deck limit reached", {
+        description: `You can save up to ${MAX_CUSTOM_DECKS} decks. Delete one to make room.`,
+      });
       return;
     }
     setDeckNameInput("");

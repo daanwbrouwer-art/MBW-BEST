@@ -185,7 +185,8 @@ begin
                       and x.invite_status = 'accepted'))
               and (s.host_id = me or exists (
                     select 1 from public.train_together_session_participants y
-                    where y.session_id = s.id and y.user_id = me))
+                    where y.session_id = s.id and y.user_id = me
+                      and y.invite_status <> 'declined'))
           )
           or exists (
             select 1 from public.chat_threads t
@@ -249,14 +250,26 @@ begin
       update public.friendships set status = 'accepted' where id = existing.id;
       return 'accepted';
     end if;
+    if existing.requester_id = me and existing.status = 'declined' then
+      raise exception 'This person isn''t accepting your request right now.';
+    end if;
     if existing.requester_id = me then
-      -- Pending, or declined by them: either way, no second request.
       raise exception 'You''ve already sent this person a request.';
     end if;
   end loop;
 
-  insert into public.friendships (requester_id, addressee_id)
-  values (me, them);
+  begin
+    insert into public.friendships (requester_id, addressee_id)
+    values (me, them);
+  exception when unique_violation then
+    -- Their request (or my own double tap) landed in the meantime.
+    update public.friendships set status = 'accepted'
+    where requester_id = them and addressee_id = me and status <> 'accepted';
+    if found then
+      return 'accepted';
+    end if;
+    raise exception 'You''ve already sent this person a request.';
+  end;
   return 'sent';
 end;
 $$;

@@ -56,6 +56,9 @@ interface CustomWorkoutState {
   deletedIds: string[];
 }
 
+/** The account keeps at most this many saved decks (custom_decks_limit). */
+export const MAX_CUSTOM_DECKS = 100;
+
 const MIN_VALUE = 1;
 const MAX_VALUE = 300;
 
