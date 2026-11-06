@@ -81,14 +81,23 @@ function PauseExerciseBreakdown() {
     ? [...cardHistory, currentCard]
     : [...cardHistory];
 
-  // Sum reps per exercise, skip Jokers
-  const repMap = new Map<string, number>();
+  // Sum reps per exercise (seconds for holds), skip Jokers
+  const repMap = new Map<string, { amount: number; hold: boolean }>();
   for (const sc of allCards) {
     if (sc.card.suit === "Joker" || !sc.card.exercise) continue;
-    repMap.set(sc.card.exercise, (repMap.get(sc.card.exercise) ?? 0) + sc.reps);
+    const hold =
+      typeof sc.card.holdSeconds === "number" && sc.card.holdSeconds > 0;
+    const amount = hold ? (sc.card.holdSeconds ?? 0) : sc.reps;
+    const prev = repMap.get(sc.card.exercise);
+    repMap.set(sc.card.exercise, {
+      amount: (prev?.amount ?? 0) + amount,
+      hold: prev?.hold ?? hold,
+    });
   }
 
-  const rows = Array.from(repMap.entries()).sort((a, b) => b[1] - a[1]);
+  const rows = Array.from(repMap.entries()).sort(
+    (a, b) => Number(a[1].hold) - Number(b[1].hold) || b[1].amount - a[1].amount,
+  );
 
   if (rows.length === 0) return null;
 
@@ -108,7 +117,7 @@ function PauseExerciseBreakdown() {
         }}
         data-ocid="workout-session.pause_reps_list"
       >
-        {rows.map(([name, reps], i) => (
+        {rows.map(([name, { amount, hold }], i) => (
           <div
             key={name}
             className="flex items-center justify-between px-4 py-3"
@@ -128,13 +137,13 @@ function PauseExerciseBreakdown() {
                 className="font-display font-black text-base leading-none"
                 style={{ color: "oklch(var(--primary))" }}
               >
-                {reps}
+                {amount}
               </span>
               <span
                 className="font-body text-xs uppercase tracking-wide"
                 style={{ color: "oklch(0.82 0.008 var(--neutral-hue))" }}
               >
-                reps
+                {hold ? "sec" : "reps"}
               </span>
             </div>
           </div>
@@ -219,11 +228,25 @@ export default function WorkoutSessionPage() {
   // Escape closes the pause overlay (resumes), like its Resume button.
   useEffect(() => {
     if (!isPaused) return;
+    // Move focus into the pause sheet (after it has rendered).
+    const raf = requestAnimationFrame(() =>
+      document
+        .querySelector<HTMLElement>(
+          '[data-ocid="workout-session.pause_dialog"] button',
+        )
+        ?.focus(),
+    );
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsPaused(false);
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      // An alert dialog on top (e.g. Quit) handles its own Escape.
+      if (document.querySelector('[role="alertdialog"]')) return;
+      setIsPaused(false);
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [isPaused]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashPress, setFlashPress] = useState(false);
@@ -869,6 +892,9 @@ export default function WorkoutSessionPage() {
                 boxShadow: "0 -16px 60px oklch(0 0 0 / 0.55)",
               }}
               data-ocid="workout-session.pause_dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Workout paused"
             >
               {/* Handle */}
               <div className="flex justify-center pt-3 pb-1">

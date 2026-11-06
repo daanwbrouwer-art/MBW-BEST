@@ -1,5 +1,4 @@
 import { Logo } from "@/components/Logo";
-import { EXERCISE_CATALOG } from "@/data/exerciseCatalog";
 import { resolveExerciseIllustration } from "@/data/exerciseAssets";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { readStreak } from "@/lib/streak";
@@ -11,14 +10,6 @@ import { motion } from "motion/react";
 interface ExerciseTotal {
   name: string;
   reps: number;
-}
-
-const ISOMETRIC = new Set(
-  EXERCISE_CATALOG.filter((e) => e.isIsometric).map((e) => e.name.toLowerCase()),
-);
-
-function isHoldExercise(name: string): boolean {
-  return ISOMETRIC.has(name.toLowerCase()) || /\bhold\b/i.test(name);
 }
 
 /**
@@ -35,8 +26,8 @@ function lifetimeRepsByExercise(isGuest: boolean): ExerciseTotal[] {
   const totals = new Map<string, number>();
   for (const day of history) {
     for (const ex of day.exercises) {
-      // Holds are timed, not counted; older versions logged them as reps.
-      if (isHoldExercise(ex.name)) continue;
+      // Timed holds are no longer logged here (see WorkoutSummaryPage);
+      // rep-based "hold" variants (e.g. Superman Hold, 2 s per rep) are.
       totals.set(ex.name, (totals.get(ex.name) ?? 0) + ex.reps);
     }
   }

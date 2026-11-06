@@ -381,6 +381,23 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         }
         return { ...current, ...saved };
       },
+      // A workout saved by a version before workout ids existed gets one
+      // now, written straight back, so every save/record path and every
+      // remount agree on it (deferred: the store isn't assigned yet while
+      // it hydrates).
+      onRehydrateStorage: () => (state) => {
+        if (
+          state &&
+          !state.workoutId &&
+          (state.shuffledDeck.length > 0 || state.isSummary)
+        ) {
+          setTimeout(() => {
+            if (!useWorkoutStore.getState().workoutId) {
+              useWorkoutStore.setState({ workoutId: crypto.randomUUID() });
+            }
+          }, 0);
+        }
+      },
     },
   ),
 );

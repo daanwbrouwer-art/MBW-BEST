@@ -61,8 +61,13 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
       );
     const raf = requestAnimationFrame(() => focusable()[0]?.focus());
     const onKey = (e: KeyboardEvent) => {
+      // Only while this sheet is the topmost dialog: another overlay opened
+      // on top handles its own keys.
+      const dialogs = document.querySelectorAll(
+        '[role="dialog"], [role="alertdialog"]',
+      );
+      if (dialogs[dialogs.length - 1] !== sheetRef.current) return;
       if (e.key === "Escape") {
-        e.stopPropagation();
         onCloseRef.current();
         return;
       }

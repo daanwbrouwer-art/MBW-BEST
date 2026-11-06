@@ -9,7 +9,7 @@ import {
 } from "@/lib/streak";
 import { useWorkoutStore } from "@/store/workout";
 import type { EquipmentProfile } from "@/types/user";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -125,14 +125,16 @@ export default function OnboardingPage() {
   const isSignedIn = localStorage.getItem("mbw_user") !== null;
   // "Retake assessment" from Profile: onboarding stays complete, Back and
   // Finish return to Profile, and the answers start from the previous ones.
-  // Decided once on mount from state, not from a flag that a system Back
-  // could leave behind: anyone who had already finished onboarding when
-  // they arrived is editing (also after a reload mid-retake), never
-  // starting over.
-  const [isRetake] = useState(() => onboarding.hasCompletedOnboarding);
+  // Retake = Profile asked for it (?retake=1, survives a reload) and there
+  // are answers to edit. Decided once on mount.
+  const { retake } = useSearch({ strict: false }) as { retake?: string };
+  const [isRetake] = useState(
+    () => retake === "1" && onboarding.hasCompletedOnboarding,
+  );
 
-  // First-time questionnaire, but the account's answers just arrived from a
-  // slow sign-in sync: nothing to ask, go on to the app.
+  // Not a retake but onboarding is already done (a returning guest, system
+  // Back after finishing, or the account's answers arriving from a slow
+  // sign-in sync): nothing to ask, go on to the app.
   const completing = useRef(false);
   useEffect(() => {
     if (!isRetake && !completing.current && onboarding.hasCompletedOnboarding) {
@@ -219,7 +221,8 @@ export default function OnboardingPage() {
     });
     const isEmailAuth = localStorage.getItem("mbw_user") !== null;
     setWeeklyGoalLib(guestMode && !isEmailAuth, weeklyGoal);
-    navigate({ to: isRetake ? "/profile" : "/home" });
+    // Replace: system Back must not reopen the finished questionnaire.
+    navigate({ to: isRetake ? "/profile" : "/home", replace: true });
   };
 
   const canProceed = (() => {
@@ -392,6 +395,7 @@ function GenderStep({
             type="button"
             data-ocid={`onboarding-flow.gender_${g.id}`}
             onClick={() => onSelect(g.id)}
+            aria-pressed={gender === g.id}
             className={`relative flex flex-col items-center justify-center gap-3 rounded-2xl p-6 border transition-all duration-300 ${
               gender === g.id
                 ? "border-primary bg-primary/10 shadow-[0_0_20px_oklch(0.68_0.25_180_/_0.25)]"
@@ -566,6 +570,7 @@ function GoalsStep({
               key={g.id}
               type="button"
               onClick={() => onToggle(g.id)}
+              aria-pressed={selected}
               disabled={dimmed}
               data-ocid={`onboarding-flow.goal_${g.id}`}
               className={`relative flex items-center gap-4 rounded-2xl p-4 border text-left transition-all duration-300 ${
@@ -714,6 +719,7 @@ function EquipmentStep({
               key={eq.id}
               type="button"
               onClick={() => onToggle(eq.id)}
+              aria-pressed={isSelected}
               data-ocid={`onboarding-flow.equipment_${eq.id}`}
               className={`relative flex items-center gap-4 rounded-2xl p-4 border text-left transition-all duration-300 ${
                 isSelected
@@ -781,6 +787,7 @@ function SelfAssessmentStep({
               key={s}
               type="button"
               onClick={() => onSelect(s)}
+              aria-pressed={selected === s}
               data-ocid="onboarding-flow.self_assessment_option"
               className={`rounded-2xl p-4 border text-left transition-all duration-300 ${
                 isSelected

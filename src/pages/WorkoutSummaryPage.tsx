@@ -483,7 +483,8 @@ export default function WorkoutSummaryPage() {
             retryLater(result?.err);
             return;
           }
-          if (workoutId) useWorkoutStore.getState().markWorkoutSaved(workoutId);
+          // The id actually saved (may have been assigned just above).
+          useWorkoutStore.getState().markWorkoutSaved(entry.id);
           // Nearby-athletes activity ping (registered users only, this block
           // is gated above). Never prompts for location; no-ops unless the
           // user has opted into "Visible to nearby athletes".
@@ -536,12 +537,14 @@ export default function WorkoutSummaryPage() {
   // the achievement engine's longest-day-streak metric reflects today.
   useEffect(() => {
     // Recorded once per workout, for the same reason as the save above.
+    // Read the id from the store: the save effect may have just assigned it.
+    const currentId = useWorkoutStore.getState().workoutId ?? workoutId;
     const alreadyRecorded =
-      workoutId !== null &&
-      useWorkoutStore.getState().recordedWorkoutId === workoutId;
+      currentId !== null &&
+      useWorkoutStore.getState().recordedWorkoutId === currentId;
     if (!hasRecordedStreak.current && !alreadyRecorded && hasSummary) {
       hasRecordedStreak.current = true;
-      if (workoutId) useWorkoutStore.getState().markWorkoutRecorded(workoutId);
+      if (currentId) useWorkoutStore.getState().markWorkoutRecorded(currentId);
       const isEmailAuth = localStorage.getItem("mbw_user") !== null;
       const isGuest = guestMode && !isEmailAuth;
 
@@ -566,7 +569,8 @@ export default function WorkoutSummaryPage() {
           rank: sc.card.rank,
           suit: sc.card.suit,
           exercise: sc.card.exercise,
-          reps: sc.reps,
+          // Same rule as the rep totals on screen: holds are seconds.
+          reps: isHoldCard(sc) ? 0 : sc.reps,
         })),
         equipmentSnapshot,
       });
@@ -1107,10 +1111,11 @@ export default function WorkoutSummaryPage() {
             />
             <div className="min-w-0">
               <p className="font-display font-bold text-sm text-white leading-snug">
-                Sign in to save your progress
+                Sign in to keep your workout history
               </p>
               <p className="font-body text-xs text-white/60 mt-0.5">
-                Your workout won't be saved in guest mode.
+                As a guest, your streak and records stay on this phone, but
+                workouts aren't added to your history.
               </p>
             </div>
           </motion.div>

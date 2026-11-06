@@ -123,10 +123,21 @@ What changed:
 - **Other:** "Party not found / ended" screens (M2), Leave party from the owner picker (M3), readable park names/equipment (M6, `src/lib/parkLabels.ts`), styled 404 (L2), help icon instead of the bell (L1), restore-purchases feedback (L5), switch and overlay accessibility labels (L4).
 - **Database:** `supabase/migrations/20261106120000_fix_train_together_policy_recursion.sql` (applied) and `20261106130000_qa_social_onboarding_decks.sql` (**not applied** — apply together with deploying this branch; it renames the 2 reviewer accounts' usernames).
 
+Review round 3 (DB, client logic, browser) also fixed:
+
+- **Parks:** unnamed parks show where they are ("Near Hoofdstraat, Wageningen"), reverse geocoded with Nominatim only when a park is opened, at most 1 request/s, cached on the device (`src/lib/parkPlace.ts`); pins and clusters have accessible names.
+- **Retake assessment:** decided from state when the questionnaire opens (no flag left behind by a system Back); keeps the original completion date.
+- **Accounts:** a tab whose account changed in another tab reloads instead of writing the old account's data; a guest's leftover workout or web mock premium doesn't carry into an existing account; the trial only applies to signed-in users.
+- **Sync:** editing weight/height/age doesn't overwrite newer answers from another device; a deck deleted on one device stays deleted; a late onboarding download no longer shows the questionnaire again.
+- **Workout clock:** wall-clock based; time in the background (screen off between sets) counts up to 5 minutes per absence.
+- **Display:** holds show seconds (not "0 reps") and stay out of rep totals; Profile workouts/calories come from the history; Narrow Squat is a leg exercise.
+- **Accessibility:** How to play and park sheets are dialogs (Escape, focus); about 30 icon buttons and the onboarding sliders have labels; Escape resumes a paused workout; sign-in/sign-up fields have autocomplete hints.
+
+Review round 4 also fixed: a tab reloading after another tab's sign-in no longer writes its old workout/guest mode back; `get_usernames` no longer counts a chat thread as a connection (chat names come from the chat RPCs); guests (anonymous sessions) can't look up usernames or send friend requests; Retake assessment is an explicit `/onboarding?retake=1` (returning guests and system Back no longer open the edit flow); keyboard can open map pins and pin names survive re-clustering; pause and Joker overlays are dialogs; holds show seconds in the pause list too; guest summary copy says what is kept on the phone (streak, records) and what needs an account (history).
+
 Still to do on this branch:
 
-- [ ] Round-2 browser findings not fixed yet: How to play sheet heading is hardcoded "UPPER BODY DECK" and Escape doesn't close it (`src/components/HowToPlayModal.tsx`); retake flag can be left behind after a system Back, and finishing a retake resets `completedAt` (`OnboardingPage.tsx`); parks are mostly unnamed — show street/area (reverse geocode) and give map pins accessible names (`MapPage.tsx`).
-- [ ] Review rounds 3, 4 and 5 (independent reviewers), fixing every finding.
+- [ ] Review round 5 (independent reviewers), fixing every finding.
 - [ ] Apply the migration, regenerate `src/lib/database.types.ts` from the live DB and compare with the hand-written types.
 - [ ] Re-run the live consumer QA (two accounts: friends, party names, chat, block/report) on a Vercel preview, then merge to `main` and deploy; build a new Android bundle (also carries the new launcher icons).
 

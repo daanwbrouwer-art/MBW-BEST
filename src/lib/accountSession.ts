@@ -29,9 +29,11 @@ import {
 import { pullCustomDecks } from "@/lib/customDeckSync";
 import { syncOnboardingWithServer } from "@/lib/onboardingSync";
 import { queryClient } from "@/lib/queryClient";
+import { clearPendingAccountStreakMessages } from "@/lib/streak";
 import { supabase } from "@/lib/supabaseClient";
-import { reloadCustomDecks } from "@/store/customWorkout";
+import { reloadCustomDecks, useCustomWorkoutStore } from "@/store/customWorkout";
 import { useWorkoutStore } from "@/store/workout";
+import type { PersistStorage } from "zustand/middleware";
 import { Capacitor } from "@capacitor/core";
 import { Purchases } from "@revenuecat/purchases-capacitor";
 
@@ -201,6 +203,11 @@ export async function completeSignIn(
  * one. Stop all background syncs and reload so the tab starts from the
  * shared storage again. Returns an unsubscribe function.
  */
+/** A persist storage that writes nothing (for a tab about to reload). */
+function discardStorage<S>(): PersistStorage<S> {
+  return { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+}
+
 export function watchOtherTabs(): () => void {
   const onStorage = (event: StorageEvent) => {
     if (event.storageArea !== localStorage) return;
@@ -213,6 +220,11 @@ export function watchOtherTabs(): () => void {
       (event.oldValue === null) !== (event.newValue === null);
     if (event.key !== null && !ownerChanged && !signedInOrOut) return;
     bumpGeneration();
+    // This tab's in-memory stores are the old account's. Stop them writing
+    // to storage, or the save-on-pagehide handlers would put the old
+    // workout (and guestMode) back over what the other tab just set.
+    useWorkoutStore.persist.setOptions({ storage: discardStorage() });
+    useCustomWorkoutStore.persist.setOptions({ storage: discardStorage() });
     window.location.reload();
   };
   window.addEventListener("storage", onStorage);
@@ -237,6 +249,10 @@ export async function resumeSignedInSession(): Promise<void> {
     }
     // First start after updating while signed in: adopt the existing data.
     localStorage.setItem(OWNER_KEY, userId);
+    // Signed in means not a guest, whatever an older tab or version left.
+    if (useWorkoutStore.getState().guestMode) {
+      useWorkoutStore.setState({ guestMode: false });
+    }
     bumpGeneration();
     await linkPurchases(userId);
     resolvePurchasesReady();
@@ -282,6 +298,7 @@ export async function signOut({ flush = true }: SignOutOptions = {}): Promise<vo
   // The web-only mock subscription belongs to whoever bought it on this
   // browser session; never carry premium over to the next person.
   localStorage.removeItem("mbw_subscription");
+  clearPendingAccountStreakMessages();
   useWorkoutStore.getState().reset();
   useWorkoutStore.setState({ guestMode: false });
   reloadCustomDecks();

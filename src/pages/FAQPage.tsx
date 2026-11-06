@@ -77,7 +77,7 @@ export default function FAQPage() {
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">
               Your streak counts consecutive weeks where you hit your weekly
-              training-day goal (set in your Training Goal, above). If a full
+              training-day goal (set under Training Goal on your Profile). If a full
               week goes by without meeting that goal, your streak resets to zero
               for the next week — there's currently no grace period for a missed
               week. If your goal feels like a stretch, lowering it (e.g. from 5
@@ -167,7 +167,7 @@ export default function FAQPage() {
               It's based on the exercises in your workout plus the weight,
               height, and age you entered — it's an estimate, not a medical
               measurement. If your weight or height has changed, update it in
-              Body Metrics (above) and future estimates will adjust
+              Body Metrics on your Profile and future estimates will adjust
               automatically.
             </p>
           </motion.div>

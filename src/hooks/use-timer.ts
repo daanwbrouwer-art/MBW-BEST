@@ -37,11 +37,11 @@ export function useTimer(running: boolean, initialSeconds = 0) {
     // While hidden, ticks don't add anything; the absence is added (capped)
     // when the page is visible again.
     const tick = () => {
-      if (!hidden) advance(Number.POSITIVE_INFINITY);
+      if (!hidden) advance(MAX_AWAY_MS);
     };
     const onVisibility = () => {
       if (document.visibilityState === "hidden") {
-        if (!hidden) advance(Number.POSITIVE_INFINITY);
+        if (!hidden) advance(MAX_AWAY_MS);
         hidden = true;
       } else if (hidden) {
         hidden = false;
@@ -54,7 +54,7 @@ export function useTimer(running: boolean, initialSeconds = 0) {
       clearInterval(id);
       document.removeEventListener("visibilitychange", onVisibility);
       // Keep the part-second up to the pause/stop.
-      if (!hidden) advance(Number.POSITIVE_INFINITY);
+      if (!hidden) advance(MAX_AWAY_MS);
     };
   }, [running]);
 

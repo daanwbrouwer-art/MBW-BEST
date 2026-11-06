@@ -138,6 +138,8 @@ as $$
   select p.id, p.username
   from public.profiles p
   where auth.uid() is not null
+    -- Anonymous (guest) sessions exist only for park submissions.
+    and not coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false)
     and lower(p.username) = lower(btrim(p_username))
     and p.id <> auth.uid()
     and not exists (
@@ -160,10 +162,10 @@ grant execute on function public.find_profile_by_username(text) to authenticated
 --  - in a party, the other person counts only if they are the host or have
 --    accepted (a pending invitee is not "connected" yet);
 --  - nobody gets the name of a user who has blocked them.
--- Known gap (pre-existing, not closed here): a chat thread also counts, and
--- create_or_get_thread() accepts any user id the caller can see, e.g. a
--- co-invitee of a party they were invited to. Tighten create_or_get_thread
--- (friends or shared accepted party only) to close it.
+-- A chat thread alone does NOT count: create_or_get_thread() accepts any id
+-- the caller can see (e.g. a co-invitee of a party), so it must not unlock
+-- names here. Chat screens get the peer's name from get_my_threads() and
+-- get_thread_peer() instead.
 -- At most 200 ids per call; the client sends larger lists in chunks.
 create or replace function public.get_usernames(p_ids uuid[])
 returns table (id uuid, username text)
@@ -211,11 +213,6 @@ begin
                     where y.session_id = s.id and y.user_id = me
                       and y.invite_status <> 'declined'))
           )
-          or exists (
-            select 1 from public.chat_threads t
-            where (t.user_a = me and t.user_b = p.id)
-               or (t.user_b = me and t.user_a = p.id)
-          )
         )
       )
     );
@@ -241,7 +238,8 @@ declare
   them uuid;
   existing record;
 begin
-  if me is null then
+  if me is null
+     or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
     raise exception 'Not authenticated';
   end if;
   select p.id into them

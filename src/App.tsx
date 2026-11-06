@@ -356,6 +356,10 @@ const onboardingFlowRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/onboarding",
   component: OnboardingFlowPage,
+  // ?retake=1: Profile's "Retake assessment" (kept in the URL so a reload
+  // stays in edit mode).
+  validateSearch: (search: Record<string, unknown>): { retake?: "1" } =>
+    search.retake === "1" || search.retake === 1 ? { retake: "1" } : {},
 });
 
 const achievementsRoute = createRoute({

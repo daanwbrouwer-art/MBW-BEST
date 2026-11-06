@@ -587,17 +587,21 @@ export default function MapPage() {
                   key={park.id}
                   position={[park.lat, park.lng]}
                   icon={PARK_ICON}
+                  // Leaflet gives div-icon pins role="button" but no name;
+                  // `title` is re-applied whenever Leaflet (re)creates the
+                  // pin, so the name survives re-clustering.
+                  title={parkPinLabel(park.name, park.equipment)}
                   eventHandlers={{
                     click: () => setSelectedParkId(park.id),
-                    // Leaflet gives div-icon pins role="button" but no
-                    // name; label each one (also when a cluster opens).
-                    add: (event) =>
-                      (event.target as L.Marker)
-                        .getElement()
-                        ?.setAttribute(
-                          "aria-label",
-                          parkPinLabel(park.name, park.equipment),
-                        ),
+                    // Pins are focusable buttons: Enter / Space open them.
+                    keydown: (event) => {
+                      const key = (event as L.LeafletKeyboardEvent)
+                        .originalEvent.key;
+                      if (key === "Enter" || key === " ") {
+                        (event as L.LeafletKeyboardEvent).originalEvent.preventDefault();
+                        setSelectedParkId(park.id);
+                      }
+                    },
                   }}
                 />
               ))}

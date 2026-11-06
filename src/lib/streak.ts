@@ -25,6 +25,13 @@ function relayKey(prefix: string, isGuest: boolean): string {
   return `${prefix}${isGuest ? "guest" : "user"}`;
 }
 
+/** Drops the account's unshown streak celebration/nudge (on sign-out, so
+ * the next person on the phone doesn't see it). */
+export function clearPendingAccountStreakMessages(): void {
+  localStorage.removeItem(relayKey(CELEBRATION_KEY_PREFIX, false));
+  localStorage.removeItem(relayKey(NUDGE_KEY_PREFIX, false));
+}
+
 function defaultStreak(): StreakData {
   return {
     weeklyGoal: 3,

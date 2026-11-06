@@ -205,9 +205,14 @@ export default function AchievementsPage() {
                   {meta.label}
                 </span>
                 <span className="text-xs font-body opacity-60">
-                  {/* Same rule as the header: undiscovered hidden ones don't count. */}
-                  {catUnlocked}/
-                  {catAchievements.filter((a) => !a.hidden || a.unlocked).length}
+                  {/* Same rule as the header: undiscovered hidden ones don't
+                      count. Secrets have no known total: show what's found. */}
+                  {cat === "secret"
+                    ? `${catUnlocked} found`
+                    : `${catUnlocked}/${
+                        catAchievements.filter((a) => !a.hidden || a.unlocked)
+                          .length
+                      }`}
                 </span>
               </button>
             );

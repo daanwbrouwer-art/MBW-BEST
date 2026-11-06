@@ -105,19 +105,34 @@ function applyResult(
   }));
 }
 
+// Uploads in flight per deck id: a delete waits for them, or a slow upload
+// landing after the delete would re-create the deck.
+const pushesInFlight = new Map<string, Promise<void>>();
+
 /** Background push of one saved or edited deck. Never throws. */
-export async function pushDeck(deck: CustomDeck): Promise<void> {
-  try {
-    const scope = await activeScope();
-    if (!scope) return;
-    applyResult(scope, deck.id, await writeRemote(deck, scope.userId));
-  } catch (err) {
-    console.warn("Couldn't sync custom deck:", err);
-  }
+export function pushDeck(deck: CustomDeck): Promise<void> {
+  const previous = pushesInFlight.get(deck.id) ?? Promise.resolve();
+  const push = previous.then(async () => {
+    try {
+      const scope = await activeScope();
+      if (!scope) return;
+      // Deleted while waiting for the previous upload: don't re-create it.
+      if (useCustomWorkoutStore.getState().deletedIds.includes(deck.id)) return;
+      applyResult(scope, deck.id, await writeRemote(deck, scope.userId));
+    } catch (err) {
+      console.warn("Couldn't sync custom deck:", err);
+    }
+  });
+  pushesInFlight.set(deck.id, push);
+  void push.finally(() => {
+    if (pushesInFlight.get(deck.id) === push) pushesInFlight.delete(deck.id);
+  });
+  return push;
 }
 
 /** Background delete of one deck. If it fails, pullCustomDecks retries. */
 export async function pushDeckDelete(deckId: string): Promise<void> {
+  await pushesInFlight.get(deckId);
   try {
     const scope = await activeScope();
     if (!scope) return;

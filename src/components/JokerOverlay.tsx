@@ -123,6 +123,9 @@ export function JokerOverlay({
               "radial-gradient(ellipse at 50% 30%, oklch(0.2 0.07 var(--primary-h)) 0%, oklch(0.08 0.015 var(--neutral-hue)) 100%)",
           }}
           data-ocid="joker-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Joker challenge"
         >
           {/* Flash feedback layer */}
           {flash && (

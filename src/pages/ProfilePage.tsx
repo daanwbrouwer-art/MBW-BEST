@@ -317,11 +317,10 @@ export default function ProfilePage() {
     saveOnboarding({ age: clamp(value, min, max) });
   };
 
-  // Onboarding stays complete during a retake: OnboardingPage sees that it
-  // was already finished, prefills the old answers, and Back or Finish
-  // return here.
+  // Onboarding stays complete during a retake: OnboardingPage sees
+  // ?retake=1, prefills the old answers, and Back or Finish return here.
   const handleRetakeAssessment = () => {
-    navigate({ to: "/onboarding" });
+    navigate({ to: "/onboarding", search: { retake: "1" } });
   };
 
   const handleRestorePurchases = async () => {
@@ -706,6 +705,7 @@ export default function ProfilePage() {
                 max={BODY_METRICS_BOUNDS.weightKg.max}
                 step={1}
                 data-ocid="profile.body_metrics.weight_slider"
+                aria-label="Weight in kilograms"
               />
             </div>
             <div>
@@ -724,6 +724,7 @@ export default function ProfilePage() {
                 max={BODY_METRICS_BOUNDS.heightCm.max}
                 step={1}
                 data-ocid="profile.body_metrics.height_slider"
+                aria-label="Height in centimetres"
               />
             </div>
             <div>
@@ -742,6 +743,7 @@ export default function ProfilePage() {
                 max={BODY_METRICS_BOUNDS.age.max}
                 step={1}
                 data-ocid="profile.body_metrics.age_slider"
+                aria-label="Age in years"
               />
             </div>
             <div
