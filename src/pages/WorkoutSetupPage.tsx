@@ -317,6 +317,7 @@ export default function WorkoutSetupPage() {
             onClick={() => navigate({ to: "/decks" })}
             className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth"
             data-ocid="workout-setup.back_button"
+            aria-label="Go back to decks"
           >
             <ArrowLeft className="w-4 h-4" />
           </motion.button>
@@ -636,6 +637,8 @@ export default function WorkoutSetupPage() {
                   type="button"
                   className="w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-smooth bg-transparent"
                   onClick={handleCustomFocus}
+                  aria-label="Custom card count"
+                  aria-pressed={isCustomSelected}
                   style={{
                     borderColor: customError
                       ? "oklch(0.65 0.22 25)"
@@ -1401,6 +1404,7 @@ function IdleShufflePreview({
           imageUrl: "",
           repSpec: { __kind__: "Fixed", Fixed: BigInt(entry.reps || 10) },
           videoUrl: "",
+          holdSeconds: entry.holdSeconds,
         });
       }
       if (suitCfg.queen?.exerciseName) {
@@ -1416,6 +1420,7 @@ function IdleShufflePreview({
             Fixed: BigInt(suitCfg.queen.reps || 10),
           },
           videoUrl: "",
+          holdSeconds: suitCfg.queen.holdSeconds,
         });
       }
     }

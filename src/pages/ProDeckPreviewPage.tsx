@@ -70,6 +70,7 @@ export default function ProDeckPreviewPage() {
           onClick={() => navigate({ to: "/decks" })}
           className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-prestige hover:border-prestige/45 transition-smooth shrink-0"
           data-ocid="pro-preview.back_button"
+          aria-label="Go back"
         >
           <ArrowLeft className="w-4 h-4" />
         </motion.button>

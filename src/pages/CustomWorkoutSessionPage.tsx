@@ -155,6 +155,7 @@ export default function CustomWorkoutSessionPage() {
               type="button"
               className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-destructive transition-smooth shrink-0"
               data-ocid="custom-workout.quit_button"
+              aria-label="Quit workout"
             >
               <X className="w-4 h-4" />
             </button>
@@ -168,7 +169,16 @@ export default function CustomWorkoutSessionPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Keep going</AlertDialogCancel>
-              <AlertDialogAction onClick={() => navigate({ to: "/home" })}>
+              <AlertDialogAction
+                onClick={() =>
+                  deckId && getDeck(deckId)
+                    ? navigate({
+                        to: "/custom-workout/deck/$deckId",
+                        params: { deckId },
+                      })
+                    : navigate({ to: "/home" })
+                }
+              >
                 Quit
               </AlertDialogAction>
             </AlertDialogFooter>

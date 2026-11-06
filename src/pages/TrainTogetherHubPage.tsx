@@ -78,6 +78,7 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
             onClick={onClose}
             className="w-9 h-9 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground"
             data-ocid="train-together.how_it_works_close"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -270,6 +271,7 @@ function PartySetupPanel({
             onClick={onClose}
             className="w-9 h-9 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground"
             data-ocid="train-together.party_panel_close"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
@@ -377,6 +379,7 @@ function PartySetupPanel({
                 <button
                   type="button"
                   onClick={() => setPickerSlot(null)}
+                  aria-label="Close"
                   className="text-muted-foreground"
                 >
                   <X className="w-4 h-4" />
@@ -506,6 +509,7 @@ function PendingInvites({ invites }: { invites: PendingPartyInvite[] }) {
                   color: "oklch(var(--pulse))",
                 }}
                 data-ocid="train-together.accept_party_invite"
+                aria-label="Accept party invite"
               >
                 <Check className="w-4 h-4" />
               </button>
@@ -519,6 +523,7 @@ function PendingInvites({ invites }: { invites: PendingPartyInvite[] }) {
                 }
                 className="w-8 h-8 rounded-full flex items-center justify-center bg-muted/40 text-muted-foreground"
                 data-ocid="train-together.decline_party_invite"
+                aria-label="Decline party invite"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -584,6 +589,7 @@ function FriendsSection({ friendships }: { friendships: FriendshipEntry[] }) {
                       color: "oklch(var(--pulse))",
                     }}
                     data-ocid="train-together.accept_request"
+                    aria-label="Accept friend request"
                   >
                     <Check className="w-4 h-4" />
                   </button>
@@ -597,6 +603,7 @@ function FriendsSection({ friendships }: { friendships: FriendshipEntry[] }) {
                     }
                     className="w-8 h-8 rounded-full flex items-center justify-center bg-muted/40 text-muted-foreground"
                     data-ocid="train-together.decline_request"
+                    aria-label="Decline friend request"
                   >
                     <X className="w-4 h-4" />
                   </button>

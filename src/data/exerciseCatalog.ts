@@ -976,8 +976,8 @@ export const EXERCISE_CATALOG: CatalogExercise[] = [
   {
     name: "Narrow Squat",
     categories: ["LowerBody"],
-    movementCategory: "Pull",
-    bodyRegion: "UpperBody",
+    movementCategory: "Legs",
+    bodyRegion: "LowerBody",
     isIsometric: false,
     defaultHoldSeconds: undefined,
     defaultReps: 10,

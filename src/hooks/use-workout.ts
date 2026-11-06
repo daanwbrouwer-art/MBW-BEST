@@ -8503,7 +8503,8 @@ export function getMovementCategory(exerciseName: string): MovementCategory {
     name.includes("chin-up") ||
     name.includes("chinup") ||
     name.includes("chin up") ||
-    name.includes("row") ||
+    // Whole word: "narrow squat" / "throw" / "crow" are not rows.
+    /\brow/.test(name) ||
     name.includes("commando") ||
     name.includes("hang")
   ) {

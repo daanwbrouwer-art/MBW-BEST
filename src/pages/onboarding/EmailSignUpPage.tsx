@@ -251,6 +251,7 @@ export default function EmailSignUpPage() {
                   placeholder="athlete_name"
                   className="flex-1 bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none"
                   data-ocid="email-signup.username_input"
+                  autoComplete="username"
                 />
               </div>
             </div>
@@ -295,6 +296,7 @@ export default function EmailSignUpPage() {
                   placeholder="you@example.com"
                   className="flex-1 bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none"
                   data-ocid="email-signup.email_input"
+                  autoComplete="email"
                 />
               </div>
             </div>
@@ -347,6 +349,7 @@ export default function EmailSignUpPage() {
                   placeholder="••••••••"
                   className="flex-1 bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none"
                   data-ocid="email-signup.password_input"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
@@ -411,6 +414,7 @@ export default function EmailSignUpPage() {
                   placeholder="••••••••"
                   className="flex-1 bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none"
                   data-ocid="email-signup.confirm_password_input"
+                  autoComplete="new-password"
                 />
               </div>
             </div>

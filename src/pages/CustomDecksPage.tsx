@@ -51,6 +51,7 @@ export default function CustomDecksPage() {
           onClick={() => navigate({ to: "/home" })}
           className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth shrink-0"
           data-ocid="custom-decks.back_button"
+          aria-label="Go back"
         >
           <ArrowLeft className="w-4 h-4" />
         </motion.button>

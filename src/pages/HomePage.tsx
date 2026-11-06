@@ -234,7 +234,10 @@ export default function HomePage() {
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-muted-foreground font-body leading-none mb-0.5">
-                Welcome back,
+                {/* "back" only once they have trained before. */}
+                {workoutCount > 0 || streak.totalTrainingDaysThisYear > 0
+                  ? "Welcome back,"
+                  : "Welcome,"}
               </span>
               <span className="font-display font-black text-sm text-white leading-none">
                 {username}.
@@ -688,7 +691,9 @@ function StreakBadge({
           </p>
           <div className="flex gap-1.5 flex-wrap">
             <StatChip
-              label={`${streak.totalTrainingDaysThisYear} days this year`}
+              label={`${streak.totalTrainingDaysThisYear} ${
+                streak.totalTrainingDaysThisYear === 1 ? "day" : "days"
+              } this year`}
             />
             <StatChip
               label={bestExerciseLabel}

@@ -104,6 +104,7 @@ export default function DecksPage() {
           onClick={() => navigate({ to: "/home" })}
           className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth"
           data-ocid="decks.back_button"
+          aria-label="Go back to home"
         >
           <ArrowLeft className="w-4 h-4" />
         </motion.button>
@@ -477,6 +478,7 @@ function UpgradeModal({
               onClick={onClose}
               className="w-8 h-8 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-smooth"
               data-ocid="decks.upgrade.close_button"
+              aria-label="Close"
             >
               <X className="w-4 h-4" />
             </button>

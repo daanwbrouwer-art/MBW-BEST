@@ -63,6 +63,10 @@ export default function ChatConversationPage() {
     ? { id: peerData.id, username: peerData.username }
     : null;
   const hasConversationError = messagesLoadError || hasPeerError;
+  // A bad or old link (or a thread you're no longer part of), not a network
+  // problem: retrying won't help.
+  const threadNotFound =
+    !!peerData && !peerData.ok && peerData.error === "Thread not found";
 
   const handleRetryLoad = () => {
     setRetryTick((t) => t + 1);
@@ -253,10 +257,14 @@ export default function ChatConversationPage() {
                 />
               </div>
               <p className="font-display font-bold text-sm text-foreground mb-1">
-                Can't load this conversation
+                {threadNotFound
+                  ? "Conversation not found"
+                  : "Can't load this conversation"}
               </p>
               <p className="text-white/70 font-body text-xs mb-5">
-                Check your connection and try again.
+                {threadNotFound
+                  ? "This chat doesn't exist or is no longer available."
+                  : "Check your connection and try again."}
               </p>
               <button
                 type="button"

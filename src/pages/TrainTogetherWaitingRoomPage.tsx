@@ -173,6 +173,7 @@ function WorkoutSetupSheet({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close"
             className="w-9 h-9 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground"
           >
             <X className="w-4 h-4" />
@@ -579,6 +580,7 @@ export default function TrainTogetherWaitingRoomPage() {
               type="button"
               className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-destructive transition-smooth shrink-0"
               data-ocid="train-together.waiting_leave"
+              aria-label="Leave party"
             >
               <X className="w-4 h-4" />
             </button>
@@ -645,6 +647,7 @@ export default function TrainTogetherWaitingRoomPage() {
                 color: "oklch(var(--pulse))",
               }}
               data-ocid="train-together.waiting_copy_code"
+              aria-label="Copy invite code"
             >
               <Copy className="w-4 h-4" />
             </button>
@@ -653,6 +656,7 @@ export default function TrainTogetherWaitingRoomPage() {
               onClick={() => shareInviteCode(session.inviteCode)}
               className="w-9 h-9 rounded-full flex items-center justify-center bg-muted/40 text-muted-foreground"
               data-ocid="train-together.waiting_share_code"
+              aria-label="Share invite code"
             >
               <Share2 className="w-4 h-4" />
             </button>

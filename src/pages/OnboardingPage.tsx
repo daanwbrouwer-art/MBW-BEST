@@ -3,7 +3,6 @@ import { WeeklyGoalPicker } from "@/components/WeeklyGoalPicker";
 import { Slider } from "@/components/ui/slider";
 import { DEFAULT_EQUIPMENT, useOnboarding } from "@/hooks/use-onboarding";
 import { calculateBMI, getBMICategory } from "@/lib/calories";
-import { endRetake, isRetakeRequested } from "@/lib/retakeAssessment";
 import {
   readStreak,
   setWeeklyGoal as setWeeklyGoalLib,
@@ -126,7 +125,20 @@ export default function OnboardingPage() {
   const isSignedIn = localStorage.getItem("mbw_user") !== null;
   // "Retake assessment" from Profile: onboarding stays complete, Back and
   // Finish return to Profile, and the answers start from the previous ones.
-  const isRetake = onboarding.hasCompletedOnboarding && isRetakeRequested();
+  // Decided once on mount from state, not from a flag that a system Back
+  // could leave behind: anyone who had already finished onboarding when
+  // they arrived is editing (also after a reload mid-retake), never
+  // starting over.
+  const [isRetake] = useState(() => onboarding.hasCompletedOnboarding);
+
+  // First-time questionnaire, but the account's answers just arrived from a
+  // slow sign-in sync: nothing to ask, go on to the app.
+  const completing = useRef(false);
+  useEffect(() => {
+    if (!isRetake && !completing.current && onboarding.hasCompletedOnboarding) {
+      navigate({ to: "/home", replace: true });
+    }
+  }, [isRetake, onboarding.hasCompletedOnboarding, navigate]);
 
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState("");
@@ -179,10 +191,7 @@ export default function OnboardingPage() {
 
   const goBack = () => {
     if (step === 1) {
-      if (isRetake) {
-        endRetake();
-        navigate({ to: "/profile" });
-      }
+      if (isRetake) navigate({ to: "/profile" });
       // A signed-in user has nowhere before the first question: the
       // welcome screen is the sign-up / sign-in page.
       else if (!isSignedIn) navigate({ to: "/onboarding/welcome" });
@@ -192,6 +201,7 @@ export default function OnboardingPage() {
   };
 
   const handleComplete = async () => {
+    completing.current = true;
     await saveOnboarding({
       gender,
       weightKg,
@@ -203,11 +213,12 @@ export default function OnboardingPage() {
       selfAssessment,
       equipment: deriveEquipmentProfile(equipmentAccess),
       hasCompletedOnboarding: true,
-      completedAt: Date.now(),
+      // A retake keeps the original completion date (updatedAt, set by
+      // saveOnboarding, records the edit).
+      ...(isRetake ? {} : { completedAt: Date.now() }),
     });
     const isEmailAuth = localStorage.getItem("mbw_user") !== null;
     setWeeklyGoalLib(guestMode && !isEmailAuth, weeklyGoal);
-    endRetake();
     navigate({ to: isRetake ? "/profile" : "/home" });
   };
 
@@ -451,6 +462,7 @@ function BodyMetricsStep({
           <Slider
             value={[weightKg]}
             onValueChange={([v]) => onChangeWeight(v)}
+            aria-label="Weight in kilograms"
             min={30}
             max={180}
             step={1}
@@ -468,6 +480,7 @@ function BodyMetricsStep({
           <Slider
             value={[heightCm]}
             onValueChange={([v]) => onChangeHeight(v)}
+            aria-label="Height in centimetres"
             min={130}
             max={220}
             step={1}
@@ -485,13 +498,14 @@ function BodyMetricsStep({
           <Slider
             value={[age]}
             onValueChange={([v]) => onChangeAge(v)}
-            min={13}
+            aria-label="Age in years"
+            min={16}
             max={90}
             step={1}
             data-ocid="onboarding-flow.age_slider"
           />
           <div className="flex justify-between mt-2">
-            <span className="text-xs text-muted-foreground">13</span>
+            <span className="text-xs text-muted-foreground">16</span>
             <span className="text-xs text-muted-foreground">90</span>
           </div>
         </div>
@@ -653,6 +667,7 @@ function FitnessLevelStep({
           <Slider
             value={[level]}
             onValueChange={([v]) => onChange(v)}
+            aria-label="Fitness level"
             min={0}
             max={100}
             step={1}

@@ -157,7 +157,10 @@ export function useTier() {
     return record !== null;
   }, []);
 
-  const trialActive = trialStatus.kind === "active";
+  // The trial marker is per device (one trial per phone), but it only gives
+  // access to a signed-in account: a guest on the same phone after sign-out
+  // must not inherit it.
+  const trialActive = trialStatus.kind === "active" && isEmailAuth;
   const subscriber = subscription !== null || FORCE_PREMIUM_FOR_TESTING;
 
   // "Real" tier — what the account actually is, ignoring any trial.
@@ -212,7 +215,8 @@ export function useTier() {
     isSubscriber: subscriber,
     subscription,
     trialActive,
-    trialStatus,
+    // Guests see no trial banners or "trial ended" prompts either.
+    trialStatus: isEmailAuth ? trialStatus : ({ kind: "none" } as TrialStatus),
     purchase,
     refreshSubscription,
     guestMode: isGuest,

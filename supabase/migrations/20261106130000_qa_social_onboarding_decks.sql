@@ -24,6 +24,21 @@ where u.id = p.id
   and p.username = split_part(u.email, '@', 1)
   and coalesce(u.raw_user_meta_data->>'username', '') = '';
 
+-- The two Play Console reviewer accounts get fixed, friendly names, so the
+-- review notes can say "add reviewer_two as a friend". Skipped if somebody
+-- else already holds the name.
+update public.profiles p
+set username = v.name
+from auth.users u,
+  (values ('mybodyweight+playreview@outlook.com', 'reviewer_one'),
+          ('mybodyweight+playreview2@outlook.com', 'reviewer_two')) as v(email, name)
+where u.id = p.id
+  and lower(u.email) = v.email
+  and not exists (
+    select 1 from public.profiles q
+    where lower(q.username) = v.name and q.id <> p.id
+  );
+
 -- Resolve any case-insensitive duplicates before the unique index (none at
 -- the time of writing, but keep the migration safe to replay).
 update public.profiles p
@@ -43,6 +58,10 @@ create unique index if not exists profiles_username_lower_key
 update public.profiles
 set username = 'athlete_' || substr(replace(id::text, '-', ''), 1, 24)
 where username is null or username !~ '^[A-Za-z0-9_]{3,32}$';
+
+-- A NULL would pass the CHECK below (NULL ~ regex is NULL), and the lookup
+-- functions promise a name.
+alter table public.profiles alter column username set not null;
 
 alter table public.profiles drop constraint if exists profiles_username_format;
 alter table public.profiles
@@ -141,6 +160,10 @@ grant execute on function public.find_profile_by_username(text) to authenticated
 --  - in a party, the other person counts only if they are the host or have
 --    accepted (a pending invitee is not "connected" yet);
 --  - nobody gets the name of a user who has blocked them.
+-- Known gap (pre-existing, not closed here): a chat thread also counts, and
+-- create_or_get_thread() accepts any user id the caller can see, e.g. a
+-- co-invitee of a party they were invited to. Tighten create_or_get_thread
+-- (friends or shared accepted party only) to close it.
 -- At most 200 ids per call; the client sends larger lists in chunks.
 create or replace function public.get_usernames(p_ids uuid[])
 returns table (id uuid, username text)

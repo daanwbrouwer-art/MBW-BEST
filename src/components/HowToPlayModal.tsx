@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef } from "react";
 
 const STEPS = [
   {
@@ -40,6 +41,54 @@ interface HowToPlayModalProps {
 }
 
 export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Escape closes; focus moves into the sheet on open, stays inside it on
+  // Tab, and returns to whatever opened it on close.
+  useEffect(() => {
+    if (!open) return;
+    const opener =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const focusable = () =>
+      Array.from(
+        sheetRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+    const raf = requestAnimationFrame(() => focusable()[0]?.focus());
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = focusable();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      const inside = !!active && !!sheetRef.current?.contains(active);
+      if (e.shiftKey && (active === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("keydown", onKey);
+      if (opener?.isConnected) opener.focus();
+    };
+  }, [open]);
+
   return (
     <AnimatePresence>
       {open && (
@@ -71,8 +120,10 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
               borderBottom: "none",
               boxShadow: "0 -16px 60px oklch(0 0 0 / 0.55)",
             }}
+            ref={sheetRef}
+            role="dialog"
             aria-modal="true"
-            aria-label="How to Play"
+            aria-labelledby="how-to-play-title"
             data-ocid="how-to-play.dialog"
           >
             {/* Handle bar */}
@@ -92,9 +143,12 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
                   className="text-xs font-display font-bold tracking-[0.22em] uppercase mb-0.5"
                   style={{ color: "oklch(var(--primary))" }}
                 >
-                  Upper Body Deck
+                  Card Workout
                 </p>
-                <h2 className="font-display font-black text-xl text-foreground tracking-tight">
+                <h2
+                  id="how-to-play-title"
+                  className="font-display font-black text-xl text-foreground tracking-tight"
+                >
                   How to Play
                 </h2>
               </div>

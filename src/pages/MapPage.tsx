@@ -11,6 +11,7 @@ import {
   resolveCountryCenter,
 } from "@/lib/countryCapitals";
 import { geocodePlace, zoomForRadiusKm } from "@/lib/geocoding";
+import { parkPinLabel } from "@/lib/parkLabels";
 import {
   PARK_ICON,
   TILE_ATTRIBUTION,
@@ -84,7 +85,7 @@ function clusterIcon(cluster: L.MarkerCluster) {
       box-shadow: 0 2px 12px oklch(0 0 0 / 0.45);
       display: flex; align-items: center; justify-content: center;
       font-family: inherit; font-weight: 800; font-size: 13px; color: oklch(0.08 0.005 var(--neutral-hue));
-    ">${count}</div>`,
+    ">${count}<span class="sr-only"> parks here, zoom in</span></div>`,
     iconSize: [38, 38],
   });
 }
@@ -586,7 +587,18 @@ export default function MapPage() {
                   key={park.id}
                   position={[park.lat, park.lng]}
                   icon={PARK_ICON}
-                  eventHandlers={{ click: () => setSelectedParkId(park.id) }}
+                  eventHandlers={{
+                    click: () => setSelectedParkId(park.id),
+                    // Leaflet gives div-icon pins role="button" but no
+                    // name; label each one (also when a cluster opens).
+                    add: (event) =>
+                      (event.target as L.Marker)
+                        .getElement()
+                        ?.setAttribute(
+                          "aria-label",
+                          parkPinLabel(park.name, park.equipment),
+                        ),
+                  }}
                 />
               ))}
             </MarkerClusterGroup>

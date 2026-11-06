@@ -88,9 +88,12 @@ export function PlayingCard({
   }
 
   const repCount = getRepCount();
+  const holdSeconds = card?.holdSeconds;
   const repDisplay = isJoker
     ? "JOKER"
-    : repCount === "½"
+    : holdSeconds && holdSeconds > 0
+      ? `${holdSeconds} SEC HOLD`
+      : repCount === "½"
       ? "x ½ REPS"
       : repCount === "CHALLENGE"
         ? "CHALLENGE"

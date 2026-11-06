@@ -138,7 +138,13 @@ function getMotivation(
 
 // ─── Exercise breakdown ───────────────────────────────────────────────────
 type SuitGroup = { label: string; count: number; emoji: string };
-type ExerciseRepRow = { name: string; reps: number; suit: string };
+/** `reps` holds seconds when `hold` is true. */
+type ExerciseRepRow = { name: string; reps: number; suit: string; hold: boolean };
+
+/** An isometric hold card (timed in seconds, not counted in reps). */
+function isHoldCard(sc: LocalSessionCard): boolean {
+  return typeof sc.card.holdSeconds === "number" && sc.card.holdSeconds > 0;
+}
 
 // Purely visual — the emoji shown next to each exercise row in the "Reps
 // per Exercise" list, keyed by the suit that card was actually drawn from.
@@ -172,7 +178,8 @@ function buildBreakdown(playedCards: LocalSessionCard[]): {
   jokerCount: number;
 } {
   const categoryCounts: Record<string, number> = {};
-  const repMap: Record<string, { reps: number; suit: string }> = {};
+  const repMap: Record<string, { reps: number; suit: string; hold: boolean }> =
+    {};
   let jokerCount = 0;
   let totalReps = 0;
 
@@ -186,10 +193,12 @@ function buildBreakdown(playedCards: LocalSessionCard[]): {
     if (ex) {
       const category = getMovementCategory(ex);
       categoryCounts[category] = (categoryCounts[category] ?? 0) + 1;
-      const reps = sc.reps ?? 0;
-      if (!repMap[ex]) repMap[ex] = { reps: 0, suit };
-      repMap[ex].reps += reps;
-      totalReps += reps;
+      // Holds count seconds, not reps (and stay out of the rep total).
+      const hold = isHoldCard(sc);
+      const amount = hold ? (sc.card.holdSeconds ?? 0) : (sc.reps ?? 0);
+      if (!repMap[ex]) repMap[ex] = { reps: 0, suit, hold };
+      repMap[ex].reps += amount;
+      if (!hold) totalReps += amount;
     }
   }
 
@@ -202,8 +211,9 @@ function buildBreakdown(playedCards: LocalSessionCard[]): {
     .sort((a, b) => b.count - a.count);
 
   const exerciseRows: ExerciseRepRow[] = Object.entries(repMap)
-    .map(([name, { reps, suit }]) => ({ name, reps, suit }))
-    .sort((a, b) => b.reps - a.reps);
+    .map(([name, { reps, suit, hold }]) => ({ name, reps, suit, hold }))
+    // Rep exercises first (by reps), then holds (by seconds).
+    .sort((a, b) => Number(a.hold) - Number(b.hold) || b.reps - a.reps);
 
   return { suitGroups, exerciseRows, totalReps, jokerCount };
 }
@@ -393,7 +403,8 @@ export default function WorkoutSummaryPage() {
       let totalRepsCount = 0;
       for (const sc of playedForSave) {
         const suit = sc.card.suit.toLowerCase() as keyof typeof repsBySuit;
-        if (suit in repsBySuit) {
+        // Same rule as the on-screen total: holds are seconds, not reps.
+        if (suit in repsBySuit && !isHoldCard(sc)) {
           repsBySuit[suit] += sc.reps;
           totalRepsCount += sc.reps;
         }
@@ -410,7 +421,15 @@ export default function WorkoutSummaryPage() {
       const { exerciseRows: exerciseRowsForSave } =
         buildBreakdown(playedForSave);
       const entry: WorkoutHistoryEntry = {
-        id: workoutId ?? crypto.randomUUID(),
+        // A workout from before ids existed gets one now, stored at once, so
+        // a retry or remount reuses it and the upsert stays duplicate-free.
+        id:
+          workoutId ??
+          (() => {
+            const id = crypto.randomUUID();
+            useWorkoutStore.setState({ workoutId: id });
+            return id;
+          })(),
         completedAt: BigInt(Date.now()),
         userId: "anonymous",
         // The deck the workout was built from (same id use-workout.ts uses).
@@ -434,7 +453,10 @@ export default function WorkoutSummaryPage() {
         },
         isValid: isSessionValid(duration, completedCards),
         avgTimePerCard: computeAvgTimePerCard(duration, completedCards),
-        repsByExercise: exerciseRowsForSave.map((row): [string, bigint] => [
+        // Lifetime reps per exercise: holds (seconds) are left out.
+        repsByExercise: exerciseRowsForSave
+          .filter((row) => !row.hold)
+          .map((row): [string, bigint] => [
           row.name,
           BigInt(row.reps),
         ]),
@@ -526,7 +548,9 @@ export default function WorkoutSummaryPage() {
       const streakResult = recordCompletedWorkout(isGuest, {
         cardsDrawn: completedCards,
         deckUsed: deckName,
-        exercises: exerciseRows.map((r) => ({ name: r.name, reps: r.reps })),
+        exercises: exerciseRows
+          .filter((r) => !r.hold)
+          .map((r) => ({ name: r.name, reps: r.reps })),
       });
 
       const equipmentSnapshot = buildActualEquipmentSnapshot(playedLocalCards);
@@ -574,10 +598,19 @@ export default function WorkoutSummaryPage() {
           }
         }
       }
-      for (const a of newlyAlmost) {
-        toast(`🏆 You would have unlocked '${a.name}'!`, {
+      // One toast, not a stack of them (they overlapped unreadably).
+      if (newlyAlmost.length === 1) {
+        toast(`🏆 You would have unlocked '${newlyAlmost[0].name}'!`, {
           description: "Subscribe to earn achievements.",
           duration: 5000,
+        });
+      } else if (newlyAlmost.length > 1) {
+        toast(`🏆 You would have unlocked ${newlyAlmost.length} achievements!`, {
+          description: `${newlyAlmost
+            .slice(0, 3)
+            .map((a) => a.name)
+            .join(", ")}${newlyAlmost.length > 3 ? "…" : ""}. Subscribe to earn achievements.`,
+          duration: 6000,
         });
       }
 
@@ -848,7 +881,7 @@ export default function WorkoutSummaryPage() {
                     className="font-body text-xs uppercase tracking-wide"
                     style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                   >
-                    reps
+                    {row.hold ? "sec" : "reps"}
                   </span>
                 </div>
               </div>

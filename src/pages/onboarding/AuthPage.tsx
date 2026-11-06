@@ -137,6 +137,7 @@ export default function AuthPage() {
                   placeholder="you@example.com"
                   className="flex-1 bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none"
                   data-ocid="onboarding-auth.email_input"
+                  autoComplete="email"
                 />
               </div>
             </div>
@@ -189,6 +190,7 @@ export default function AuthPage() {
                   placeholder="••••••••"
                   className="flex-1 bg-transparent font-body text-sm text-white placeholder:text-white/25 outline-none"
                   data-ocid="onboarding-auth.password_input"
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"

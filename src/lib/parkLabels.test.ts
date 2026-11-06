@@ -1,5 +1,42 @@
 import { describe, expect, it } from "vitest";
-import { parkDisplayName, parkEquipmentLabels } from "./parkLabels";
+import {
+  formatParkPlace,
+  parkDisplayName,
+  parkEquipmentLabels,
+  parkPinLabel,
+} from "./parkLabels";
+
+describe("formatParkPlace", () => {
+  it("uses the enclosing park, else the street, plus the area", () => {
+    expect(
+      formatParkPlace({ park: "Wilhelminapark", road: "Parkweg", town: "Wageningen" }),
+    ).toBe("Near Wilhelminapark, Wageningen");
+    expect(formatParkPlace({ road: "Hoofdstraat", suburb: "Noord", city: "Utrecht" })).toBe(
+      "Near Hoofdstraat, Utrecht",
+    );
+    expect(formatParkPlace({ road: "Hoofdstraat", suburb: "Noord" })).toBe(
+      "Near Hoofdstraat, Noord",
+    );
+  });
+  it("falls back to street only, district + town, or town only", () => {
+    expect(formatParkPlace({ footway: "Dijkpad" })).toBe("Near Dijkpad");
+    expect(formatParkPlace({ suburb: "Lozenets", city: "Sofia" })).toBe("In Lozenets, Sofia");
+    expect(formatParkPlace({ city: "Sofia", country: "Bulgaria" })).toBe("In Sofia");
+  });
+  it("returns null when nothing useful is known", () => {
+    expect(formatParkPlace({ country: "Bulgaria" })).toBeNull();
+    expect(formatParkPlace(null)).toBeNull();
+  });
+});
+
+describe("parkPinLabel", () => {
+  it("names the pin with up to three equipment labels", () => {
+    expect(parkPinLabel("Unnamed park", ["horizontal_bar;parallel_bars"])).toBe(
+      "Outdoor workout spot: Pull-up bar, Parallel bars",
+    );
+    expect(parkPinLabel("Street Workout", [])).toBe("Street Workout");
+  });
+});
 
 describe("parkDisplayName", () => {
   it("replaces the imported placeholder name", () => {

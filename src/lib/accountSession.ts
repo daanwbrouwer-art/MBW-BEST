@@ -163,6 +163,13 @@ export async function completeSignIn(
   const { data } = await supabase.auth.getSession();
   const userId = data.session?.user.id;
   bumpGeneration();
+  // The in-progress workout and the web mock subscription have no guest
+  // variant: what a guest left there is not this existing account's (a new
+  // account takes guest progress over on purpose, see afterLocalSetup).
+  if (useWorkoutStore.getState().guestMode && !options.isNewAccount) {
+    useWorkoutStore.getState().reset();
+    localStorage.removeItem("mbw_subscription");
+  }
   if (userId) {
     const owner = localStorage.getItem(OWNER_KEY);
     if (owner !== userId && (owner !== null || options.isNewAccount)) {
@@ -185,6 +192,31 @@ export async function completeSignIn(
   // Keep the sign-in screen responsive on a bad connection: wait up to 5 s,
   // the rest of the sync finishes in the background.
   await withinMs(syncAccount(userId), 5000);
+}
+
+/**
+ * Web only, in practice: when another tab of the same browser signs in, out,
+ * or as someone else, this tab's in-memory state (decks, workout, query
+ * cache) still belongs to the old account and would be written into the new
+ * one. Stop all background syncs and reload so the tab starts from the
+ * shared storage again. Returns an unsubscribe function.
+ */
+export function watchOtherTabs(): () => void {
+  const onStorage = (event: StorageEvent) => {
+    if (event.storageArea !== localStorage) return;
+    const ownerChanged =
+      event.key === OWNER_KEY && event.oldValue !== event.newValue;
+    // mbw_user is also rewritten on profile edits: only signing in or out
+    // (appearing / disappearing) matters.
+    const signedInOrOut =
+      event.key === "mbw_user" &&
+      (event.oldValue === null) !== (event.newValue === null);
+    if (event.key !== null && !ownerChanged && !signedInOrOut) return;
+    bumpGeneration();
+    window.location.reload();
+  };
+  window.addEventListener("storage", onStorage);
+  return () => window.removeEventListener("storage", onStorage);
 }
 
 /** Once per app start: same linking and syncing while already signed in. */

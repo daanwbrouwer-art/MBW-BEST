@@ -3,12 +3,19 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { parkDisplayName, parkEquipmentLabels } from "@/lib/parkLabels";
+import {
+  UNNAMED_PARK_LABEL,
+  isUnnamedPark,
+  parkDisplayName,
+  parkEquipmentLabels,
+} from "@/lib/parkLabels";
+import { reverseGeocodePark } from "@/lib/parkPlace";
 import { supabase } from "@/lib/supabaseClient";
 import { Browser } from "@capacitor/browser";
 import { useQuery } from "@tanstack/react-query";
 import { ImageOff, Navigation, X } from "lucide-react";
 import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
 
 interface ParkPhoto {
   id: string;
@@ -65,6 +72,34 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
     queryFn: () => fetchParkPhotos(parkId),
   });
   const equipmentLabels = parkEquipmentLabels(park?.equipment);
+  // Most imported parks have no name: say where they are instead.
+  const unnamed = !!park && isUnnamedPark(park.name);
+  const { data: place } = useQuery({
+    queryKey: ["park-place", park?.lat, park?.lng],
+    queryFn: () => reverseGeocodePark(park!.lat, park!.lng),
+    enabled: unnamed,
+    staleTime: Number.POSITIVE_INFINITY,
+    retry: false,
+  });
+  const title = park ? (unnamed && place) || parkDisplayName(park.name) : "Loading…";
+
+  // Escape closes; focus starts on the Close button and returns to the pin.
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+  useEffect(() => {
+    const opener =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCloseRef.current();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      if (opener?.isConnected) opener.focus();
+    };
+  }, []);
 
   return (
     <motion.div
@@ -89,6 +124,9 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
           boxShadow: "0 -20px 60px oklch(0 0 0 / 0.6)",
         }}
         onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="park-detail-title"
       >
         <div className="px-5 pt-3 pb-8">
           <div
@@ -110,7 +148,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
                       >
                         <img
                           src={photo.photo_url}
-                          alt={park ? parkDisplayName(park.name) : "Park"}
+                          alt={park ? title : "Park"}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -134,6 +172,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
               </div>
             )}
             <button
+              ref={closeRef}
               type="button"
               onClick={onClose}
               className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center"
@@ -148,8 +187,19 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
           </div>
 
           <div className="pt-4">
-            <h2 className="font-display font-black text-lg text-white mb-2">
-              {park ? parkDisplayName(park.name) : "Loading…"}
+            {unnamed && place && (
+              <p
+                className="text-xs font-display font-bold tracking-[0.18em] uppercase mb-0.5"
+                style={{ color: "oklch(var(--pulse))" }}
+              >
+                {UNNAMED_PARK_LABEL}
+              </p>
+            )}
+            <h2
+              id="park-detail-title"
+              className="font-display font-black text-lg text-white mb-2"
+            >
+              {title}
             </h2>
             {park && equipmentLabels.length > 0 ? (
               <div className="flex flex-wrap gap-2">

@@ -1,5 +1,9 @@
 import { useInternetIdentity } from "@/hooks/use-local-identity";
-import { pushOnboarding } from "@/lib/onboardingSync";
+import {
+  DEVICE_ONLY_FIELDS,
+  ONBOARDING_PULLED_EVENT,
+  pushOnboarding,
+} from "@/lib/onboardingSync";
 import { useWorkoutStore } from "@/store/workout";
 import type { EquipmentProfile, OnboardingData } from "@/types/user";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -56,6 +60,14 @@ export function useOnboarding() {
     setIsLoading(false);
   }, [isGuest]);
 
+  // A background sync pulled the account's answers: show them.
+  useEffect(() => {
+    if (isGuest) return;
+    const onPulled = () => setData(readOnboarding(false));
+    window.addEventListener(ONBOARDING_PULLED_EVENT, onPulled);
+    return () => window.removeEventListener(ONBOARDING_PULLED_EVENT, onPulled);
+  }, [isGuest]);
+
   // Merges a partial patch into the stored onboarding data instead of
   // replacing it wholesale — each step of the multi-screen flow saves just
   // its own field, and only the final step's patch includes
@@ -70,16 +82,23 @@ export function useOnboarding() {
           gender: "male",
           hasCompletedOnboarding: false,
         };
+      // Weight, height and age never leave the device, so changing only
+      // those must not stamp the shared answers as newer (that would let
+      // this device's possibly stale goals/equipment overwrite another
+      // device's newer ones on the next sync).
+      const deviceOnly = Object.keys(patch).every((k) =>
+        (DEVICE_ONLY_FIELDS as readonly string[]).includes(k),
+      );
       const updated: OnboardingData = {
         ...base,
         ...patch,
-        updatedAt: Date.now(),
+        updatedAt: deviceOnly ? base.updatedAt : Date.now(),
       };
       writeOnboarding(isGuest, updated);
       setData(updated);
       // Signed-in users keep their answers on the account (minus body
       // measurements), so a new phone doesn't ask again.
-      if (!isGuest) {
+      if (!isGuest && !deviceOnly) {
         pushOnboarding(updated).catch((err) =>
           console.warn("Couldn't save onboarding to the account:", err),
         );

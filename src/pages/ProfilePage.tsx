@@ -33,7 +33,10 @@ import {
 } from "@/lib/calories";
 import { readChallengeHistory } from "@/lib/challenge";
 import { signOut } from "@/lib/accountSession";
-import { startRetake } from "@/lib/retakeAssessment";
+import {
+  REGISTERED_WEEKLY_CARD_LIMIT,
+  weeklyCardLimitFor,
+} from "@/lib/cardLimit";
 import { deleteAccount } from "@/lib/deleteAccount";
 import {
   openManageSubscriptions,
@@ -153,7 +156,7 @@ const BMI_CATEGORY_LABELS: Record<string, string> = {
 const BODY_METRICS_BOUNDS = {
   weightKg: { min: 30, max: 180 },
   heightCm: { min: 130, max: 220 },
-  age: { min: 13, max: 90 },
+  age: { min: 16, max: 90 },
 };
 
 function clamp(value: number, min: number, max: number): number {
@@ -314,10 +317,10 @@ export default function ProfilePage() {
     saveOnboarding({ age: clamp(value, min, max) });
   };
 
-  // Onboarding stays complete during a retake: OnboardingPage sees the
-  // retake flag, prefills the old answers, and Back or Finish return here.
+  // Onboarding stays complete during a retake: OnboardingPage sees that it
+  // was already finished, prefills the old answers, and Back or Finish
+  // return here.
   const handleRetakeAssessment = () => {
-    startRetake();
     navigate({ to: "/onboarding" });
   };
 
@@ -392,8 +395,12 @@ export default function ProfilePage() {
     }
   };
 
-  const totalWorkouts = profile?.totalWorkouts ?? BigInt(0);
-  const totalCalories = profile?.totalCalories ?? BigInt(0);
+  // From the history, like Home: the account profile carries no totals
+  // (remoteBackend fills them with 0).
+  const totalWorkouts = history?.length ?? 0;
+  const totalCalories = history
+    ? history.reduce((sum, h) => sum + Number(h.caloriesBurned), 0)
+    : 0;
   const totalReps = history
     ? history.reduce((sum, h) => sum + Number(h.totalReps), 0)
     : 0;
@@ -1234,7 +1241,7 @@ export default function ProfilePage() {
                     ? subscription.startedTrial
                       ? "Includes your 7-day free trial"
                       : "Active subscription"
-                    : "20 cards/week, no Pro decks"}
+                    : `${weeklyCardLimitFor(effectiveTier) ?? REGISTERED_WEEKLY_CARD_LIMIT} cards/week, no Pro decks`}
                 </p>
               </div>
               <button

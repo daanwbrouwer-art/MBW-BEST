@@ -16,6 +16,8 @@ export interface Card {
   imageUrl: string;
   repSpec: RepSpec;
   videoUrl: string;
+  /** Set on isometric holds: the card is timed in seconds, not reps. */
+  holdSeconds?: number;
 }
 export interface DeckIdentity {
   equipment: string;

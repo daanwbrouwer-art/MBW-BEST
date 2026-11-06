@@ -8,10 +8,54 @@
 
 const UNNAMED = /^\s*unnamed\b/i;
 
+export const UNNAMED_PARK_LABEL = "Outdoor workout spot";
+
+/** True when the park has no real name of its own. */
+export function isUnnamedPark(name: string | null | undefined): boolean {
+  return !name || !name.trim() || UNNAMED.test(name);
+}
+
 /** The park's display name, with a friendly fallback for unnamed parks. */
 export function parkDisplayName(name: string | null | undefined): string {
-  if (!name || !name.trim() || UNNAMED.test(name)) return "Outdoor workout spot";
-  return name.trim();
+  if (isUnnamedPark(name)) return UNNAMED_PARK_LABEL;
+  return (name as string).trim();
+}
+
+/** The accessible name of a park's map pin. */
+export function parkPinLabel(
+  name: string | null | undefined,
+  equipment: readonly string[] | null | undefined,
+): string {
+  const labels = parkEquipmentLabels(equipment).slice(0, 3);
+  const base = parkDisplayName(name);
+  return labels.length > 0 ? `${base}: ${labels.join(", ")}` : base;
+}
+
+/** The parts of a Nominatim reverse-geocode `address` we use. */
+export type PlaceAddress = Partial<Record<string, string>>;
+
+const STREET_KEYS = ["road", "pedestrian", "footway", "path", "square"];
+const DISTRICT_KEYS = ["neighbourhood", "quarter", "suburb", "city_district"];
+const TOWN_KEYS = ["village", "town", "city", "municipality"];
+
+/**
+ * A short place for an unnamed park, e.g. "Near Hoofdstraat, Wageningen":
+ * the enclosing park if OSM names one, else the street, plus the town;
+ * without either, the district and town ("In Lozenets, Sofia").
+ * Null when the address has none of these.
+ */
+export function formatParkPlace(address: PlaceAddress | null | undefined): string | null {
+  if (!address) return null;
+  const pick = (keys: string[]) =>
+    keys.map((k) => address[k]?.trim()).find((v): v is string => !!v);
+  const spot = address.park?.trim() || address.leisure?.trim() || pick(STREET_KEYS);
+  const district = pick(DISTRICT_KEYS);
+  const town = pick(TOWN_KEYS);
+  const join = (a: string, b: string | undefined) => (b && b !== a ? `${a}, ${b}` : a);
+  if (spot) return `Near ${join(spot, town ?? district)}`;
+  if (district) return `In ${join(district, town)}`;
+  if (town) return `In ${town}`;
+  return null;
 }
 
 const LABELS: Record<string, string> = {

@@ -212,6 +212,7 @@ export default function CustomWorkoutBuilderPage() {
           onClick={() => navigate(backDestination)}
           className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth shrink-0"
           data-ocid="custom-workout.back_button"
+          aria-label="Go back"
         >
           <ArrowLeft className="w-4 h-4" />
         </motion.button>
@@ -259,6 +260,7 @@ export default function CustomWorkoutBuilderPage() {
             <button
               type="button"
               onClick={() => setSearch("")}
+              aria-label="Clear search"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
@@ -395,6 +397,7 @@ export default function CustomWorkoutBuilderPage() {
                       onClick={() =>
                         setValue(ex.name, ex.value - (ex.isIsometric ? 5 : 1))
                       }
+                      aria-label={`Less ${ex.name}`}
                       className="w-5 h-5 rounded-md flex items-center justify-center bg-muted/40 text-muted-foreground hover:text-foreground"
                     >
                       <Minus className="w-2.5 h-2.5" />
@@ -408,6 +411,7 @@ export default function CustomWorkoutBuilderPage() {
                       onClick={() =>
                         setValue(ex.name, ex.value + (ex.isIsometric ? 5 : 1))
                       }
+                      aria-label={`More ${ex.name}`}
                       className="w-5 h-5 rounded-md flex items-center justify-center bg-muted/40 text-muted-foreground hover:text-foreground"
                     >
                       <Plus className="w-2.5 h-2.5" />
@@ -416,6 +420,7 @@ export default function CustomWorkoutBuilderPage() {
                   <button
                     type="button"
                     onClick={() => removeExercise(ex.name)}
+                    aria-label={`Remove ${ex.name}`}
                     className="text-muted-foreground hover:text-destructive ml-0.5"
                   >
                     <X className="w-3.5 h-3.5" />

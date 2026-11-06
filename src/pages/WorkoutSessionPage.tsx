@@ -178,7 +178,9 @@ export default function WorkoutSessionPage() {
   const isActive = shuffledDeck.length > 0 && !isSummary;
   // The session clock continues from the saved training time when a workout
   // resumes (after a reload, or coming back from Home), instead of 00:00.
-  // Paused time, Joker challenges and time away never count.
+  // Paused time and Joker challenges never count; time in the background
+  // (screen off between sets) counts up to 5 minutes per absence, see
+  // useTimer.
   const [resumedSeconds] = useState(
     () => useWorkoutStore.getState().elapsedSeconds,
   );
@@ -213,6 +215,15 @@ export default function WorkoutSessionPage() {
   }, [isActive]);
   useEffect(() => {
     if (isPaused) useWorkoutStore.getState().recordElapsed(elapsedRef.current);
+  }, [isPaused]);
+  // Escape closes the pause overlay (resumes), like its Resume button.
+  useEffect(() => {
+    if (!isPaused) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsPaused(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [isPaused]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashPress, setFlashPress] = useState(false);
@@ -469,6 +480,7 @@ export default function WorkoutSessionPage() {
               type="button"
               className="w-9 h-9 rounded-xl bg-card/60 border border-border/40 flex items-center justify-center text-white/70 hover:text-white transition-smooth"
               data-ocid="workout-session.quit_button"
+              aria-label="Quit workout"
             >
               <X className="w-4 h-4" />
             </button>

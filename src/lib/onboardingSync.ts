@@ -21,7 +21,7 @@ import type { OnboardingData } from "@/types/user";
 
 export const USER_ONBOARDING_KEY = "mbw_onboarding";
 
-const DEVICE_ONLY_FIELDS = ["weightKg", "heightCm", "age"] as const;
+export const DEVICE_ONLY_FIELDS = ["weightKg", "heightCm", "age"] as const;
 
 export function readLocalOnboarding(): OnboardingData | null {
   try {
@@ -32,8 +32,14 @@ export function readLocalOnboarding(): OnboardingData | null {
   }
 }
 
+/** Fired on window after a sync wrote newer answers to this device. */
+export const ONBOARDING_PULLED_EVENT = "mbw:onboarding-pulled";
+
 function writeLocalOnboarding(data: OnboardingData): void {
   localStorage.setItem(USER_ONBOARDING_KEY, JSON.stringify(data));
+  // Mounted useOnboarding hooks re-read (a slow sign-in sync can land after
+  // the app already showed the questionnaire).
+  window.dispatchEvent(new Event(ONBOARDING_PULLED_EVENT));
 }
 
 /** The answers as stored on the account: no body measurements. */

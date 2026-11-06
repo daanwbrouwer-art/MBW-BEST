@@ -50,9 +50,9 @@ npm run build
 npx cap sync
 ```
 
-**Android — build via GitHub Actions (recommended):** push to `main` and check the **Actions** tab for the "Build Android APK" workflow. It uses the repo variable `FORCE_PREMIUM_FOR_TESTING` (currently `false`).
+**Android — build via GitHub Actions (recommended):** push to `main` (or run it by hand from the **Actions** tab) and the "Build Android AAB" workflow builds a signed release `.aab` for the Play Console (signing keystore comes from repo secrets). It uses the repo variable `FORCE_PREMIUM_FOR_TESTING` (currently `false`).
 
-**Android — build locally:** open `android/` in Android Studio, or run `./gradlew assembleDebug` with the Android SDK and JDK 17. On Windows, move the project to a plain ASCII path first (Gradle's batch scripts fail on non-ASCII paths such as Cyrillic folders).
+**Android — build locally:** open `android/` in Android Studio, or run `./gradlew assembleDebug` with the Android SDK and JDK 21 (Capacitor 8 compiles for Java 21). On Windows, move the project to a plain ASCII path first (Gradle's batch scripts fail on non-ASCII paths such as Cyrillic folders).
 
 **iOS:** open `ios/App/App.xcworkspace` in Xcode on a Mac (`npx cap open ios`). Apple requires macOS for iOS builds.
 
@@ -116,7 +116,7 @@ What changed:
 
 - **Social (B1):** `profiles` is owner-only since 2026-11-02, so other users' names now come from `get_usernames(uuid[])` (connected people only: friends, accepted party members, chat peers; respects blocks; batches of 200) and `find_profile_by_username`. Friend requests go through `send_friend_request(username)`; direct `INSERT` on `friendships` is revoked.
 - **Usernames:** unique (case-insensitive), `[A-Za-z0-9_]{3,32}`, neutral default `athlete_NNNNNN` instead of the email prefix, sign-up checks `username_available`.
-- **Accounts (B3, H5, H6):** `src/lib/accountSession.ts` + `accountScope.ts`. Local data is owned by one account (`mbw_owner`); a different account signing in wipes it; sign-out keeps it (streaks are local-only) but flushes unsynced data, ends the Supabase session, logs RevenueCat out. RevenueCat is now linked with `Purchases.logIn(userId)` (it never was — premium granted by user ID only works after this ships). Background syncs are guarded so they never write into another account's data.
+- **Accounts (found in review, not in the QA report):** `src/lib/accountSession.ts` + `accountScope.ts`. Local data is owned by one account (`mbw_owner`); a different account signing in wipes it; sign-out keeps it (streaks are local-only) but flushes unsynced data, ends the Supabase session, logs RevenueCat out. RevenueCat is now linked with `Purchases.logIn(userId)` (it never was — premium granted by user ID only works after this ships). Background syncs are guarded so they never write into another account's data.
 - **Onboarding (H1, H2):** answers sync to `profiles.onboarding` (newest wins; weight/height/age never leave the device); explicit retake mode returns to Profile; no loading flash in `OnboardingGuard` (fixed the React #185 loop, L3).
 - **Workouts (H3, H4, M1):** each workout has a uuid; history upsert ignores duplicates and is marked saved only after success (limited retries); real deck id `Category-Difficulty`; an in-progress workout survives a reload with a Home Resume/Discard card; the clock saves training time (`elapsedSeconds`), so pauses and time away don't count.
 - **Custom decks (B2, M4, M5):** Save bar pinned to the bottom; images on a light background; decks sync to `custom_decks` (tombstones, synced flag, 100-deck cap); guests have their own decks.

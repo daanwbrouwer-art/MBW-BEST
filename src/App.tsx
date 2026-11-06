@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useInternetIdentity } from "@/hooks/use-local-identity";
 import { getPositionIfPermitted } from "@/hooks/use-location";
 import { useOnboarding } from "@/hooks/use-onboarding";
-import { resumeSignedInSession } from "@/lib/accountSession";
+import { resumeSignedInSession, watchOtherTabs } from "@/lib/accountSession";
 import { recordAppOpen } from "@/lib/achievementSessionLog";
 import { updateActivityPing } from "@/lib/remoteBackend";
 import { useWorkoutStore } from "@/store/workout";
@@ -107,6 +107,9 @@ function RootLayout() {
     resumeSignedInSession().catch((err) =>
       console.warn("Account sync on start failed:", err),
     );
+    // Another tab switching account must not leave this one writing the
+    // old account's data into the new one.
+    return watchOtherTabs();
   }, []);
 
   // Fetch the other tab pages in the background once the app is idle, so
