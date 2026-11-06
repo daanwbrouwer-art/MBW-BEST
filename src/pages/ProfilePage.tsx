@@ -638,6 +638,7 @@ export default function ProfilePage() {
                 </div>
                 <Switch
                   checked={equipment[item.key]}
+                  aria-label={item.label}
                   onCheckedChange={() => handleToggleEquipment(item.key)}
                   data-ocid={`profile.equipment.toggle.${i + 1}`}
                 />
@@ -794,6 +795,7 @@ export default function ProfilePage() {
                 </div>
                 <Switch
                   checked={notificationSettings[item.key]}
+                  aria-label={item.label}
                   onCheckedChange={() => toggleNotification(item.key)}
                   data-ocid={`profile.notifications.toggle.${i + 1}`}
                 />
@@ -838,12 +840,13 @@ export default function ProfilePage() {
                   </p>
                   <p className="text-xs text-muted-foreground font-body mt-0.5 leading-snug">
                     Lets other users find you in the Nearby list. Off by default
-                    — shares only a rounded (~100m) location and your
+                    — shares only a rounded (about 1 km) location and your
                     last-active time, never your exact position.
                   </p>
                 </div>
                 <Switch
                   checked={profile?.discoverable ?? false}
+                  aria-label="Visible to nearby athletes"
                   disabled={isTogglingDiscoverable}
                   onCheckedChange={handleToggleDiscoverable}
                   data-ocid="profile.discoverable_toggle"
@@ -990,6 +993,7 @@ export default function ProfilePage() {
               </div>
               <Switch
                 checked={!marketingEmailsOptOut}
+                aria-label="Email updates"
                 disabled={isSavingEmailPreference}
                 onCheckedChange={handleToggleMarketingEmails}
                 data-ocid="profile.marketing_emails_toggle"

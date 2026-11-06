@@ -1,3 +1,4 @@
+import { PartyUnavailable } from "@/components/PartyUnavailable";
 import { Logo } from "@/components/Logo";
 import { ProgressBar } from "@/components/ProgressBar";
 import {
@@ -50,10 +51,13 @@ function CardOwnerPicker({
   participants,
   isAssigning,
   onPick,
+  onLeave,
 }: {
   participants: TrainTogetherParticipant[];
   isAssigning: boolean;
   onPick: (userId: string) => void;
+  /** The sheet covers the header's quit button, so it offers its own. */
+  onLeave: () => void;
 }) {
   return (
     <motion.div
@@ -94,6 +98,14 @@ function CardOwnerPicker({
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          onClick={onLeave}
+          className="mt-4 w-full text-center text-sm font-body text-muted-foreground hover:text-destructive transition-smooth py-2"
+          data-ocid="train-together.card_owner_leave"
+        >
+          Leave party
+        </button>
       </motion.div>
     </motion.div>
   );
@@ -221,6 +233,7 @@ function SessionRunner({
   const [holdComplete, setHoldComplete] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
+  const [quitOpen, setQuitOpen] = useState(false);
 
   const steps = session.cardSequence ?? [];
   const total = steps.length;
@@ -328,7 +341,7 @@ function SessionRunner({
       />
 
       <header className="relative flex items-center gap-3 px-5 pt-12 pb-4">
-        <AlertDialog>
+        <AlertDialog open={quitOpen} onOpenChange={setQuitOpen}>
           <AlertDialogTrigger asChild>
             <button
               type="button"
@@ -505,11 +518,12 @@ function SessionRunner({
       </div>
 
       <AnimatePresence>
-        {needsOwner && (
+        {needsOwner && !quitOpen && (
           <CardOwnerPicker
             participants={participants}
             isAssigning={isAssigning}
             onPick={handleAssignOwner}
+            onLeave={() => setQuitOpen(true)}
           />
         )}
       </AnimatePresence>
@@ -519,6 +533,7 @@ function SessionRunner({
 
 export default function TrainTogetherSessionPage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { sessionId } = useParams({ strict: false }) as {
     sessionId?: string;
   };
@@ -538,7 +553,29 @@ export default function TrainTogetherSessionPage() {
     return unsub;
   }, [sessionId]);
 
-  if (!sessionId || !sessionQuery.data) {
+  const session = sessionQuery.data;
+  // A party that hasn't started yet belongs in the waiting room.
+  useEffect(() => {
+    if (session?.status === "waiting" && sessionId) {
+      navigate({
+        to: "/train-together/waiting/$sessionId",
+        params: { sessionId },
+        replace: true,
+      });
+    }
+  }, [session?.status, sessionId, navigate]);
+
+  if (
+    !sessionId ||
+    sessionQuery.isError ||
+    (sessionQuery.isSuccess && session === null)
+  ) {
+    return <PartyUnavailable reason="missing" />;
+  }
+  if (session?.status === "cancelled") {
+    return <PartyUnavailable reason="ended" />;
+  }
+  if (!session || session.status === "waiting") {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center max-w-[430px] mx-auto">
         <div className="w-8 h-8 rounded-full border-2 border-pulse border-t-transparent animate-spin" />
@@ -546,5 +583,5 @@ export default function TrainTogetherSessionPage() {
     );
   }
 
-  return <SessionRunner sessionId={sessionId} session={sessionQuery.data} />;
+  return <SessionRunner sessionId={sessionId} session={session} />;
 }

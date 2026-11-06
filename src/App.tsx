@@ -1,4 +1,5 @@
 import { BottomNav, NAV_TAB_PATHS } from "@/components/BottomNav";
+import { NotFound } from "@/components/NotFound";
 import { RouteError } from "@/components/RouteError";
 import { Toaster } from "@/components/ui/sonner";
 import { useInternetIdentity } from "@/hooks/use-local-identity";
@@ -578,6 +579,7 @@ const routeTree = rootRoute.addChildren([
 const router = createRouter({
   routeTree,
   defaultErrorComponent: RouteError,
+  defaultNotFoundComponent: NotFound,
 });
 
 declare module "@tanstack/react-router" {

@@ -1,4 +1,5 @@
 import {
+import { parkDisplayName, parkEquipmentLabels } from "@/lib/parkLabels";
   Carousel,
   CarouselContent,
   CarouselItem,
@@ -63,6 +64,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
     queryKey: ["park-photos", parkId],
     queryFn: () => fetchParkPhotos(parkId),
   });
+  const equipmentLabels = parkEquipmentLabels(park?.equipment);
 
   return (
     <motion.div
@@ -108,7 +110,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
                       >
                         <img
                           src={photo.photo_url}
-                          alt={park?.name ?? "Park"}
+                          alt={park ? parkDisplayName(park.name) : "Park"}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -147,11 +149,11 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
 
           <div className="pt-4">
             <h2 className="font-display font-black text-lg text-white mb-2">
-              {park?.name ?? "Loading…"}
+              {park ? parkDisplayName(park.name) : "Loading…"}
             </h2>
-            {park && park.equipment.length > 0 ? (
+            {park && equipmentLabels.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {park.equipment.map((tag) => (
+                {equipmentLabels.map((tag) => (
                   <span
                     key={tag}
                     className="text-xs font-display font-bold px-3 py-1 rounded-full"
@@ -167,7 +169,7 @@ export function ParkDetailSheet({ parkId, onClose }: ParkDetailSheetProps) {
               </div>
             ) : (
               <p className="text-xs text-muted-foreground font-body">
-                No equipment tags yet.
+                No equipment listed yet.
               </p>
             )}
           </div>

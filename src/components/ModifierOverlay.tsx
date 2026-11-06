@@ -73,8 +73,23 @@ export const ModifierOverlay: React.FC<ModifierOverlayProps> = ({
             if (timerRef.current) clearTimeout(timerRef.current);
             dismiss();
           }}
+          // A full-screen "tap to continue" panel: expose it as a button so
+          // screen readers and keyboards can dismiss it too.
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+              e.preventDefault();
+              if (timerRef.current) clearTimeout(timerRef.current);
+              dismiss();
+            }
+          }}
           data-ocid="modifier-overlay.panel"
-          aria-label={isAce ? "Reps Doubled modifier" : "Reps Halved modifier"}
+          aria-label={
+            isAce
+              ? "Reps doubled. Tap to continue"
+              : "Reps halved. Tap to continue"
+          }
         >
           {/* Corner badge */}
           <div

@@ -1,4 +1,5 @@
 import { Logo } from "@/components/Logo";
+import { PartyUnavailable } from "@/components/PartyUnavailable";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -519,6 +520,27 @@ export default function TrainTogetherWaitingRoomPage() {
   const canStart =
     isHost && accepted.length >= 2 && accepted.every((p) => p.isReady);
 
+  // A party that already started belongs on the session screen.
+  useEffect(() => {
+    if (session?.status === "active" && sessionId) {
+      navigate({
+        to: "/train-together/session/$sessionId",
+        params: { sessionId },
+        replace: true,
+      });
+    }
+  }, [session?.status, sessionId, navigate]);
+
+  if (
+    !sessionId ||
+    sessionQuery.isError ||
+    (sessionQuery.isSuccess && session === null)
+  ) {
+    return <PartyUnavailable reason="missing" />;
+  }
+  if (session?.status === "cancelled" || session?.status === "completed") {
+    return <PartyUnavailable reason="ended" />;
+  }
   if (!session || participantsQuery.isLoading) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center max-w-[430px] mx-auto">
