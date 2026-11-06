@@ -232,7 +232,7 @@ function OnboardingGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, isLoading, hasCompletedOnboarding, navigate]);
 
-  if (!isAuthenticated || (!isLoading && !hasCompletedOnboarding)) {
+  if (!isAuthenticated || isLoading || !hasCompletedOnboarding) {
     return null;
   }
   return <>{children}</>;

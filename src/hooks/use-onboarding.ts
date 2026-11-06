@@ -2,7 +2,7 @@ import { useInternetIdentity } from "@/hooks/use-local-identity";
 import { pushOnboarding } from "@/lib/onboardingSync";
 import { useWorkoutStore } from "@/store/workout";
 import type { EquipmentProfile, OnboardingData } from "@/types/user";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const GUEST_ONBOARDING_KEY = "mbw_guest_onboarding";
 const USER_ONBOARDING_KEY = "mbw_onboarding";
@@ -37,13 +37,22 @@ export function useOnboarding() {
   const isAuthenticated = loginStatus === "success" || isEmailAuth;
   const isGuest = guestMode && !isAuthenticated;
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<OnboardingData | null>(null);
+  // localStorage is synchronous, so read it during the first render. There
+  // used to be a one-render "loading" gap, during which OnboardingGuard
+  // briefly rendered protected pages for users who hadn't finished
+  // onboarding (that flash caused a render loop on /workout/session).
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<OnboardingData | null>(() =>
+    readOnboarding(isGuest),
+  );
 
+  // Re-read when switching between guest and account storage.
+  const lastIsGuest = useRef(isGuest);
   useEffect(() => {
+    if (lastIsGuest.current === isGuest) return;
+    lastIsGuest.current = isGuest;
     setIsLoading(true);
-    const stored = readOnboarding(isGuest);
-    setData(stored);
+    setData(readOnboarding(isGuest));
     setIsLoading(false);
   }, [isGuest]);
 
