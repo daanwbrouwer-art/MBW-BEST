@@ -1021,6 +1021,10 @@ export type Database = {
       };
       postgis_version: { Args: never; Returns: string };
       postgis_wagyu_version: { Args: never; Returns: string };
+      send_friend_request: {
+        Args: { p_username: string };
+        Returns: string;
+      };
       set_thread_muted: {
         Args: { p_muted: boolean; p_thread_id: string };
         Returns: undefined;

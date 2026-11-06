@@ -36,6 +36,19 @@ where exists (
 create unique index if not exists profiles_username_lower_key
   on public.profiles (lower(username));
 
+-- Same rule the sign-up form enforces (letters, digits, underscore), so a
+-- direct API update can't create look-alike names such as " bob". Any
+-- existing name that breaks it gets a neutral default first, so every row
+-- passes and routine updates (activity pings) never start failing.
+update public.profiles
+set username = 'athlete_' || substr(replace(id::text, '-', ''), 1, 24)
+where username is null or username !~ '^[A-Za-z0-9_]{3,32}$';
+
+alter table public.profiles drop constraint if exists profiles_username_format;
+alter table public.profiles
+  add constraint profiles_username_format
+  check (username ~ '^[A-Za-z0-9_]{3,32}$');
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -43,10 +56,15 @@ security definer
 set search_path = public
 as $$
 declare
-  v_wanted text := nullif(btrim(coalesce(new.raw_user_meta_data->>'username', '')), '');
+  v_wanted text := btrim(coalesce(new.raw_user_meta_data->>'username', ''));
   v_name text;
   v_try int := 0;
 begin
+  -- Only accept a requested name that meets the username rule (max 20 so a
+  -- "_NNNN" suffix still fits in 32); otherwise use a neutral default.
+  if v_wanted !~ '^[A-Za-z0-9_]{3,20}$' then
+    v_wanted := null;
+  end if;
   v_name := coalesce(v_wanted, 'athlete_' || lpad((floor(random() * 1000000))::int::text, 6, '0'));
   loop
     begin
@@ -55,14 +73,14 @@ begin
       exit;
     exception when unique_violation then
       v_try := v_try + 1;
-      if v_try > 5 then
-        v_name := 'athlete_' || substr(replace(new.id::text, '-', ''), 1, 10);
+      if v_try > 6 then
+        -- Fail the sign-up loudly rather than leave an account without a
+        -- profile. Unreachable in practice: the last name is id-derived.
+        raise exception 'handle_new_user: could not assign a username for %', new.id;
+      elsif v_try > 5 then
+        v_name := 'athlete_' || substr(replace(new.id::text, '-', ''), 1, 24);
       else
         v_name := coalesce(v_wanted, 'athlete') || '_' || lpad((floor(random() * 10000))::int::text, 4, '0');
-      end if;
-      if v_try > 6 then
-        raise warning 'handle_new_user could not pick a username for %', new.id;
-        exit;
       end if;
     end;
   end loop;
@@ -79,9 +97,10 @@ stable
 security definer
 set search_path = public
 as $$
-  select not exists (
-    select 1 from public.profiles where lower(username) = lower(btrim(p_username))
-  );
+  select coalesce(btrim(p_username), '') ~ '^[A-Za-z0-9_]{3,20}$'
+    and not exists (
+      select 1 from public.profiles where lower(username) = lower(btrim(p_username))
+    );
 $$;
 revoke all on function public.username_available(text) from public;
 grant execute on function public.username_available(text) to anon, authenticated;
@@ -110,49 +129,144 @@ as $$
   limit 1;
 $$;
 revoke all on function public.find_profile_by_username(text) from public;
+revoke execute on function public.find_profile_by_username(text) from anon;
 grant execute on function public.find_profile_by_username(text) to authenticated;
 
--- Usernames for a list of ids, filtered to people the caller is connected
--- to: a friendship in any state, a shared Train Together party, or a shared
--- chat thread. Anyone else is silently left out.
+-- Usernames for a list of ids, filtered to people the caller is genuinely
+-- connected to. Rows a user can create on their own (a friend request to
+-- anyone, a pending party invite) must not reveal a stranger's name, so:
+--  - friendships count unless declined, and friend requests can only be
+--    created through send_friend_request(username) below, i.e. by someone
+--    who already knows the name;
+--  - in a party, the other person counts only if they are the host or have
+--    accepted (a pending invitee is not "connected" yet);
+--  - nobody gets the name of a user who has blocked them.
+-- At most 200 ids per call; the client sends larger lists in chunks.
 create or replace function public.get_usernames(p_ids uuid[])
 returns table (id uuid, username text)
-language sql
+language plpgsql
 stable
 security definer
 set search_path = public
 as $$
+declare
+  me uuid := auth.uid();
+begin
+  if me is null then
+    return;
+  end if;
+  if cardinality(p_ids) > 200 then
+    raise exception 'get_usernames: at most 200 ids per call';
+  end if;
+  return query
   select p.id, p.username
   from public.profiles p
-  where auth.uid() is not null
-    and p.id = any (p_ids)
-    and cardinality(p_ids) <= 200
+  where p.id = any (p_ids)
     and (
-      p.id = auth.uid()
-      or exists (
-        select 1 from public.friendships f
-        where (f.requester_id = auth.uid() and f.addressee_id = p.id)
-           or (f.addressee_id = auth.uid() and f.requester_id = p.id)
-      )
-      or exists (
-        select 1
-        from public.train_together_sessions s
-        where (s.host_id = p.id or exists (
-                select 1 from public.train_together_session_participants x
-                where x.session_id = s.id and x.user_id = p.id))
-          and (s.host_id = auth.uid() or exists (
-                select 1 from public.train_together_session_participants y
-                where y.session_id = s.id and y.user_id = auth.uid()))
-      )
-      or exists (
-        select 1 from public.chat_threads t
-        where (t.user_a = auth.uid() and t.user_b = p.id)
-           or (t.user_b = auth.uid() and t.user_a = p.id)
+      p.id = me
+      or (
+        not exists (
+          select 1 from public.blocks b
+          where b.blocker_id = p.id and b.blocked_id = me
+        )
+        and (
+          exists (
+            select 1 from public.friendships f
+            where f.status <> 'declined'
+              and ((f.requester_id = me and f.addressee_id = p.id)
+                or (f.addressee_id = me and f.requester_id = p.id))
+          )
+          or exists (
+            select 1
+            from public.train_together_sessions s
+            where (s.host_id = p.id or exists (
+                    select 1 from public.train_together_session_participants x
+                    where x.session_id = s.id and x.user_id = p.id
+                      and x.invite_status = 'accepted'))
+              and (s.host_id = me or exists (
+                    select 1 from public.train_together_session_participants y
+                    where y.session_id = s.id and y.user_id = me))
+          )
+          or exists (
+            select 1 from public.chat_threads t
+            where (t.user_a = me and t.user_b = p.id)
+               or (t.user_b = me and t.user_a = p.id)
+          )
+        )
       )
     );
+end;
 $$;
 revoke all on function public.get_usernames(uuid[]) from public;
+revoke execute on function public.get_usernames(uuid[]) from anon;
 grant execute on function public.get_usernames(uuid[]) to authenticated;
+
+-- Friend requests go through this function, by username only. It accepts
+-- an existing incoming request instead of creating a second one, refuses
+-- blocked pairs, and returns 'sent' or 'accepted'. Direct inserts into
+-- friendships are no longer allowed (see the revoke below), so a request
+-- can't be aimed at a raw user id to fish for that user's name.
+create or replace function public.send_friend_request(p_username text)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  me uuid := auth.uid();
+  them uuid;
+  existing record;
+begin
+  if me is null then
+    raise exception 'Not authenticated';
+  end if;
+  select p.id into them
+  from public.profiles p
+  where lower(p.username) = lower(btrim(p_username))
+    and p.id <> me
+    and not exists (
+      select 1 from public.blocks b
+      where (b.blocker_id = me and b.blocked_id = p.id)
+         or (b.blocker_id = p.id and b.blocked_id = me)
+    );
+  if them is null then
+    raise exception 'No user found with that username.';
+  end if;
+
+  for existing in
+    select f.id, f.requester_id, f.status
+    from public.friendships f
+    where (f.requester_id = me and f.addressee_id = them)
+       or (f.requester_id = them and f.addressee_id = me)
+    for update
+  loop
+    if existing.status = 'accepted' then
+      raise exception 'You''re already friends.';
+    end if;
+    if existing.requester_id = them and existing.status = 'pending' then
+      update public.friendships set status = 'accepted' where id = existing.id;
+      return 'accepted';
+    end if;
+    if existing.requester_id = me then
+      -- Pending, or declined by them: either way, no second request.
+      raise exception 'You''ve already sent this person a request.';
+    end if;
+    -- They asked before and I declined: asking now replaces that with a
+    -- request from me to them.
+    delete from public.friendships where id = existing.id;
+  end loop;
+
+  insert into public.friendships (requester_id, addressee_id)
+  values (me, them);
+  return 'sent';
+end;
+$$;
+revoke all on function public.send_friend_request(text) from public;
+revoke execute on function public.send_friend_request(text) from anon;
+grant execute on function public.send_friend_request(text) to authenticated;
+
+drop policy if exists friendships_insert_as_requester on public.friendships;
+revoke insert on public.friendships from authenticated, anon;
 
 -- ─── 3. Onboarding on the account ───────────────────────────────────────
 
@@ -207,7 +321,9 @@ create policy custom_decks_delete_own on public.custom_decks
 revoke all on public.custom_decks from anon, authenticated;
 grant select, insert, update, delete on public.custom_decks to authenticated;
 
--- At most 100 saved decks per account.
+-- At most 100 saved decks per account. An upsert of an existing deck is an
+-- edit, not a new deck (BEFORE INSERT triggers fire for upserts too). The
+-- per-user advisory lock stops two parallel inserts both passing at 99.
 create or replace function public.custom_decks_limit()
 returns trigger
 language plpgsql
@@ -215,12 +331,17 @@ security definer
 set search_path = public
 as $$
 begin
+  if exists (select 1 from public.custom_decks where id = new.id) then
+    return new;
+  end if;
+  perform pg_advisory_xact_lock(hashtext('custom_decks:' || new.user_id::text));
   if (select count(*) from public.custom_decks where user_id = new.user_id) >= 100 then
-    raise exception 'You can save up to 100 custom decks';
+    raise exception 'You can save up to 100 custom decks' using errcode = 'check_violation';
   end if;
   return new;
 end;
 $$;
+revoke all on function public.custom_decks_limit() from public, anon, authenticated;
 drop trigger if exists custom_decks_limit on public.custom_decks;
 create trigger custom_decks_limit before insert on public.custom_decks
   for each row execute function public.custom_decks_limit();

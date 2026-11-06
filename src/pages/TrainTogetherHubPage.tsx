@@ -679,17 +679,13 @@ export default function TrainTogetherHubPage() {
 
   const addFriendMutation = useMutation({
     mutationFn: async (handle: string) => {
-      const found = await findProfileByUsername(handle);
-      if (!found) throw new Error("No user found with that username.");
-      const outcome = await sendFriendRequest(found.id);
-      return { ...found, outcome };
+      const outcome = await sendFriendRequest(handle);
+      return { username: handle.trim(), outcome };
     },
-    onSuccess: (found) => {
+    onSuccess: (sent) => {
       toast(
-        found.outcome === "accepted"
-          ? "You're now friends"
-          : "Friend request sent",
-        { description: found.username },
+        sent.outcome === "accepted" ? "You're now friends" : "Friend request sent",
+        { description: sent.username },
       );
       setAddFriendHandle("");
       queryClient.invalidateQueries({ queryKey: ["train-together-friends"] });

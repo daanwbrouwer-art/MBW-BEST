@@ -63,19 +63,26 @@ async function requireUserId(): Promise<string> {
   return userId;
 }
 
+/** get_usernames() accepts at most this many ids per call. */
+const USERNAME_BATCH = 200;
+
 /**
  * Usernames for other users. profiles is readable only by its owner, so this
  * goes through the get_usernames() RPC, which returns id + username only, and
- * only for people the caller is connected to (friend, party or chat).
+ * only for people the caller is genuinely connected to (friend, party member
+ * who accepted, chat). Ids it won't name are simply missing from the map.
  */
 async function fetchUsernames(ids: string[]): Promise<Map<string, string>> {
   const unique = [...new Set(ids.filter(Boolean))];
-  if (unique.length === 0) return new Map();
-  const { data, error } = await supabase.rpc("get_usernames", {
-    p_ids: unique,
-  });
-  if (error) throw new Error(error.message);
-  return new Map((data ?? []).map((p) => [p.id, p.username]));
+  const names = new Map<string, string>();
+  for (let i = 0; i < unique.length; i += USERNAME_BATCH) {
+    const { data, error } = await supabase.rpc("get_usernames", {
+      p_ids: unique.slice(i, i + USERNAME_BATCH),
+    });
+    if (error) throw new Error(error.message);
+    for (const p of data ?? []) names.set(p.id, p.username);
+  }
+  return names;
 }
 
 // ─── Friends ────────────────────────────────────────────────────────────
@@ -139,46 +146,28 @@ export async function listFriendships(): Promise<FriendshipEntry[]> {
       status: f.status as FriendshipEntry["status"],
       direction: isRequester ? "outgoing" : "incoming",
       otherUserId,
-      otherUsername: usernameById.get(otherUserId) ?? "Unknown",
+      otherUsername: usernameById.get(otherUserId) ?? "Athlete",
     };
   });
 }
 
 /**
- * Sends a friend request, or accepts theirs if they already asked you.
- * Returns "accepted" when it completed an existing incoming request.
+ * Sends a friend request by username, or accepts theirs if they already
+ * asked you. Goes through the send_friend_request() RPC: friend requests
+ * can't be aimed at a raw user id. Returns "accepted" when it completed an
+ * existing incoming request.
  */
 export async function sendFriendRequest(
-  addresseeId: string,
+  username: string,
 ): Promise<"sent" | "accepted"> {
-  const userId = await requireUserId();
-  const { data: existing, error: existingError } = await supabase
-    .from("friendships")
-    .select("id, requester_id, status")
-    .or(
-      `and(requester_id.eq.${userId},addressee_id.eq.${addresseeId}),and(requester_id.eq.${addresseeId},addressee_id.eq.${userId})`,
-    );
-  if (existingError) throw new Error(existingError.message);
-  for (const row of existing ?? []) {
-    if (row.status === "accepted") throw new Error("You're already friends.");
-    if (row.requester_id === addresseeId && row.status === "pending") {
-      await respondToFriendRequest(row.id, true);
-      return "accepted";
-    }
-    if (row.requester_id === userId) {
-      throw new Error("You've already sent this person a request.");
-    }
-  }
-  const { error } = await supabase
-    .from("friendships")
-    .insert({ requester_id: userId, addressee_id: addresseeId });
-  if (error) {
-    if (error.code === "23505") {
-      throw new Error("You've already sent this person a request.");
-    }
-    throw new Error(error.message);
-  }
-  return "sent";
+  await requireUserId();
+  const { data, error } = await supabase.rpc("send_friend_request", {
+    p_username: username.trim(),
+  });
+  // The RPC's messages ("No user found…", "You're already friends.") are
+  // written for people.
+  if (error) throw new Error(error.message);
+  return data === "accepted" ? "accepted" : "sent";
 }
 
 export async function respondToFriendRequest(
@@ -443,7 +432,11 @@ export async function listSessionParticipants(
   return rows.map((p) => ({
     id: p.id,
     userId: p.user_id,
-    username: usernameById.get(p.user_id) ?? "Unknown",
+    // Names of invitees who haven't accepted yet aren't shared with the
+    // rest of the party.
+    username:
+      usernameById.get(p.user_id) ??
+      (p.invite_status === "pending" ? "Invited player" : "Athlete"),
     inviteStatus: p.invite_status as TrainTogetherParticipant["inviteStatus"],
     isReady: p.is_ready,
     cardsCompleted: p.cards_completed,
