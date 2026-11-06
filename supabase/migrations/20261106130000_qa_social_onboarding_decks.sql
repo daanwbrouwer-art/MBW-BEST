@@ -416,3 +416,215 @@ begin
   delete from auth.users where id = v_uid;
 end;
 $$;
+
+-- ─── 5. Chat and parties: no name fishing by user id ──────────────────────
+--
+-- Chat threads return the other person's username (get_my_threads,
+-- get_thread_peer), so starting a thread with a raw user id used to turn
+-- any id the caller could see (e.g. a co-invitee of a party) into a name.
+-- A new thread now needs a reason the caller may know the person: they are
+-- discoverable (Nearby athletes, which already shows their name), an
+-- accepted friend, or in an active party with the caller (host or
+-- accepted). Existing threads keep working. Guests (anonymous sessions)
+-- can't chat or join parties. Blocked pairs drop out of the thread list.
+
+create or replace function public.create_or_get_thread(other_user_id uuid)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  thread_id uuid;
+  me uuid := auth.uid();
+  my_gender text;
+  their_gender text;
+  their_preference text;
+  their_discoverable boolean;
+begin
+  if me is null
+     or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
+    raise exception 'Not authenticated';
+  end if;
+  if me = other_user_id then
+    raise exception 'Cannot start a thread with yourself';
+  end if;
+  if exists (
+    select 1 from public.blocks
+    where (blocker_id = me and blocked_id = other_user_id)
+       or (blocker_id = other_user_id and blocked_id = me)
+  ) then
+    raise exception 'Cannot message this user';
+  end if;
+
+  select id into thread_id from public.chat_threads
+  where (user_a = me and user_b = other_user_id)
+     or (user_a = other_user_id and user_b = me)
+  limit 1;
+
+  select gender into my_gender from public.profiles where id = me;
+  select gender, messaging_preference, discoverable
+    into their_gender, their_preference, their_discoverable
+  from public.profiles where id = other_user_id;
+
+  if thread_id is null and not (
+    coalesce(their_discoverable, false)
+    or exists (
+      select 1 from public.friendships f
+      where f.status = 'accepted'
+        and ((f.requester_id = me and f.addressee_id = other_user_id)
+          or (f.addressee_id = me and f.requester_id = other_user_id))
+    )
+    or exists (
+      select 1 from public.train_together_sessions s
+      where (s.host_id = me or exists (
+              select 1 from public.train_together_session_participants x
+              where x.session_id = s.id and x.user_id = me
+                and x.invite_status = 'accepted'))
+        and (s.host_id = other_user_id or exists (
+              select 1 from public.train_together_session_participants y
+              where y.session_id = s.id and y.user_id = other_user_id
+                and y.invite_status = 'accepted'))
+    )
+  ) then
+    -- Same message as a refusal by preference: says nothing about the user.
+    raise exception 'Cannot message this user';
+  end if;
+
+  if their_preference = 'no_one' then
+    raise exception 'This user is not accepting messages right now';
+  end if;
+  if their_preference = 'same_gender_only'
+     and (my_gender is null or their_gender is null or my_gender <> their_gender) then
+    -- Deliberately vague: the old wording revealed the recipient's gender.
+    raise exception 'This user is not accepting messages from you';
+  end if;
+
+  if thread_id is null then
+    insert into public.chat_threads (user_a, user_b) values (me, other_user_id)
+    returning id into thread_id;
+  end if;
+
+  return thread_id;
+end;
+$$;
+
+create or replace function public.get_my_threads()
+returns table (
+  thread_id uuid,
+  other_user_id uuid,
+  other_username text,
+  last_message_body text,
+  last_message_at timestamptz,
+  last_message_sender_id uuid,
+  is_unread boolean,
+  muted boolean
+)
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  me uuid := auth.uid();
+begin
+  return query
+  select
+    t.id,
+    case when t.user_a = me then t.user_b else t.user_a end,
+    p.username,
+    m.body,
+    m.created_at,
+    m.sender_id,
+    (
+      m.created_at is not null
+      and m.sender_id <> me
+      and m.created_at > coalesce(
+        case when t.user_a = me then t.last_read_a else t.last_read_b end,
+        '-infinity'::timestamptz
+      )
+    ),
+    case when t.user_a = me then t.muted_by_a else t.muted_by_b end
+  from public.chat_threads t
+  join public.profiles p on p.id = (case when t.user_a = me then t.user_b else t.user_a end)
+  left join lateral (
+    select cm.body, cm.created_at, cm.sender_id
+    from public.chat_messages cm
+    where cm.thread_id = t.id
+    order by cm.created_at desc
+    limit 1
+  ) m on true
+  where (t.user_a = me or t.user_b = me)
+    -- A block either way hides the thread (and the other person's name).
+    and not exists (
+      select 1 from public.blocks b
+      where (b.blocker_id = me and b.blocked_id = p.id)
+         or (b.blocker_id = p.id and b.blocked_id = me)
+    )
+  order by coalesce(m.created_at, t.created_at) desc;
+end;
+$$;
+
+create or replace function public.get_thread_peer(p_thread_id uuid)
+returns table (id uuid, username text)
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  me uuid := auth.uid();
+  peer uuid;
+begin
+  select case when user_a = me then user_b else user_a end into peer
+  from public.chat_threads
+  where chat_threads.id = p_thread_id and (user_a = me or user_b = me);
+  if peer is null then
+    return;
+  end if;
+  if exists (
+    select 1 from public.blocks b
+    where (b.blocker_id = me and b.blocked_id = peer)
+       or (b.blocker_id = peer and b.blocked_id = me)
+  ) then
+    return;
+  end if;
+  return query select p.id, p.username from public.profiles p where p.id = peer;
+end;
+$$;
+
+create or replace function public.join_train_together_party_by_code(p_invite_code text)
+returns public.train_together_sessions
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_session public.train_together_sessions;
+  v_code text := upper(btrim(coalesce(p_invite_code, '')));
+begin
+  if auth.uid() is null
+     or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
+    raise exception 'Not authenticated';
+  end if;
+  if v_code !~ '^[A-Z0-9]{4,12}$' then
+    raise exception 'Invalid or already-started invite code';
+  end if;
+
+  select * into v_session
+  from public.train_together_sessions
+  where upper(invite_code) = v_code
+    and status = 'waiting'
+  limit 1;
+
+  if v_session.id is null then
+    raise exception 'Invalid or already-started invite code';
+  end if;
+
+  insert into public.train_together_session_participants (session_id, user_id, invite_status)
+  values (v_session.id, auth.uid(), 'accepted')
+  on conflict (session_id, user_id) do update set invite_status = 'accepted';
+
+  return v_session;
+end;
+$$;
