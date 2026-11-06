@@ -83,9 +83,12 @@ interface WorkoutState {
   workoutStartTime: number | null;
   /** When the last card was finished; the summary measures up to here. */
   workoutEndTime: number | null;
-  /** Last time the workout screen was in use. On resume after the app was
-   * closed, the start time moves forward by the time away, so it doesn't
-   * count as training time. */
+  /** Training time so far, in seconds: the session clock, which stops while
+   * paused, during Joker challenges and while the app is closed. Saved every
+   * few seconds and when the app goes to the background, so a resumed
+   * workout continues the clock from here. */
+  elapsedSeconds: number;
+  /** When elapsedSeconds was last saved; also drives the stale cutoff. */
   lastActivityAt: number | null;
   /** Unique id for the workout in progress, created when it starts. Saved
    * history rows use it, so saving the same workout twice is a no-op. */
@@ -122,11 +125,8 @@ interface WorkoutActions {
   goBackCard: () => void;
   setWorkoutStartTime: (t: number | null) => void;
   markWorkoutSaved: (workoutId: string) => void;
-  /** Records that the workout screen is in use (see lastActivityAt). */
-  touchActivity: () => void;
-  /** Call when the workout screen opens: time since it was last in use
-   * (app closed, or elsewhere in the app) doesn't count as training. */
-  resumeActivity: () => void;
+  /** Saves the session clock (see elapsedSeconds). */
+  recordElapsed: (seconds: number) => void;
   markWorkoutRecorded: (workoutId: string) => void;
   setIsShuffling: (v: boolean) => void;
   setIsFlipping: (v: boolean) => void;
@@ -137,9 +137,6 @@ interface WorkoutActions {
   setInfoPanelOpen: (v: boolean) => void;
   reset: () => void;
 }
-
-/** A gap shorter than this (normal screen changes) still counts as training. */
-const RESUME_GAP_MS = 20 * 1000;
 
 /** An unfinished workout older than this is discarded instead of resumed. */
 const STALE_WORKOUT_MS = 6 * 60 * 60 * 1000;
@@ -153,6 +150,7 @@ const initialState: WorkoutState = {
   deckIndex: -1,
   workoutStartTime: null,
   workoutEndTime: null,
+  elapsedSeconds: 0,
   lastActivityAt: null,
   workoutId: null,
   savedWorkoutId: null,
@@ -303,22 +301,16 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
             : {
                 workoutStartTime: t,
                 workoutEndTime: null,
+                elapsedSeconds: 0,
                 lastActivityAt: t,
                 workoutId: crypto.randomUUID(),
               },
         ),
-      touchActivity: () => set({ lastActivityAt: Date.now() }),
-      resumeActivity: () => {
-        const { workoutStartTime, lastActivityAt, isSummary } = get();
-        const now = Date.now();
-        if (workoutStartTime == null || isSummary) return;
-        const away = lastActivityAt == null ? 0 : now - lastActivityAt;
-        set(
-          away > RESUME_GAP_MS
-            ? { workoutStartTime: workoutStartTime + away, lastActivityAt: now }
-            : { lastActivityAt: now },
-        );
-      },
+      recordElapsed: (seconds) =>
+        set({
+          elapsedSeconds: Math.max(get().elapsedSeconds, Math.floor(seconds)),
+          lastActivityAt: Date.now(),
+        }),
       markWorkoutSaved: (workoutId) => set({ savedWorkoutId: workoutId }),
       markWorkoutRecorded: (workoutId) =>
         set({ recordedWorkoutId: workoutId }),
@@ -361,6 +353,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         deckIndex: state.deckIndex,
         workoutStartTime: state.workoutStartTime,
         workoutEndTime: state.workoutEndTime,
+        elapsedSeconds: state.elapsedSeconds,
         lastActivityAt: state.lastActivityAt,
         workoutId: state.workoutId,
         savedWorkoutId: state.savedWorkoutId,
@@ -386,8 +379,6 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
             recordedWorkoutId: saved.recordedWorkoutId ?? null,
           };
         }
-        // Time away is subtracted when the workout screen opens again
-        // (resumeActivity), not here: the user may sit on Home first.
         return { ...current, ...saved };
       },
     },

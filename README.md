@@ -108,6 +108,28 @@ Also: the `join-waitlist` edge function has IP rate limits, a honeypot field and
 - **Map:** "Tap here to enable" now re-asks for location on the web (or explains why it can't); the add-park **+** shows "Create a free account to add parks" when anonymous sign-in is unavailable.
 - **Streak card:** PR chip wraps instead of cutting off the number.
 
+## QA fixes for the closed test (branch `fix/qa-closed-test`, in progress)
+
+A consumer-style QA pass on the live site (2026-11-06, 198 checks, report: https://claude.ai/artifact/XqruPTTVo4NU3DmxoCkBMg) found 20 issues. All are fixed on this branch; independent review rounds 1 and 2 found further issues, also fixed. **Nothing is deployed and the migration is not applied yet.**
+
+What changed:
+
+- **Social (B1):** `profiles` is owner-only since 2026-11-02, so other users' names now come from `get_usernames(uuid[])` (connected people only: friends, accepted party members, chat peers; respects blocks; batches of 200) and `find_profile_by_username`. Friend requests go through `send_friend_request(username)`; direct `INSERT` on `friendships` is revoked.
+- **Usernames:** unique (case-insensitive), `[A-Za-z0-9_]{3,32}`, neutral default `athlete_NNNNNN` instead of the email prefix, sign-up checks `username_available`.
+- **Accounts (B3, H5, H6):** `src/lib/accountSession.ts` + `accountScope.ts`. Local data is owned by one account (`mbw_owner`); a different account signing in wipes it; sign-out keeps it (streaks are local-only) but flushes unsynced data, ends the Supabase session, logs RevenueCat out. RevenueCat is now linked with `Purchases.logIn(userId)` (it never was — premium granted by user ID only works after this ships). Background syncs are guarded so they never write into another account's data.
+- **Onboarding (H1, H2):** answers sync to `profiles.onboarding` (newest wins; weight/height/age never leave the device); explicit retake mode returns to Profile; no loading flash in `OnboardingGuard` (fixed the React #185 loop, L3).
+- **Workouts (H3, H4, M1):** each workout has a uuid; history upsert ignores duplicates and is marked saved only after success (limited retries); real deck id `Category-Difficulty`; an in-progress workout survives a reload with a Home Resume/Discard card; the clock saves training time (`elapsedSeconds`), so pauses and time away don't count.
+- **Custom decks (B2, M4, M5):** Save bar pinned to the bottom; images on a light background; decks sync to `custom_decks` (tombstones, synced flag, 100-deck cap); guests have their own decks.
+- **Other:** "Party not found / ended" screens (M2), Leave party from the owner picker (M3), readable park names/equipment (M6, `src/lib/parkLabels.ts`), styled 404 (L2), help icon instead of the bell (L1), restore-purchases feedback (L5), switch and overlay accessibility labels (L4).
+- **Database:** `supabase/migrations/20261106120000_fix_train_together_policy_recursion.sql` (applied) and `20261106130000_qa_social_onboarding_decks.sql` (**not applied** — apply together with deploying this branch; it renames the 2 reviewer accounts' usernames).
+
+Still to do on this branch:
+
+- [ ] Round-2 browser findings not fixed yet: How to play sheet heading is hardcoded "UPPER BODY DECK" and Escape doesn't close it (`src/components/HowToPlayModal.tsx`); retake flag can be left behind after a system Back, and finishing a retake resets `completedAt` (`OnboardingPage.tsx`); parks are mostly unnamed — show street/area (reverse geocode) and give map pins accessible names (`MapPage.tsx`).
+- [ ] Review rounds 3, 4 and 5 (independent reviewers), fixing every finding.
+- [ ] Apply the migration, regenerate `src/lib/database.types.ts` from the live DB and compare with the hand-written types.
+- [ ] Re-run the live consumer QA (two accounts: friends, party names, chat, block/report) on a Vercel preview, then merge to `main` and deploy; build a new Android bundle (also carries the new launcher icons).
+
 ## Open items
 
 Things only the project owner can do:

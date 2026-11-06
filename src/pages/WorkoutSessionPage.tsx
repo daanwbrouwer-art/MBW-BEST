@@ -38,7 +38,7 @@ import {
   X,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { ModifierOverlay } from "../components/ModifierOverlay";
 
 interface StatPillProps {
@@ -176,29 +176,44 @@ export default function WorkoutSessionPage() {
 
   const [isPaused, setIsPaused] = useState(false);
   const isActive = shuffledDeck.length > 0 && !isSummary;
-  // Opening the workout screen: discount time spent away (app closed or
-  // elsewhere in the app), then continue the clock from there instead of
-  // restarting at 00:00. Runs once, before the timer starts.
-  const [resumedSeconds] = useState(() => {
-    const store = useWorkoutStore.getState();
-    store.resumeActivity();
-    const start = useWorkoutStore.getState().workoutStartTime;
-    return start ? Math.max(0, Math.floor((Date.now() - start) / 1000)) : 0;
-  });
+  // The session clock continues from the saved training time when a workout
+  // resumes (after a reload, or coming back from Home), instead of 00:00.
+  // Paused time, Joker challenges and time away never count.
+  const [resumedSeconds] = useState(
+    () => useWorkoutStore.getState().elapsedSeconds,
+  );
   const { formatted, elapsed } = useTimer(
     isActive && !jokerActive && !isPaused,
     resumedSeconds,
   );
 
-  // Keep lastActivityAt fresh while the workout screen is open, so a later
-  // resume only discounts the time the app was actually closed.
+  // Save the clock every 5 s, and whenever the app goes to the background,
+  // is closed, or this screen unmounts, so a resume loses (almost) nothing.
+  const elapsedRef = useRef(elapsed);
+  elapsedRef.current = elapsed;
+  useEffect(() => {
+    if (isActive && elapsed > 0 && elapsed % 5 === 0) {
+      useWorkoutStore.getState().recordElapsed(elapsed);
+    }
+  }, [elapsed, isActive]);
   useEffect(() => {
     if (!isActive) return;
-    const touch = () => useWorkoutStore.getState().touchActivity();
-    touch();
-    const id = window.setInterval(touch, 15_000);
-    return () => window.clearInterval(id);
+    const save = () =>
+      useWorkoutStore.getState().recordElapsed(elapsedRef.current);
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") save();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", save);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", save);
+      save();
+    };
   }, [isActive]);
+  useEffect(() => {
+    if (isPaused) useWorkoutStore.getState().recordElapsed(elapsedRef.current);
+  }, [isPaused]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashPress, setFlashPress] = useState(false);
   const [holdCountdown, setHoldCountdown] = useState(0);
@@ -363,9 +378,11 @@ export default function WorkoutSessionPage() {
     }
   }, [shuffledDeck.length, isSummary, navigate]);
 
-  // Navigate to summary when done
+  // Navigate to summary when done, with the final training time saved first
+  // (the summary reads it).
   useEffect(() => {
     if (isSummary) {
+      useWorkoutStore.getState().recordElapsed(elapsedRef.current);
       navigate({ to: "/workout/summary" });
     }
   }, [isSummary, navigate]);

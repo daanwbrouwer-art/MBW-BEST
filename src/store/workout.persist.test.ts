@@ -80,9 +80,7 @@ describe("resuming after a reload", () => {
     expect(s.shuffledDeck).toEqual([]);
   });
 
-  it("doesn't count the time the app was closed as training time", async () => {
-    const start = Date.now() - 60 * 60 * 1000; // started an hour ago
-    const lastUsed = Date.now() - 50 * 60 * 1000; // app closed 50 min ago
+  it("keeps the saved training time across a reload", async () => {
     localStorage.setItem(
       KEY,
       JSON.stringify({
@@ -91,32 +89,27 @@ describe("resuming after a reload", () => {
           deckIndex: 0,
           totalCards: 10,
           isSummary: false,
-          workoutStartTime: start,
-          lastActivityAt: lastUsed,
+          workoutStartTime: Date.now() - 60 * 60 * 1000,
+          elapsedSeconds: 312,
+          lastActivityAt: Date.now() - 50 * 60 * 1000,
           workoutId: "33333333-3333-4333-8333-333333333333",
         },
         version: 0,
       }),
     );
     await useWorkoutStore.persist.rehydrate();
-    // Loading alone changes nothing: the user may still be on Home.
-    expect(useWorkoutStore.getState().workoutStartTime).toBe(start);
-    // Opening the workout screen discounts the time away.
-    useWorkoutStore.getState().resumeActivity();
-    const s = useWorkoutStore.getState();
-    const trainedMs = Date.now() - (s.workoutStartTime ?? 0);
-    expect(trainedMs).toBeGreaterThan(9 * 60 * 1000);
-    expect(trainedMs).toBeLessThan(11 * 60 * 1000);
+    // The clock resumes from training time, not from wall time since start.
+    expect(useWorkoutStore.getState().elapsedSeconds).toBe(312);
   });
 
-  it("ignores short gaps such as switching screens", () => {
+  it("recordElapsed never moves the clock backwards and starts at 0", () => {
     const store = useWorkoutStore.getState();
     store.reset();
-    store.setWorkoutStartTime(Date.now() - 60_000);
-    useWorkoutStore.setState({ lastActivityAt: Date.now() - 5_000 });
-    const before = useWorkoutStore.getState().workoutStartTime;
-    store.resumeActivity();
-    expect(useWorkoutStore.getState().workoutStartTime).toBe(before);
+    store.setWorkoutStartTime(Date.now());
+    expect(useWorkoutStore.getState().elapsedSeconds).toBe(0);
+    store.recordElapsed(40);
+    store.recordElapsed(35);
+    expect(useWorkoutStore.getState().elapsedSeconds).toBe(40);
   });
 
   it("fixes the end time when the last card is done", () => {

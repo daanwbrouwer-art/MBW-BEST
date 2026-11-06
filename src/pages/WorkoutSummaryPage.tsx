@@ -351,12 +351,17 @@ export default function WorkoutSummaryPage() {
 
   const stats = getWorkoutStats();
   const completedCards = stats.completedCards;
-  // Measured to when the last card was finished (workoutEndTime), so the
-  // duration doesn't keep growing if the summary is shown again later.
+  // Training time from the session clock (excludes pauses, Joker challenges
+  // and time the app was closed). Falls back to start-to-finish wall time,
+  // fixed at the last card (workoutEndTime) so it never keeps growing.
+  const elapsedSeconds = useWorkoutStore((s) => s.elapsedSeconds);
   const workoutEndTime = useWorkoutStore((s) => s.workoutEndTime);
-  const duration = workoutStartTime
-    ? Math.floor(((workoutEndTime ?? Date.now()) - workoutStartTime) / 1000)
-    : 0;
+  const duration =
+    elapsedSeconds > 0
+      ? elapsedSeconds
+      : workoutStartTime
+        ? Math.floor(((workoutEndTime ?? Date.now()) - workoutStartTime) / 1000)
+        : 0;
   const calories = stats.estimatedCalories;
   const hasSummary = completedCards > 0;
 
@@ -736,7 +741,8 @@ export default function WorkoutSummaryPage() {
       )}
 
       {/* Time-validation warning — session too quick to count toward achievements */}
-      {hasSummary && sessionValidity && !sessionValidity.isValid && (
+      {hasSummary &&
+        !(sessionValidity?.isValid ?? isSessionValid(duration, completedCards)) && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
