@@ -63,6 +63,21 @@ async function requireUserId(): Promise<string> {
   return userId;
 }
 
+/**
+ * Usernames for other users. profiles is readable only by its owner, so this
+ * goes through the get_usernames() RPC, which returns id + username only, and
+ * only for people the caller is connected to (friend, party or chat).
+ */
+async function fetchUsernames(ids: string[]): Promise<Map<string, string>> {
+  const unique = [...new Set(ids.filter(Boolean))];
+  if (unique.length === 0) return new Map();
+  const { data, error } = await supabase.rpc("get_usernames", {
+    p_ids: unique,
+  });
+  if (error) throw new Error(error.message);
+  return new Map((data ?? []).map((p) => [p.id, p.username]));
+}
+
 // ─── Friends ────────────────────────────────────────────────────────────
 
 export interface FoundProfile {
@@ -77,15 +92,15 @@ export async function findProfileByUsername(
   const userId = await getCurrentUserId();
   const needle = handle.trim();
   if (!needle) return null;
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, username")
-    .ilike("username", needle)
-    .limit(1)
-    .maybeSingle();
+  // profiles is readable only by its owner; this RPC returns id + username
+  // only, never the caller, and nobody in a block relationship with them.
+  const { data, error } = await supabase.rpc("find_profile_by_username", {
+    p_username: needle,
+  });
   if (error) throw new Error(error.message);
-  if (!data || data.id === userId || !data.username) return null;
-  return { id: data.id, username: data.username };
+  const found = (data ?? [])[0];
+  if (!found || found.id === userId || !found.username) return null;
+  return { id: found.id, username: found.username };
 }
 
 export type FriendshipDirection = "incoming" | "outgoing";
@@ -114,14 +129,7 @@ export async function listFriendships(): Promise<FriendshipEntry[]> {
   const otherIds = rows.map((f) =>
     f.requester_id === userId ? f.addressee_id : f.requester_id,
   );
-  const { data: profiles, error: profilesError } = await supabase
-    .from("profiles")
-    .select("id, username")
-    .in("id", otherIds);
-  if (profilesError) throw new Error(profilesError.message);
-  const usernameById = new Map(
-    (profiles ?? []).map((p) => [p.id as string, p.username as string]),
-  );
+  const usernameById = await fetchUsernames(otherIds);
 
   return rows.map((f) => {
     const isRequester = f.requester_id === userId;
@@ -136,12 +144,41 @@ export async function listFriendships(): Promise<FriendshipEntry[]> {
   });
 }
 
-export async function sendFriendRequest(addresseeId: string): Promise<void> {
+/**
+ * Sends a friend request, or accepts theirs if they already asked you.
+ * Returns "accepted" when it completed an existing incoming request.
+ */
+export async function sendFriendRequest(
+  addresseeId: string,
+): Promise<"sent" | "accepted"> {
   const userId = await requireUserId();
+  const { data: existing, error: existingError } = await supabase
+    .from("friendships")
+    .select("id, requester_id, status")
+    .or(
+      `and(requester_id.eq.${userId},addressee_id.eq.${addresseeId}),and(requester_id.eq.${addresseeId},addressee_id.eq.${userId})`,
+    );
+  if (existingError) throw new Error(existingError.message);
+  for (const row of existing ?? []) {
+    if (row.status === "accepted") throw new Error("You're already friends.");
+    if (row.requester_id === addresseeId && row.status === "pending") {
+      await respondToFriendRequest(row.id, true);
+      return "accepted";
+    }
+    if (row.requester_id === userId) {
+      throw new Error("You've already sent this person a request.");
+    }
+  }
   const { error } = await supabase
     .from("friendships")
     .insert({ requester_id: userId, addressee_id: addresseeId });
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (error.code === "23505") {
+      throw new Error("You've already sent this person a request.");
+    }
+    throw new Error(error.message);
+  }
+  return "sent";
 }
 
 export async function respondToFriendRequest(
@@ -327,14 +364,7 @@ export async function listPendingPartyInvites(): Promise<PendingPartyInvite[]> {
   if (waiting.length === 0) return [];
 
   const hostIds = waiting.map((r) => r.train_together_sessions.host_id);
-  const { data: profiles, error: profilesError } = await supabase
-    .from("profiles")
-    .select("id, username")
-    .in("id", hostIds);
-  if (profilesError) throw new Error(profilesError.message);
-  const usernameById = new Map(
-    (profiles ?? []).map((p) => [p.id as string, p.username as string]),
-  );
+  const usernameById = await fetchUsernames(hostIds);
 
   return waiting.map((r) => ({
     sessionId: r.session_id,
@@ -408,17 +438,7 @@ export async function listSessionParticipants(
   const rows = (data ?? []) as unknown as TrainTogetherParticipantRow[];
   if (rows.length === 0) return [];
 
-  const { data: profiles, error: profilesError } = await supabase
-    .from("profiles")
-    .select("id, username")
-    .in(
-      "id",
-      rows.map((p) => p.user_id),
-    );
-  if (profilesError) throw new Error(profilesError.message);
-  const usernameById = new Map(
-    (profiles ?? []).map((p) => [p.id as string, p.username as string]),
-  );
+  const usernameById = await fetchUsernames(rows.map((p) => p.user_id));
 
   return rows.map((p) => ({
     id: p.id,

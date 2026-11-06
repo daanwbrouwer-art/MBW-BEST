@@ -7,8 +7,10 @@ import {
   migrateGuestStreak,
   migrateGuestWeeklyChallenge,
 } from "@/lib/completeSignup";
+import { completeSignIn } from "@/lib/accountSession";
 import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
 import { ensureReferralCode, redeemReferralCode } from "@/lib/referral";
+import { supabase } from "@/lib/supabaseClient";
 import { useWorkoutStore } from "@/store/workout";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -90,6 +92,16 @@ export default function EmailSignUpPage() {
     setError("");
     setIsLoading(true);
     try {
+      // Usernames are unique (case-insensitive). Ask first, so the user can
+      // pick another instead of getting a silently changed name.
+      const { data: available, error: availabilityError } = await supabase.rpc(
+        "username_available",
+        { p_username: username },
+      );
+      if (!availabilityError && available === false) {
+        setError("That username is taken. Try another one.");
+        return;
+      }
       const result = await (actor as any).registerUser(
         username,
         email,
@@ -98,7 +110,9 @@ export default function EmailSignUpPage() {
       if ("ok" in result) {
         const loginResult = await (actor as any).loginUser(email, password);
         if ("ok" in loginResult) {
-          localStorage.setItem("mbw_user", JSON.stringify(loginResult.ok));
+          // Clears a previous account's leftovers and links RevenueCat to
+          // the new account before guest progress is copied across.
+          await completeSignIn(loginResult.ok);
           migrateGuestOnboarding();
           migrateGuestStreak();
           migrateGuestAchievements();

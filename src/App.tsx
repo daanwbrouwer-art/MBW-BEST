@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useInternetIdentity } from "@/hooks/use-local-identity";
 import { getPositionIfPermitted } from "@/hooks/use-location";
 import { useOnboarding } from "@/hooks/use-onboarding";
+import { resumeSignedInSession } from "@/lib/accountSession";
 import { recordAppOpen } from "@/lib/achievementSessionLog";
 import { updateActivityPing } from "@/lib/remoteBackend";
 import { useWorkoutStore } from "@/store/workout";
@@ -97,6 +98,14 @@ function RootLayout() {
   useEffect(() => {
     prevTabIndex.current = tabIndex;
   }, [tabIndex]);
+
+  // Once per launch while signed in: link RevenueCat to the account and sync
+  // onboarding answers + custom decks (lib/accountSession.ts).
+  useEffect(() => {
+    resumeSignedInSession().catch((err) =>
+      console.warn("Account sync on start failed:", err),
+    );
+  }, []);
 
   // Fetch the other tab pages in the background once the app is idle, so
   // switching tabs never waits on a network chunk.

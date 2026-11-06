@@ -141,10 +141,16 @@ export function useTier() {
    * right after — same defensive-refresh pattern as the native branch of
    * `purchase` below — so the UI never shows a stale "Free Plan" state
    * after a successful restore. No-op on web/dev. */
-  const refreshSubscription = useCallback(async () => {
-    if (!isNative) return;
+  const refreshSubscription = useCallback(async (): Promise<boolean> => {
+    if (!isNative) {
+      const record = readSubscription();
+      setSubscription(record);
+      return record !== null;
+    }
     const { customerInfo } = await Purchases.getCustomerInfo();
-    setSubscription(subscriptionFromCustomerInfo(customerInfo));
+    const record = subscriptionFromCustomerInfo(customerInfo);
+    setSubscription(record);
+    return record !== null;
   }, []);
 
   const trialActive = trialStatus.kind === "active";

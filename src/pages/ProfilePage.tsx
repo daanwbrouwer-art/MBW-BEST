@@ -32,6 +32,7 @@ import {
   getBMICategory,
 } from "@/lib/calories";
 import { readChallengeHistory } from "@/lib/challenge";
+import { signOut } from "@/lib/accountSession";
 import { deleteAccount } from "@/lib/deleteAccount";
 import {
   openManageSubscriptions,
@@ -253,11 +254,16 @@ export default function ProfilePage() {
     }
   };
 
-  const handleLogout = () => {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    // Ends the server session, logs RevenueCat out and removes this
+    // account's data from the device (lib/accountSession.ts).
+    await signOut();
     clear();
-    localStorage.removeItem("mbw_user");
-    localStorage.removeItem("mbw_first_login");
-    navigate({ to: "/onboarding/welcome" });
+    queryClient.clear();
+    navigate({ to: "/onboarding/welcome", replace: true });
   };
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -303,8 +309,9 @@ export default function ProfilePage() {
     saveOnboarding({ age: clamp(value, min, max) });
   };
 
-  const handleRetakeAssessment = async () => {
-    await saveOnboarding({ hasCompletedOnboarding: false });
+  // Onboarding stays complete during a retake: OnboardingPage sees it is
+  // already finished, prefills the old answers, and Back returns here.
+  const handleRetakeAssessment = () => {
     navigate({ to: "/onboarding" });
   };
 
@@ -313,8 +320,12 @@ export default function ProfilePage() {
     try {
       const result = await paymentService.restorePurchases();
       if (result.success) {
-        await refreshSubscription();
-        toast("Purchases restored");
+        const hasPremium = await refreshSubscription();
+        toast(hasPremium ? "Premium restored" : "Nothing to restore", {
+          description: hasPremium
+            ? "Your subscription is active on this account."
+            : "We couldn't find an active subscription for this store account.",
+        });
       } else {
         toast("Restore failed", {
           description: result.error ?? "Please try again.",
@@ -412,6 +423,7 @@ export default function ProfilePage() {
             type="button"
             className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-destructive/50 hover:text-destructive transition-smooth"
             onClick={handleLogout}
+            disabled={isLoggingOut}
             data-ocid="profile.logout_button"
             aria-label="Log out"
           >

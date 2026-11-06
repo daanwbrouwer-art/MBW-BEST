@@ -3,13 +3,16 @@ import { WeeklyGoalPicker } from "@/components/WeeklyGoalPicker";
 import { Slider } from "@/components/ui/slider";
 import { DEFAULT_EQUIPMENT, useOnboarding } from "@/hooks/use-onboarding";
 import { calculateBMI, getBMICategory } from "@/lib/calories";
-import { setWeeklyGoal as setWeeklyGoalLib } from "@/lib/streak";
+import {
+  readStreak,
+  setWeeklyGoal as setWeeklyGoalLib,
+} from "@/lib/streak";
 import { useWorkoutStore } from "@/store/workout";
 import type { EquipmentProfile } from "@/types/user";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const TOTAL_STEPS = 9;
 const DEFAULT_WEEKLY_GOAL = 3;
@@ -116,8 +119,14 @@ const infoCardStyle = {
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
-  const { saveOnboarding } = useOnboarding();
+  const onboarding = useOnboarding();
+  const { saveOnboarding } = onboarding;
   const guestMode = useWorkoutStore((s) => s.guestMode);
+  const isSignedIn = localStorage.getItem("mbw_user") !== null;
+  // Opening the questionnaire after finishing it means "Retake assessment"
+  // from Profile: onboarding stays complete, Back and Finish return to
+  // Profile, and the answers start from what the user picked last time.
+  const isRetake = onboarding.hasCompletedOnboarding;
 
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState("");
@@ -148,9 +157,32 @@ export default function OnboardingPage() {
 
   const goNext = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
 
+  // Prefill a retake with the previous answers, once they have loaded.
+  const prefilled = useRef(false);
+  useEffect(() => {
+    if (prefilled.current || onboarding.isLoading || !isRetake) return;
+    prefilled.current = true;
+    if (onboarding.gender) setGender(onboarding.gender);
+    if (onboarding.weightKg != null) setWeightKg(onboarding.weightKg);
+    if (onboarding.age != null) setAge(onboarding.age);
+    if (onboarding.heightCm != null) setHeightCm(onboarding.heightCm);
+    setBodyMetricsTouched(true);
+    setGoals(onboarding.goals);
+    if (onboarding.fitnessLevel != null) {
+      setFitnessLevel(onboarding.fitnessLevel);
+      setFitnessTouched(true);
+    }
+    setEquipmentAccess(onboarding.equipmentAccess);
+    if (onboarding.selfAssessment) setSelfAssessment(onboarding.selfAssessment);
+    setWeeklyGoal(readStreak(guestMode && !isSignedIn).weeklyGoal);
+  }, [onboarding, isRetake, guestMode, isSignedIn]);
+
   const goBack = () => {
     if (step === 1) {
-      navigate({ to: "/onboarding/welcome" });
+      if (isRetake) navigate({ to: "/profile" });
+      // A signed-in user has nowhere before the first question: the
+      // welcome screen is the sign-up / sign-in page.
+      else if (!isSignedIn) navigate({ to: "/onboarding/welcome" });
       return;
     }
     setStep((s) => s - 1);
@@ -172,7 +204,7 @@ export default function OnboardingPage() {
     });
     const isEmailAuth = localStorage.getItem("mbw_user") !== null;
     setWeeklyGoalLib(guestMode && !isEmailAuth, weeklyGoal);
-    navigate({ to: "/home" });
+    navigate({ to: isRetake ? "/profile" : "/home" });
   };
 
   const canProceed = (() => {
@@ -220,15 +252,19 @@ export default function OnboardingPage() {
       />
 
       <header className="relative z-10 flex items-center gap-3 px-5 pt-12 pb-5">
-        <button
-          type="button"
-          onClick={goBack}
-          className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth shrink-0"
-          data-ocid="onboarding-flow.back_button"
-          aria-label="Go back"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
+        {step === 1 && isSignedIn && !isRetake ? (
+          <div className="w-10 h-10 shrink-0" aria-hidden="true" />
+        ) : (
+          <button
+            type="button"
+            onClick={goBack}
+            className="w-10 h-10 rounded-xl bg-card border border-border/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-smooth shrink-0"
+            data-ocid="onboarding-flow.back_button"
+            aria-label={step === 1 && isRetake ? "Back to profile" : "Go back"}
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+        )}
         <ProgressBar current={step} total={TOTAL_STEPS} className="flex-1" />
       </header>
 

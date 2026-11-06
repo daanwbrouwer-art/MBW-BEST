@@ -298,6 +298,7 @@ export default function WorkoutSummaryPage() {
     workoutStartTime,
     selectedCategory,
     selectedDifficulty,
+    workoutId,
   } = useWorkoutStore();
   const guestMode = useWorkoutStore((s) => s.guestMode);
   const workoutGender = useWorkoutStore((s) => s.workoutGender);
@@ -361,8 +362,21 @@ export default function WorkoutSummaryPage() {
     : [...savedCardHistory];
 
   useEffect(() => {
-    if (!hasSaved.current && hasSummary && actor && !guestMode) {
+    // Saved once per workout: the store remembers which workout id was
+    // saved, so a summary that renders again (remount, reload) won't save a
+    // duplicate. The server also ignores a second row with the same id.
+    const alreadySaved =
+      workoutId !== null &&
+      useWorkoutStore.getState().savedWorkoutId === workoutId;
+    if (
+      !hasSaved.current &&
+      !alreadySaved &&
+      hasSummary &&
+      actor &&
+      !guestMode
+    ) {
       hasSaved.current = true;
+      if (workoutId) useWorkoutStore.getState().markWorkoutSaved(workoutId);
       const repsBySuit = { hearts: 0, spades: 0, clubs: 0, diamonds: 0 };
       let totalRepsCount = 0;
       for (const sc of playedForSave) {
@@ -384,10 +398,15 @@ export default function WorkoutSummaryPage() {
       const { exerciseRows: exerciseRowsForSave } =
         buildBreakdown(playedForSave);
       const entry: WorkoutHistoryEntry = {
-        id: `${Date.now()}`,
+        id: workoutId ?? crypto.randomUUID(),
         completedAt: BigInt(Date.now()),
         userId: "anonymous",
-        deckId: selectedDeck?.id?.toString() ?? "upper-body",
+        // The deck the workout was built from (same id use-workout.ts uses).
+        deckId:
+          selectedDeck?.id?.toString() ??
+          (selectedCategory && selectedDifficulty
+            ? `${selectedCategory}-${selectedDifficulty}`
+            : "unknown"),
         durationSeconds: BigInt(duration),
         caloriesBurned: BigInt(calories),
         cardsCompleted: BigInt(completedCards),
@@ -456,8 +475,13 @@ export default function WorkoutSummaryPage() {
   // logged-in users. Order matters: the streak must be recorded first so
   // the achievement engine's longest-day-streak metric reflects today.
   useEffect(() => {
-    if (!hasRecordedStreak.current && hasSummary) {
+    // Recorded once per workout, for the same reason as the save above.
+    const alreadyRecorded =
+      workoutId !== null &&
+      useWorkoutStore.getState().recordedWorkoutId === workoutId;
+    if (!hasRecordedStreak.current && !alreadyRecorded && hasSummary) {
       hasRecordedStreak.current = true;
+      if (workoutId) useWorkoutStore.getState().markWorkoutRecorded(workoutId);
       const isEmailAuth = localStorage.getItem("mbw_user") !== null;
       const isGuest = guestMode && !isEmailAuth;
 

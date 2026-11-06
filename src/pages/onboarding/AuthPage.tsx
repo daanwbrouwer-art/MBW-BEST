@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useActor } from "@/hooks/use-local-actor";
+import { completeSignIn } from "@/lib/accountSession";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { motion } from "motion/react";
@@ -25,7 +26,9 @@ export default function AuthPage() {
     try {
       const result = await (actor as any).loginUser(email, password);
       if ("ok" in result) {
-        localStorage.setItem("mbw_user", JSON.stringify(result.ok));
+        // Links RevenueCat, clears another account's leftovers and loads
+        // onboarding answers + custom decks before the next screen reads them.
+        await completeSignIn(result.ok);
         const isFirstLogin = localStorage.getItem("mbw_first_login") === null;
         localStorage.setItem("mbw_first_login", "done");
         if (isFirstLogin) {

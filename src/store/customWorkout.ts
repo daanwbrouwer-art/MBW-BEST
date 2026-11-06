@@ -11,6 +11,7 @@
 // `decks` is the persisted list of named, saved decks a session actually
 // runs from (CustomWorkoutSessionPage.tsx reads a deck by id, never
 // `selected` directly) — see CustomDecksPage.tsx / CustomDeckDetailPage.tsx.
+import { pushDeck, pushDeckDelete } from "@/lib/customDeckSync";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -27,6 +28,10 @@ export interface CustomDeck {
   name: string;
   exercises: CustomWorkoutExercise[];
   createdAt: string;
+  /** Last edit (ISO). Missing on decks saved before account sync existed. */
+  updatedAt?: string;
+  /** True once the account has a copy (see lib/customDeckSync.ts). */
+  synced?: boolean;
 }
 
 interface CustomWorkoutState {
@@ -47,6 +52,8 @@ interface CustomWorkoutState {
   saveSelectedToDeck: (deckId: string) => void;
   renameDeck: (deckId: string, name: string) => void;
   deleteDeck: (deckId: string) => void;
+  /** Deck ids deleted on this device that the server hasn't confirmed yet. */
+  deletedIds: string[];
 }
 
 const MIN_VALUE = 1;
@@ -54,7 +61,19 @@ const MAX_VALUE = 300;
 
 export const useCustomWorkoutStore = create<CustomWorkoutState>()(
   persist(
-    (set, get) => ({
+    (set, get) => {
+      // Applies an edit to one saved deck and syncs it in the background.
+      const updateDeck = (deckId: string, patch: Partial<CustomDeck>) => {
+        const updatedAt = new Date().toISOString();
+        set((state) => ({
+          decks: state.decks.map((d) =>
+            d.id === deckId ? { ...d, ...patch, updatedAt } : d,
+          ),
+        }));
+        const deck = get().decks.find((d) => d.id === deckId);
+        if (deck) void pushDeck(deck);
+      };
+      return {
       selected: [],
       isSelected: (name) => get().selected.some((e) => e.name === name),
       addExercise: (exercise) =>
@@ -87,30 +106,32 @@ export const useCustomWorkoutStore = create<CustomWorkoutState>()(
       },
       saveSelectedAsNewDeck: (name) => {
         const id = crypto.randomUUID();
+        const now = new Date().toISOString();
         const deck: CustomDeck = {
           id,
           name,
           exercises: get().selected,
-          createdAt: new Date().toISOString(),
+          createdAt: now,
+          updatedAt: now,
+          synced: false,
         };
         set((state) => ({ decks: [...state.decks, deck] }));
+        void pushDeck(deck);
         return id;
       },
-      saveSelectedToDeck: (deckId) =>
-        set((state) => ({
-          decks: state.decks.map((d) =>
-            d.id === deckId ? { ...d, exercises: state.selected } : d,
-          ),
-        })),
-      renameDeck: (deckId, name) =>
-        set((state) => ({
-          decks: state.decks.map((d) => (d.id === deckId ? { ...d, name } : d)),
-        })),
-      deleteDeck: (deckId) =>
+      saveSelectedToDeck: (deckId) => updateDeck(deckId, { exercises: get().selected }),
+      renameDeck: (deckId, name) => updateDeck(deckId, { name }),
+      deleteDeck: (deckId) => {
+        const existed = get().decks.some((d) => d.id === deckId);
         set((state) => ({
           decks: state.decks.filter((d) => d.id !== deckId),
-        })),
-    }),
+          deletedIds: existed ? [...state.deletedIds, deckId] : state.deletedIds,
+        }));
+        if (existed) void pushDeckDelete(deckId);
+      },
+      deletedIds: [],
+    };
+    },
     { name: "mbw_custom_workout_draft" },
   ),
 );

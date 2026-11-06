@@ -210,10 +210,15 @@ export const remoteBackend: backendInterface = {
     if (!userId) return { __kind__: "err", err: "Not authenticated" };
     // entry.userId is never trusted here — WorkoutSummaryPage.tsx hardcodes
     // it to "anonymous" (it was never meant to be read), and RLS only lets
-    // us write rows where user_id = auth.uid() anyway. entry.id is also
-    // dropped: it's a client-side `${Date.now()}` string, not a valid uuid,
-    // so the table's own gen_random_uuid() default fills it in instead.
+    // us write rows where user_id = auth.uid() anyway. entry.id is the
+    // workout's own uuid (store/workout.ts workoutId): saving the same
+    // workout twice hits the primary key and is ignored, never duplicated.
+    const isUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        entry.id,
+      );
     const insert: WorkoutHistoryInsert = {
+      ...(isUuid ? { id: entry.id } : {}),
       user_id: userId,
       completed_at: new Date(Number(entry.completedAt)).toISOString(),
       deck_id: entry.deckId,
@@ -234,7 +239,9 @@ export const remoteBackend: backendInterface = {
         ([name, reps]): [string, number] => [name, Number(reps)],
       ),
     };
-    const { error } = await supabase.from("workout_history").insert(insert);
+    const { error } = await supabase
+      .from("workout_history")
+      .upsert(insert, { onConflict: "id", ignoreDuplicates: true });
     if (error) return { __kind__: "err", err: error.message };
     return { __kind__: "ok", ok: null };
   },

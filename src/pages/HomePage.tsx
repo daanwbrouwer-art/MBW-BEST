@@ -43,8 +43,9 @@ import {
 } from "@/types/workout";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  Bell,
   ChevronRight,
+  CircleHelp,
+  Play,
   Crown,
   Sparkles,
   Star,
@@ -64,6 +65,11 @@ const ALL_CATEGORIES: DeckCategory[] = [
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const hasWorkoutInProgress = useWorkoutStore(
+    (s) => s.shuffledDeck.length > 0 && !s.isSummary && s.deckIndex >= 0,
+  );
+  const inProgressDeckIndex = useWorkoutStore((s) => s.deckIndex);
+  const inProgressTotal = useWorkoutStore((s) => s.totalCards);
   const [howToPlayOpen, setHowToPlayOpen] = useState(false);
   const { data: profile } = useProfile();
   const { data: history } = useWorkoutHistory();
@@ -239,10 +245,10 @@ export default function HomePage() {
             type="button"
             className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-white hover:border-primary/50 hover:text-primary transition-smooth"
             onClick={() => setHowToPlayOpen(true)}
-            data-ocid="home.notification_button"
-            aria-label="Notifications"
+            data-ocid="home.how_to_play_button"
+            aria-label="How to play"
           >
-            <Bell className="w-[22px] h-[22px]" />
+            <CircleHelp className="w-[22px] h-[22px]" />
           </button>
         </header>
 
@@ -283,6 +289,46 @@ export default function HomePage() {
             MYBODYWEIGHT
           </p>
         </motion.div>
+
+        {/* 2a. WORKOUT IN PROGRESS — e.g. the app was closed mid-workout */}
+        {hasWorkoutInProgress && (
+          <section className="px-5 mb-4" data-ocid="home.resume_workout_card">
+            <div
+              className="w-full rounded-2xl p-4 flex items-center gap-3"
+              style={{
+                background: "oklch(0.17 0.04 var(--primary-h) / 0.35)",
+                border: "1px solid oklch(var(--primary) / 0.5)",
+              }}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="font-display font-bold text-sm text-foreground">
+                  Workout in progress
+                </p>
+                <p className="text-xs text-muted-foreground font-body">
+                  Card {Math.min(inProgressDeckIndex + 1, inProgressTotal)} of{" "}
+                  {inProgressTotal}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => useWorkoutStore.getState().reset()}
+                className="h-10 px-3 rounded-xl text-xs font-display font-bold text-muted-foreground hover:text-foreground transition-smooth"
+                data-ocid="home.discard_workout_button"
+              >
+                Discard
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/workout/session" })}
+                className="h-10 px-4 rounded-xl bg-primary text-background text-xs font-display font-black uppercase tracking-wide flex items-center gap-1.5"
+                data-ocid="home.resume_workout_button"
+              >
+                <Play className="w-3.5 h-3.5" aria-hidden="true" />
+                Resume
+              </button>
+            </div>
+          </section>
+        )}
 
         {/* 2b. RECOMMENDED FOR YOU */}
         <motion.section

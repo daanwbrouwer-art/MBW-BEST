@@ -1,3 +1,4 @@
+import { signOut } from "./accountSession";
 import { supabase } from "./supabaseClient";
 
 // Account deletion (Google Play / App Store requirement). The server side
@@ -40,10 +41,12 @@ export async function deleteAccount(): Promise<DeleteAccountResult> {
           "We couldn't delete your account right now. Check your connection and try again, or email mybodyweight@outlook.com.",
       };
     }
-    // The user no longer exists server-side; this just clears the local session.
-    await supabase.auth.signOut({ scope: "local" });
   }
 
+  // The account no longer exists server-side: end the local session, log
+  // RevenueCat out and reset the in-memory stores, then remove everything
+  // else (guest data and settings too) except the trial marker.
+  await signOut();
   wipeLocalAppData();
   return { ok: true };
 }

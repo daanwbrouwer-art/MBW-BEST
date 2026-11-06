@@ -81,6 +81,13 @@ interface WorkoutState {
   shuffledDeck: LocalCard[];
   deckIndex: number;
   workoutStartTime: number | null;
+  /** Unique id for the workout in progress, created when it starts. Saved
+   * history rows use it, so saving the same workout twice is a no-op. */
+  workoutId: string | null;
+  /** workoutId of the last workout saved to history from this device. */
+  savedWorkoutId: string | null;
+  /** workoutId of the last workout whose streak/achievements were recorded. */
+  recordedWorkoutId: string | null;
   currentCard: LocalSessionCard | null;
   previousCard: LocalSessionCard | null;
   cardHistory: LocalSessionCard[];
@@ -108,6 +115,8 @@ interface WorkoutActions {
   advanceDeck: () => void;
   goBackCard: () => void;
   setWorkoutStartTime: (t: number | null) => void;
+  markWorkoutSaved: (workoutId: string) => void;
+  markWorkoutRecorded: (workoutId: string) => void;
   setIsShuffling: (v: boolean) => void;
   setIsFlipping: (v: boolean) => void;
   setJokerActive: (v: boolean) => void;
@@ -118,6 +127,9 @@ interface WorkoutActions {
   reset: () => void;
 }
 
+/** An unfinished workout older than this is discarded instead of resumed. */
+const STALE_WORKOUT_MS = 6 * 60 * 60 * 1000;
+
 const initialState: WorkoutState = {
   selectedDeck: null,
   selectedCategory: null,
@@ -126,6 +138,9 @@ const initialState: WorkoutState = {
   shuffledDeck: [],
   deckIndex: -1,
   workoutStartTime: null,
+  workoutId: null,
+  savedWorkoutId: null,
+  recordedWorkoutId: null,
   currentCard: null,
   previousCard: null,
   cardHistory: [],
@@ -261,7 +276,12 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         });
       },
 
-      setWorkoutStartTime: (t) => set({ workoutStartTime: t }),
+      // Starting a workout (t set) gives it a fresh id.
+      setWorkoutStartTime: (t) =>
+        set(t === null ? { workoutStartTime: null } : { workoutStartTime: t, workoutId: crypto.randomUUID() }),
+      markWorkoutSaved: (workoutId) => set({ savedWorkoutId: workoutId }),
+      markWorkoutRecorded: (workoutId) =>
+        set({ recordedWorkoutId: workoutId }),
       setIsShuffling: (v) => set({ isShuffling: v }),
       setIsFlipping: (v) => set({ isFlipping: v }),
       setJokerActive: (v) => set({ jokerActive: v }),
@@ -269,13 +289,58 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
       setIsSummary: (v) => set({ isSummary: v }),
       setGuestMode: (v) => set({ guestMode: v }),
       setInfoPanelOpen: (v) => set({ infoPanelOpen: v }),
-      reset: () => set({ ...initialState, guestMode: get().guestMode }),
+      // savedWorkoutId survives a reset so a summary that renders again
+      // after the reset still knows that workout was saved.
+      reset: () =>
+        set({
+          ...initialState,
+          guestMode: get().guestMode,
+          savedWorkoutId: get().savedWorkoutId,
+          recordedWorkoutId: get().recordedWorkoutId,
+        }),
     }),
     {
       name: "mbw_workout_store",
-      // Only guestMode needs to survive a refresh — in-progress card/session
-      // state should not be resumed stale after a reload.
-      partialize: (state) => ({ guestMode: state.guestMode }),
+      // A workout in progress survives a reload (on Android the system can
+      // close the app in the background mid-workout). Transient UI flags
+      // (shuffling/flipping/info panel) are not kept. A workout older than
+      // STALE_WORKOUT_MS is dropped on load instead of resumed.
+      partialize: (state) => ({
+        guestMode: state.guestMode,
+        selectedCategory: state.selectedCategory,
+        selectedDifficulty: state.selectedDifficulty,
+        selectedCardCount: state.selectedCardCount,
+        excludedExercises: state.excludedExercises,
+        workoutGender: state.workoutGender,
+        shuffledDeck: state.shuffledDeck,
+        deckIndex: state.deckIndex,
+        workoutStartTime: state.workoutStartTime,
+        workoutId: state.workoutId,
+        savedWorkoutId: state.savedWorkoutId,
+        recordedWorkoutId: state.recordedWorkoutId,
+        currentCard: state.currentCard,
+        previousCard: state.previousCard,
+        cardHistory: state.cardHistory,
+        jokerActive: state.jokerActive,
+        jokerChallenge: state.jokerChallenge,
+        isSummary: state.isSummary,
+        totalCards: state.totalCards,
+      }),
+      merge: (persisted, current) => {
+        const saved = (persisted ?? {}) as Partial<WorkoutState>;
+        const stale =
+          saved.workoutStartTime != null &&
+          Date.now() - saved.workoutStartTime > STALE_WORKOUT_MS;
+        if (stale) {
+          return {
+            ...current,
+            guestMode: saved.guestMode ?? current.guestMode,
+            savedWorkoutId: saved.savedWorkoutId ?? null,
+            recordedWorkoutId: saved.recordedWorkoutId ?? null,
+          };
+        }
+        return { ...current, ...saved };
+      },
     },
   ),
 );

@@ -285,7 +285,13 @@ export default function CustomWorkoutBuilderPage() {
       {/* Exercise grid — grouped into Upper Body / Lower Body / Core
           sections when browsing everything, flat grid once a single
           region filter narrows things down. */}
-      <div className="relative flex-1 overflow-y-auto px-5 pt-3 pb-4">
+      <div
+        className={cn(
+          "relative flex-1 overflow-y-auto px-5 pt-3",
+          // Room for the pinned Save bar so the last row isn't hidden.
+          selected.length > 0 ? "pb-44" : "pb-4",
+        )}
+      >
         {tierLoading ? (
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3, 4, 5].map((i) => (
@@ -362,7 +368,9 @@ export default function CustomWorkoutBuilderPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="relative border-t border-border/50 bg-background/95 backdrop-blur-sm px-5 pt-3 pb-6"
+            // Pinned to the bottom of the screen: the exercise list is very
+            // long, and the bar used to sit below all of it.
+            className="fixed inset-x-0 bottom-0 z-20 max-w-[430px] mx-auto border-t border-border/50 bg-background/95 backdrop-blur-sm px-5 pt-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
           >
             <div className="flex gap-2 overflow-x-auto no-scrollbar pb-3">
               {selected.map((ex) => (
@@ -494,12 +502,14 @@ function ExerciseCatalogCard({
     >
       <div
         className="relative w-full aspect-square overflow-hidden"
-        style={{ background: "oklch(0.16 0.01 var(--neutral-hue))" }}
+        // Same light backing as the workout cards: some illustrations are
+        // dark line art and disappear on a dark background.
+        style={{ background: "#fafafa" }}
       >
         <img
           src={resolveExerciseIllustration(exercise.name, gender)}
           alt={exercise.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain p-1.5"
           loading="lazy"
         />
         {!isPremium && (

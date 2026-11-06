@@ -681,11 +681,16 @@ export default function TrainTogetherHubPage() {
     mutationFn: async (handle: string) => {
       const found = await findProfileByUsername(handle);
       if (!found) throw new Error("No user found with that username.");
-      await sendFriendRequest(found.id);
-      return found;
+      const outcome = await sendFriendRequest(found.id);
+      return { ...found, outcome };
     },
     onSuccess: (found) => {
-      toast("Friend request sent", { description: found.username });
+      toast(
+        found.outcome === "accepted"
+          ? "You're now friends"
+          : "Friend request sent",
+        { description: found.username },
+      );
       setAddFriendHandle("");
       queryClient.invalidateQueries({ queryKey: ["train-together-friends"] });
     },

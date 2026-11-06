@@ -1,4 +1,5 @@
 import { useInternetIdentity } from "@/hooks/use-local-identity";
+import { pushOnboarding } from "@/lib/onboardingSync";
 import { useWorkoutStore } from "@/store/workout";
 import type { EquipmentProfile, OnboardingData } from "@/types/user";
 import { useCallback, useEffect, useState } from "react";
@@ -60,6 +61,13 @@ export function useOnboarding() {
       const updated: OnboardingData = { ...base, ...patch };
       writeOnboarding(isGuest, updated);
       setData(updated);
+      // Signed-in users keep their answers on the account (minus body
+      // measurements), so a new phone doesn't ask again.
+      if (!isGuest) {
+        pushOnboarding(updated).catch((err) =>
+          console.warn("Couldn't save onboarding to the account:", err),
+        );
+      }
     },
     [isGuest, data],
   );
