@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { useEscapeToClose } from "@/hooks/use-escape-to-close";
 
 /**
  * Lighter-weight bottom-sheet prompt for features a free account alone
@@ -17,6 +18,7 @@ export function RegisterPromptModal({
   onClose: () => void;
 }) {
   const navigate = useNavigate();
+  useEscapeToClose(onClose);
 
   const handleRegister = () => {
     onClose();

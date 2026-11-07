@@ -49,6 +49,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useEscapeToClose } from "@/hooks/use-escape-to-close";
 
 const CARD_COUNTS = [
   {
@@ -922,6 +923,7 @@ function ExercisePreviewModal({
   deckName: string;
   onClose: () => void;
 }) {
+  useEscapeToClose(onClose);
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center max-w-[430px] mx-auto"
@@ -1068,6 +1070,7 @@ function ExcludeExercisesModal({
   onIncludeAll: () => void;
   onClose: () => void;
 }) {
+  useEscapeToClose(onClose);
   const includedCount = exercises.length - excludedExercises.length;
 
   // When the exercise pool is empty (e.g. Core / Full Body decks that have no
