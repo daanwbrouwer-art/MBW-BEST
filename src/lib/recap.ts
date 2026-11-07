@@ -124,7 +124,9 @@ export function computeRecap(
   const exerciseSessions = new Map<string, number>();
   for (const s of sessions)
     for (const name of s.uniqueExerciseNames ?? [])
-      if (name) exerciseSessions.set(name, (exerciseSessions.get(name) ?? 0) + 1);
+      // Joker cards are challenges, not exercises.
+      if (name && !/joker|combo/i.test(name))
+        exerciseSessions.set(name, (exerciseSessions.get(name) ?? 0) + 1);
   const topExercises = [...exerciseSessions]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
