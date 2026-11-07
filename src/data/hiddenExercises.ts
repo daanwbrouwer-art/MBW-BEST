@@ -16,6 +16,10 @@ export const HIDDEN_EXERCISES: Record<Gender, ReadonlySet<string>> = {
     "Archer Push-up",
     "Burpee Broad Jump",
     "Commando Pull-up",
+    // The only men's picture shows the hands on a bench (incline), not a
+    // floor mountain climber.
+    "Mountain Climber",
+    "Cross-body Mountain Climber",
     "Man Maker",
     "Plank to Push-up",
     "Ring Dip",

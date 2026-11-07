@@ -364,6 +364,16 @@
   }
 }
 
+/* Workout screen: the card takes the height that's left between the stats
+   and the buttons (keeping its playing-card shape), so nothing scrolls. */
+.card-fit {
+  height: 100% !important;
+  width: auto !important;
+  max-width: min(320px, 100%) !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .card-hero {
   will-change: transform;
   border-radius: 20px;

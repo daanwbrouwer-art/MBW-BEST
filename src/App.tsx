@@ -22,6 +22,7 @@ import {
 } from "@tanstack/react-router";
 import { MotionConfig } from "motion/react";
 import { Suspense, lazy, useEffect, useRef } from "react";
+import { installAndroidBack } from "@/lib/androidBack";
 import AchievementsPage from "./pages/AchievementsPage";
 
 // Bottom-nav tab pages: lazy, but preloaded in the background (RootLayout).
@@ -607,6 +608,10 @@ declare module "@tanstack/react-router" {
     router: typeof router;
   }
 }
+
+installAndroidBack((to) => {
+  void router.navigate({ to });
+});
 
 
 export default function App() {

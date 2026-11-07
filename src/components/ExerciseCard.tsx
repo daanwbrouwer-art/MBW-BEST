@@ -92,6 +92,11 @@ function getDisplayReps(
   previousCard?: SessionCardLocal | null,
 ): number {
   const rank = sessionCard.card.rank;
+  // Ace/King reps are already resolved at draw time (previous × 2 / ÷ 2);
+  // recomputing from previousCard doubles twice after going back.
+  if ((rank === "Ace" || rank === "King") && toNum(sessionCard.reps) > 0) {
+    return toNum(sessionCard.reps);
+  }
   if (rank === "Ace") {
     const prev = toNum(previousCard?.reps);
     return prev > 0 ? prev * 2 : 2;
@@ -109,6 +114,16 @@ function getDisplayExercise(
   gender: WorkoutGender,
 ): { name: string; illustration: string } {
   const rank = sessionCard.card.rank;
+  // Ace/King cards are resolved at draw time to the previous exercise (name
+  // and picture), which stays right after going back through the history.
+  if ((rank === "Ace" || rank === "King") && sessionCard.card.exercise) {
+    const name = sessionCard.card.exercise;
+    return {
+      name,
+      illustration:
+        sessionCard.card.imagePath ?? resolveExerciseIllustration(name, gender),
+    };
+  }
   if ((rank === "Ace" || rank === "King") && previousCard) {
     const name = previousCard.card.exercise || "";
     // Prefer per-card imagePath if set on previous card

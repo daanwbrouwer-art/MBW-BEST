@@ -227,6 +227,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         let resolvedHoldSeconds = nextRaw.holdSeconds;
         let resolvedEachLeg = nextRaw.eachLeg;
         let resolvedEachSide = nextRaw.eachSide;
+        let resolvedImagePath = nextRaw.imagePath;
         if ((nextRaw.isAce || nextRaw.isKing) && currentCard) {
           const prevHold = currentCard.card.holdSeconds;
           if (nextRaw.isAce) {
@@ -242,6 +243,9 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
           resolvedEquipment = currentCard.card.requiresEquipment;
           resolvedEachLeg = currentCard.card.eachLeg;
           resolvedEachSide = currentCard.card.eachSide;
+          // An Ace/King is the previous exercise doubled/halved, so it shows
+          // that exercise's picture, never a playing-card picture.
+          resolvedImagePath = currentCard.card.imagePath;
         }
 
         const nextCard: LocalSessionCard = {
@@ -255,7 +259,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
             eachSide: resolvedEachSide,
             holdSeconds: resolvedHoldSeconds,
             specialInstruction: nextRaw.specialInstruction,
-            imagePath: nextRaw.imagePath,
+            imagePath: resolvedImagePath,
             illustrationComingSoon: nextRaw.illustrationComingSoon,
             jokerComboList: nextRaw.jokerComboList,
             deckCategory: nextRaw.deckCategory,
@@ -286,6 +290,7 @@ export const useWorkoutStore = create<WorkoutState & WorkoutActions>()(
         const prevCard = history.pop()!;
         set({
           currentCard: prevCard,
+          previousCard: history[history.length - 1] ?? null,
           cardHistory: history,
           deckIndex: Math.max(0, deckIndex - 1),
           jokerActive: false,

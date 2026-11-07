@@ -1,4 +1,3 @@
-import { EquipmentSuggestionChips } from "@/components/EquipmentSuggestionChips";
 import { ExerciseCard } from "@/components/ExerciseCard";
 import { ExerciseInfoPanel } from "@/components/ExerciseInfoPanel";
 import { JokerOverlay } from "@/components/JokerOverlay";
@@ -17,6 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { resolveExerciseIllustration } from "@/data/exerciseAssets";
+import { getSuggestionsForExercise } from "@/data/equipmentMapping";
+import { notify } from "@/lib/inAppNotifications";
 import { useEquipmentTier } from "@/hooks/use-equipment-tier";
 import { useExerciseInfo } from "@/hooks/use-exercise-info";
 import { useOnboarding } from "@/hooks/use-onboarding";
@@ -500,6 +501,25 @@ export default function WorkoutSessionPage() {
     currentCard?.card.rank === "Queen" &&
     exerciseName.toLowerCase().includes("freestanding handstand");
 
+  // Equipment tip as a top banner (in-app notification) once per exercise
+  // per workout, when the user's equipment fits it. Replaces the chips that
+  // used to sit under the card and push the screen into scrolling.
+  const equipmentTipsShown = useRef(new Set<string>());
+  useEffect(() => {
+    if (!currentCard || isJoker || isFlipping || isAnimating) return;
+    if (!exerciseName || equipmentTier === "bodyweight") return;
+    if (equipmentTipsShown.current.has(exerciseName)) return;
+    const tips = getSuggestionsForExercise(exerciseName, equipmentTier);
+    if (tips.length === 0) return;
+    equipmentTipsShown.current.add(exerciseName);
+    notify({
+      kind: "equipment",
+      id: "equipment-tip",
+      title: `Equipment tip: ${exerciseName}`,
+      body: tips.map((t) => t.label).join(" · "),
+    });
+  }, [currentCard, isJoker, isFlipping, isAnimating, exerciseName, equipmentTier]);
+
   // Fetch exercise info from backend
   const infoQuery = useExerciseInfo(infoPanelOpen ? exerciseName : null);
   const infoExercise = infoQuery.data;
@@ -507,7 +527,9 @@ export default function WorkoutSessionPage() {
 
   return (
     <div
-      className="min-h-dvh bg-background flex flex-col max-w-[430px] mx-auto relative overflow-hidden"
+      // Exactly one screen tall: the card shrinks to fit, so drawing cards
+      // never needs scrolling.
+      className="h-dvh bg-background flex flex-col max-w-[430px] mx-auto relative overflow-hidden"
       data-ocid="workout-session.page"
     >
       {/* Ambient background glow */}
@@ -520,7 +542,7 @@ export default function WorkoutSessionPage() {
       />
 
       {/* ── Header ── */}
-      <header className="relative flex items-center justify-between px-5 pt-10 pb-2">
+      <header className="relative flex items-center justify-between px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-2 shrink-0">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <button
@@ -629,13 +651,12 @@ export default function WorkoutSessionPage() {
 
       {/* ── HERO CARD AREA ── */}
       <div
-        className="relative flex-1 px-4 flex flex-col justify-center"
-        style={{ minHeight: "55dvh" }}
+        className="relative flex-1 min-h-0 px-4 flex flex-col justify-center"
       >
         <motion.div
           animate={{ x: infoPanelOpen ? "-18%" : 0 }}
           transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full"
+          className="w-full h-full flex items-center justify-center"
         >
           <AnimatePresence mode="wait">
             {isFlipping || isAnimating ? (
@@ -645,8 +666,8 @@ export default function WorkoutSessionPage() {
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 exit={{ opacity: 0, scale: 0.96, rotateY: 60 }}
                 transition={{ duration: 0.35, ease: [0.34, 1.56, 0.64, 1] }}
-                className="rounded-[20px] border border-border/40 bg-card/40 flex items-center justify-center"
-                style={{ aspectRatio: "3/4", willChange: "transform" }}
+                className="card-fit rounded-[20px] border border-border/40 bg-card/40 flex items-center justify-center"
+                style={{ aspectRatio: "2.5/3.5", willChange: "transform" }}
                 data-ocid="workout-session.loading_state"
               >
                 <div className="flex flex-col items-center gap-4">
@@ -662,12 +683,12 @@ export default function WorkoutSessionPage() {
                 sessionCard={currentCard}
                 previousCard={previousCard}
                 gender={gender}
-                className="card-hero"
+                className="card-hero card-fit"
               />
             ) : (
               <div
-                className="rounded-[20px] border border-border/40 bg-card/20 flex items-center justify-center"
-                style={{ aspectRatio: "3/4" }}
+                className="card-fit rounded-[20px] border border-border/40 bg-card/20 flex items-center justify-center"
+                style={{ aspectRatio: "2.5/3.5" }}
                 data-ocid="workout-session.empty_state"
               >
                 <p className="text-white/50 font-body text-sm">
@@ -762,18 +783,6 @@ export default function WorkoutSessionPage() {
         </motion.div>
       )}
 
-      {/* Equipment suggestion chips — informational only, never changes the
-          card's exercise/reps/logic. Hidden for Joker challenges and for
-          the "bodyweight" tier inside the component itself. */}
-      {currentCard && !isFlipping && !isAnimating && !isJoker && (
-        <div className="px-5 pb-2">
-          <EquipmentSuggestionChips
-            exerciseName={exerciseName}
-            tier={equipmentTier}
-          />
-        </div>
-      )}
-
       {/* Remaining label */}
       {remaining > 0 && !isFlipping && !isAnimating && (
         <p className="text-center text-xs font-body text-white/60 uppercase tracking-widest pb-2">
@@ -782,7 +791,10 @@ export default function WorkoutSessionPage() {
       )}
 
       {/* ── NEXT CARD button ── */}
-      <div className="px-4 pt-1 pb-6 relative flex flex-col gap-2">
+      <div
+        className="px-4 pt-1 relative flex flex-col gap-2 shrink-0"
+        style={{ paddingBottom: "calc(12px + env(safe-area-inset-bottom))" }}
+      >
         <motion.div
           whileTap={{ scale: 0.97 }}
           whileHover={{ scale: 1.01 }}
@@ -908,8 +920,11 @@ export default function WorkoutSessionPage() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.95 }}
               transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed inset-x-0 bottom-0 z-50 max-w-[430px] mx-auto rounded-t-3xl overflow-hidden"
+              className="fixed inset-x-0 bottom-0 z-50 max-w-[430px] mx-auto rounded-t-3xl overflow-hidden flex flex-col"
               style={{
+                // Never taller than the screen: the stats and the per-exercise
+                // list scroll inside, the title and buttons stay visible.
+                maxHeight: "calc(100dvh - 12px)",
                 background: "oklch(0.14 0.012 var(--neutral-hue))",
                 border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
                 borderBottom: "none",
@@ -967,6 +982,7 @@ export default function WorkoutSessionPage() {
                 }}
               />
 
+              <div className="flex-1 min-h-0 overflow-y-auto">
               {/* Stats grid */}
               <div className="px-6 grid grid-cols-2 gap-3 mb-5">
                 {/* Time */}
@@ -1053,9 +1069,15 @@ export default function WorkoutSessionPage() {
 
               {/* Per-exercise breakdown */}
               <PauseExerciseBreakdown />
+              </div>
 
               {/* Action buttons */}
-              <div className="px-6 pb-10 flex flex-col gap-3">
+              <div
+                className="px-6 pt-3 flex flex-col gap-3 shrink-0"
+                style={{
+                  paddingBottom: "calc(20px + env(safe-area-inset-bottom))",
+                }}
+              >
                 <Button
                   className="w-full h-12 font-display font-black text-base tracking-[0.12em] rounded-2xl"
                   style={{ boxShadow: "0 0 28px oklch(var(--primary) / 0.3)" }}

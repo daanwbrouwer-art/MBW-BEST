@@ -55,6 +55,7 @@ import {
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { notify, useInAppNotifications } from "@/lib/inAppNotifications";
 
 // ─── Celebration particles ────────────────────────────────────────────────
 function ConfettiParticle({
@@ -603,21 +604,31 @@ export default function WorkoutSummaryPage() {
           }
         }
       }
-      // One toast, not a stack of them (they overlapped unreadably).
+      // One small top banner (tap to close, never blocks the buttons), also
+      // kept in the Home inbox.
       if (newlyAlmost.length === 1) {
-        toast(`🏆 You would have unlocked '${newlyAlmost[0].name}'!`, {
-          description: "Subscribe to earn achievements.",
-          duration: 5000,
+        notify({
+          kind: "achievement",
+          id: "almost-achievements",
+          title: `You would have unlocked '${newlyAlmost[0].name}'`,
+          body: "Subscribe to earn achievements.",
         });
       } else if (newlyAlmost.length > 1) {
-        toast(`🏆 You would have unlocked ${newlyAlmost.length} achievements!`, {
-          description: `${newlyAlmost
+        notify({
+          kind: "achievement",
+          id: "almost-achievements",
+          title: `You would have unlocked ${newlyAlmost.length} achievements`,
+          body: `${newlyAlmost
             .slice(0, 3)
             .map((a) => a.name)
-            .join(", ")}${newlyAlmost.length > 3 ? "…" : ""}. Subscribe to earn achievements.`,
-          duration: 6000,
+            .join(", ")}${newlyAlmost.length > 3 ? "…" : "."} Subscribe to earn them.`,
         });
       }
+      for (const a of newlyUnlocked)
+        useInAppNotifications.getState().add({
+          kind: "achievement",
+          title: `Achievement unlocked: ${a.name}`,
+        });
 
       // Weekly challenge — reads the same fresh streak result so a
       // Consistency/Streak challenge that completes on this very session

@@ -1,6 +1,7 @@
 import { AchievementProgressCard } from "@/components/AchievementProgressCard";
 import { AchievementUnlockAnimation } from "@/components/AchievementUnlockAnimation";
 import { HowToPlayModal } from "@/components/HowToPlayModal";
+import { NotificationBell } from "@/components/NotificationBell";
 import { RecoveryTip } from "@/components/RecoveryTip";
 import { UsageIndicator } from "@/components/UsageIndicator";
 import { WeeklyChallengeCard } from "@/components/WeeklyChallengeCard";
@@ -244,15 +245,18 @@ export default function HomePage() {
               </span>
             </div>
           </div>
-          <button
-            type="button"
-            className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-white hover:border-primary/50 hover:text-primary transition-smooth"
-            onClick={() => setHowToPlayOpen(true)}
-            data-ocid="home.how_to_play_button"
-            aria-label="How to play"
-          >
-            <CircleHelp className="w-[22px] h-[22px]" />
-          </button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <button
+              type="button"
+              className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-white hover:border-primary/50 hover:text-primary transition-smooth"
+              onClick={() => setHowToPlayOpen(true)}
+              data-ocid="home.how_to_play_button"
+              aria-label="How to play"
+            >
+              <CircleHelp className="w-[22px] h-[22px]" />
+            </button>
+          </div>
         </header>
 
         {/* 1b. TRIAL BANNER */}
