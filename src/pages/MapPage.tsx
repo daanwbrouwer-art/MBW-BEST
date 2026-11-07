@@ -237,6 +237,11 @@ export default function MapPage() {
   // banner or the crosshair FAB deep-links to system settings.
   const [showLocationDeniedBanner, setShowLocationDeniedBanner] =
     useState(false);
+  // Tile health: if tiles keep failing and none ever loaded, say so instead
+  // of leaving a blank grey map. Retry remounts the tile layer.
+  const tileStats = useRef({ loaded: 0, failed: 0 });
+  const [tilesFailed, setTilesFailed] = useState(false);
+  const [tileLayerKey, setTileLayerKey] = useState(0);
   const [selectedParkId, setSelectedParkId] = useState<string | null>(null);
   // Leaflet markers by park id, to return focus to a pin.
   const markerRefs = useRef(new Map<string, L.Marker>());
@@ -278,6 +283,19 @@ export default function MapPage() {
     startWatching();
     return true;
   }, [getCurrentPosition, startWatching]);
+
+  // The first centering uses a quick, rough fix. When the first precise GPS
+  // fix arrives, move the map onto it once (unless the user already panned).
+  const recenteredOnPreciseFix = useRef(false);
+  useEffect(() => {
+    if (!watchedPosition || recenteredOnPreciseFix.current) return;
+    if ((watchedPosition.accuracy ?? Infinity) > 100) return;
+    recenteredOnPreciseFix.current = true;
+    if (pendingSearchCenter) return;
+    setMapCenter([watchedPosition.latitude, watchedPosition.longitude]);
+  }, [watchedPosition, pendingSearchCenter]);
+  // Android 12+ lets people grant only "approximate" location (~2-3 km).
+  const locationIsApproximate = (watchedPosition?.accuracy ?? 0) > 1000;
 
   const applyFallbackCenter = useCallback(async () => {
     const { center, zoom } = await resolveFallbackCenter();
@@ -569,10 +587,22 @@ export default function MapPage() {
             scrollWheelZoom
           >
             <TileLayer
+              key={tileLayerKey}
               url={TILE_URL}
               attribution={TILE_ATTRIBUTION}
               className={TILE_CSS_CLASS}
               referrerPolicy={TILE_REFERRER_POLICY}
+              eventHandlers={{
+                tileload: () => {
+                  tileStats.current.loaded++;
+                  setTilesFailed(false);
+                },
+                tileerror: () => {
+                  const s = tileStats.current;
+                  s.failed++;
+                  if (s.loaded === 0 && s.failed >= 4) setTilesFailed(true);
+                },
+              }}
             />
             <FlyToCenter center={mapCenter} zoom={mapZoom} />
             <MapPanTracker
@@ -702,13 +732,63 @@ export default function MapPage() {
             </button>
           )}
 
+          {!showLocationDeniedBanner && locationIsApproximate && (
+            <button
+              type="button"
+              onClick={handleEnableLocationTap}
+              className="absolute top-3 inset-x-3 rounded-xl px-3 py-2.5 text-center text-xs font-body font-medium transition-smooth hover:opacity-90 z-[500]"
+              style={{
+                background: "oklch(0.1 0.008 var(--neutral-hue) / 0.92)",
+                border: "1px solid oklch(var(--prestige) / 0.5)",
+                color: "oklch(var(--prestige))",
+                boxShadow: "0 4px 16px oklch(0 0 0 / 0.4)",
+              }}
+              data-ocid="map.location_approximate_banner"
+            >
+              Your location is approximate. Tap here and turn on "Use precise
+              location" to see your exact spot.
+            </button>
+          )}
+
+          {tilesFailed && (
+            <div
+              className="absolute inset-x-6 top-1/2 -translate-y-1/2 rounded-xl px-4 py-3 text-center text-xs font-body z-[500]"
+              style={{
+                background: "oklch(0.1 0.008 var(--neutral-hue) / 0.95)",
+                border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.6)",
+              }}
+              data-ocid="map.tiles_failed"
+            >
+              <p className="mb-2">
+                The map couldn't load. Check your internet connection.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  tileStats.current = { loaded: 0, failed: 0 };
+                  setTilesFailed(false);
+                  setTileLayerKey((k) => k + 1);
+                }}
+                className="rounded-full px-4 py-1.5 font-display font-bold"
+                style={{
+                  background: "oklch(var(--pulse))",
+                  color: "oklch(0.08 0.005 var(--neutral-hue))",
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
           {pendingSearchCenter && (
             <button
               type="button"
               onClick={handleSearchThisArea}
               className={cn(
                 "absolute left-1/2 -translate-x-1/2 rounded-full px-4 py-2 flex items-center gap-1.5 text-xs font-display font-bold transition-smooth hover:opacity-90 active:scale-[0.97] z-[500]",
-                showLocationDeniedBanner ? "top-14" : "top-3",
+                showLocationDeniedBanner || locationIsApproximate
+                  ? "top-14"
+                  : "top-3",
               )}
               style={{
                 background: "oklch(var(--background) / 0.95)",
