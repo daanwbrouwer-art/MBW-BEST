@@ -17,7 +17,10 @@ export interface LocationPosition {
   accuracy?: number;
 }
 
-type WatchHandle = { kind: "native"; id: string } | { kind: "web"; id: number };
+type WatchHandle =
+  | { kind: "native"; id: string }
+  | { kind: "web"; id: number }
+  | { kind: "restarting"; id: "" };
 
 /** True once the location permission sheet has been shown at least once, regardless of the choice made. */
 export function hasSeenLocationPrompt(): boolean {
@@ -118,6 +121,7 @@ export function useLocation() {
   const [watchedPosition, setWatchedPosition] =
     useState<LocationPosition | null>(null);
   const watchHandleRef = useRef<WatchHandle | null>(null);
+  const startWatchingRef = useRef<(() => Promise<void>) | null>(null);
 
   const stopWatching = useCallback(() => {
     const handle = watchHandleRef.current;
@@ -126,7 +130,11 @@ export function useLocation() {
     setWatchedPosition(null);
     if (handle.kind === "native") {
       Geolocation.clearWatch({ id: handle.id }).catch(() => {});
-    } else if (typeof navigator !== "undefined" && navigator.geolocation) {
+    } else if (
+      handle.kind === "web" &&
+      typeof navigator !== "undefined" &&
+      navigator.geolocation
+    ) {
       navigator.geolocation.clearWatch(handle.id);
     }
   }, []);
@@ -141,14 +149,35 @@ export function useLocation() {
    * trade accuracy for speed) since the whole point is to reflect real
    * movement on the map.
    */
-  const startWatching = useCallback(async () => {
+  const startWatching = useCallback(async (seed?: LocationPosition | null) => {
+    // Show the marker straight away from the fix we already have, instead
+    // of waiting for the watch's first update.
+    if (seed) setWatchedPosition((prev) => prev ?? seed);
     if (watchHandleRef.current) return;
     if (Capacitor.isNativePlatform()) {
       try {
+        // A short timeout makes the native watch fail with "Could not obtain
+        // location in time" (seen on a Redmi Note 13 Pro, Android 15) and
+        // the marker never appears — so allow a generous wait per update.
         const id = await Geolocation.watchPosition(
-          { enableHighAccuracy: true, timeout: 10000 },
+          { enableHighAccuracy: true, timeout: 60000, maximumAge: 5000 },
           (position, err) => {
-            if (err || !position) return;
+            if (err) {
+              // The native watch can end after an error; start a fresh one
+              // a moment later (unless the screen stopped watching meanwhile).
+              const handle = watchHandleRef.current;
+              if (handle?.kind === "native") {
+                Geolocation.clearWatch({ id: handle.id }).catch(() => {});
+                watchHandleRef.current = { kind: "restarting", id: "" };
+                setTimeout(() => {
+                  if (watchHandleRef.current?.kind !== "restarting") return;
+                  watchHandleRef.current = null;
+                  void startWatchingRef.current?.();
+                }, 3000);
+              }
+              return;
+            }
+            if (!position) return;
             setWatchedPosition({
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
@@ -177,10 +206,11 @@ export function useLocation() {
       () => {
         // Denied/unavailable on web — same fail-quiet behavior.
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      { enableHighAccuracy: true, timeout: 60000, maximumAge: 5000 },
     );
     watchHandleRef.current = { kind: "web", id };
   }, []);
+  startWatchingRef.current = startWatching;
 
   // Safety net: tears the watch down when this hook instance unmounts (e.g.
   // navigating off the Map screen) even if the caller forgets to — an
@@ -226,6 +256,7 @@ export function useLocation() {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             timestamp: position.timestamp,
+            accuracy: position.coords.accuracy,
           };
           setLastPosition(next);
           return next;

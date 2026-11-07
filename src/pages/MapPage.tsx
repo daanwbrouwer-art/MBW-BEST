@@ -280,7 +280,7 @@ export default function MapPage() {
     // one-shot fetch above, which only drives centering/search. No-ops if
     // already watching; the watch is torn down automatically when this
     // hook/screen unmounts.
-    startWatching();
+    startWatching(position);
     return true;
   }, [getCurrentPosition, startWatching]);
 

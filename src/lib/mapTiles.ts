@@ -39,23 +39,56 @@ export const PARK_ICON = L.divIcon({
 // distinct from park pins at a glance rather than looking like one more
 // park. Rendered as a plain Marker sibling outside MarkerClusterGroup in
 // MapPage.tsx, never inside it, so it can't be swept into a cluster bubble.
+// A small 3D athlete flexing both arms, standing exactly on the user's
+// position (the anchor is between the feet), with a pulsing ring on the
+// ground. Shading comes from white/black gradient overlays on top of the
+// theme colour, so it follows every palette.
+const FIGURE_LIMB = `stroke="oklch(var(--pulse))" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+const FIGURE_SHADE = `stroke="url(#mbw-me-shade)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+const FIGURE_OUTLINE = `stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+const FIGURE_PATHS = {
+  arms: "M11 19 L4 24 L5 13 M29 19 L36 24 L35 13",
+  legs: "M16 33 L14 46 M24 33 L26 46",
+  torso: "M9 17 Q20 13 31 17 L27 33 Q20 35.5 13 33 Z",
+};
 export const USER_LOCATION_ICON = L.divIcon({
   className: "",
-  html: `<div style="position: relative; width: 22px; height: 22px;">
+  html: `<div style="position: relative; width: 44px; height: 60px;">
+    <div style="position: absolute; left: 4px; top: 32px; width: 36px; height: 36px; transform: scaleY(0.42);">
+      <div class="user-location-pulse-ring" style="
+        position: absolute; inset: 0; border-radius: 9999px;
+        background: oklch(var(--pulse) / 0.45);
+      "></div>
+    </div>
     <div style="
-      position: absolute; inset: -13px; border-radius: 9999px;
-      background: radial-gradient(circle, oklch(var(--pulse) / 0.35) 0%, oklch(var(--pulse) / 0) 72%);
+      position: absolute; left: 11px; right: 11px; top: 46px; height: 8px; border-radius: 9999px;
+      background: radial-gradient(ellipse, oklch(0 0 0 / 0.55) 0%, oklch(0 0 0 / 0) 70%);
     "></div>
-    <div class="user-location-pulse-ring" style="
-      position: absolute; inset: 0; width: 22px; height: 22px; border-radius: 9999px;
-      background: oklch(var(--pulse) / 0.55);
-    "></div>
-    <div style="
-      position: absolute; inset: 0; width: 22px; height: 22px; border-radius: 9999px;
-      background: oklch(var(--pulse)); border: 3px solid white;
-      box-shadow: 0 1px 6px oklch(0 0 0 / 0.5);
-    "></div>
+    <svg width="44" height="57" viewBox="-2 -1 44 57" style="position: absolute; left: 0; top: 0; overflow: visible; filter: drop-shadow(0 3px 3px oklch(0 0 0 / 0.45));">
+      <defs>
+        <linearGradient id="mbw-me-shade" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="white" stop-opacity="0.55"/>
+          <stop offset="0.45" stop-color="white" stop-opacity="0"/>
+          <stop offset="1" stop-color="black" stop-opacity="0.45"/>
+        </linearGradient>
+        <radialGradient id="mbw-me-head" cx="0.35" cy="0.3" r="0.75">
+          <stop offset="0" stop-color="white" stop-opacity="0.75"/>
+          <stop offset="0.35" stop-color="white" stop-opacity="0"/>
+          <stop offset="1" stop-color="black" stop-opacity="0.45"/>
+        </radialGradient>
+      </defs>
+      <path d="${FIGURE_PATHS.arms} ${FIGURE_PATHS.legs}" ${FIGURE_OUTLINE}/>
+      <path d="${FIGURE_PATHS.torso}" fill="white" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="20" cy="8" r="8" fill="white"/>
+      <path d="${FIGURE_PATHS.arms} ${FIGURE_PATHS.legs}" ${FIGURE_LIMB}/>
+      <path d="${FIGURE_PATHS.arms} ${FIGURE_PATHS.legs}" ${FIGURE_SHADE}/>
+      <path d="${FIGURE_PATHS.torso}" style="fill: oklch(var(--pulse))"/>
+      <path d="${FIGURE_PATHS.torso}" fill="url(#mbw-me-shade)"/>
+      <circle cx="20" cy="8" r="6.5" style="fill: oklch(var(--pulse))"/>
+      <circle cx="20" cy="8" r="6.5" fill="url(#mbw-me-head)"/>
+    </svg>
   </div>`,
-  iconSize: [22, 22],
-  iconAnchor: [11, 11],
+  iconSize: [44, 60],
+  // Between the feet = the exact position.
+  iconAnchor: [22, 50],
 });
