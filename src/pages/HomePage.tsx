@@ -191,7 +191,7 @@ export default function HomePage() {
   const handleTrialLearnMore = () => {
     toast("Your free trial", {
       description:
-        "Unlimited cards, every Pro deck, the full achievement system, and your complete streak history — free for 7 days.",
+        "Unlimited cards, every Pro deck, the full achievement system, and your complete streak history, free for 7 days.",
       duration: 6000,
     });
   };
@@ -638,7 +638,7 @@ function StreakBadge({
 }) {
   const bestExerciseLabel = streak.bestExercise
     ? `${streak.bestExercise.name} PR: ${streak.bestExercise.reps} reps`
-    : "No PR yet — go set one";
+    : "No PR yet, go set one";
   const weekGoalMet = streak.currentWeekTrainingDays >= streak.weeklyGoal;
 
   return (
@@ -802,7 +802,7 @@ function StreakEndedNudge({
     >
       <div className="flex-1 min-w-0">
         <p className="text-sm text-white/85 font-body leading-relaxed">
-          Your {endedNudge.endedFromWeeks}-week streak ended — you trained fewer
+          Your {endedNudge.endedFromWeeks}-week streak ended, you trained fewer
           than {endedNudge.weeklyGoal} days last week. Want to start a new one
           today, or{" "}
           <button
@@ -856,7 +856,7 @@ function TrialBanner({
         data-ocid="home.trial_banner"
       >
         <p className="text-xs text-white font-body flex-1 leading-snug">
-          🎉 Free trial — {daysLeft} {daysLeft === 1 ? "day" : "days"} left.
+          🎉 Free trial, {daysLeft} {daysLeft === 1 ? "day" : "days"} left.
           Enjoy full access!
         </p>
         <button

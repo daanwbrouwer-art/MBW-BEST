@@ -33,7 +33,7 @@ if (Capacitor.isNativePlatform()) {
     Purchases.configure({ apiKey });
   } else {
     console.error(
-      `Missing RevenueCat API key for platform "${Capacitor.getPlatform()}" — set VITE_REVENUECAT_IOS_API_KEY / VITE_REVENUECAT_ANDROID_API_KEY (see .env.example).`,
+      `Missing RevenueCat API key for platform "${Capacitor.getPlatform()}", set VITE_REVENUECAT_IOS_API_KEY / VITE_REVENUECAT_ANDROID_API_KEY (see .env.example).`,
     );
   }
 }

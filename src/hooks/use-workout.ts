@@ -549,7 +549,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/negative push up.webp",
               reps: 5,
               specialInstruction:
-                "Lower for 5 seconds each rep — complete control. Use knees to reset.",
+                "Lower for 5 seconds each rep, complete control. Use knees to reset.",
             },
             defaultImagePath: "/assets/exercises/normal push up.webp",
           },
@@ -873,7 +873,7 @@ const DECK_EXERCISES: Record<
               eachSide: true,
               reps: 5,
               specialInstruction:
-                "5 each side — 3-second descent. One arm presses while the other extends sideways.",
+                "5 each side, 3-second descent. One arm presses while the other extends sideways.",
             },
             defaultImagePath:
               "/assets/exercises/male_ub_beg_normal_push_up.webp",
@@ -930,21 +930,21 @@ const DECK_EXERCISES: Record<
                 imagePath:
                   "/assets/exercises/male_ub_adv_pike_push_up_decline.webp",
                 eachLeg: false,
-                specialInstruction: "Feet elevated high — near-vertical pike",
+                specialInstruction: "Feet elevated high, near-vertical pike",
               },
               11: {
                 exerciseName: "Pike Push-up Decline",
                 imagePath:
                   "/assets/exercises/male_ub_adv_pike_push_up_decline.webp",
                 eachLeg: false,
-                specialInstruction: "Feet elevated high — near-vertical pike",
+                specialInstruction: "Feet elevated high, near-vertical pike",
               },
               12: {
                 exerciseName: "Pike Push-up Decline",
                 imagePath:
                   "/assets/exercises/male_ub_adv_pike_push_up_decline.webp",
                 eachLeg: false,
-                specialInstruction: "Feet elevated high — near-vertical pike",
+                specialInstruction: "Feet elevated high, near-vertical pike",
               },
             },
             queen: {
@@ -1061,7 +1061,7 @@ const DECK_EXERCISES: Record<
               eachSide: true,
               reps: 5,
               specialInstruction:
-                "5 each side — one hand pronated + one supinated, alternate ear past bar.",
+                "5 each side, one hand pronated + one supinated, alternate ear past bar.",
             },
             defaultImagePath:
               "/assets/exercises/male_ub_adv_normal_pull_up.webp",
@@ -1144,7 +1144,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/male_ub_adv_dip_slow_negative.webp",
               reps: 5,
               specialInstruction:
-                "5 reps, 5-second descent, full lockout at top — 5-second descent",
+                "5 reps, 5-second descent, full lockout at top, 5-second descent",
             },
             defaultImagePath: "/assets/exercises/male_ub_adv_deep_dip.webp",
           },
@@ -1260,7 +1260,7 @@ const DECK_EXERCISES: Record<
               eachSide: true,
               reps: 5,
               specialInstruction:
-                "5 each side — 3-second descent. One arm presses while the other extends sideways.",
+                "5 each side, 3-second descent. One arm presses while the other extends sideways.",
             },
             defaultImagePath: "/assets/exercises/normal push up.webp",
           },
@@ -1315,19 +1315,19 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Pike Push-up Decline",
                 imagePath: "/assets/exercises/pike push up.webp",
                 eachLeg: false,
-                specialInstruction: "Feet elevated high — near-vertical pike",
+                specialInstruction: "Feet elevated high, near-vertical pike",
               },
               11: {
                 exerciseName: "Pike Push-up Decline",
                 imagePath: "/assets/exercises/pike push up.webp",
                 eachLeg: false,
-                specialInstruction: "Feet elevated high — near-vertical pike",
+                specialInstruction: "Feet elevated high, near-vertical pike",
               },
               12: {
                 exerciseName: "Pike Push-up Decline",
                 imagePath: "/assets/exercises/pike push up.webp",
                 eachLeg: false,
-                specialInstruction: "Feet elevated high — near-vertical pike",
+                specialInstruction: "Feet elevated high, near-vertical pike",
               },
             },
             queen: {
@@ -1444,7 +1444,7 @@ const DECK_EXERCISES: Record<
               eachSide: true,
               reps: 5,
               specialInstruction:
-                "5 each side — one hand pronated + one supinated, alternate ear past bar.",
+                "5 each side, one hand pronated + one supinated, alternate ear past bar.",
             },
             defaultImagePath: "/assets/exercises/chinup_pullup.webp",
           },
@@ -1526,7 +1526,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/slow dip.webp",
               reps: 5,
               specialInstruction:
-                "5 reps, 5-second descent, full lockout at top — 5-second descent",
+                "5 reps, 5-second descent, full lockout at top, 5-second descent",
             },
             defaultImagePath: "/assets/exercises/dips.webp",
           },
@@ -1560,28 +1560,28 @@ const DECK_EXERCISES: Record<
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "One hand behind your back — press with the working arm",
+                  "One hand behind your back, press with the working arm",
               },
               3: {
                 exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "One hand behind your back — press with the working arm",
+                  "One hand behind your back, press with the working arm",
               },
               4: {
                 exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "One hand behind your back — press with the working arm",
+                  "One hand behind your back, press with the working arm",
               },
               5: {
                 exerciseName: "One-arm Push-up",
                 imagePath: "/assets/exercises/male_ub_pro_one_arm_push_up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "One hand behind your back — press with the working arm",
+                  "One hand behind your back, press with the working arm",
               },
               6: {
                 exerciseName: "One-arm Push-up Deep",
@@ -1723,7 +1723,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/male_ub_pro_handstand_hold.webp",
               isIsometric: true,
               specialInstruction:
-                "Kick up from wall, hold max time — running timer counts up",
+                "Kick up from wall, hold max time, running timer counts up",
             },
             defaultImagePath:
               "/assets/exercises/male_ub_pro_handstand_hold.webp",
@@ -1798,7 +1798,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "L-sit Pull-up",
               imagePath: "/assets/exercises/male_ub_pro_l_sit_pull_up.webp",
               reps: 3,
-              specialInstruction: "3 reps — legs parallel",
+              specialInstruction: "3 reps, legs parallel",
             },
             defaultImagePath:
               "/assets/exercises/male_ub_pro_normal_pull_up.webp",
@@ -1878,7 +1878,7 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Ring Dip",
                 imagePath: "/assets/exercises/male_ub_pro_explosive_dip.webp",
                 eachLeg: false,
-                specialInstruction: "Full dip on rings — turn rings out at top",
+                specialInstruction: "Full dip on rings, turn rings out at top",
                 requiresEquipment: "rings",
                 substitute: {
                   exerciseName: "Parallel Bar Dip",
@@ -1889,7 +1889,7 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Ring Dip",
                 imagePath: "/assets/exercises/male_ub_pro_explosive_dip.webp",
                 eachLeg: false,
-                specialInstruction: "Full dip on rings — turn rings out at top",
+                specialInstruction: "Full dip on rings, turn rings out at top",
                 requiresEquipment: "rings",
                 substitute: {
                   exerciseName: "Parallel Bar Dip",
@@ -1900,7 +1900,7 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Ring Dip",
                 imagePath: "/assets/exercises/male_ub_pro_explosive_dip.webp",
                 eachLeg: false,
-                specialInstruction: "Full dip on rings — turn rings out at top",
+                specialInstruction: "Full dip on rings, turn rings out at top",
                 requiresEquipment: "rings",
                 substitute: {
                   exerciseName: "Parallel Bar Dip",
@@ -1914,7 +1914,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 15,
               specialInstruction:
-                "On floor or bars — legs parallel, hold 15 sec",
+                "On floor or bars, legs parallel, hold 15 sec",
             },
             defaultImagePath: "/assets/exercises/male_ub_pro_deep_dip.webp",
           },
@@ -1966,28 +1966,28 @@ const DECK_EXERCISES: Record<
                 imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "Shift weight side to side each rep, alternate working arm",
               },
               3: {
                 exerciseName: "Archer Push-up Standard",
                 imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "Shift weight side to side each rep, alternate working arm",
               },
               4: {
                 exerciseName: "Archer Push-up Standard",
                 imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "Shift weight side to side each rep, alternate working arm",
               },
               5: {
                 exerciseName: "Archer Push-up Standard",
                 imagePath: "/assets/exercises/push up alt.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "Shift weight side to side each rep — alternate working arm",
+                  "Shift weight side to side each rep, alternate working arm",
               },
               6: {
                 exerciseName: "Archer Push-up Deep",
@@ -2124,7 +2124,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/pike hold.webp",
               isIsometric: true,
               specialInstruction:
-                "Kick up from wall, hold max time — running timer counts up",
+                "Kick up from wall, hold max time, running timer counts up",
             },
             defaultImagePath: "/assets/exercises/pike hold.webp",
           },
@@ -2198,7 +2198,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "L-sit Pull-up",
               imagePath: "/assets/exercises/normal_pullup.webp",
               reps: 3,
-              specialInstruction: "3 reps — legs parallel",
+              specialInstruction: "3 reps, legs parallel",
             },
             defaultImagePath: "/assets/exercises/normal_pullup.webp",
           },
@@ -2273,7 +2273,7 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Ring Dip",
                 imagePath: "/assets/exercises/dips.webp",
                 eachLeg: false,
-                specialInstruction: "Full dip on rings — turn rings out at top",
+                specialInstruction: "Full dip on rings, turn rings out at top",
                 requiresEquipment: "rings",
                 substitute: {
                   exerciseName: "Parallel Bar Dip",
@@ -2284,7 +2284,7 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Ring Dip",
                 imagePath: "/assets/exercises/dips.webp",
                 eachLeg: false,
-                specialInstruction: "Full dip on rings — turn rings out at top",
+                specialInstruction: "Full dip on rings, turn rings out at top",
                 requiresEquipment: "rings",
                 substitute: {
                   exerciseName: "Parallel Bar Dip",
@@ -2295,7 +2295,7 @@ const DECK_EXERCISES: Record<
                 exerciseName: "Ring Dip",
                 imagePath: "/assets/exercises/dips.webp",
                 eachLeg: false,
-                specialInstruction: "Full dip on rings — turn rings out at top",
+                specialInstruction: "Full dip on rings, turn rings out at top",
                 requiresEquipment: "rings",
                 substitute: {
                   exerciseName: "Parallel Bar Dip",
@@ -2309,7 +2309,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 15,
               specialInstruction:
-                "On floor or bars — legs parallel, hold 15 sec",
+                "On floor or bars, legs parallel, hold 15 sec",
             },
             defaultImagePath: "/assets/exercises/dips.webp",
           },
@@ -2472,7 +2472,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/slow_lunge.webp",
               eachLeg: true,
               reps: 8,
-              specialInstruction: "8 reps — 3 sec down / 3 sec up",
+              specialInstruction: "8 reps · 3 sec down / 3 sec up",
             },
             defaultImagePath: "/assets/exercises/front_lunge.webp",
           },
@@ -2692,7 +2692,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/wall_sit.webp",
               isIsometric: true,
               holdSeconds: 30,
-              specialInstruction: "HOLD 30 sec — back flat against wall",
+              specialInstruction: "HOLD 30 sec, back flat against wall",
             },
             defaultImagePath: "/assets/exercises/normal_squat.webp",
           },
@@ -2763,7 +2763,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/glute bridge.webp",
               eachLeg: false,
               reps: 20,
-              specialInstruction: "20 pulses at top — no full lowering",
+              specialInstruction: "20 pulses at top, no full lowering",
             },
             defaultImagePath: "/assets/exercises/glute bridge.webp",
           },
@@ -2900,7 +2900,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 20,
               eachSide: true,
-              specialInstruction: "HOLD 20 sec each side — eyes fixed",
+              specialInstruction: "HOLD 20 sec each side, eyes fixed",
             },
             defaultImagePath: "/assets/exercises/calf_raise.webp",
           },
@@ -3344,7 +3344,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/hip thrust.webp",
               eachLeg: false,
               reps: 20,
-              specialInstruction: "20 pulses — no full lowering",
+              specialInstruction: "20 pulses, no full lowering",
             },
             defaultImagePath: "/assets/exercises/hip thrust.webp",
           },
@@ -3591,7 +3591,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/squat_hold.webp",
               holdSeconds: 45,
               isIsometric: true,
-              specialInstruction: "SQUAT HOLD — 45 SECONDS",
+              specialInstruction: "SQUAT HOLD · 45 SECONDS",
             },
             defaultImagePath: "/assets/exercises/pistol_squat_pro.webp",
           },
@@ -3658,7 +3658,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/lunge_knee_drive_pro.webp",
               eachLeg: true,
               reps: 12,
-              specialInstruction: "LUNGE WITH KNEE DRIVE — 12 REPS EACH LEG",
+              specialInstruction: "LUNGE WITH KNEE DRIVE · 12 REPS EACH LEG",
             },
             defaultImagePath: "/assets/exercises/jumping_lunges.webp",
           },
@@ -3725,7 +3725,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/one_leg_step_up.webp",
               eachLeg: true,
               reps: 10,
-              specialInstruction: "SINGLE-LEG STEP-UP — 10 REPS EACH LEG",
+              specialInstruction: "SINGLE-LEG STEP-UP · 10 REPS EACH LEG",
             },
             defaultImagePath: "/assets/exercises/tuck_jump.webp",
           },
@@ -3801,7 +3801,7 @@ const DECK_EXERCISES: Record<
               eachLeg: true,
               isIsometric: true,
               holdSeconds: 30,
-              specialInstruction: "SINGLE-LEG WALL SIT — 30 SECONDS EACH LEG",
+              specialInstruction: "SINGLE-LEG WALL SIT · 30 SECONDS EACH LEG",
             },
             defaultImagePath: "/assets/exercises/single_leg_calf_raise.webp",
           },
@@ -3900,7 +3900,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 15,
               specialInstruction:
-                "PISTOL SQUAT ISOMETRIC — 15 SEC HOLD EACH LEG",
+                "PISTOL SQUAT ISOMETRIC, 15 SEC HOLD EACH LEG",
             },
             defaultImagePath: "/assets/exercises/pistol squat.webp",
           },
@@ -3969,7 +3969,7 @@ const DECK_EXERCISES: Record<
               eachLeg: false,
               holdSeconds: 30,
               reps: 0,
-              specialInstruction: "MAX JUMP SQUATS — 30 SEC TIMER + COUNT REPS",
+              specialInstruction: "MAX JUMP SQUATS · 30 SEC TIMER + COUNT REPS",
             },
             defaultImagePath: "/assets/exercises/jump_squat.webp",
           },
@@ -4048,7 +4048,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/good morning.webp",
               eachSide: true,
               reps: 8,
-              specialInstruction: "SINGLE-LEG GOOD MORNING — 8 REPS EACH SIDE",
+              specialInstruction: "SINGLE-LEG GOOD MORNING · 8 REPS EACH SIDE",
             },
             defaultImagePath: "/assets/exercises/shrimp squat.webp",
           },
@@ -5334,7 +5334,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 30,
               specialInstruction:
-                "#QueenChallenge Hollow Body Hold 30 sec — maximum effort. Show countdown timer.",
+                "#QueenChallenge Hollow Body Hold 30 sec, maximum effort. Show countdown timer.",
             },
             defaultImagePath: "/assets/exercises/hollow body hold.webp",
           },
@@ -5425,7 +5425,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 30,
               specialInstruction:
-                "#QueenChallenge Russian Twist 30 sec — max reps with 2-sec pause per side. Show timer.",
+                "#QueenChallenge Russian Twist 30 sec, max reps with 2-sec pause per side. Show timer.",
             },
             defaultImagePath: "/assets/exercises/russian twist.webp",
           },
@@ -5513,7 +5513,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 30,
               specialInstruction:
-                "#QueenChallenge Mountain Climber 30 sec — max reps. Show timer and rep counter.",
+                "#QueenChallenge Mountain Climber 30 sec, max reps. Show timer and rep counter.",
             },
             defaultImagePath: "/assets/exercises/mountain climber.webp",
           },
@@ -5599,7 +5599,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/toes to bar.webp",
               reps: 5,
               specialInstruction:
-                "#QueenChallenge Toes to Bar — straight legs touch bar each rep. 5 reps.",
+                "#QueenChallenge Toes to Bar, straight legs touch bar each rep. 5 reps.",
             },
             defaultImagePath: "/assets/exercises/hanging knee raise.webp",
           },
@@ -6055,7 +6055,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 5,
               specialInstruction:
-                "#QueenChallenge Front Lever Hold — 5-second hold, tuck version acceptable. Show countdown timer.",
+                "#QueenChallenge Front Lever Hold, 5-second hold, tuck version acceptable. Show countdown timer.",
             },
             defaultImagePath: "/assets/exercises/dragon flag.webp",
           },
@@ -6151,7 +6151,7 @@ const DECK_EXERCISES: Record<
               isIsometric: true,
               holdSeconds: 20,
               specialInstruction:
-                "#QueenChallenge Hanging L-hold — 20 seconds, legs extended at 90°. Show countdown timer.",
+                "#QueenChallenge Hanging L-hold, 20 seconds, legs extended at 90°. Show countdown timer.",
             },
             defaultImagePath: "/assets/exercises/windshield wipers.webp",
           },
@@ -6241,7 +6241,7 @@ const DECK_EXERCISES: Record<
               imagePath: "/assets/exercises/planche lean.webp",
               reps: 10,
               specialInstruction:
-                "#QueenChallenge Hollow Body Planche Rock — 10 controlled rocks, maintain hollow body. Show rep counter.",
+                "#QueenChallenge Hollow Body Planche Rock, 10 controlled rocks, maintain hollow body. Show rep counter.",
             },
             defaultImagePath: "/assets/exercises/planche lean.webp",
           },
@@ -6313,21 +6313,21 @@ const DECK_EXERCISES: Record<
                 imagePath: "/assets/exercises/human flag attempt.webp",
                 isIsometric: true,
                 holdSeconds: 3,
-                specialInstruction: "max effort — hold as long as possible",
+                specialInstruction: "max effort, hold as long as possible",
               },
               11: {
                 exerciseName: "Human Flag Attempt",
                 imagePath: "/assets/exercises/human flag attempt.webp",
                 isIsometric: true,
                 holdSeconds: 4,
-                specialInstruction: "max effort — hold as long as possible",
+                specialInstruction: "max effort, hold as long as possible",
               },
               12: {
                 exerciseName: "Human Flag Attempt",
                 imagePath: "/assets/exercises/human flag attempt.webp",
                 isIsometric: true,
                 holdSeconds: 5,
-                specialInstruction: "max effort — hold as long as possible",
+                specialInstruction: "max effort, hold as long as possible",
               },
             },
             queen: {
@@ -6336,7 +6336,7 @@ const DECK_EXERCISES: Record<
               reps: 5,
               eachSide: true,
               specialInstruction:
-                "#QueenChallenge Star Side Plank — full side plank, raise top arm and leg simultaneously. 5 each side.",
+                "#QueenChallenge Star Side Plank, full side plank, raise top arm and leg simultaneously. 5 each side.",
             },
             defaultImagePath: "/assets/exercises/side plank hip dip.webp",
           },
@@ -6734,7 +6734,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "Burpee Hold",
               imagePath: "/assets/exercises/burpee.webp",
               reps: 5,
-              specialInstruction: "5 sec hold in plank — 5 reps",
+              specialInstruction: "5 sec hold in plank · 5 reps",
             },
             defaultImagePath: "/assets/exercises/burpee.webp",
           },
@@ -6801,7 +6801,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "High Knees",
               imagePath: "/assets/exercises/high knees.webp",
               holdSeconds: 30,
-              specialInstruction: "30-second High Knees — max effort",
+              specialInstruction: "30-second High Knees, max effort",
             },
             defaultImagePath: "/assets/exercises/high knees.webp",
           },
@@ -7329,7 +7329,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "Burpee Chin-up",
               imagePath: "/assets/exercises/burpee chin up.webp",
               reps: 5,
-              specialInstruction: "1 chin-up per burpee — 5 reps",
+              specialInstruction: "1 chin-up per burpee · 5 reps",
             },
             defaultImagePath: "/assets/exercises/plyo burpee.webp",
           },
@@ -7396,7 +7396,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "Box Jump to Squat Hold",
               imagePath: "/assets/exercises/box jump.webp",
               reps: 5,
-              specialInstruction: "3 sec hold on landing — 5 reps",
+              specialInstruction: "3 sec hold on landing · 5 reps",
             },
             defaultImagePath: "/assets/exercises/box jump.webp",
           },
@@ -7536,7 +7536,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "Non-stop Jump Lunge",
               imagePath: "/assets/exercises/jump lunge.webp",
               holdSeconds: 30,
-              specialInstruction: "30 sec max reps — timer + rep counter",
+              specialInstruction: "30 sec max reps, timer + rep counter",
             },
             defaultImagePath: "/assets/exercises/jump lunge.webp",
           },
@@ -7890,49 +7890,49 @@ const DECK_EXERCISES: Record<
                 imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "chest to bar — full dead hang between reps",
+                  "chest to bar, full dead hang between reps",
               },
               7: {
                 exerciseName: "Explosive Pull-up",
                 imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "chest to bar — full dead hang between reps",
+                  "chest to bar, full dead hang between reps",
               },
               8: {
                 exerciseName: "Explosive Pull-up",
                 imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "chest to bar — full dead hang between reps",
+                  "chest to bar, full dead hang between reps",
               },
               9: {
                 exerciseName: "Explosive Pull-up",
                 imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "chest to bar — full dead hang between reps",
+                  "chest to bar, full dead hang between reps",
               },
               10: {
                 exerciseName: "Muscle-Up Attempt",
                 imagePath: "/assets/exercises/muscle up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "explosive transition — celebrate every rep",
+                  "explosive transition, celebrate every rep",
               },
               11: {
                 exerciseName: "Muscle-Up Attempt",
                 imagePath: "/assets/exercises/muscle up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "explosive transition — celebrate every rep",
+                  "explosive transition, celebrate every rep",
               },
               12: {
                 exerciseName: "Muscle-Up Attempt",
                 imagePath: "/assets/exercises/muscle up.webp",
                 eachLeg: false,
                 specialInstruction:
-                  "explosive transition — celebrate every rep",
+                  "explosive transition, celebrate every rep",
               },
             },
             queen: {
@@ -8152,7 +8152,7 @@ const DECK_EXERCISES: Record<
               exerciseName: "Freestanding Handstand Attempt",
               imagePath: "/assets/exercises/handstand push up.webp",
               isIsometric: true,
-              specialInstruction: "max hold — running timer",
+              specialInstruction: "max hold, running timer",
             },
             defaultImagePath: "/assets/exercises/handstand push up.webp",
           },

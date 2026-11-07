@@ -52,7 +52,7 @@ export const PALETTES: Record<PaletteId, Palette> = {
     id: "volt",
     name: "Volt",
     tagline:
-      "Signature electric lime on gym-floor black — magenta for the big moments",
+      "Signature electric lime on gym-floor black, magenta for the big moments",
     neutralHue: 250,
     surface: { l: 0.14, c: 0.006 },
     colors: {
@@ -67,7 +67,7 @@ export const PALETTES: Record<PaletteId, Palette> = {
     id: "blaze",
     name: "Blaze",
     tagline:
-      "Bright burgundy on ember-black, amber, ivory and teal — violet for the big moments",
+      "Bright burgundy on ember-black, amber, ivory and teal, violet for the big moments",
     neutralHue: 28,
     surface: { l: 0.14, c: 0.026 },
     colors: {
@@ -82,7 +82,7 @@ export const PALETTES: Record<PaletteId, Palette> = {
     id: "neon",
     name: "Neon",
     tagline:
-      "Hot cyan on deep-violet night, pink and gold — lime for the big moments",
+      "Hot cyan on deep-violet night, pink and gold, lime for the big moments",
     neutralHue: 292,
     surface: { l: 0.14, c: 0.05 },
     colors: {

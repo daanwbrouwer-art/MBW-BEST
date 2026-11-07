@@ -125,7 +125,7 @@ export default function DecksPage() {
           </h1>
           <p className="text-xs text-muted-foreground font-body">
             {selectedCategory
-              ? `${DECK_CATEGORY_LABEL[selectedCategory]} — choose your difficulty`
+              ? `${DECK_CATEGORY_LABEL[selectedCategory]}, choose your difficulty`
               : "Choose your difficulty"}
           </p>
         </motion.div>
@@ -178,7 +178,7 @@ export default function DecksPage() {
             className="text-center text-xs text-muted-foreground font-body mt-5"
           >
             {isSubscriber
-              ? "This deck is open to everyone — no subscription required."
+              ? "This deck is open to everyone, no subscription required."
               : isGuest
                 ? "Beginner is free. Register to unlock Advanced, or subscribe for Pro."
                 : "Beginner and Advanced are free. Pro is a preview until you subscribe."}
@@ -429,7 +429,7 @@ function UpgradeModal({
     ? "Free Account Required"
     : "Subscriber Only";
   const body = isGuestAdvancedCase
-    ? "Advanced decks require a free account. Register now — it only takes a few seconds, and your progress carries right over."
+    ? "Advanced decks require a free account. Register now, it only takes a few seconds, and your progress carries right over."
     : difficulty === "Advanced"
       ? "Advanced decks are available to Subscribers. Upgrade your plan to train at a higher intensity."
       : "Pro decks are available to Subscribers. Upgrade your plan to unlock the hardest challenges.";

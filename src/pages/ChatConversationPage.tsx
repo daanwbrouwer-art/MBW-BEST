@@ -173,7 +173,7 @@ export default function ChatConversationPage() {
       return;
     }
     toast("Report submitted", {
-      description: "Thanks — our team will review this.",
+      description: "Thanks, our team will review this.",
     });
   };
 

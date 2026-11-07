@@ -207,7 +207,7 @@ export function AddParkSheet({
             Add a park
           </h2>
           <p className="text-xs text-muted-foreground font-body mb-4 leading-relaxed">
-            Outdoor spots only — no gyms. Drop a pin at a free public spot with
+            Outdoor spots only, no gyms. Drop a pin at a free public spot with
             calisthenics equipment.
           </p>
 

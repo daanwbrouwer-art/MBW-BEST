@@ -232,7 +232,7 @@ export default function AchievementsPage() {
         <div className="relative z-10 px-5">
           {activeCategory !== "all" && (
             <p className="font-display font-bold text-xs uppercase tracking-widest text-muted-foreground mb-3">
-              {CATEGORY_META[activeCategory].label} —{" "}
+              {CATEGORY_META[activeCategory].label} -{" "}
               {sorted.filter((a) => a.unlocked).length} unlocked
             </p>
           )}

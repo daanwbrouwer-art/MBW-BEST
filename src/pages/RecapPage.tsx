@@ -134,7 +134,7 @@ export default function RecapPage() {
               {isYear ? `${period.year} in Review` : periodLabel(period)}
             </h1>
             <p className="text-xs text-muted-foreground font-body">
-              {inProgress ? "So far — the full recap lands when it ends" : "Final recap"}
+              {inProgress ? "So far, the full recap lands when it ends" : "Final recap"}
             </p>
           </div>
           <button
@@ -158,7 +158,7 @@ export default function RecapPage() {
               No workouts {inProgress ? "yet" : "in this period"}
             </p>
             <p className="text-sm text-muted-foreground font-body mt-1">
-              Every workout you finish lands here — draw your first card and
+              Every workout you finish lands here, draw your first card and
               this {isYear ? "year" : "month"} starts filling up.
             </p>
           </div>
@@ -216,8 +216,8 @@ function RecapBody({ stats, period }: { stats: RecapStats; period: RecapPeriod }
             : delta > 0
               ? `${delta} more workout${delta === 1 ? "" : "s"} than last ${unit} 📈`
               : delta === 0
-                ? `As many workouts as last ${unit} — steady.`
-                : `${-delta} fewer than last ${unit} — time to win it back.`}
+                ? `As many workouts as last ${unit}, steady.`
+                : `${-delta} fewer than last ${unit}, time to win it back.`}
         </p>
       </div>
 

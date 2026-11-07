@@ -79,9 +79,9 @@ function getBMICategoryLabel(bmi: number): string {
 
 function getFitnessLevelLabel(level: number): string {
   if (level <= 20) return "I rarely exercise";
-  if (level <= 40) return "I exercise occasionally — once or twice a month";
-  if (level <= 60) return "I exercise regularly — at least twice a week";
-  if (level <= 80) return "I train seriously — 3 to 5 times a week";
+  if (level <= 40) return "I exercise occasionally, once or twice a month";
+  if (level <= 60) return "I exercise regularly, at least twice a week";
+  if (level <= 80) return "I train seriously · 3 to 5 times a week";
   return "I train daily or near-daily with high intensity";
 }
 
@@ -626,7 +626,7 @@ function MotivationStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
         {count.toLocaleString()}
       </p>
       <p className="text-muted-foreground text-sm max-w-xs">
-        cards — each one a new challenge. 4 decks, 3 levels, no equipment
+        cards, each one a new challenge. 4 decks, 3 levels, no equipment
         needed. Welcome to the team.
       </p>
     </div>
@@ -815,7 +815,7 @@ function WeeklyGoalStep({
         >
           <span className="text-base">🔥</span>
           <p className="text-sm text-foreground/90">
-            This becomes your weekly streak goal — hit it every week to keep
+            This becomes your weekly streak goal, hit it every week to keep
             your streak alive. You can always adjust it later in Settings.
           </p>
         </div>

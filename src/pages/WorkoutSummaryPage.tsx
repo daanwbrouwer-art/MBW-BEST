@@ -128,7 +128,7 @@ function getMotivation(
     if (selectedCardCount === "FullDeck")
       return "LEGENDARY. You conquered the full 52-card gauntlet!";
     if (selectedCardCount === "Twenty")
-      return "BEAST MODE. 20 cards down — you're unstoppable.";
+      return "BEAST MODE. 20 cards down, you're unstoppable.";
     return "SOLID START. Every rep builds the foundation.";
   }
   if (completionPct >= 75) return "SO CLOSE. That's elite-level commitment.";
@@ -810,26 +810,26 @@ export default function WorkoutSummaryPage() {
         <StatCard
           icon={<CheckCircle2 className="w-5 h-5" />}
           label="Cards Completed"
-          value={hasSummary ? `${completedCards} / ${totalCards}` : "—"}
+          value={hasSummary ? `${completedCards} / ${totalCards}` : ", "}
           delay={0.42}
           glow
         />
         <StatCard
           icon={<Clock className="w-5 h-5" />}
           label="Total Duration"
-          value={hasSummary ? formatTime(duration) : "—"}
+          value={hasSummary ? formatTime(duration) : ", "}
           delay={0.48}
         />
         <StatCard
           icon={<Flame className="w-5 h-5" />}
           label="Est. Calories"
-          value={hasSummary ? `${calories} kcal` : "—"}
+          value={hasSummary ? `${calories} kcal` : ", "}
           delay={0.54}
         />
         <StatCard
           icon={<Zap className="w-5 h-5" />}
           label="Completion"
-          value={hasSummary ? `${completionPct}%` : "—"}
+          value={hasSummary ? `${completionPct}%` : ", "}
           delay={0.6}
         />
       </div>

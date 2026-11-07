@@ -151,7 +151,7 @@ export default function WorkoutSetupPage() {
   // Derive the displayed deck name from category+difficulty or fall back to selectedDeck
   const deckDisplayName = (() => {
     if (selectedCategory && selectedDifficulty) {
-      return `${DECK_CATEGORY_LABEL[selectedCategory]} — ${DECK_DIFFICULTY_LABEL[selectedDifficulty]}`;
+      return `${DECK_CATEGORY_LABEL[selectedCategory]} · ${DECK_DIFFICULTY_LABEL[selectedDifficulty]}`;
     }
     if (selectedDeck?.name) return selectedDeck.name;
     return "No deck selected";
@@ -197,7 +197,7 @@ export default function WorkoutSetupPage() {
     if (unlockTier === "registered" && isGuest) {
       setRegisterPrompt({
         title: "Free Account Required",
-        body: `${label} requires a free account. Register now — it only takes a few seconds.`,
+        body: `${label} requires a free account. Register now, it only takes a few seconds.`,
       });
     } else {
       setShowPaywall(true);
@@ -707,7 +707,7 @@ export default function WorkoutSetupPage() {
                         value={customInput}
                         onFocus={handleCustomFocus}
                         onChange={(e) => handleCustomChange(e.target.value)}
-                        placeholder="2 – 52 cards"
+                        placeholder="2-52 cards"
                         className="w-32 h-8 rounded-lg px-3 font-display font-bold text-sm text-foreground outline-none transition-smooth"
                         style={{
                           background: "oklch(0.12 0.008 var(--neutral-hue))",

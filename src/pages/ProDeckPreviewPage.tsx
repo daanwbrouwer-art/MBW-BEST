@@ -24,7 +24,7 @@ function repLabel(ex: ProPreviewExercise): string {
   if (ex.isChallenge) return "Challenge";
   const unit = ex.isHold ? "sec" : "reps";
   if (ex.minReps === ex.maxReps) return `${ex.minReps} ${unit}`;
-  return `${ex.minReps}–${ex.maxReps} ${unit}`;
+  return `${ex.minReps} · ${ex.maxReps} ${unit}`;
 }
 
 export default function ProDeckPreviewPage() {
@@ -269,7 +269,7 @@ export default function ProDeckPreviewPage() {
             className="text-xs text-muted-foreground hover:text-foreground transition-smooth"
             data-ocid="pro-preview.dismiss_link"
           >
-            Not yet — keep training
+            Not yet, keep training
           </button>
         </motion.div>
       </div>

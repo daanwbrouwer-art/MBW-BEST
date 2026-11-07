@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
               className="flex flex-col items-center text-center mt-8"
             >
               <p className="font-body text-white mb-4">
-                Check your email — the reset link will open in your browser.
+                Check your email, the reset link will open in your browser.
                 Come back and sign in with your new password after resetting.
               </p>
               <button

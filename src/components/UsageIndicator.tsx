@@ -86,7 +86,7 @@ export function UsageIndicator({
             data-ocid="home.usage_indicator.text"
           >
             {atLimit
-              ? "Weekly limit reached — resets Monday"
+              ? "Weekly limit reached, resets Monday"
               : `${cardsUsed} / ${limit} cards used this week`}
           </span>
           {showRemainingCounter && (

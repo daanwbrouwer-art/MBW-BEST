@@ -225,8 +225,8 @@ export default function SubscribePage() {
               data-ocid="subscribe.summary.referral_benefit"
             >
               <Sparkles className="w-3 h-3 shrink-0" />
-              Referral benefit — {discountPct}% credited to your account
-              separately — not deducted from this charge
+              Referral benefit, {discountPct}% credited to your account
+              separately, not deducted from this charge
             </p>
           )}
         </motion.div>
@@ -248,7 +248,7 @@ export default function SubscribePage() {
           ) : showTrial ? (
             "Start 7-day free trial"
           ) : (
-            `Subscribe — ${priceOf(selectedTier)}`
+            `Subscribe, ${priceOf(selectedTier)}`
           )}
         </motion.button>
 
@@ -261,8 +261,7 @@ export default function SubscribePage() {
         <p className="text-center text-xs text-muted-foreground/70 font-body leading-relaxed">
           Payment will be charged to your {storeAccountLabel} at confirmation of
           purchase. Subscriptions automatically renew unless auto-renew is
-          turned off at least 24 hours before the end of the current period —
-          your account will be charged for renewal within 24 hours prior to the
+          turned off at least 24 hours before the end of the current period, your account will be charged for renewal within 24 hours prior to the
           end of the current period. Subscriptions may be managed by you, and
           auto-renewal may be turned off, by going to your account settings
           after purchase.
@@ -301,7 +300,7 @@ export default function SubscribePage() {
         {showAccountPrompt && (
           <RegisterPromptModal
             title="Create your free account first"
-            body="Your subscription is linked to your account, so it stays with you if you change phones — and every workout is saved to your history. It takes under a minute."
+            body="Your subscription is linked to your account, so it stays with you if you change phones, and every workout is saved to your history. It takes under a minute."
             onClose={() => setShowAccountPrompt(false)}
           />
         )}

@@ -15,7 +15,7 @@ if (!isSupabaseConfigured) {
   // `isSupabaseConfigured` or handle the resulting network/auth errors from
   // calls against this placeholder project instead.
   console.warn(
-    "VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set — copy .env.example to .env and fill " +
+    "VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are not set, copy .env.example to .env and fill " +
       "in your Supabase project's URL and anon key (Project Settings > API). Supabase-backed " +
       "features (Map, remoteBackend) will fail their network calls until then.",
   );
@@ -44,7 +44,7 @@ export async function ensureSupabaseSession(): Promise<string | null> {
   const { data: anonData, error } = await supabase.auth.signInAnonymously();
   if (error || !anonData.user) {
     console.warn(
-      `Couldn't start an anonymous Supabase session — enable the \"Anonymous Sign-Ins\" provider in the Supabase dashboard (Authentication > Providers). ${error?.message ?? ""}`,
+      `Couldn't start an anonymous Supabase session, enable the \"Anonymous Sign-Ins\" provider in the Supabase dashboard (Authentication > Providers). ${error?.message ?? ""}`,
     );
     return null;
   }

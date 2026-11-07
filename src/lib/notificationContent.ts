@@ -30,7 +30,7 @@ export const MOTIVATIONAL_QUOTES: string[] = [
   "Your habits today are a letter to your 80-year-old self.",
   "Discomfort now is freedom later.",
   "The strongest people you know are just the most consistent.",
-  "Energy compounds like interest — start depositing early.",
+  "Energy compounds like interest, start depositing early.",
   "Show up tired. That's when the real training happens.",
   "A body in motion tends to stay capable.",
   "You're not chasing perfect. You're chasing another day of trying.",
@@ -85,7 +85,7 @@ export const ASPIRATIONS: string[] = [
 export const BRAIN_ACTIVATION_READINGS: string[] = [
   "Your brain is most plastic in the first hour after waking. Use it to decide, not to scroll.",
   "The first thought you choose this morning sets the frame for the next twelve hours.",
-  "Longevity isn't just years added to life — it's life added to years. Today, add some.",
+  "Longevity isn't just years added to life, it's life added to years. Today, add some.",
   "A clear mind is trained the same way a strong body is: through repetition, not luck.",
   "Before you check your phone, ask: what does my future self need from me today?",
   "The brain treats effort as evidence. Give it proof this morning that you're someone who follows through.",
@@ -104,9 +104,9 @@ export const BRAIN_ACTIVATION_READINGS: string[] = [
   "A sharp mind at 80 is built by the choices made at 30.",
   "Silence for sixty seconds this morning is a rep for your attention span.",
   "The brain learns direction from your first action, not your best intention.",
-  "What you do before 9am rarely feels important — and quietly decides everything.",
+  "What you do before 9am rarely feels important, and quietly decides everything.",
   "Neurons that fire together wire together. Fire the ones that serve the life you want.",
-  "A body kept mobile keeps a mind kept sharp — the two were never separate.",
+  "A body kept mobile keeps a mind kept sharp, the two were never separate.",
   "This morning, pick difficulty on purpose. It's the fastest way to feel awake.",
   "The brain treats novelty like fuel. Do one small thing differently today.",
   "Longevity isn't added by avoiding effort. It's added by recovering from it well.",
@@ -116,7 +116,7 @@ export const BRAIN_ACTIVATION_READINGS: string[] = [
   "Before the day fills up, decide what actually matters in it.",
   "Cognitive decline fears one thing most: a mind that keeps choosing to be used.",
   "You are not behind. You are simply early in a very long project.",
-  "The first choice of the day is rarely dramatic — and almost always decisive.",
+  "The first choice of the day is rarely dramatic, and almost always decisive.",
   "Today's clarity is yesterday's rest, this morning's stillness, and one good decision, stacked.",
 ];
 

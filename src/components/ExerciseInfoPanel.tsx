@@ -36,7 +36,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Body held straight from knees to head",
       "Lower chest to ~1 cm above the floor",
       "Press back to full arm extension",
-      "Core braced throughout — no hip sag",
+      "Core braced throughout, no hip sag",
     ],
     muscleGroups: ["Chest", "Front Shoulders", "Triceps"],
     difficulty: "Beginner",
@@ -44,9 +44,9 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "normal pushup beginner": {
     exerciseName: "Normal Push-up",
     description:
-      "Start in a full plank — body rigid from head to heels, hands under shoulders. Lower chest toward the floor with elbows tracking at 45 degrees from the torso, then press back to full lockout. Brace the core throughout.",
+      "Start in a full plank, body rigid from head to heels, hands under shoulders. Lower chest toward the floor with elbows tracking at 45 degrees from the torso, then press back to full lockout. Brace the core throughout.",
     keyPoints: [
-      "Full plank — body rigid from head to heels",
+      "Full plank, body rigid from head to heels",
       "Hands directly under the shoulders",
       "Lower chest toward the floor",
       "Elbows track at 45 degrees from the torso",
@@ -96,12 +96,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pushup negative": {
     exerciseName: "Push-up Negative",
     description:
-      "Start at the top of a push-up and lower under control until the chest reaches the floor over 5 seconds. Reset to the top using the knees if needed. Aim for 6 reps — the slow descent builds the strength needed for full push-ups.",
+      "Start at the top of a push-up and lower under control until the chest reaches the floor over 5 seconds. Reset to the top using the knees if needed. Aim for 6 reps, the slow descent builds the strength needed for full push-ups.",
     keyPoints: [
       "Start at the top of the push-up",
       "Lower to the floor over 5 seconds",
       "Reset to the top using the knees if needed",
-      "6 reps total — quality over speed",
+      "6 reps total, quality over speed",
       "Builds strength for full push-ups",
     ],
     muscleGroups: ["Chest", "Triceps", "Front Shoulders"],
@@ -110,11 +110,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "shoulder tap pushup": {
     exerciseName: "Shoulder Tap Push-up",
     description:
-      "Complete a full push-up, then at the top lift one hand and tap the opposite shoulder. Keep the hips completely still — no rotation — so the core does the stabilising work. Alternate shoulders each rep.",
+      "Complete a full push-up, then at the top lift one hand and tap the opposite shoulder. Keep the hips completely still, no rotation, so the core does the stabilising work. Alternate shoulders each rep.",
     keyPoints: [
       "Complete the full push-up first",
       "Tap the opposite shoulder at the top",
-      "Keep hips completely still — no rotation",
+      "Keep hips completely still, no rotation",
       "Alternate shoulders each rep",
       "Core braces to resist the rotation",
     ],
@@ -126,7 +126,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     description:
       "Form an inverted-V with hips pushed high and hands on the floor. Lower the head toward the floor between the hands, then press back to the top. The steeper the pike, the more the load shifts from chest onto the shoulders.",
     keyPoints: [
-      "Hips pushed high — inverted-V position",
+      "Hips pushed high, inverted-V position",
       "Lower the head toward the floor",
       "Press back to full lockout",
       "Targets the shoulders more than the chest",
@@ -140,11 +140,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     description:
       "Same pike push-up movement, but lower under control over 3 seconds each rep. The extra time under tension increases the demand on the shoulders and triceps without adding weight.",
     keyPoints: [
-      "Same pike push-up setup — hips high",
+      "Same pike push-up setup, hips high",
       "3-second controlled descent each rep",
       "Press back to full lockout at the top",
       "Increases time under tension on the shoulders",
-      "No bouncing — control the whole descent",
+      "No bouncing, control the whole descent",
     ],
     muscleGroups: ["Front Shoulders", "Triceps", "Upper Chest"],
     difficulty: "Beginner",
@@ -152,13 +152,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pike hold": {
     exerciseName: "Pike Hold",
     description:
-      "Form an inverted-V with hips pushed high and hands on the floor, arms fully locked. Stack the hips directly over the shoulders so the torso is near-vertical, then hold the position static for 20 seconds. The countdown timer runs on screen — keep the arms locked and the load in the shoulders the whole time.",
+      "Form an inverted-V with hips pushed high and hands on the floor, arms fully locked. Stack the hips directly over the shoulders so the torso is near-vertical, then hold the position static for 20 seconds. The countdown timer runs on screen, keep the arms locked and the load in the shoulders the whole time.",
     keyPoints: [
       "Form an inverted-V with hips pushed high",
-      "Arms fully locked out — no bend at the elbow",
+      "Arms fully locked out, no bend at the elbow",
       "Hips stacked directly over the shoulders",
       "Hold the position static for 20 seconds",
-      "Countdown shown on screen — keep the load in the shoulders",
+      "Countdown shown on screen, keep the load in the shoulders",
     ],
     muscleGroups: ["Shoulders", "Core"],
     difficulty: "Beginner",
@@ -166,13 +166,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "superman hold": {
     exerciseName: "Superman Hold",
     description:
-      "Lie face down on the floor with arms extended overhead and legs straight. Squeeze the glutes and lower back to lift the chest, arms and legs off the floor at the same time, then hold the top position for 2 seconds before lowering back down under control. Move with control — no swinging or momentum.",
+      "Lie face down on the floor with arms extended overhead and legs straight. Squeeze the glutes and lower back to lift the chest, arms and legs off the floor at the same time, then hold the top position for 2 seconds before lowering back down under control. Move with control, no swinging or momentum.",
     keyPoints: [
       "Lie face down, arms extended overhead, legs straight",
       "Lift chest, arms and legs off the floor at the same time",
       "Squeeze the glutes and lower back to drive the lift",
       "Hold the top position for 2 seconds per rep",
-      "Lower back down under control — no swinging",
+      "Lower back down under control, no swinging",
     ],
     muscleGroups: ["Lower Back", "Glutes", "Upper Back"],
     difficulty: "Beginner",
@@ -184,7 +184,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Set the bar or table at about hip height",
       "Body held straight at roughly 45 degrees, heels on the floor",
-      "Start from straight arms — dead hang",
+      "Start from straight arms, dead hang",
       "Pull the chest up to touch the bar, elbows driving back",
       "Squeeze the shoulder blades together at the top",
     ],
@@ -194,7 +194,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "horizontal row": {
     exerciseName: "Horizontal Row",
     description:
-      "Set the bar or table low so the body hangs parallel to the floor with heels on the ground and arms reaching straight up. Pull the chest up to touch the bar while keeping the body in a rigid line, squeezing the shoulder blades together hard at the top. This is the hardest row variation — the near-horizontal body angle puts roughly 75% of a full pull-up load through the back.",
+      "Set the bar or table low so the body hangs parallel to the floor with heels on the ground and arms reaching straight up. Pull the chest up to touch the bar while keeping the body in a rigid line, squeezing the shoulder blades together hard at the top. This is the hardest row variation, the near-horizontal body angle puts roughly 75% of a full pull-up load through the back.",
     keyPoints: [
       "Set the bar low so the body hangs parallel to the floor",
       "Heels on the ground, arms reaching straight up",
@@ -208,13 +208,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "row hold": {
     exerciseName: "Row Hold",
     description:
-      "Pull into the top of a row with the chest touching the bar and the shoulder blades squeezed together. Hold that top position for a full 2-second pause before lowering back to a dead hang, then pull straight into the next rep. Complete 5 reps total — the pause builds isometric back strength at the hardest point of the row.",
+      "Pull into the top of a row with the chest touching the bar and the shoulder blades squeezed together. Hold that top position for a full 2-second pause before lowering back to a dead hang, then pull straight into the next rep. Complete 5 reps total, the pause builds isometric back strength at the hardest point of the row.",
     keyPoints: [
-      "Pull into the top of the row — chest touching the bar",
+      "Pull into the top of the row, chest touching the bar",
       "Squeeze the shoulder blades together",
       "Hold the top position for a full 2-second pause",
       "Lower back to a dead hang under control",
-      "5 reps total — pause every rep",
+      "5 reps total, pause every rep",
     ],
     muscleGroups: ["Back", "Biceps"],
     difficulty: "Beginner",
@@ -228,7 +228,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Slide the hips off and extend the legs out in front",
       "Elbows drive straight backward to 90 degrees",
       "Press up through the palms to full lockout",
-      "Keep the chest lifted — do not round forward",
+      "Keep the chest lifted, do not round forward",
     ],
     muscleGroups: ["Triceps", "Shoulders"],
     difficulty: "Beginner",
@@ -255,8 +255,8 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Hands under the sternum, shoulder-width or narrower",
       "Elbows pinned tight to the torso the whole time",
       "Lower the chest to ~1 cm from the floor",
-      "Elbows track straight backward — no flaring",
-      "Press to full lockout — load stays on the triceps",
+      "Elbows track straight backward, no flaring",
+      "Press to full lockout, load stays on the triceps",
     ],
     muscleGroups: ["Triceps", "Chest"],
     difficulty: "Beginner",
@@ -264,13 +264,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bench dip slow negative": {
     exerciseName: "Bench Dip Slow Negative",
     description:
-      "Set up like a Bench Dip with hands on the bench behind you. Lower the body under control over a full 5 seconds, pausing for 1 second at the bottom with the elbows bent to 90 degrees, then press back up to lockout at a normal tempo. Complete 5 reps total — the slow descent builds triceps strength at the hardest part of the dip.",
+      "Set up like a Bench Dip with hands on the bench behind you. Lower the body under control over a full 5 seconds, pausing for 1 second at the bottom with the elbows bent to 90 degrees, then press back up to lockout at a normal tempo. Complete 5 reps total, the slow descent builds triceps strength at the hardest part of the dip.",
     keyPoints: [
       "Hands on the bench behind you, same Bench Dip setup",
       "Lower under control over a full 5 seconds",
-      "1-second pause at the bottom — elbows at 90 degrees",
+      "1-second pause at the bottom, elbows at 90 degrees",
       "Press back up to lockout at a normal tempo",
-      "5 reps total — quality over speed on the descent",
+      "5 reps total, quality over speed on the descent",
     ],
     muscleGroups: ["Triceps", "Shoulders"],
     difficulty: "Beginner",
@@ -278,13 +278,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "joker combo": {
     exerciseName: "Joker Combo",
     description:
-      "A four-exercise circuit done back to back with no rest between movements. Move straight from the last rep of one exercise into the first rep of the next — the combo only ends when the last rep of the Bench Dip is locked out. The Joker tests the whole upper body in one push: chest and triceps on the push-ups, shoulders on the pike, back and biceps on the row, then triceps again on the dip.",
+      "A four-exercise circuit done back to back with no rest between movements. Move straight from the last rep of one exercise into the first rep of the next, the combo only ends when the last rep of the Bench Dip is locked out. The Joker tests the whole upper body in one push: chest and triceps on the push-ups, shoulders on the pike, back and biceps on the row, then triceps again on the dip.",
     keyPoints: [
       "10× Standard Push-up",
       "10× Pike Push-up",
       "10× Incline Row",
       "10× Bench Dip",
-      "No rest between exercises — chain them together",
+      "No rest between exercises, chain them together",
     ],
     muscleGroups: ["Full Upper Body"],
     difficulty: "Beginner",
@@ -307,13 +307,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "full chinup": {
     exerciseName: "Full Chin-up",
     description:
-      "Hang from the bar with a supinated (palms-toward-you) shoulder-width grip, arms fully extended and shoulders engaged. Pull the chin over the bar by driving the elbows down and back, squeezing the lats hard at the top, then lower back to a full dead hang under control. No kipping — every rep starts and ends from a dead hang with strict form.",
+      "Hang from the bar with a supinated (palms-toward-you) shoulder-width grip, arms fully extended and shoulders engaged. Pull the chin over the bar by driving the elbows down and back, squeezing the lats hard at the top, then lower back to a full dead hang under control. No kipping, every rep starts and ends from a dead hang with strict form.",
     keyPoints: [
-      "Start from a full dead hang — arms extended, shoulders engaged",
+      "Start from a full dead hang, arms extended, shoulders engaged",
       "Supinated grip, shoulder-width apart",
       "Drive the elbows down and back to pull the chin over the bar",
       "Squeeze the lats hard at the top",
-      "Lower to a full dead hang — no kipping, strict reps only",
+      "Lower to a full dead hang, no kipping, strict reps only",
     ],
     muscleGroups: ["Lats", "Biceps", "Rear Deltoids", "Core"],
     difficulty: "Advanced",
@@ -321,12 +321,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "chinup with pause": {
     exerciseName: "Chin-up with Pause",
     description:
-      "Same mechanics as the Full Chin-up — dead hang start, supinated shoulder-width grip, chin over the bar with no kipping. The difference is the top: once the chin clears the bar, hold the position static for a full 2-second pause before lowering back to the dead hang. The pause kills momentum and forces the lats and biceps to hold the load isometrically at the hardest point of the rep.",
+      "Same mechanics as the Full Chin-up, dead hang start, supinated shoulder-width grip, chin over the bar with no kipping. The difference is the top: once the chin clears the bar, hold the position static for a full 2-second pause before lowering back to the dead hang. The pause kills momentum and forces the lats and biceps to hold the load isometrically at the hardest point of the rep.",
     keyPoints: [
-      "Same setup as the Full Chin-up — dead hang, supinated grip",
+      "Same setup as the Full Chin-up, dead hang, supinated grip",
       "Pull the chin over the bar with no kipping",
       "Hold the top position for a full 2-second pause",
-      "Pause every rep — no momentum into the next pull",
+      "Pause every rep, no momentum into the next pull",
       "Lower back to a full dead hang under control",
     ],
     muscleGroups: ["Lats", "Biceps", "Mid-back", "Core"],
@@ -349,7 +349,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "decline pushup": {
     exerciseName: "Decline Push-up",
     description:
-      "Set up like a standard push-up but place the feet on a bench roughly 40 cm high with the hands on the floor directly under the shoulders. Brace the core and lower the chest toward the floor with the elbows tracking at 45 degrees, then press back to full lockout. The downward angle shifts the load up onto the upper chest and front shoulders — the higher the feet, the harder the press.",
+      "Set up like a standard push-up but place the feet on a bench roughly 40 cm high with the hands on the floor directly under the shoulders. Brace the core and lower the chest toward the floor with the elbows tracking at 45 degrees, then press back to full lockout. The downward angle shifts the load up onto the upper chest and front shoulders, the higher the feet, the harder the press.",
     keyPoints: [
       "Feet on a bench ~40 cm high, hands on the floor under the shoulders",
       "Body held in a rigid line from head to heels",
@@ -363,7 +363,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "diamond pushup": {
     exerciseName: "Diamond Push-up",
     description:
-      "Form a diamond shape with the hands directly under the sternum — index fingers and thumbs touching so the diamond sits in the centre of the chest. Brace the core and lower the chest toward the diamond with the elbows pinned tight against the torso and tracking straight backward, then press back to full lockout. The narrow grip and pinned elbows shift the load almost entirely off the chest and onto the triceps.",
+      "Form a diamond shape with the hands directly under the sternum, index fingers and thumbs touching so the diamond sits in the centre of the chest. Brace the core and lower the chest toward the diamond with the elbows pinned tight against the torso and tracking straight backward, then press back to full lockout. The narrow grip and pinned elbows shift the load almost entirely off the chest and onto the triceps.",
     keyPoints: [
       "Form a diamond with the hands under the sternum",
       "Index fingers and thumbs touching in the centre of the chest",
@@ -382,7 +382,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Set up with a wide stance",
       "Lower toward one arm",
       "Other arm extends straight out sideways",
-      "Alternate sides — 5 reps per side",
+      "Alternate sides · 5 reps per side",
       "3-second controlled descent",
     ],
     muscleGroups: ["Chest", "Anterior Deltoid", "Triceps", "Serratus Anterior"],
@@ -391,9 +391,9 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pike pushup flat": {
     exerciseName: "Pike Push-up Flat",
     description:
-      "Form an inverted-V on the floor with the hips pushed high and the hands planted shoulder-width apart, arms fully locked. Lower the head toward the floor between the hands with the elbows tracking straight backward, then press back to the top. The steeper the pike, the more the load shifts from the chest onto the shoulders — keep the hips high to maximise the deltoid work.",
+      "Form an inverted-V on the floor with the hips pushed high and the hands planted shoulder-width apart, arms fully locked. Lower the head toward the floor between the hands with the elbows tracking straight backward, then press back to the top. The steeper the pike, the more the load shifts from the chest onto the shoulders, keep the hips high to maximise the deltoid work.",
     keyPoints: [
-      "Form an inverted-V on the floor — hips pushed high",
+      "Form an inverted-V on the floor, hips pushed high",
       "Hands shoulder-width apart, arms fully locked",
       "Lower the head toward the floor between the hands",
       "Elbows track straight backward, then press back to lockout",
@@ -419,9 +419,9 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pike pushup decline": {
     exerciseName: "Pike Push-up Decline",
     description:
-      "Place the feet high on a box or bench so the pike angle is the most vertical of the three pike variations — hips stacked directly over the shoulders with the torso near-vertical. Lower the head toward the floor between the hands with the elbows tracking straight backward, then press back to the top. The near-inverted position puts maximum deltoid emphasis on every rep.",
+      "Place the feet high on a box or bench so the pike angle is the most vertical of the three pike variations, hips stacked directly over the shoulders with the torso near-vertical. Lower the head toward the floor between the hands with the elbows tracking straight backward, then press back to the top. The near-inverted position puts maximum deltoid emphasis on every rep.",
     keyPoints: [
-      "Feet high — most vertical pike angle of the three variations",
+      "Feet high, most vertical pike angle of the three variations",
       "Hips stacked directly over the shoulders, torso near-vertical",
       "Lower the head toward the floor between the hands",
       "Elbows track straight backward, then press back to lockout",
@@ -433,13 +433,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "wall handstand hold": {
     exerciseName: "Wall Handstand Hold",
     description:
-      "Kick up against a wall into a full handstand with the arms fully locked, body held straight from wrists to ankles, and the heels resting lightly on the wall. Brace the core and push the floor away hard through the hands so the shoulders stay active the whole time. Isometric hold — no reps, just a 20-second static hold against the wall. The countdown timer runs on screen; keep the arms locked and the body rigid until it hits zero.",
+      "Kick up against a wall into a full handstand with the arms fully locked, body held straight from wrists to ankles, and the heels resting lightly on the wall. Brace the core and push the floor away hard through the hands so the shoulders stay active the whole time. Isometric hold, no reps, just a 20-second static hold against the wall. The countdown timer runs on screen; keep the arms locked and the body rigid until it hits zero.",
     keyPoints: [
       "Kick up against the wall into a full handstand",
-      "Arms fully locked out — no bend at the elbow",
+      "Arms fully locked out, no bend at the elbow",
       "Body held straight from wrists to ankles, heels light on the wall",
-      "Push the floor away hard — keep the shoulders active",
-      "Isometric hold — 20-second static hold, no reps",
+      "Push the floor away hard, keep the shoulders active",
+      "Isometric hold, 20-second static hold, no reps",
     ],
     muscleGroups: ["Deltoids", "Triceps", "Core", "Wrists"],
     difficulty: "Advanced",
@@ -447,13 +447,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bench dip straightleg": {
     exerciseName: "Bench Dip Straight-leg",
     description:
-      "Sit on the edge of a bench with hands placed shoulder-width beside the hips, fingers gripping the edge. Slide the hips off the bench and extend the legs fully out in front with only the heels on the floor — the straight legs increase the load versus a bent-knee bench dip. Lower the body by bending the elbows straight backward until the upper arms are parallel to the floor, then press back up through the palms to full lockout, keeping the chest lifted the whole time.",
+      "Sit on the edge of a bench with hands placed shoulder-width beside the hips, fingers gripping the edge. Slide the hips off the bench and extend the legs fully out in front with only the heels on the floor, the straight legs increase the load versus a bent-knee bench dip. Lower the body by bending the elbows straight backward until the upper arms are parallel to the floor, then press back up through the palms to full lockout, keeping the chest lifted the whole time.",
     keyPoints: [
       "Hands on the bench behind you, shoulder-width, fingers gripping the edge",
-      "Slide the hips off and extend the legs fully — heels only on the floor",
+      "Slide the hips off and extend the legs fully, heels only on the floor",
       "Lower by bending the elbows straight backward to upper-arms parallel",
       "Press up through the palms to full lockout",
-      "Keep the chest lifted — straight legs increase the load",
+      "Keep the chest lifted, straight legs increase the load",
     ],
     muscleGroups: ["Triceps", "Lower Chest", "Front Shoulders"],
     difficulty: "Advanced",
@@ -461,12 +461,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "parallel bar dip": {
     exerciseName: "Parallel Bar Dip",
     description:
-      "Support yourself on the parallel bars with the arms locked and the body held upright — shoulders down and away from the ears. Lower the body by bending the elbows straight backward to 90 degrees, keeping the torso upright and the chest lifted so the load stays on the triceps rather than the chest. Press back up through the palms to full lockout, staying tall the whole time.",
+      "Support yourself on the parallel bars with the arms locked and the body held upright, shoulders down and away from the ears. Lower the body by bending the elbows straight backward to 90 degrees, keeping the torso upright and the chest lifted so the load stays on the triceps rather than the chest. Press back up through the palms to full lockout, staying tall the whole time.",
     keyPoints: [
       "Support yourself on the parallel bars, arms locked",
-      "Shoulders down and away from the ears — stay tall",
+      "Shoulders down and away from the ears, stay tall",
       "Lower by bending the elbows straight backward to 90 degrees",
-      "Keep the torso upright — do not lean forward",
+      "Keep the torso upright, do not lean forward",
       "Press back up through the palms to full lockout",
     ],
     muscleGroups: ["Triceps", "Lower Chest", "Front Shoulders"],
@@ -475,13 +475,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "chest dip": {
     exerciseName: "Chest Dip",
     description:
-      "A chest-emphasis variation of the parallel bar dip. From a locked support position, lean the torso forward 20-30 degrees and lower under control until the shoulders drop below the elbows — a deeper range than the upright dip. Press back up through the lower chest and triceps, keeping the forward lean throughout. Targets the lower pectorals far more than the upright dip.",
+      "A chest-emphasis variation of the parallel bar dip. From a locked support position, lean the torso forward 20-30 degrees and lower under control until the shoulders drop below the elbows, a deeper range than the upright dip. Press back up through the lower chest and triceps, keeping the forward lean throughout. Targets the lower pectorals far more than the upright dip.",
     keyPoints: [
       "Start in a locked support on the bars, shoulders stacked over the hands",
       "Lean the torso forward 20-30 degrees and hold that angle throughout",
-      "Lower under control until the shoulders drop below the elbows — deeper than the upright dip",
+      "Lower under control until the shoulders drop below the elbows, deeper than the upright dip",
       "Press back up through the lower chest and triceps, maintaining the forward lean",
-      "Keep the chest lifted and the shoulders away from the ears — no shrugging or collapsing",
+      "Keep the chest lifted and the shoulders away from the ears, no shrugging or collapsing",
     ],
     muscleGroups: ["Lower Chest", "Triceps", "Front Shoulders"],
     difficulty: "Advanced",
@@ -492,8 +492,8 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "An eccentric-focused dip on the parallel bars. From the top locked support, lower the body over a controlled 5-second descent, emphasizing the triceps and chest under tension. Once at the bottom, press back up at normal tempo. The slow negative builds strength in the lowering phase; the press remains a normal-speed rep. Aim for 5 reps total.",
     keyPoints: [
       "Start at the top in a locked support on the parallel bars",
-      "Lower over a controlled 5-second descent — count each second",
-      "Eccentric emphasis through the triceps and chest — fight the pull of gravity",
+      "Lower over a controlled 5-second descent, count each second",
+      "Eccentric emphasis through the triceps and chest, fight the pull of gravity",
       "Press back up at normal tempo once you reach the bottom",
       "Complete 5 reps total, maintaining control on every negative",
     ],
@@ -503,13 +503,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "normal pushup advanced": {
     exerciseName: "Normal Push-up",
     description:
-      "Full plank with hands shoulder-width apart. Lower under control until the chest touches the floor, then drive up to full lockout. Advanced standard — clean tempo, full range, no hip sag.",
+      "Full plank with hands shoulder-width apart. Lower under control until the chest touches the floor, then drive up to full lockout. Advanced standard, clean tempo, full range, no hip sag.",
     keyPoints: [
       "Hands shoulder-width apart, body in a rigid plank",
       "Lower under control until the chest touches the floor",
-      "Full range of motion — no partial reps",
+      "Full range of motion, no partial reps",
       "Drive up to full lockout at the top",
-      "No hip sag or kipping — keep the line rigid",
+      "No hip sag or kipping, keep the line rigid",
     ],
     muscleGroups: ["Chest", "Triceps", "Front Shoulders", "Core"],
     difficulty: "Advanced",
@@ -517,13 +517,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "joker combo advanced": {
     exerciseName: "Joker Combo",
     description:
-      "All 4 Advanced exercises back to back with no rest between them. Move straight from one into the next — the combo only ends when the last rep of the final exercise is locked out.",
+      "All 4 Advanced exercises back to back with no rest between them. Move straight from one into the next, the combo only ends when the last rep of the final exercise is locked out.",
     keyPoints: [
       "6× Decline Push-up",
       "6× Elevated Pike Push-up",
       "6× Chin-up",
       "6× Parallel Bar Dip",
-      "No rest between exercises — chain them together",
+      "No rest between exercises, chain them together",
     ],
     muscleGroups: ["Full Upper Body"],
     difficulty: "Advanced",
@@ -545,13 +545,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   chinup: {
     exerciseName: "Chin-up",
     description:
-      "Hang from the bar with a supinated (palms-toward-you) shoulder-width grip. Pull until the chin clears the bar, then lower back to a full dead hang. No kipping — every rep starts and ends at a dead hang.",
+      "Hang from the bar with a supinated (palms-toward-you) shoulder-width grip. Pull until the chin clears the bar, then lower back to a full dead hang. No kipping, every rep starts and ends at a dead hang.",
     keyPoints: [
       "Start from a full dead hang",
       "Supinated grip, shoulder-width",
       "Pull until the chin clears the bar",
       "Lower back to a full dead hang",
-      "No kipping — strict reps only",
+      "No kipping, strict reps only",
     ],
     muscleGroups: ["Lats", "Biceps", "Rear Deltoids", "Core"],
     difficulty: "Advanced",
@@ -562,8 +562,8 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     description:
       "Set up in a push-up position with one hand behind your back and all your weight shifted onto the working arm. Lower with control and press back to the top, keeping the hips square and the body from rotating. Alternate arms as needed between sets. One of the purest tests of single-arm pressing strength in the deck.",
     keyPoints: [
-      "One hand behind your back — all weight on the working arm",
-      "Keep the hips square — resist rotating toward the floor",
+      "One hand behind your back, all weight on the working arm",
+      "Keep the hips square, resist rotating toward the floor",
       "Lower with control, press back to full lockout",
       "Feet slightly wider than normal for balance",
       "Alternate arms between sets as needed",
@@ -583,7 +583,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Same one-arm setup as the standard version",
       "Lower chest all the way to the floor on the working arm",
-      "Full range of motion — chest touches",
+      "Full range of motion, chest touches",
       "Press back to full lockout at the top",
       "Keep the hips square throughout the descent",
     ],
@@ -600,11 +600,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     description:
       "Set up with a wide hand stance. Lower to the bottom of the push-up, then slide the chest across to one side staying low, and rise on that arm to lockout. Lower again, slide to the opposite side, and rise on that arm. Each side-to-side slide counts as one rep. The lateral slide keeps the chest under tension the whole time and builds straight-arm stability on the supporting side.",
     keyPoints: [
-      "Wide hand stance — lower to the bottom first",
+      "Wide hand stance, lower to the bottom first",
       "Slide chest side to side staying low before rising",
-      "Rise on the arm you slide toward — full lockout",
+      "Rise on the arm you slide toward, full lockout",
       "Each slide = 1 rep",
-      "Keep the chest low during the slide — no rising early",
+      "Keep the chest low during the slide, no rising early",
     ],
     muscleGroups: [
       "Chest",
@@ -617,13 +617,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "onearm pushup negative": {
     exerciseName: "One-arm Push-up Negative",
     description:
-      "Set up in a standard push-up position but with a slightly wider stance for balance. Shift the load onto one arm, extend the other arm out to the side or behind the back, and lower under control over 5 seconds until the chest reaches the floor. Reset to the top using both arms, then alternate sides. Complete 5 reps per side — the slow single-arm descent builds the eccentric strength needed for a full one-arm push-up.",
+      "Set up in a standard push-up position but with a slightly wider stance for balance. Shift the load onto one arm, extend the other arm out to the side or behind the back, and lower under control over 5 seconds until the chest reaches the floor. Reset to the top using both arms, then alternate sides. Complete 5 reps per side, the slow single-arm descent builds the eccentric strength needed for a full one-arm push-up.",
     keyPoints: [
       "Slightly wider stance for balance",
       "Shift load onto one arm, other arm out to the side or behind the back",
-      "Lower over 5 seconds — 5-second descent",
+      "Lower over 5 seconds · 5-second descent",
       "Reset to the top using both arms",
-      "5 reps per side — alternate sides",
+      "5 reps per side, alternate sides",
     ],
     muscleGroups: ["Chest", "Triceps", "Anterior Deltoid", "Core"],
     difficulty: "Pro",
@@ -631,13 +631,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "wall handstand hold pro": {
     exerciseName: "Wall Handstand Hold",
     description:
-      "Kick up against a wall into a full handstand with the arms fully locked and the body held straight from wrists to ankles. Hold the position static for 15 seconds per rep — the per-rep cue is shown beneath the rep number. Push the floor away hard through the hands so the shoulders stay active the whole time. Reset by stepping down and kicking back up for the next rep.",
+      "Kick up against a wall into a full handstand with the arms fully locked and the body held straight from wrists to ankles. Hold the position static for 15 seconds per rep, the per-rep cue is shown beneath the rep number. Push the floor away hard through the hands so the shoulders stay active the whole time. Reset by stepping down and kicking back up for the next rep.",
     keyPoints: [
       "Kick up against the wall into a full handstand",
-      "Arms fully locked out — no bend at the elbow",
+      "Arms fully locked out, no bend at the elbow",
       "Body held straight from wrists to ankles",
-      "15 sec per rep — cue shown beneath the rep number",
-      "Push the floor away hard — keep the shoulders active",
+      "15 sec per rep, cue shown beneath the rep number",
+      "Push the floor away hard, keep the shoulders active",
     ],
     muscleGroups: ["Deltoids", "Triceps", "Upper Traps (Eccentric)", "Core"],
     difficulty: "Pro",
@@ -645,12 +645,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "handstand pushup negative": {
     exerciseName: "Handstand Push-up Negative",
     description:
-      "Kick up into a wall handstand with the arms locked and the body straight. Lower the head toward the floor between the hands over a controlled 5-second descent, fighting gravity the whole way. Once the head touches the floor, reset on the knees and kick back up — do not press back up. The eccentric overload builds the strength needed for a full handstand push-up.",
+      "Kick up into a wall handstand with the arms locked and the body straight. Lower the head toward the floor between the hands over a controlled 5-second descent, fighting gravity the whole way. Once the head touches the floor, reset on the knees and kick back up, do not press back up. The eccentric overload builds the strength needed for a full handstand push-up.",
     keyPoints: [
-      "Kick up into a wall handstand — arms locked, body straight",
-      "Lower the head to the floor over 5 seconds — 5-second descent",
-      "Reset on the knees — do not press back up",
-      "Fight gravity the whole way down — control every second",
+      "Kick up into a wall handstand, arms locked, body straight",
+      "Lower the head to the floor over 5 seconds, 5-second descent",
+      "Reset on the knees, do not press back up",
+      "Fight gravity the whole way down, control every second",
       "Eccentric overload builds full handstand push-up strength",
     ],
     muscleGroups: ["Deltoids", "Triceps", "Upper Traps (Eccentric)"],
@@ -659,13 +659,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "handstand pushup": {
     exerciseName: "Handstand Push-up",
     description:
-      "Kick up into a wall handstand with the arms locked and the body straight. Lower the head to the floor between the hands with the elbows tracking straight backward, then press back up to full lockout. Full range of motion — the head touches the floor at the bottom and the arms lock out at the top. The most demanding vertical pushing exercise in the deck.",
+      "Kick up into a wall handstand with the arms locked and the body straight. Lower the head to the floor between the hands with the elbows tracking straight backward, then press back up to full lockout. Full range of motion, the head touches the floor at the bottom and the arms lock out at the top. The most demanding vertical pushing exercise in the deck.",
     keyPoints: [
-      "Wall handstand — arms locked, body straight",
+      "Wall handstand, arms locked, body straight",
       "Lower the head to the floor between the hands",
-      "Elbows track straight backward — no flaring",
+      "Elbows track straight backward, no flaring",
       "Press back to full lockout at the top",
-      "Full range — head touches floor, arms lock at top",
+      "Full range, head touches floor, arms lock at top",
     ],
     muscleGroups: ["Deltoids", "Triceps", "Upper Traps", "Core"],
     difficulty: "Pro",
@@ -673,12 +673,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "freestanding handstand attempt": {
     exerciseName: "Freestanding Handstand Attempt",
     description:
-      "Kick up away from the wall into a freestanding handstand with the arms locked and the body straight. Hold the balance for as long as possible — the running timer counts up on screen the whole time you are up. When you lose balance and step down, that is one attempt. The goal is maximum hold time, not reps. Use the wall only to kick up — once up, balance freely.",
+      "Kick up away from the wall into a freestanding handstand with the arms locked and the body straight. Hold the balance for as long as possible, the running timer counts up on screen the whole time you are up. When you lose balance and step down, that is one attempt. The goal is maximum hold time, not reps. Use the wall only to kick up, once up, balance freely.",
     keyPoints: [
       "Kick up from the wall into a freestanding handstand",
-      "Arms locked, body straight — no wall support once up",
-      "Hold max time — running timer counts up on screen",
-      "Step down when you lose balance — that is one attempt",
+      "Arms locked, body straight, no wall support once up",
+      "Hold max time, running timer counts up on screen",
+      "Step down when you lose balance, that is one attempt",
       "Goal is maximum hold time, not reps",
     ],
     muscleGroups: ["Deltoids", "Triceps", "Core", "Wrists", "Balance"],
@@ -687,13 +687,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pullup overhand": {
     exerciseName: "Pull-up Overhand",
     description:
-      "Hang from the bar with a pronated (palms-away) shoulder-width grip, arms fully extended and shoulders engaged in a full dead hang. Pull the chin over the bar by driving the elbows down, squeezing the lats hard at the top, then lower back to a full dead hang under control. No swinging or kipping — every rep starts and ends from a strict dead hang.",
+      "Hang from the bar with a pronated (palms-away) shoulder-width grip, arms fully extended and shoulders engaged in a full dead hang. Pull the chin over the bar by driving the elbows down, squeezing the lats hard at the top, then lower back to a full dead hang under control. No swinging or kipping, every rep starts and ends from a strict dead hang.",
     keyPoints: [
-      "Full dead hang — arms extended, shoulders engaged",
+      "Full dead hang, arms extended, shoulders engaged",
       "Pronated (palms-away) grip, shoulder-width",
-      "Pull the chin over the bar — no swinging",
+      "Pull the chin over the bar, no swinging",
       "Squeeze the lats hard at the top",
-      "Lower to a full dead hang — strict reps only",
+      "Lower to a full dead hang, strict reps only",
     ],
     muscleGroups: ["Lats", "Biceps", "Rear Deltoids", "Core"],
     difficulty: "Pro",
@@ -705,9 +705,9 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Pronated grip, hands 15 cm wider each side",
       "Full dead hang start and finish",
-      "Pull the chin over the bar — elbows drive down and out",
+      "Pull the chin over the bar, elbows drive down and out",
       "Targets the outer lats and rear deltoids",
-      "Lower under control — no kipping",
+      "Lower under control, no kipping",
     ],
     muscleGroups: ["Outer Lats", "Rear Deltoids", "Biceps"],
     difficulty: "Pro",
@@ -719,9 +719,9 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Pronated grip, hands nearly touching at bar centre",
       "Full dead hang start and finish",
-      "Pull the chin over the bar — elbows drive straight down",
+      "Pull the chin over the bar, elbows drive straight down",
       "Targets the inner lats and mid-back",
-      "Lower under control — no kipping",
+      "Lower under control, no kipping",
     ],
     muscleGroups: ["Inner Lats", "Biceps", "Mid-back"],
     difficulty: "Pro",
@@ -729,13 +729,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "lsit pullup": {
     exerciseName: "L-sit Pull-up",
     description:
-      "Hang from the bar with a pronated grip and raise the legs straight out in front so they are parallel to the floor — hold the L-sit position throughout the entire pull-up. Pull the chin over the bar while keeping the legs elevated and parallel, then lower back to a dead hang without dropping the legs. Quality over quantity — 3 strict reps with the legs up beats 10 sloppy reps. The cue '3 reps — legs parallel' is shown beneath the rep number.",
+      "Hang from the bar with a pronated grip and raise the legs straight out in front so they are parallel to the floor, hold the L-sit position throughout the entire pull-up. Pull the chin over the bar while keeping the legs elevated and parallel, then lower back to a dead hang without dropping the legs. Quality over quantity, 3 strict reps with the legs up beats 10 sloppy reps. The cue '3 reps, legs parallel' is shown beneath the rep number.",
     keyPoints: [
-      "Raise legs straight out in front — parallel to the floor",
+      "Raise legs straight out in front, parallel to the floor",
       "Hold the L-sit position throughout the entire pull-up",
       "Pull the chin over the bar without dropping the legs",
-      "Lower to a dead hang — legs stay elevated",
-      "3 reps — legs parallel — quality over quantity",
+      "Lower to a dead hang, legs stay elevated",
+      "3 reps, legs parallel, quality over quantity",
     ],
     muscleGroups: ["Lats", "Hip Flexors", "Core", "Biceps"],
     difficulty: "Pro",
@@ -745,9 +745,9 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     description:
       "Set the rings at a low height and place the feet on the floor with the hands in the rings, body in a rigid plank. Lower the chest toward the rings with the elbows tracking backward, keeping the rings stable and turned out, then press back to full lockout. At the top, actively turn the rings out (externally rotate) to engage the stabilisers. The instability of the rings forces the chest and shoulders to control the whole range.",
     keyPoints: [
-      "Feet on the floor, hands in the rings — rigid plank",
+      "Feet on the floor, hands in the rings, rigid plank",
       "Lower the chest toward the rings, elbows tracking backward",
-      "Keep the rings stable — do not let them wobble",
+      "Keep the rings stable, do not let them wobble",
       "Press to full lockout at the top",
       "Turn the rings out (externally rotate) at the top to engage stabilisers",
     ],
@@ -757,11 +757,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "ring dip": {
     exerciseName: "Ring Dip",
     description:
-      "Support yourself on the rings with the arms locked and the body held upright, shoulders pushed down and away from the ears. Lower the body by bending the elbows straight backward to 90 degrees, keeping the rings stable and close to the body, then press back up through the palms to full lockout. At the top, turn the rings out (externally rotate) to stabilise. The ring instability makes this far harder than a parallel bar dip — the stabilisers work the whole time.",
+      "Support yourself on the rings with the arms locked and the body held upright, shoulders pushed down and away from the ears. Lower the body by bending the elbows straight backward to 90 degrees, keeping the rings stable and close to the body, then press back up through the palms to full lockout. At the top, turn the rings out (externally rotate) to stabilise. The ring instability makes this far harder than a parallel bar dip, the stabilisers work the whole time.",
     keyPoints: [
-      "Support on the rings — arms locked, body upright",
+      "Support on the rings, arms locked, body upright",
       "Shoulders down and away from the ears",
-      "Lower to 90 degrees — keep the rings stable and close",
+      "Lower to 90 degrees, keep the rings stable and close",
       "Press to full lockout through the palms",
       "Turn the rings out (externally rotate) at the top to stabilise",
     ],
@@ -771,13 +771,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "lsit hold": {
     exerciseName: "L-sit Hold",
     description:
-      "Support yourself on parallel bars (or on the floor with hands beside the hips) and press the shoulders down and away from the ears. Raise the legs straight out in front so they are parallel to the floor, hold the position static for 15 seconds. The 15-second countdown timer runs on screen — keep the legs elevated and parallel the whole time, arms locked, core braced hard.",
+      "Support yourself on parallel bars (or on the floor with hands beside the hips) and press the shoulders down and away from the ears. Raise the legs straight out in front so they are parallel to the floor, hold the position static for 15 seconds. The 15-second countdown timer runs on screen, keep the legs elevated and parallel the whole time, arms locked, core braced hard.",
     keyPoints: [
-      "Support on parallel bars or floor — hands beside the hips",
+      "Support on parallel bars or floor, hands beside the hips",
       "Press the shoulders down and away from the ears",
-      "Raise the legs straight out — parallel to the floor",
+      "Raise the legs straight out, parallel to the floor",
       "Hold the position static for 15 seconds",
-      "Countdown shown on screen — arms locked, core braced",
+      "Countdown shown on screen, arms locked, core braced",
     ],
     muscleGroups: ["Hip Flexors", "Core", "Triceps", "Shoulders"],
     difficulty: "Pro",
@@ -785,13 +785,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "parallel bar dip pro": {
     exerciseName: "Parallel Bar Dip",
     description:
-      "Support yourself on the parallel bars with the arms locked and the body held upright — shoulders down and away from the ears. Lower the body by bending the elbows straight backward to 90 degrees, keeping the torso upright and the chest lifted so the load stays on the triceps rather than the chest. Press back up through the palms to full lockout, staying tall the whole time. The Pro variant demands strict upright form and full 90-degree depth on every rep.",
+      "Support yourself on the parallel bars with the arms locked and the body held upright, shoulders down and away from the ears. Lower the body by bending the elbows straight backward to 90 degrees, keeping the torso upright and the chest lifted so the load stays on the triceps rather than the chest. Press back up through the palms to full lockout, staying tall the whole time. The Pro variant demands strict upright form and full 90-degree depth on every rep.",
     keyPoints: [
       "Support on the parallel bars, arms locked",
-      "Shoulders down and away from the ears — stay tall",
-      "Lower to 90 degrees — elbows straight backward",
-      "Keep the torso upright — do not lean forward",
-      "Press to full lockout — strict form, full depth every rep",
+      "Shoulders down and away from the ears, stay tall",
+      "Lower to 90 degrees, elbows straight backward",
+      "Keep the torso upright, do not lean forward",
+      "Press to full lockout, strict form, full depth every rep",
     ],
     muscleGroups: ["Triceps", "Lower Chest", "Front Shoulders"],
     difficulty: "Pro",
@@ -799,13 +799,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "joker combo pro": {
     exerciseName: "Joker Combo",
     description:
-      "All 4 Pro exercises back to back with no rest between them. Move straight from the last rep of one exercise into the first rep of the next — the combo only ends when the last rep of the Parallel Bar Dip is locked out. The Joker tests the whole upper body at the elite level: chest and unilateral strength on the archer push-ups, eccentric shoulder strength on the handstand push-up negative, back and biceps on the pull-up, then triceps again on the dip.",
+      "All 4 Pro exercises back to back with no rest between them. Move straight from the last rep of one exercise into the first rep of the next, the combo only ends when the last rep of the Parallel Bar Dip is locked out. The Joker tests the whole upper body at the elite level: chest and unilateral strength on the archer push-ups, eccentric shoulder strength on the handstand push-up negative, back and biceps on the pull-up, then triceps again on the dip.",
     keyPoints: [
       "5× Archer Push-up each side",
       "5× Handstand Push-up Negative",
       "5× Pull-up",
       "5× Parallel Bar Dip",
-      "No rest between exercises — chain them together",
+      "No rest between exercises, chain them together",
     ],
     muscleGroups: ["Full Upper Body"],
     difficulty: "Pro",
@@ -884,7 +884,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "singleleg glute bridge beginner": {
     exerciseName: "Single-Leg Glute Bridge",
     description:
-      "Same as Two-Leg Bridge but one leg extended. Drive through standing foot. Keep hips level — do not let one side drop.",
+      "Same as Two-Leg Bridge but one leg extended. Drive through standing foot. Keep hips level, do not let one side drop.",
     keyPoints: [
       "Same setup as the Two-Leg Bridge",
       "One leg extended straight out",
@@ -1042,7 +1042,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Stand on one foot, other leg extended straight forward, parallel to the floor",
       "Lower until the standing-leg thigh is below parallel",
-      "Keep the chest up throughout — do not round forward",
+      "Keep the chest up throughout, do not round forward",
       "Drive through the heel of the standing foot to stand",
       "Complete all reps on one leg before switching sides",
     ],
@@ -1064,7 +1064,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Stand on one foot, other leg extended straight forward, parallel to the floor",
       "Lower until the standing-leg thigh is below parallel",
-      "Keep the chest up throughout — do not round forward",
+      "Keep the chest up throughout, do not round forward",
       "Drive through the heel of the standing foot to stand",
       "Complete all reps on one leg before switching sides",
     ],
@@ -1080,11 +1080,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "shrimp squat pro": {
     exerciseName: "Shrimp Squat",
     description:
-      "Stand on one foot and grab the rear foot with one or both hands behind you, holding it close to the glutes. Lower the rear knee toward the floor while keeping the torso upright and the standing leg tracking over the foot. Drive through the standing foot to rise back to the top, maintaining balance and an upright chest the whole way up. A deeper single-leg squat than the pistol — the rear-foot grip forces the hip flexors and quads to control the descent.",
+      "Stand on one foot and grab the rear foot with one or both hands behind you, holding it close to the glutes. Lower the rear knee toward the floor while keeping the torso upright and the standing leg tracking over the foot. Drive through the standing foot to rise back to the top, maintaining balance and an upright chest the whole way up. A deeper single-leg squat than the pistol, the rear-foot grip forces the hip flexors and quads to control the descent.",
     keyPoints: [
       "Stand on one foot, grab the rear foot with one or both hands behind you",
       "Lower the rear knee toward the floor",
-      "Keep the torso upright throughout — do not fold forward",
+      "Keep the torso upright throughout, do not fold forward",
       "Drive through the standing foot to rise",
       "Deeper single-leg demand than the pistol squat",
     ],
@@ -1094,12 +1094,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "tuck jump pro": {
     exerciseName: "Tuck Jump",
     description:
-      "Jump vertically and bring both knees up toward the chest at the peak of the jump. Extend the legs back down before landing, absorbing the impact through soft knees with no pause — drive straight into the next jump. Keep the chest up and the core braced so the knees come to the chest rather than the chest dropping to the knees. No rest between reps — every landing flows straight into the next take-off.",
+      "Jump vertically and bring both knees up toward the chest at the peak of the jump. Extend the legs back down before landing, absorbing the impact through soft knees with no pause, drive straight into the next jump. Keep the chest up and the core braced so the knees come to the chest rather than the chest dropping to the knees. No rest between reps, every landing flows straight into the next take-off.",
     keyPoints: [
       "Jump and bring the knees to the chest at the peak",
       "Extend the legs before landing",
-      "Land with soft knees — absorb the impact",
-      "No pause — drive straight into the next jump",
+      "Land with soft knees, absorb the impact",
+      "No pause, drive straight into the next jump",
       "Keep the chest up; do not drop the chest to the knees",
     ],
     muscleGroups: ["Quads", "Glutes", "Calves", "Hip Flexors (Power)"],
@@ -1108,10 +1108,10 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "lateral bound pro": {
     exerciseName: "Lateral Bound",
     description:
-      "Start in a single-leg stance. Jump explosively sideways, pushing off the standing leg and travelling as far as possible to the side. Land on the opposite single leg, absorbing the impact through the hip and knee with a soft, controlled landing. Pause for 1 second to stabilise on the landing leg before bounding back in the opposite direction. Alternate sides each rep — the pause builds the lateral stability and single-leg control the deck demands.",
+      "Start in a single-leg stance. Jump explosively sideways, pushing off the standing leg and travelling as far as possible to the side. Land on the opposite single leg, absorbing the impact through the hip and knee with a soft, controlled landing. Pause for 1 second to stabilise on the landing leg before bounding back in the opposite direction. Alternate sides each rep, the pause builds the lateral stability and single-leg control the deck demands.",
     keyPoints: [
       "Start in a single-leg stance",
-      "Jump explosively sideways — push off the standing leg",
+      "Jump explosively sideways, push off the standing leg",
       "Land on the opposite single leg, absorbing through hip and knee",
       "Pause 1 second to stabilise before the next bound",
       "Alternate sides each rep",
@@ -1127,13 +1127,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "jump squat pro": {
     exerciseName: "Jump Squat",
     description:
-      "Drop into a full squat with the thighs reaching parallel to the floor, then explode upward as high as possible, reaching the arms overhead at the peak of the jump. Land softly, absorbing the impact through the knees and hips and flowing straight down into the next squat. No pause between reps — the descent of one rep becomes the load for the next jump. Maximum explosive output on every rep.",
+      "Drop into a full squat with the thighs reaching parallel to the floor, then explode upward as high as possible, reaching the arms overhead at the peak of the jump. Land softly, absorbing the impact through the knees and hips and flowing straight down into the next squat. No pause between reps, the descent of one rep becomes the load for the next jump. Maximum explosive output on every rep.",
     keyPoints: [
-      "Drop into a full squat — thighs to parallel",
+      "Drop into a full squat, thighs to parallel",
       "Explode upward as high as possible",
       "Reach the arms overhead at the peak of the jump",
-      "Land softly — absorb through the knees and hips",
-      "No pause — flow straight into the next squat",
+      "Land softly, absorb through the knees and hips",
+      "No pause, flow straight into the next squat",
     ],
     muscleGroups: ["Quads", "Glutes", "Calves (Explosive)"],
     difficulty: "Pro",
@@ -1141,7 +1141,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bss normal": {
     exerciseName: "Bulgarian Split Squat",
     description:
-      "Stand with your back to a bench and place the top of your rear foot on it. Hop your front foot forward so that when you descend, your front knee tracks directly over your ankle and your front thigh reaches parallel to the floor. Lower under control until the back knee nearly touches the floor, then drive through the heel of the front foot back to standing. Keep the torso tall and the core braced so the hips stay square — no leaning forward or collapsing inward.",
+      "Stand with your back to a bench and place the top of your rear foot on it. Hop your front foot forward so that when you descend, your front knee tracks directly over your ankle and your front thigh reaches parallel to the floor. Lower under control until the back knee nearly touches the floor, then drive through the heel of the front foot back to standing. Keep the torso tall and the core braced so the hips stay square, no leaning forward or collapsing inward.",
     keyPoints: [
       "Rear foot on the bench, top of foot down",
       "Front foot far enough that the knee tracks over the ankle",
@@ -1155,7 +1155,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bss elevated": {
     exerciseName: "Elevated Bulgarian Split Squat",
     description:
-      "Set up like a standard Bulgarian Split Squat, but place the front foot on a small plate or low riser so the back knee can travel below the level of the front foot at the bottom of the rep. The extra range of motion increases the stretch on the rear-leg hip flexor and the load on the front-leg glute. Descend slowly until the back knee grazes the floor, pause for a beat at the bottom, then press back up through the front heel. Balance is the limiting factor — pick a fixed gaze point and brace hard.",
+      "Set up like a standard Bulgarian Split Squat, but place the front foot on a small plate or low riser so the back knee can travel below the level of the front foot at the bottom of the rep. The extra range of motion increases the stretch on the rear-leg hip flexor and the load on the front-leg glute. Descend slowly until the back knee grazes the floor, pause for a beat at the bottom, then press back up through the front heel. Balance is the limiting factor, pick a fixed gaze point and brace hard.",
     keyPoints: [
       "Front foot on a low plate or riser",
       "Back knee travels below the front foot at the bottom",
@@ -1174,12 +1174,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bss deficit": {
     exerciseName: "Deficit Bulgarian Split Squat",
     description:
-      "The most demanding split-squat variant: the front foot stands on a higher riser (two stacked plates) while the rear foot rests on the bench behind you. The added height lets the back knee descend well past the floor, creating a deep deficit stretch at the bottom. Lower under control until you reach the deepest comfortable depth — never bounce out of the bottom — then drive explosively through the front heel. Use a wall or rack for balance on the first set until you find the groove.",
+      "The most demanding split-squat variant: the front foot stands on a higher riser (two stacked plates) while the rear foot rests on the bench behind you. The added height lets the back knee descend well past the floor, creating a deep deficit stretch at the bottom. Lower under control until you reach the deepest comfortable depth, never bounce out of the bottom, then drive explosively through the front heel. Use a wall or rack for balance on the first set until you find the groove.",
     keyPoints: [
       "Front foot on a high riser (two stacked plates)",
       "Rear foot on the bench behind you",
       "Descend past the floor into a deep deficit stretch",
-      "No bounce — drive out of the bottom under control",
+      "No bounce, drive out of the bottom under control",
       "Use a wall for balance on the first set if needed",
     ],
     muscleGroups: [
@@ -1193,11 +1193,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "nordic curl": {
     exerciseName: "Nordic Hamstring Curl",
     description:
-      "Anchor your feet under a sturdy pad or have a partner hold your ankles as you kneel on a soft surface. Keeping your body in a straight line from knees to shoulders, lower your torso toward the floor as slowly as possible by eccentrically contracting the hamstrings. Catch yourself with your hands at the bottom, push back up just enough to reset, and repeat. The slower the descent, the more eccentric strength you build — aim for a 4-5 second negative. This is the single best exercise for hamstring injury prevention.",
+      "Anchor your feet under a sturdy pad or have a partner hold your ankles as you kneel on a soft surface. Keeping your body in a straight line from knees to shoulders, lower your torso toward the floor as slowly as possible by eccentrically contracting the hamstrings. Catch yourself with your hands at the bottom, push back up just enough to reset, and repeat. The slower the descent, the more eccentric strength you build, aim for a 4-5 second negative. This is the single best exercise for hamstring injury prevention.",
     keyPoints: [
       "Anchored feet, kneeling on a soft surface",
       "Body in a straight line from knees to shoulders",
-      "Lower as slowly as possible — aim for 4-5 seconds",
+      "Lower as slowly as possible, aim for 4-5 seconds",
       "Catch with the hands at the bottom and reset",
       "Never bounce or use momentum on the way up",
     ],
@@ -1207,7 +1207,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "jumping lunge": {
     exerciseName: "Jumping Lunge",
     description:
-      "Begin at the bottom of a lunge with both knees at 90 degrees, the front foot planted and the back knee just above the floor. Explode upward, switching legs mid-air so you land back into a lunge on the opposite side. Land softly and immediately drop into the next rep — there is no pause between jumps. Pump the arms in time with the legs to generate rhythm and height. Keep the front knee tracking over the toes and the chest tall throughout.",
+      "Begin at the bottom of a lunge with both knees at 90 degrees, the front foot planted and the back knee just above the floor. Explode upward, switching legs mid-air so you land back into a lunge on the opposite side. Land softly and immediately drop into the next rep, there is no pause between jumps. Pump the arms in time with the legs to generate rhythm and height. Keep the front knee tracking over the toes and the chest tall throughout.",
     keyPoints: [
       "Start at the bottom of a lunge, both knees at 90 degrees",
       "Explode upward and switch legs mid-air",
@@ -1226,7 +1226,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "singleleg rdl": {
     exerciseName: "Single-Leg Romanian Deadlift",
     description:
-      "Stand on one leg with a slight bend in the knee and the other leg extended behind you. Hinge at the hip, pushing the hips back and lowering the torso toward the floor while the free leg rises in a straight line behind you. Keep the working-side hip square and the back flat — no rotation or rounding. Reach the bottom when the torso is roughly parallel to the floor, then squeeze the glute to return to standing. Hold a dumbbell in the opposite hand for added load.",
+      "Stand on one leg with a slight bend in the knee and the other leg extended behind you. Hinge at the hip, pushing the hips back and lowering the torso toward the floor while the free leg rises in a straight line behind you. Keep the working-side hip square and the back flat, no rotation or rounding. Reach the bottom when the torso is roughly parallel to the floor, then squeeze the glute to return to standing. Hold a dumbbell in the opposite hand for added load.",
     keyPoints: [
       "Stand on one leg with a slight knee bend",
       "Hinge at the hip, pushing the hips back",
@@ -1245,13 +1245,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "glute kickback": {
     exerciseName: "Glute Kickback",
     description:
-      "Start on all fours with hands under the shoulders and knees under the hips. Keeping the knee bent at 90 degrees, lift one leg straight back and up by squeezing the glute, raising the foot toward the ceiling until the thigh is in line with the torso. Hold the top for a one-count squeeze, then lower under control without letting the knee touch the floor before the next rep. Keep the core braced and the hips level — no leaning to one side to compensate.",
+      "Start on all fours with hands under the shoulders and knees under the hips. Keeping the knee bent at 90 degrees, lift one leg straight back and up by squeezing the glute, raising the foot toward the ceiling until the thigh is in line with the torso. Hold the top for a one-count squeeze, then lower under control without letting the knee touch the floor before the next rep. Keep the core braced and the hips level, no leaning to one side to compensate.",
     keyPoints: [
       "Start on all fours, hands under shoulders, knees under hips",
       "Lift the leg back and up by squeezing the glute",
       "Knee stays bent at 90 degrees throughout",
       "Hold the top for a one-count squeeze",
-      "Lower under control — no leaning to compensate",
+      "Lower under control, no leaning to compensate",
     ],
     muscleGroups: ["Glutes", "Hamstrings", "Core (Stability)"],
     difficulty: "Advanced",
@@ -1259,13 +1259,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "fire hydrant": {
     exerciseName: "Fire Hydrant",
     description:
-      "Begin on all fours with hands under the shoulders and knees under the hips, back flat and core braced. Keeping the knee bent at 90 degrees, lift one leg out to the side, raising the thigh toward hip height by abducting at the hip. Pause for a one-count squeeze at the top, then lower under control back to the starting position. Keep the hips square to the floor and the torso still — the motion comes from the hip, not the spine. Add a resistance band above the knees for a stronger burn.",
+      "Begin on all fours with hands under the shoulders and knees under the hips, back flat and core braced. Keeping the knee bent at 90 degrees, lift one leg out to the side, raising the thigh toward hip height by abducting at the hip. Pause for a one-count squeeze at the top, then lower under control back to the starting position. Keep the hips square to the floor and the torso still, the motion comes from the hip, not the spine. Add a resistance band above the knees for a stronger burn.",
     keyPoints: [
       "Start on all fours, hands under shoulders, knees under hips",
       "Lift the bent leg out to the side to hip height",
       "Pause for a one-count squeeze at the top",
       "Lower under control back to the start",
-      "Keep the hips square — motion comes from the hip, not the spine",
+      "Keep the hips square, motion comes from the hip, not the spine",
     ],
     muscleGroups: ["Glutes (Medius)", "Hip Abductors", "Core (Stability)"],
     difficulty: "Advanced",
@@ -1299,7 +1299,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "plank shoulder tap": {
     exerciseName: "Plank Shoulder Tap",
     description:
-      "High plank on hands. Lift one hand and tap opposite shoulder. Replace. Repeat other side. Brace hard — prevent hip rotation.",
+      "High plank on hands. Lift one hand and tap opposite shoulder. Replace. Repeat other side. Brace hard, prevent hip rotation.",
     keyPoints: [
       "High plank on hands",
       "Alternate taps",
@@ -1338,7 +1338,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "knee tuck": {
     exerciseName: "Knee Tuck",
     description:
-      "Lie on back. Bring both knees to chest. Slowly extend legs back — do not let them touch floor. Control entirely.",
+      "Lie on back. Bring both knees to chest. Slowly extend legs back, do not let them touch floor. Control entirely.",
     keyPoints: [
       "Bring knees to chest",
       "Lower controlled",
@@ -1350,7 +1350,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "flutter kick": {
     exerciseName: "Flutter Kick",
     description:
-      "Lie on back, hands under lower back. Legs 10 cm off floor. Alternate small up-down kicks from the hip. Core braced — lower back does not arch.",
+      "Lie on back, hands under lower back. Legs 10 cm off floor. Alternate small up-down kicks from the hip. Core braced, lower back does not arch.",
     keyPoints: [
       "Legs 10 cm off floor",
       "Small alternate kicks",
@@ -1377,12 +1377,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "hollow body hold advanced": {
     exerciseName: "Hollow Body Hold",
     description:
-      "Lie on back. Press lower back firmly into floor. Arms overhead, legs straight 30 cm off floor. Hold position. The lower back must stay flat — this is the essential cue.",
+      "Lie on back. Press lower back firmly into floor. Arms overhead, legs straight 30 cm off floor. Hold position. The lower back must stay flat, this is the essential cue.",
     keyPoints: [
       "Press lower back firmly into floor",
       "Arms overhead, legs straight 30 cm off floor",
       "Hold position steady",
-      "Lower back must stay flat — essential cue",
+      "Lower back must stay flat, essential cue",
     ],
     muscleGroups: [
       "Transverse abdominis",
@@ -1395,11 +1395,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "v up advanced": {
     exerciseName: "V-Up",
     description:
-      "Lie flat, arms overhead. Raise legs and upper body simultaneously to meet hands at feet — V shape. Lower fully controlled. No momentum.",
+      "Lie flat, arms overhead. Raise legs and upper body simultaneously to meet hands at feet, V shape. Lower fully controlled. No momentum.",
     keyPoints: [
       "Lie flat, arms overhead",
       "Raise legs and upper body simultaneously",
-      "Meet hands at feet — V shape",
+      "Meet hands at feet · V shape",
       "Lower fully controlled",
       "No momentum",
     ],
@@ -1409,12 +1409,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "hanging knee raise advanced": {
     exerciseName: "Hanging Knee Raise",
     description:
-      "Hang from pull-up bar, shoulder-width grip. Bring both knees to chest in a controlled curl. Lower fully. No swinging — use core, not momentum.",
+      "Hang from pull-up bar, shoulder-width grip. Bring both knees to chest in a controlled curl. Lower fully. No swinging, use core, not momentum.",
     keyPoints: [
       "Hang from pull-up bar, shoulder-width grip",
       "Bring both knees to chest in controlled curl",
       "Lower fully",
-      "No swinging — use core, not momentum",
+      "No swinging, use core, not momentum",
     ],
     muscleGroups: ["Lower abs", "Hip flexors", "Grip"],
     difficulty: "Advanced",
@@ -1477,7 +1477,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "dragon flag negative pro": {
     exerciseName: "Dragon Flag Negative",
     description:
-      "Grip bench behind head, raise body to vertical. Lower the entire straight body as slowly as possible toward horizontal — do not touch bench. Use hands to return to start.",
+      "Grip bench behind head, raise body to vertical. Lower the entire straight body as slowly as possible toward horizontal, do not touch bench. Use hands to return to start.",
     keyPoints: [
       "Grip bench behind head, raise body to vertical",
       "Lower entire straight body as slowly as possible toward horizontal",
@@ -1485,7 +1485,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Use hands to return to start",
     ],
     muscleGroups: [
-      "Entire anterior chain — abs, hip flexors, quads, shoulders (eccentric)",
+      "Entire anterior chain, abs, hip flexors, quads, shoulders (eccentric)",
     ],
     difficulty: "Pro",
     videoUrl: "coming soon",
@@ -1541,11 +1541,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "copenhagen plank pro": {
     exerciseName: "Copenhagen Plank",
     description:
-      "Lie on side, top foot on bench. Push up into side plank using top foot and forearm. Body bridged sideways — hips lifted, rigid. Hold 5 seconds per rep.",
+      "Lie on side, top foot on bench. Push up into side plank using top foot and forearm. Body bridged sideways, hips lifted, rigid. Hold 5 seconds per rep.",
     keyPoints: [
       "Lie on side, top foot on bench",
       "Push up into side plank using top foot and forearm",
-      "Body bridged sideways — hips lifted, rigid",
+      "Body bridged sideways, hips lifted, rigid",
       "Hold 5 seconds per rep",
     ],
     muscleGroups: ["Adductors", "Obliques", "Glute medius", "Core"],
@@ -1589,7 +1589,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "modified burpee": {
     exerciseName: "Modified Burpee",
     description:
-      "Stand. Squat, hands on floor. Step one foot back, then the other to plank. Step forward, then stand. Stepping instead of jumping — perfect for beginners.",
+      "Stand. Squat, hands on floor. Step one foot back, then the other to plank. Step forward, then stand. Stepping instead of jumping, perfect for beginners.",
     keyPoints: [
       "Start standing with feet shoulder-width apart",
       "Squat down and place hands on floor",
@@ -1814,14 +1814,14 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "plyometric burpee advanced": {
     exerciseName: "Plyometric Burpee",
     description:
-      "Same as standard burpee but explosive — jump as high as possible, clap hands overhead. Land with soft knees, immediately flow into next rep. No pause.",
+      "Same as standard burpee but explosive, jump as high as possible, clap hands overhead. Land with soft knees, immediately flow into next rep. No pause.",
     keyPoints: [
       "Explosive jump as high as possible",
       "Clap hands overhead at peak",
       "Soft knees on landing",
       "No pause between reps",
     ],
-    muscleGroups: ["Full body — quads, glutes, chest, shoulders, core, calves"],
+    muscleGroups: ["Full body, quads, glutes, chest, shoulders, core, calves"],
     difficulty: "Advanced",
   },
   "spiderman pushup advanced": {
@@ -1846,7 +1846,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Arm swing for momentum",
       "Soft landing with bent knees",
       "Stand fully on top",
-      "Step down — never jump backward off the box",
+      "Step down, never jump backward off the box",
     ],
     muscleGroups: ["Quads", "Glutes", "Calves (explosive power)"],
     difficulty: "Advanced",
@@ -1854,7 +1854,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "singleleg burpee advanced": {
     exerciseName: "Single-Leg Burpee",
     description:
-      "Full burpee performed while standing on one leg. The non-working leg stays raised throughout. Show each leg note — reps are per leg.",
+      "Full burpee performed while standing on one leg. The non-working leg stays raised throughout. Show each leg note, reps are per leg.",
     keyPoints: [
       "Stand on one leg only",
       "Non-working leg stays raised",
@@ -1880,7 +1880,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "lateral jump lunge advanced": {
     exerciseName: "Lateral Jump Lunge",
     description:
-      "Jump sideways and land in a lunge — jumping leg goes forward, other goes back. Feet together, jump to other side. Each side = 1 rep.",
+      "Jump sideways and land in a lunge, jumping leg goes forward, other goes back. Feet together, jump to other side. Each side = 1 rep.",
     keyPoints: [
       "Sideways jump into lunge",
       "Jumping leg forward, other back",
@@ -1924,15 +1924,15 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Explode straight into box jump",
       "Soft landing on the box",
       "Stand fully on top",
-      "Step down — no pause between burpee and jump",
+      "Step down, no pause between burpee and jump",
     ],
-    muscleGroups: ["Full body — quads, glutes, chest, shoulders, calves"],
+    muscleGroups: ["Full body, quads, glutes, chest, shoulders, calves"],
     difficulty: "Advanced",
   },
   "burpee chinup advanced": {
     exerciseName: "Burpee Chin-up",
     description:
-      "Perform a burpee, then at the top jump up to a bar and do 1 chin-up. Drop back down and flow straight into the next burpee. 1 chin-up per burpee — 5 reps.",
+      "Perform a burpee, then at the top jump up to a bar and do 1 chin-up. Drop back down and flow straight into the next burpee. 1 chin-up per burpee, 5 reps.",
     keyPoints: [
       "Full burpee to standing",
       "Jump to bar at the top",
@@ -1940,7 +1940,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Flow straight into next rep",
       "Complete 5 reps",
     ],
-    muscleGroups: ["Full body — back, biceps, chest, shoulders, legs"],
+    muscleGroups: ["Full body, back, biceps, chest, shoulders, legs"],
     difficulty: "Advanced",
   },
   "broad jump advanced": {
@@ -1987,7 +1987,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "archer pushup advanced": {
     exerciseName: "Archer Push-up",
     description:
-      "Wide hand placement. Lower toward one side while the opposite arm stays fully extended. Press back to center, then alternate sides. The straight arm bears partial load — the bent arm does most of the work.",
+      "Wide hand placement. Lower toward one side while the opposite arm stays fully extended. Press back to center, then alternate sides. The straight arm bears partial load, the bent arm does most of the work.",
     keyPoints: [
       "Hands set wide",
       "Lower toward one side",
@@ -2029,11 +2029,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "nonstop jump lunge advanced": {
     exerciseName: "Non-stop Jump Lunge",
     description:
-      "Continuous jump lunges for 30 seconds — switch legs in the air every rep, no pauses. Max reps. Timer + rep counter track your output. Maintain form even at speed.",
+      "Continuous jump lunges for 30 seconds, switch legs in the air every rep, no pauses. Max reps. Timer + rep counter track your output. Maintain form even at speed.",
     keyPoints: [
       "Continuous jump lunges",
       "Switch legs in the air",
-      "No pauses — keep moving",
+      "No pauses, keep moving",
       "30 sec max reps",
       "Maintain form at speed",
     ],
@@ -2049,10 +2049,10 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "negative chinup": {
     exerciseName: "Negative Chin-up",
     description:
-      "Jump or step up to the top chin-up position, chin over the bar, then lower yourself as slowly as possible — 3 to 5 seconds down. The eccentric-only lower builds the pulling strength needed for a full chin-up.",
+      "Jump or step up to the top chin-up position, chin over the bar, then lower yourself as slowly as possible, 3 to 5 seconds down. The eccentric-only lower builds the pulling strength needed for a full chin-up.",
     keyPoints: [
       "Jump to the top position",
-      "Lower slowly — 3 to 5 seconds",
+      "Lower slowly · 3 to 5 seconds",
       "Fight the descent the whole way down",
       "Reset from the floor each rep",
     ],
@@ -2079,7 +2079,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Ankle anchored, one leg only",
       "Lean forward from the knees",
-      "Control the descent — don't collapse",
+      "Control the descent, don't collapse",
       "5 reps each leg",
     ],
     muscleGroups: ["Hamstrings", "Glutes", "Core"],
@@ -2088,11 +2088,11 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "side plank hold": {
     exerciseName: "Side Plank Hold",
     description:
-      "One forearm on the floor, body turned sideways, stacked feet. Lift the hips to form a straight line from head to feet and hold, keeping the hips high — don't let them sag toward the floor.",
+      "One forearm on the floor, body turned sideways, stacked feet. Lift the hips to form a straight line from head to feet and hold, keeping the hips high, don't let them sag toward the floor.",
     keyPoints: [
       "One forearm on the floor, body sideways",
       "Stack the feet",
-      "Hips high — straight line head to feet",
+      "Hips high, straight line head to feet",
       "50 sec each side",
     ],
     muscleGroups: ["Obliques", "Core", "Shoulders"],
@@ -2127,13 +2127,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "joker combo lower body": {
     exerciseName: "Joker Combo (Lower Body)",
     description:
-      "A four-exercise lower-body circuit done back to back with no rest between movements. Move straight from the last rep of one exercise into the first rep of the next — squats, then a forward lunge, a step-up, and finish on calf raises.",
+      "A four-exercise lower-body circuit done back to back with no rest between movements. Move straight from the last rep of one exercise into the first rep of the next, squats, then a forward lunge, a step-up, and finish on calf raises.",
     keyPoints: [
       "6× Regular Squat",
       "6× Forward Lunge each leg",
       "6× Step-Up each leg",
       "8× Calf Raise",
-      "No rest between exercises — chain them together",
+      "No rest between exercises, chain them together",
     ],
     muscleGroups: ["Full Lower Body"],
     difficulty: "Beginner",
@@ -2143,13 +2143,13 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   joker: {
     exerciseName: "Joker",
     description:
-      "A four-exercise circuit done back to back with no rest between movements. Move straight from the last rep of one exercise into the first rep of the next — the combo only ends when the last rep of the Bench Dip is locked out. Tests the whole upper body in one push: chest on the push-ups, shoulders on the shoulder tap, back and biceps on the row, then triceps on the dip.",
+      "A four-exercise circuit done back to back with no rest between movements. Move straight from the last rep of one exercise into the first rep of the next, the combo only ends when the last rep of the Bench Dip is locked out. Tests the whole upper body in one push: chest on the push-ups, shoulders on the shoulder tap, back and biceps on the row, then triceps on the dip.",
     keyPoints: [
       "10× Standard Push-up",
       "10× Shoulder Tap Push-up",
       "10× Incline Row",
       "10× Bench Dip",
-      "No rest between exercises — chain them together",
+      "No rest between exercises, chain them together",
     ],
     muscleGroups: ["Full Upper Body"],
     difficulty: "Beginner",
@@ -2170,10 +2170,10 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "negative pullup": {
     exerciseName: "Negative Pull-up",
     description:
-      "Jump or step up to the top position, chin over the bar, then lower yourself as slowly as possible — 3 to 5 seconds down. The eccentric-only lower builds the pulling strength most people are missing for a full pull-up.",
+      "Jump or step up to the top position, chin over the bar, then lower yourself as slowly as possible, 3 to 5 seconds down. The eccentric-only lower builds the pulling strength most people are missing for a full pull-up.",
     keyPoints: [
       "Jump to the top position",
-      "Lower slowly — 3 to 5 seconds",
+      "Lower slowly · 3 to 5 seconds",
       "Fight the descent the whole way down",
       "Reset from the floor each rep",
     ],
@@ -2183,12 +2183,12 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pullup advanced": {
     exerciseName: "Pull-up",
     description:
-      "Supinated (underhand) grip, hang fully at the bottom of every rep. Pull until your chin clears the bar, then lower with control back to a full dead hang before the next rep. No kipping — strict form only.",
+      "Supinated (underhand) grip, hang fully at the bottom of every rep. Pull until your chin clears the bar, then lower with control back to a full dead hang before the next rep. No kipping, strict form only.",
     keyPoints: [
       "Supinated grip, shoulder-width",
       "Full dead hang between reps",
       "Chin clears the bar",
-      "Strict — no kipping or swinging",
+      "Strict, no kipping or swinging",
     ],
     muscleGroups: ["Lats", "Biceps", "Upper Back"],
     difficulty: "Advanced",
@@ -2201,7 +2201,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Pull chin over the bar",
       "Hold 2 seconds at the top",
       "Lower under control to a full hang",
-      "No momentum — the pause exposes it",
+      "No momentum, the pause exposes it",
     ],
     muscleGroups: ["Lats", "Biceps", "Upper Back"],
     difficulty: "Advanced",
@@ -2209,7 +2209,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pullup pro": {
     exerciseName: "Pull-up",
     description:
-      "Strict pull-up at Pro tier — full dead hang to chin-over-bar, every rep identical. At this level the card counts clean reps only; any kip, swing, or partial range doesn't count.",
+      "Strict pull-up at Pro tier, full dead hang to chin-over-bar, every rep identical. At this level the card counts clean reps only; any kip, swing, or partial range doesn't count.",
     keyPoints: [
       "Full dead hang start position",
       "Chin clears the bar every rep",
@@ -2237,7 +2237,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "squat hold beginner": {
     exerciseName: "Squat Hold",
     description:
-      "Lower into the bottom of a squat, thighs roughly parallel to the floor, and hold. Keep the chest up and weight in the heels — don't let the hold collapse into a slump. Card value = number of seconds.",
+      "Lower into the bottom of a squat, thighs roughly parallel to the floor, and hold. Keep the chest up and weight in the heels, don't let the hold collapse into a slump. Card value = number of seconds.",
     keyPoints: [
       "Thighs to parallel, chest up",
       "Weight in the heels",
@@ -2263,7 +2263,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "slow alternating lunge": {
     exerciseName: "Slow Alternating Lunge",
     description:
-      "Same alternating lunge, slowed down deliberately — 3 seconds to lower into the bottom position, 3 seconds to rise. The slow tempo removes momentum and makes the front leg do all the work.",
+      "Same alternating lunge, slowed down deliberately, 3 seconds to lower into the bottom position, 3 seconds to rise. The slow tempo removes momentum and makes the front leg do all the work.",
     keyPoints: [
       "3 sec down, 3 sec up",
       "Front thigh to parallel",
@@ -2276,7 +2276,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "high knee march": {
     exerciseName: "High Knee March",
     description:
-      "Stand tall and march in place, driving each knee up to hip height before planting and switching sides. Keep a slow, controlled pace — this is a warm-up mover, not a sprint drill.",
+      "Stand tall and march in place, driving each knee up to hip height before planting and switching sides. Keep a slow, controlled pace, this is a warm-up mover, not a sprint drill.",
     keyPoints: [
       "Drive knee to hip height",
       "Stand tall, controlled pace",
@@ -2294,7 +2294,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Rise onto the balls of both feet",
       "Brief pause at the top",
       "Lower under control",
-      "Full range — heels all the way down",
+      "Full range, heels all the way down",
     ],
     muscleGroups: ["Calves"],
     difficulty: "Beginner",
@@ -2393,7 +2393,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "stepup advanced": {
     exerciseName: "Step-Up",
     description:
-      "Place one foot fully on a raised platform, drive through that heel to stand fully upright on top, then step down under control. Avoid pushing off the trailing leg — the working leg does all the lifting.",
+      "Place one foot fully on a raised platform, drive through that heel to stand fully upright on top, then step down under control. Avoid pushing off the trailing leg, the working leg does all the lifting.",
     keyPoints: [
       "Full foot on the platform",
       "Drive through the heel to stand",
@@ -2432,7 +2432,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "singleleg calf raise advanced": {
     exerciseName: "Single-Leg Calf Raise",
     description:
-      "Balance on one foot, rise onto the ball of that foot as high as possible, pause, then lower under control. Use a wall or rail for light balance support only — the calf does the work, not your hands.",
+      "Balance on one foot, rise onto the ball of that foot as high as possible, pause, then lower under control. Use a wall or rail for light balance support only, the calf does the work, not your hands.",
     keyPoints: [
       "Balance on one foot",
       "Rise onto the ball of the foot",
@@ -2458,7 +2458,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bss isometric hold": {
     exerciseName: "BSS Isometric Hold",
     description:
-      "Bulgarian Split Squat position — rear foot elevated behind you on a bench, front thigh lowered to parallel — held static at the bottom for the timed duration on each leg. Chest tall, front knee tracking over the toes.",
+      "Bulgarian Split Squat position, rear foot elevated behind you on a bench, front thigh lowered to parallel, held static at the bottom for the timed duration on each leg. Chest tall, front knee tracking over the toes.",
     keyPoints: [
       "Rear foot elevated on a bench",
       "Front thigh to parallel, hold",
@@ -2484,7 +2484,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "singleleg hip thrust": {
     exerciseName: "Single-Leg Hip Thrust",
     description:
-      "Same hip thrust setup, but drive up on one leg while the other stays extended in the air. Keep the hips square — don't let the working side rotate open. Complete all reps on one leg before switching.",
+      "Same hip thrust setup, but drive up on one leg while the other stays extended in the air. Keep the hips square, don't let the working side rotate open. Complete all reps on one leg before switching.",
     keyPoints: [
       "One leg drives, other stays extended",
       "Keep hips square",
@@ -2497,7 +2497,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "hip thrust pulse": {
     exerciseName: "Hip Thrust Pulse",
     description:
-      "From the top of a hip thrust, pulse in a small range near lockout — a few inches down and back up — without fully lowering between pulses. Keeps constant tension on the glutes.",
+      "From the top of a hip thrust, pulse in a small range near lockout, a few inches down and back up, without fully lowering between pulses. Keeps constant tension on the glutes.",
     keyPoints: [
       "Start from the top of the thrust",
       "Small pulses near lockout",
@@ -2536,7 +2536,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   clamshell: {
     exerciseName: "Clamshell",
     description:
-      "Lie on your side, knees bent and stacked, feet together. Keeping feet touching, open the top knee upward like a clamshell, then lower under control. Keep the hips stacked — don't roll back.",
+      "Lie on your side, knees bent and stacked, feet together. Keeping feet touching, open the top knee upward like a clamshell, then lower under control. Keep the hips stacked, don't roll back.",
     keyPoints: [
       "Lie on side, knees bent, feet together",
       "Open top knee upward",
@@ -2549,7 +2549,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   bss: {
     exerciseName: "BSS",
     description:
-      "Bulgarian Split Squat — rear foot elevated behind you on a bench, front foot planted well ahead. Lower until the front thigh reaches parallel, then drive back up through the front heel. Complete all reps one leg before switching.",
+      "Bulgarian Split Squat, rear foot elevated behind you on a bench, front foot planted well ahead. Lower until the front thigh reaches parallel, then drive back up through the front heel. Complete all reps one leg before switching.",
     keyPoints: [
       "Rear foot elevated on a bench",
       "Front thigh lowers to parallel",
@@ -2575,7 +2575,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "squat hold pro": {
     exerciseName: "Squat Hold",
     description:
-      "Bottom-of-squat isometric hold at the longest duration in the progression — thighs to parallel, chest tall, weight in the heels. Brace hard; this is a pure time-under-tension test at Pro tier.",
+      "Bottom-of-squat isometric hold at the longest duration in the progression, thighs to parallel, chest tall, weight in the heels. Brace hard; this is a pure time-under-tension test at Pro tier.",
     keyPoints: [
       "Thighs to parallel, chest tall",
       "Weight in the heels",
@@ -2692,7 +2692,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "assisted pistol squat": {
     exerciseName: "Assisted Pistol Squat",
     description:
-      "Hold a doorframe, rail, or TRX-style anchor for light support. Extend one leg forward, then lower on the standing leg as far as control allows, using the support only to balance — not to pull yourself up.",
+      "Hold a doorframe, rail, or TRX-style anchor for light support. Extend one leg forward, then lower on the standing leg as far as control allows, using the support only to balance, not to pull yourself up.",
     keyPoints: [
       "Light hand support only",
       "Extend one leg forward",
@@ -2731,7 +2731,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "30second max jump squats": {
     exerciseName: "30-second Max Jump Squats",
     description:
-      "Squat to parallel and explode into a jump, landing soft and immediately sinking into the next rep — as many as possible in 30 seconds. Timer runs continuously; count every full rep.",
+      "Squat to parallel and explode into a jump, landing soft and immediately sinking into the next rep, as many as possible in 30 seconds. Timer runs continuously; count every full rep.",
     keyPoints: [
       "Squat to parallel, explode up",
       "Land soft, reset immediately",
@@ -2770,7 +2770,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "sidelying hip abduction": {
     exerciseName: "Side-Lying Hip Abduction",
     description:
-      "Lie on your side, legs stacked and straight. Lift the top leg upward against gravity, keeping it in line with the torso — don't let it drift forward — then lower under control.",
+      "Lie on your side, legs stacked and straight. Lift the top leg upward against gravity, keeping it in line with the torso, don't let it drift forward, then lower under control.",
     keyPoints: [
       "Lie on side, legs stacked straight",
       "Lift top leg against gravity",
@@ -2796,7 +2796,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "lateral bound hold": {
     exerciseName: "Lateral Bound Hold",
     description:
-      "Bound sideways off one leg, landing on the opposite leg and holding that landing position completely still for 3 seconds before bounding back. The hold is the point — it forces real landing control, not just distance.",
+      "Bound sideways off one leg, landing on the opposite leg and holding that landing position completely still for 3 seconds before bounding back. The hold is the point, it forces real landing control, not just distance.",
     keyPoints: [
       "Bound sideways, land on one leg",
       "Hold the landing still",
@@ -2850,7 +2850,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "mountain climber beginner": {
     exerciseName: "Mountain Climber",
     description:
-      "High plank on hands. Drive one knee toward the chest, return, then immediately drive the other — like running in place in a plank. Keep the hips level and shoulders over the wrists.",
+      "High plank on hands. Drive one knee toward the chest, return, then immediately drive the other, like running in place in a plank. Keep the hips level and shoulders over the wrists.",
     keyPoints: [
       "High plank on hands",
       "Drive knee to chest, alternate",
@@ -2863,7 +2863,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bicycle crunch beginner": {
     exerciseName: "Bicycle Crunch",
     description:
-      "Lie on your back, hands behind the head. Bring one elbow toward the opposite knee while extending the other leg, then switch sides in a slow pedaling motion. Controlled tempo — no yanking the neck.",
+      "Lie on your back, hands behind the head. Bring one elbow toward the opposite knee while extending the other leg, then switch sides in a slow pedaling motion. Controlled tempo, no yanking the neck.",
     keyPoints: [
       "Elbow to opposite knee",
       "Extend the other leg",
@@ -2933,7 +2933,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "30× Plank (seconds)",
       "10× Bicycle Crunch each side",
       "10× Dead Bug each side",
-      "No rest between exercises — chain them together",
+      "No rest between exercises, chain them together",
     ],
     muscleGroups: ["Full Core"],
     difficulty: "Beginner",
@@ -2941,7 +2941,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "bicycle crunch advanced": {
     exerciseName: "Bicycle Crunch",
     description:
-      "Elbow to opposite knee while extending the other leg, alternating sides in a controlled pedaling motion. At Advanced tier, keep the tempo brisk while holding form — no yanking the neck, no rushing the twist.",
+      "Elbow to opposite knee while extending the other leg, alternating sides in a controlled pedaling motion. At Advanced tier, keep the tempo brisk while holding form, no yanking the neck, no rushing the twist.",
     keyPoints: [
       "Elbow to opposite knee",
       "Extend the other leg fully",
@@ -2967,7 +2967,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "hollow body rock": {
     exerciseName: "Hollow Body Rock",
     description:
-      "Hold a hollow body position — lower back pressed into the floor, arms and legs extended off the ground — and rock gently forward and back, keeping the shape locked the entire time.",
+      "Hold a hollow body position, lower back pressed into the floor, arms and legs extended off the ground, and rock gently forward and back, keeping the shape locked the entire time.",
     keyPoints: [
       "Lower back pressed to floor",
       "Arms and legs extended",
@@ -3006,7 +3006,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "spiderman plank": {
     exerciseName: "Spider-Man Plank",
     description:
-      "High plank on hands. Bring one knee out and up toward the same-side elbow, then return and repeat on the other side. Keep the hips low and square — don't let them pike up as the knee comes through.",
+      "High plank on hands. Bring one knee out and up toward the same-side elbow, then return and repeat on the other side. Keep the hips low and square, don't let them pike up as the knee comes through.",
     keyPoints: [
       "High plank on hands",
       "Knee to same-side elbow",
@@ -3036,7 +3036,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Full hang from the bar",
       "Knees rise up and to one side",
-      "No swinging — obliques drive it",
+      "No swinging, obliques drive it",
       "8 reps each side",
     ],
     muscleGroups: ["Obliques", "Core", "Grip"],
@@ -3045,7 +3045,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "combo finisher advanced": {
     exerciseName: "Combo Finisher",
     description:
-      "A back-to-back core circuit at Advanced tier — move directly from one exercise into the next with no rest, keeping full range of motion on every rep even as fatigue builds.",
+      "A back-to-back core circuit at Advanced tier, move directly from one exercise into the next with no rest, keeping full range of motion on every rep even as fatigue builds.",
     keyPoints: [
       "No rest between exercises",
       "Chain movements together",
@@ -3058,7 +3058,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "plank to pushup": {
     exerciseName: "Plank to Push-up",
     description:
-      "Start in a forearm plank, then push up onto your hands one arm at a time into a high plank / push-up position, then lower back down to forearms one arm at a time. Keep the hips still throughout — no rocking side to side.",
+      "Start in a forearm plank, then push up onto your hands one arm at a time into a high plank / push-up position, then lower back down to forearms one arm at a time. Keep the hips still throughout, no rocking side to side.",
     keyPoints: [
       "Forearm plank to hand plank",
       "One arm at a time, both directions",
@@ -3084,7 +3084,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "vup pro": {
     exerciseName: "V-up",
     description:
-      "Lie flat, arms extended overhead, then lift torso and straight legs simultaneously to form a V, touching hands toward feet at the top. At Pro tier, keep strict form at a higher rep count — no bent knees to cheat the range.",
+      "Lie flat, arms extended overhead, then lift torso and straight legs simultaneously to form a V, touching hands toward feet at the top. At Pro tier, keep strict form at a higher rep count, no bent knees to cheat the range.",
     keyPoints: [
       "Lie flat, arms overhead",
       "Lift torso and legs together",
@@ -3110,7 +3110,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "mountain climber pro": {
     exerciseName: "Mountain Climber",
     description:
-      "High plank on hands, driving knees toward the chest in a fast alternating rhythm — like sprinting in place in a plank. At Pro tier, push the pace while keeping hips level and shoulders stacked over the wrists.",
+      "High plank on hands, driving knees toward the chest in a fast alternating rhythm, like sprinting in place in a plank. At Pro tier, push the pace while keeping hips level and shoulders stacked over the wrists.",
     keyPoints: [
       "High plank on hands",
       "Fast alternating knee drive",
@@ -3153,7 +3153,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
     keyPoints: [
       "Full hang, legs straight",
       "Raise legs to touch the bar",
-      "No swinging — controlled raise",
+      "No swinging, controlled raise",
       "Lower under control",
     ],
     muscleGroups: ["Abs", "Lats", "Grip"],
@@ -3206,7 +3206,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
       "Grip pole, hands stacked",
       "Lift the body sideways",
       "Brace against rotation",
-      "Max effort — hold as long as possible",
+      "Max effort, hold as long as possible",
     ],
     muscleGroups: ["Obliques", "Shoulders", "Lats"],
     difficulty: "Pro",
@@ -3214,7 +3214,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "combo finisher pro": {
     exerciseName: "Combo Finisher",
     description:
-      "A back-to-back Pro-tier core circuit — move directly from one advanced core movement into the next with no rest, holding full range of motion under fatigue.",
+      "A back-to-back Pro-tier core circuit, move directly from one advanced core movement into the next with no rest, holding full range of motion under fatigue.",
     keyPoints: [
       "No rest between exercises",
       "Chain movements together",
@@ -3227,7 +3227,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "dragon flag": {
     exerciseName: "Dragon Flag",
     description:
-      "Lie on a bench, gripping it behind your head. Lift the entire body — hips and straight legs together — off the bench so only the upper back touches, then lower under control, keeping the body rigid from shoulders to feet.",
+      "Lie on a bench, gripping it behind your head. Lift the entire body, hips and straight legs together, off the bench so only the upper back touches, then lower under control, keeping the body rigid from shoulders to feet.",
     keyPoints: [
       "Grip bench behind the head",
       "Lift body straight, legs extended",
@@ -3255,7 +3255,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "full body combo beginner": {
     exerciseName: "Full Body Combo",
     description:
-      "A beginner-friendly full-body circuit done back to back with no rest — move straight from the last rep of one exercise into the first rep of the next to keep the heart rate up throughout.",
+      "A beginner-friendly full-body circuit done back to back with no rest, move straight from the last rep of one exercise into the first rep of the next to keep the heart rate up throughout.",
     keyPoints: [
       "No rest between exercises",
       "Chain movements together",
@@ -3359,7 +3359,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "full body combo advanced": {
     exerciseName: "Full Body Combo",
     description:
-      "An Advanced-tier full-body circuit — chain the listed movements back to back with no rest between them, holding full range of motion as fatigue builds through the round.",
+      "An Advanced-tier full-body circuit, chain the listed movements back to back with no rest between them, holding full range of motion as fatigue builds through the round.",
     keyPoints: [
       "No rest between exercises",
       "Chain movements together",
@@ -3372,7 +3372,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "burpee pro": {
     exerciseName: "Burpee",
     description:
-      "Full burpee with push-up and overhead jump, performed at Pro tier pace with strict range of motion on every rep — full chest-to-floor push-up, full hip extension on the jump.",
+      "Full burpee with push-up and overhead jump, performed at Pro tier pace with strict range of motion on every rep, full chest-to-floor push-up, full hip extension on the jump.",
     keyPoints: [
       "Jump to plank, full push-up",
       "Jump feet forward",
@@ -3437,7 +3437,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "muscleup attempt": {
     exerciseName: "Muscle-Up Attempt",
     description:
-      "Pull explosively from a dead hang and drive the chest up and over the bar, transitioning the hands from a pull to a dip lockout in one motion. Focus on the explosive transition — celebrate every rep you land.",
+      "Pull explosively from a dead hang and drive the chest up and over the bar, transitioning the hands from a pull to a dip lockout in one motion. Focus on the explosive transition, celebrate every rep you land.",
     keyPoints: [
       "Explosive pull from a dead hang",
       "Chest drives up and over the bar",
@@ -3450,7 +3450,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "pullup to dip complex": {
     exerciseName: "Pull-up to Dip Complex",
     description:
-      "Three strict pull-ups immediately followed by three parallel bar dips, with no rest between the two movements — one round. Complete the target number of rounds back to back.",
+      "Three strict pull-ups immediately followed by three parallel bar dips, with no rest between the two movements, one round. Complete the target number of rounds back to back.",
     keyPoints: [
       "3 pull-ups, no rest",
       "Straight into 3 dips",
@@ -3463,7 +3463,7 @@ const LOCAL_EXERCISE_INFO: Record<string, LocalExerciseInfo> = {
   "clapping pushup": {
     exerciseName: "Clapping Push-up",
     description:
-      "From a push-up position, lower with control, then push up explosively so both hands leave the floor — clap once in the air — and land softly back into the next rep.",
+      "From a push-up position, lower with control, then push up explosively so both hands leave the floor, clap once in the air, and land softly back into the next rep.",
     keyPoints: [
       "Lower with control",
       "Push up explosively",

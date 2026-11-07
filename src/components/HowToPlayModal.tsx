@@ -14,7 +14,7 @@ const STEPS = [
     number: 2,
     title: "Shuffle the Deck",
     description:
-      "Your deck is automatically shuffled at the start of every workout — no two sessions are the same.",
+      "Your deck is automatically shuffled at the start of every workout, no two sessions are the same.",
   },
   {
     number: 3,
@@ -25,7 +25,7 @@ const STEPS = [
     number: 4,
     title: "Perform the Exercise",
     description:
-      "Complete the exercise shown on the card — reps, exercise name, and illustration are all displayed.",
+      "Complete the exercise shown on the card, reps, exercise name, and illustration are all displayed.",
   },
   {
     number: 5,

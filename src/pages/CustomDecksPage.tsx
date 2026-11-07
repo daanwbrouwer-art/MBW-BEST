@@ -79,7 +79,7 @@ export default function CustomDecksPage() {
           </p>
         </div>
         <p className="text-sm text-muted-foreground font-body mt-1.5">
-          Your saved exercise lists — build as many as you want.
+          Your saved exercise lists, build as many as you want.
         </p>
       </div>
 

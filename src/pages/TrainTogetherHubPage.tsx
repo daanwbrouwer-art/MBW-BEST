@@ -37,7 +37,7 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
     },
     {
       title: "The host picks the workout",
-      body: "Any built-in deck (or one of your saved custom decks) and how many cards — everyone in the party trains that same deck.",
+      body: "Any built-in deck (or one of your saved custom decks) and how many cards, everyone in the party trains that same deck.",
     },
     {
       title: "Everyone readies up, host starts",
@@ -45,7 +45,7 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
     },
     {
       title: "Same card, same rep, for everyone",
-      body: "Every player sees the exact same card at the exact same time — same exercise, same rep count — so you're all moving together, not racing separate decks.",
+      body: "Every player sees the exact same card at the exact same time, same exercise, same rep count, so you're all moving together, not racing separate decks.",
     },
   ];
 
@@ -126,7 +126,7 @@ function HowItWorksSheet({ onClose }: { onClose: () => void }) {
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">
               The draw is built so the same exercise never comes up twice in a
-              row — you'll always get full variety across the whole session, no
+              row, you'll always get full variety across the whole session, no
               matter which deck, difficulty, or party size you pick.
             </p>
           </div>
@@ -163,7 +163,7 @@ function TrainTogetherLocked({
       <p className="text-sm text-muted-foreground font-body mb-6 max-w-xs">
         {needsAccount
           ? "Training with friends needs a real account, so your invites and progress carry across devices."
-          : "Train Together is a subscriber feature — subscribe to invite friends and train live together."}
+          : "Train Together is a subscriber feature, subscribe to invite friends and train live together."}
       </p>
       <Button
         variant="pulse"
@@ -277,7 +277,7 @@ function PartySetupPanel({
           </button>
         </div>
         <p className="text-xs text-muted-foreground font-body mb-5">
-          Choose 2, 3, or 4 — including you
+          Choose 2, 3, or 4, including you
         </p>
 
         <div className="flex gap-2 mb-5">
@@ -414,7 +414,7 @@ function PartySetupPanel({
               {friendships.filter((f) => f.status === "accepted").length ===
               0 ? (
                 <p className="text-sm text-muted-foreground font-body py-2">
-                  No friends yet — search by username above.
+                  No friends yet, search by username above.
                 </p>
               ) : (
                 <div className="flex flex-col gap-2">
@@ -744,7 +744,7 @@ export default function TrainTogetherHubPage() {
           </div>
           {isUnlocked && (
             <p className="text-xs text-muted-foreground font-body">
-              Choose 2, 3, or 4 — including you
+              Choose 2, 3, or 4, including you
             </p>
           )}
         </div>

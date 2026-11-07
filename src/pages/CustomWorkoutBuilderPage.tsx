@@ -431,7 +431,7 @@ export default function CustomWorkoutBuilderPage() {
               onClick={handleSaveTap}
               data-ocid="custom-workout.save_button"
             >
-              {isEditing ? "Save Changes" : "Save Deck"} — {selected.length}{" "}
+              {isEditing ? "Save Changes" : "Save Deck"} - {selected.length}{" "}
               {selected.length === 1 ? "exercise" : "exercises"}
             </Button>
           </motion.div>

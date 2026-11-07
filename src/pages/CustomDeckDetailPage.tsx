@@ -141,7 +141,7 @@ export default function CustomDeckDetailPage() {
       <div className="relative flex-1 overflow-y-auto px-5 pb-4">
         {deck.exercises.length === 0 ? (
           <p className="text-center text-sm text-muted-foreground font-body py-10">
-            This deck has no exercises yet — tap Edit to add some.
+            This deck has no exercises yet, tap Edit to add some.
           </p>
         ) : (
           <div

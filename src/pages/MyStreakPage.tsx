@@ -108,7 +108,7 @@ export default function MyStreakPage() {
   };
 
   const bestExerciseLabel = streak.bestExercise
-    ? `${streak.bestExercise.name} — ${streak.bestExercise.reps} reps`
+    ? `${streak.bestExercise.name} · ${streak.bestExercise.reps} reps`
     : "No PR yet";
 
   return (

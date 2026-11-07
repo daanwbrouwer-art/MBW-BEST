@@ -190,11 +190,11 @@ export default function PaletteLabPage() {
     });
     try {
       await navigator.clipboard.writeText(
-        `MBW palette test — ${totalVotes} votes\n${lines.join("\n")}`,
+        `MBW palette test, ${totalVotes} votes\n${lines.join("\n")}`,
       );
       toast("Results copied");
     } catch {
-      toast("Couldn't copy — take a screenshot instead");
+      toast("Couldn't copy, take a screenshot instead");
     }
   };
 
@@ -320,7 +320,7 @@ export default function PaletteLabPage() {
               Blind test
             </h2>
             <p className="text-sm text-muted-foreground font-body mb-3">
-              Names hidden. Tap the screen you&apos;d rather train with — repeat
+              Names hidden. Tap the screen you&apos;d rather train with, repeat
               a few rounds.
             </p>
             <div className="grid grid-cols-2 gap-3">

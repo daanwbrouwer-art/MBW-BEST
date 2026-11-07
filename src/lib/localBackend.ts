@@ -231,7 +231,7 @@ const mockDeck: Deck = {
 
 const mockProFemaleDeck: Deck = {
   id: BigInt(2),
-  name: "Upper Body — Pro (Women)",
+  name: "Upper Body · Pro (Women)",
   isAvailable: true,
   description: "Archer push-ups, pull-ups and elite skill work",
   cardCount: BigInt(54),
@@ -437,8 +437,8 @@ export const localBackend: backendInterface = {
   clearLegacyUpperBody: async () => undefined,
   seedUpperBodyBeginnerDeck: async () => undefined,
   getUpperBodyBeginnerDeckIdentity: async () => ({
-    name: "Upper Body — Beginner",
-    subtitle: "Build your foundation — push, pull and hold with perfect form",
+    name: "Upper Body · Beginner",
+    subtitle: "Build your foundation, push, pull and hold with perfect form",
     category: "Upper Body",
     difficulty: "Beginner",
     gender: "Male",
@@ -461,7 +461,7 @@ export const localBackend: backendInterface = {
   clearLegacyUpperBodyProFemale: async () => undefined,
   seedUpperBodyProFemaleDeck: async () => undefined,
   getUpperBodyProFemaleDeckIdentity: async () => ({
-    name: "Upper Body — Pro (Women)",
+    name: "Upper Body · Pro (Women)",
     subtitle: "Archer push-ups, pull-ups and elite skill work",
     category: "Upper Body",
     difficulty: "Pro",
@@ -485,8 +485,8 @@ export const localBackend: backendInterface = {
   clearLegacyLowerBodyBeginnerFemale: async () => undefined,
   seedLowerBodyBeginnerFemaleDeck: async () => undefined,
   getLowerBodyBeginnerFemaleDeckIdentity: async () => ({
-    name: "Lower Body — Beginner (Women)",
-    subtitle: "Squats, glute bridges and lunges — build from the ground up",
+    name: "Lower Body · Beginner (Women)",
+    subtitle: "Squats, glute bridges and lunges, build from the ground up",
     category: "Lower Body",
     difficulty: "Beginner",
     gender: "Female",
@@ -509,8 +509,8 @@ export const localBackend: backendInterface = {
   clearLegacyLowerBodyAdvancedFemale: async () => undefined,
   seedLowerBodyAdvancedFemaleDeck: async () => undefined,
   getLowerBodyAdvancedFemaleDeckIdentity: async () => ({
-    name: "Lower Body — Advanced (Women)",
-    subtitle: "Split squats, plyometrics and glute isolation — next level",
+    name: "Lower Body · Advanced (Women)",
+    subtitle: "Split squats, plyometrics and glute isolation, next level",
     category: "Lower Body",
     difficulty: "Advanced",
     gender: "Female",
@@ -533,7 +533,7 @@ export const localBackend: backendInterface = {
   clearLegacyLowerBodyProFemale: async () => undefined,
   seedLowerBodyProFemaleDeck: async () => undefined,
   getLowerBodyProFemaleDeckIdentity: async () => ({
-    name: "Lower Body — Pro (Women)",
+    name: "Lower Body · Pro (Women)",
     subtitle: "Pistol squats, explosive jumps and single-leg mastery",
     category: "Lower Body",
     difficulty: "Pro",
@@ -557,8 +557,8 @@ export const localBackend: backendInterface = {
   clearLegacyCoreBeginnerFemale: async () => undefined,
   seedCoreBeginnerFemaleDeck: async () => undefined,
   getCoreBeginnerFemaleDeckIdentity: async () => ({
-    name: "Core — Beginner (Women)",
-    subtitle: "Planks, crunches and stability — build a rock-solid core",
+    name: "Core · Beginner (Women)",
+    subtitle: "Planks, crunches and stability, build a rock-solid core",
     category: "Core",
     difficulty: "Beginner",
     gender: "Female",
@@ -581,7 +581,7 @@ export const localBackend: backendInterface = {
   clearLegacyCoreAdvancedFemale: async () => undefined,
   seedCoreAdvancedFemaleDeck: async () => undefined,
   getCoreAdvancedFemaleDeckIdentity: async () => ({
-    name: "Core — Advanced (Women)",
+    name: "Core · Advanced (Women)",
     subtitle: "Hollow body, hanging core and dynamic stability",
     category: "Core",
     difficulty: "Advanced",
@@ -605,7 +605,7 @@ export const localBackend: backendInterface = {
   clearLegacyCoreProFemale: async () => undefined,
   seedCoreProFemaleDeck: async () => undefined,
   getCoreProFemaleDeckIdentity: async () => ({
-    name: "Core — Pro (Women)",
+    name: "Core · Pro (Women)",
     subtitle: "Dragon flags, windshield wipers and gymnastic core",
     category: "Core",
     difficulty: "Pro",
@@ -630,8 +630,8 @@ export const localBackend: backendInterface = {
   clearLegacyFullBodyBeginnerFemale: async () => undefined,
   seedFullBodyBeginnerFemaleDeck: async () => undefined,
   getFullBodyBeginnerFemaleDeckIdentity: async () => ({
-    name: "Full Body — Beginner (Women)",
-    subtitle: "Total-body movement — cardio, strength and coordination",
+    name: "Full Body · Beginner (Women)",
+    subtitle: "Total-body movement, cardio, strength and coordination",
     category: "Full Body",
     difficulty: "Beginner",
     gender: "Female",
@@ -654,7 +654,7 @@ export const localBackend: backendInterface = {
   clearLegacyFullBodyAdvancedFemale: async () => undefined,
   seedFullBodyAdvancedFemaleDeck: async () => undefined,
   getFullBodyAdvancedFemaleDeckIdentity: async () => ({
-    name: "Full Body — Advanced (Women)",
+    name: "Full Body · Advanced (Women)",
     subtitle: "Plyometrics, explosive combos and full-body conditioning",
     category: "Full Body",
     difficulty: "Advanced",
@@ -678,9 +678,9 @@ export const localBackend: backendInterface = {
   clearLegacyFullBodyProFemale: async () => undefined,
   seedFullBodyProFemaleDeck: async () => undefined,
   getFullBodyProFemaleDeckIdentity: async () => ({
-    name: "Full Body — Pro (Women)",
+    name: "Full Body · Pro (Women)",
     subtitle:
-      "Elite full-body mastery — explosive power, skill holds and conditioning",
+      "Elite full-body mastery, explosive power, skill holds and conditioning",
     category: "Full Body",
     difficulty: "Pro",
     gender: "Female",

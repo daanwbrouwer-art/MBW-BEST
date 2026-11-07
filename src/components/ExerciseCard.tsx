@@ -781,7 +781,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               marginBottom: "3px",
             }}
           >
-            ACE — DOUBLE {sessionCard.card.holdSeconds ? "TIME" : "REPS"}
+            ACE · DOUBLE {sessionCard.card.holdSeconds ? "TIME" : "REPS"}
           </div>
         )}
         {isKing && (
@@ -799,7 +799,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({
               marginBottom: "3px",
             }}
           >
-            KING — HALF {sessionCard.card.holdSeconds ? "TIME" : "REPS"}
+            KING · HALF {sessionCard.card.holdSeconds ? "TIME" : "REPS"}
           </div>
         )}
         {/* Reps or isometric hold seconds — the full cue text lives in the

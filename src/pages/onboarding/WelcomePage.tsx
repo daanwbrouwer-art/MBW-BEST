@@ -39,7 +39,7 @@ export default function WelcomePage() {
           }}
         >
           <p className="font-body text-sm text-white">
-            Save your progress — create a free account
+            Save your progress, create a free account
           </p>
           <button
             type="button"

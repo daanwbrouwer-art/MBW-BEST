@@ -78,7 +78,7 @@ export const RANK_LABEL: Record<string, string> = {
 export const CARD_COUNT_LABEL: Record<string, string> = {
   Ten: "10 Cards",
   Twenty: "20 Cards",
-  FullDeck: "52 Cards — Full Challenge",
+  FullDeck: "52 Cards · Full Challenge",
 };
 
 export const JOKER_CHALLENGE_LABEL: Record<string, string> = {

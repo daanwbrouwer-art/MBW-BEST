@@ -76,9 +76,9 @@ export default function FAQPage() {
               Do I get a monthly or yearly summary?
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">
-              Yes. Every month you get a Monthly Recap — workouts, training
+              Yes. Every month you get a Monthly Recap, workouts, training
               days, reps, time trained, your favourite deck and most-drawn
-              exercises — and every January a Year in Review with your best
+              exercises, and every January a Year in Review with your best
               month, a month-by-month chart and your year's highlights. Find
               them under Stats Overview on Home (or Profile → Monthly & yearly
               recaps). Every finished workout counts, custom decks included.
@@ -104,7 +104,7 @@ export default function FAQPage() {
               Your streak counts consecutive weeks where you hit your weekly
               training-day goal (set under Training Goal on your Profile). If a full
               week goes by without meeting that goal, your streak resets to zero
-              for the next week — there's currently no grace period for a missed
+              for the next week, there's currently no grace period for a missed
               week. If your goal feels like a stretch, lowering it (e.g. from 5
               days to 3) makes the streak easier to keep alive.
             </p>
@@ -127,15 +127,14 @@ export default function FAQPage() {
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed mb-2">
               Your streak and achievements are currently stored only on this
-              device, not on our servers — reinstalling the app or switching
+              device, not on our servers, reinstalling the app or switching
               devices resets them, even if you're signed in. Your workout
               history is different: if you're signed in, it's saved to your
               account and comes back automatically once you sign back in on any
               device.
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed mb-3">
-              What never gets lost is your <strong>subscription</strong> —
-              that's tracked by the App Store or Google Play, independent of
+              What never gets lost is your <strong>subscription</strong> that's tracked by the App Store or Google Play, independent of
               this app or your device. Tap below to bring it back.
             </p>
             <button
@@ -190,7 +189,7 @@ export default function FAQPage() {
             </p>
             <p className="text-xs text-muted-foreground font-body leading-relaxed">
               It's based on the exercises in your workout plus the weight,
-              height, and age you entered — it's an estimate, not a medical
+              height, and age you entered, it's an estimate, not a medical
               measurement. If your weight or height has changed, update it in
               Body Metrics on your Profile and future estimates will adjust
               automatically.

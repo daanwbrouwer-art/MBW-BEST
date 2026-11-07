@@ -14,7 +14,7 @@ export default function WelcomeTipsPage() {
     {
       icon: <Layers className="w-6 h-6" />,
       title: "Choose Your Session",
-      description: "Pick 10, 20, or 52 cards — or set a custom number.",
+      description: "Pick 10, 20, or 52 cards, or set a custom number.",
     },
     {
       icon: <Sparkles className="w-6 h-6" />,

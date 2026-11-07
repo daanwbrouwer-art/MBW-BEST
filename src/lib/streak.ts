@@ -204,7 +204,7 @@ const MILESTONE_MESSAGES: Record<number, string> = {
   1: "First week goal hit! 🔥",
   4: "One month of consistency! 💪",
   8: "Two months strong!",
-  12: "A full quarter — this is a lifestyle now.",
+  12: "A full quarter, this is a lifestyle now.",
   26: "Half a year. Legend status.",
   52: "One full year. Unstoppable. 🏆",
 };

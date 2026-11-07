@@ -693,7 +693,7 @@ export default function MapPage() {
               }}
               data-ocid="map.unconfigured_notice"
             >
-              Connect Supabase to load nearby parks — see .env.example.
+              Connect Supabase to load nearby parks, see .env.example.
             </div>
           )}
           {isSupabaseConfigured && isError && (

@@ -867,8 +867,7 @@ export default function ProfilePage() {
                     Visible to nearby athletes
                   </p>
                   <p className="text-xs text-muted-foreground font-body mt-0.5 leading-snug">
-                    Lets other users find you in the Nearby list. Off by default
-                    — shares only a rounded (about 1 km) location and your
+                    Lets other users find you in the Nearby list. Off by default, shares only a rounded (about 1 km) location and your
                     last-active time, never your exact position.
                   </p>
                 </div>
@@ -1327,7 +1326,7 @@ export default function ProfilePage() {
               }}
             >
               <p className="text-xs text-muted-foreground font-body mb-3 leading-snug">
-                Share your code — you both get 10% off. Discounts stack up to
+                Share your code, you both get 10% off. Discounts stack up to
                 50%.
               </p>
               <button

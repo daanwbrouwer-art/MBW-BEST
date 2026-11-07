@@ -111,7 +111,7 @@ export function AchievementDetailSheet({
                   className="font-display font-bold text-xs"
                   style={{ color: GOLD }}
                 >
-                  Fully earned — subscribe to claim it
+                  Fully earned, subscribe to claim it
                 </span>
               </div>
             )}

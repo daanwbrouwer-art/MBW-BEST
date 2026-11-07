@@ -369,7 +369,7 @@ export function JokerOverlay({
               onClick={handleDone}
               data-ocid="joker-overlay.confirm_button"
             >
-              {isComboJoker ? "CONTINUE" : "DONE — NEXT CARD"}
+              {isComboJoker ? "CONTINUE" : "DONE · NEXT CARD"}
             </Button>
           </motion.div>
         </motion.div>

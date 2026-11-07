@@ -598,7 +598,7 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   {
     id: "tb_03",
     name: "Lunch Grind",
-    description: "Complete a workout between 12:00–13:00",
+    description: "Complete a workout between 12:00-13:00",
     rarity: "common",
     category: "time",
     metric: "lunchGrindCount",

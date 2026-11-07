@@ -30,7 +30,7 @@ export function RecapTeaser() {
       if (y.workouts > 0)
         return {
           title: `Your ${lastYear.year} Year in Review is ready 🎉`,
-          sub: `${y.workouts} workouts · ${y.reps.toLocaleString()} reps — see your best month and top exercises.`,
+          sub: `${y.workouts} workouts · ${y.reps.toLocaleString()} reps, see your best month and top exercises.`,
           href: `/recap?view=year&y=${lastYear.year}`,
           highlight: true,
         };
@@ -51,7 +51,7 @@ export function RecapTeaser() {
       title: "Monthly Recap",
       sub:
         m.workouts > 0
-          ? `${monthName} so far: ${m.workouts} workout${m.workouts === 1 ? "" : "s"} · ${m.reps.toLocaleString()} reps. Your full recap lands on the 1st — plus a Year in Review every January.`
+          ? `${monthName} so far: ${m.workouts} workout${m.workouts === 1 ? "" : "s"} · ${m.reps.toLocaleString()} reps. Your full recap lands on the 1st, plus a Year in Review every January.`
           : `Every month you get a recap of your training, and every January a Year in Review. ${monthName}'s starts with your first workout.`,
       href: "/recap",
       highlight: false,

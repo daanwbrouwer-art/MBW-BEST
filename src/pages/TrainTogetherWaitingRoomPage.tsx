@@ -51,7 +51,7 @@ const DECK_CHOICES: TrainTogetherCategory[] = [
 const CARD_COUNT_PRESETS = [MIN_CARD_COUNT, STANDARD_CARD_COUNT] as const;
 
 async function shareInviteCode(code: string): Promise<void> {
-  const text = `Join me on MyBodyWeight — Train Together with code ${code}`;
+  const text = `Join me on MyBodyWeight, Train Together with code ${code}`;
   if (navigator.share) {
     try {
       await navigator.share({ text });
@@ -356,7 +356,7 @@ function WorkoutSetupSheet({
                 className="text-xs mb-3"
                 style={{ color: "oklch(var(--prestige))" }}
               >
-                Only {poolSize} exercises available with your exclusions — some
+                Only {poolSize} exercises available with your exclusions, some
                 will repeat to fill {cardCount} cards.
               </p>
             )}
@@ -365,7 +365,7 @@ function WorkoutSetupSheet({
                 className="text-xs mb-3"
                 style={{ color: "oklch(0.75 0.15 25)" }}
               >
-                Core doesn't have any cards yet — pick another deck.
+                Core doesn't have any cards yet, pick another deck.
               </p>
             )}
 

@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
 const VALUE_PROPS: { emoji: string; text: string }[] = [
-  { emoji: "🃏", text: "Unlimited card draws — no weekly limits" },
+  { emoji: "🃏", text: "Unlimited card draws, no weekly limits" },
   { emoji: "🏆", text: "Achievements and streaks" },
   { emoji: "⭐", text: "Access to all Pro decks" },
 ];
