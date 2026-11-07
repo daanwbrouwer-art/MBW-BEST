@@ -1648,28 +1648,24 @@ const DECK_EXERCISES: Record<
                 imagePath: "/assets/exercises/decks/male_ub_adv_handstand_hold_stena.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               3: {
                 exerciseName: "Wall Handstand Hold",
                 imagePath: "/assets/exercises/decks/male_ub_adv_handstand_hold_stena.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               4: {
                 exerciseName: "Wall Handstand Hold",
                 imagePath: "/assets/exercises/decks/male_ub_adv_handstand_hold_stena.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               5: {
                 exerciseName: "Wall Handstand Hold",
                 imagePath: "/assets/exercises/decks/male_ub_adv_handstand_hold_stena.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               6: {
                 exerciseName: "Handstand Push-up Negative",
@@ -1910,7 +1906,6 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "L-sit Hold", imagePath: "/assets/exercises/decks/male_core_adv_l_sit_hold.webp",
-              illustrationComingSoon: true,
               isIsometric: true,
               holdSeconds: 15,
               specialInstruction:
@@ -2056,28 +2051,24 @@ const DECK_EXERCISES: Record<
                 imagePath: "/assets/exercises/decks/female_ub_pro_wall_handstand_hold.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               3: {
                 exerciseName: "Wall Handstand Hold",
                 imagePath: "/assets/exercises/decks/female_ub_pro_wall_handstand_hold.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               4: {
                 exerciseName: "Wall Handstand Hold",
                 imagePath: "/assets/exercises/decks/female_ub_pro_wall_handstand_hold.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               5: {
                 exerciseName: "Wall Handstand Hold",
                 imagePath: "/assets/exercises/decks/female_ub_pro_wall_handstand_hold.webp",
                 isIsometric: true,
                 eachLeg: false,
-                specialInstruction: "15 sec per rep",
               },
               6: {
                 exerciseName: "Handstand Push-up Negative",
@@ -8370,6 +8361,35 @@ function clampReps(reps: number): number {
   return Math.min(10, Math.max(3, reps));
 }
 
+/** Very hard exercises: the card asks for at most this many reps; anyone
+ * who can do more is told they can. */
+const REP_CAPS: Record<string, number> = {
+  "Handstand Push-up Negative": 3,
+  "Handstand Push-up": 5,
+};
+
+function cardReps(name: string, reps: number): number {
+  const r = clampReps(reps);
+  const cap = REP_CAPS[name];
+  return cap ? Math.min(r, cap) : r;
+}
+
+/** A hold on a number card with no time of its own (Wall Handstand Hold) is
+ * timed, not counted: 5 seconds per card value
+ * (a 4 = 20 s, a 10 = 50 s). Freestanding handstand keeps its count-up. */
+function cardHoldSeconds(
+  entry: SuitExerciseEntry,
+  rankNum: number,
+  isQueen: boolean,
+): number | undefined {
+  if (entry.holdSeconds) return entry.holdSeconds;
+  if (isQueen || !entry.isIsometric) return undefined;
+  if (/freestanding/i.test(entry.exerciseName)) return undefined;
+  // "2 sec hold per rep" style cards are reps with a pause, not a timed hold.
+  if (/per rep/i.test(entry.specialInstruction ?? "")) return undefined;
+  return rankNum * 5;
+}
+
 function buildFullDeck(
   suitExerciseMap: Record<SuitKey, string>,
   richConfig?: DeckExerciseConfig | null,
@@ -8427,14 +8447,21 @@ function buildFullDeck(
           rank,
           suit,
           exerciseName: entry.exerciseName,
-          reps: clampReps(isQueen ? (entry.reps ?? 0) : rankNum),
+          reps: cardReps(
+            entry.exerciseName,
+            isQueen ? (entry.reps ?? 0) : rankNum,
+          ),
           isJoker: false,
           isAce: false,
           isKing: false,
           eachLeg: entry.eachLeg,
           eachSide: entry.eachSide,
-          holdSeconds: entry.holdSeconds,
-          specialInstruction: entry.specialInstruction,
+          holdSeconds: cardHoldSeconds(entry, rankNum, isQueen),
+          specialInstruction: REP_CAPS[entry.exerciseName]
+            ? [entry.specialInstruction, "More if you can"]
+                .filter(Boolean)
+                .join(" · ")
+            : entry.specialInstruction,
           imagePath: entry.imagePath,
           illustrationComingSoon: entry.illustrationComingSoon,
           deckCategory,
