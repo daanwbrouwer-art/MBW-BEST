@@ -782,7 +782,7 @@ const DECK_EXERCISES: Record<
         },
         joker: {
           exerciseName: "Joker Combo",
-          imagePath: "/assets/exercises/female combo finisher beginner.png",
+          imagePath: "/assets/exercises/female combo finisher beginner.webp",
           comboList: [
             { reps: 8, exerciseName: "Knee Push-up", eachLeg: false },
             { reps: 8, exerciseName: "Pike Push-up", eachLeg: false },
@@ -2741,19 +2741,19 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
                 specialInstruction: "shoulders on bench",
               },
               11: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
                 specialInstruction: "shoulders on bench",
               },
               12: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
                 specialInstruction: "shoulders on bench",
               },
@@ -3282,22 +3282,22 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Elevated Hip Thrust",
-                imagePath: "/assets/exercises/hip thrust.png",
+                imagePath: "/assets/exercises/hip thrust.webp",
                 eachLeg: false,
               },
               6: {
@@ -3322,31 +3322,31 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Nordic Curl",
-                imagePath: "/assets/exercises/nordic curl.png",
+                imagePath: "/assets/exercises/nordic curl.webp",
                 eachLeg: false,
                 specialInstruction: "Use hands to press back up",
               },
               11: {
                 exerciseName: "Nordic Curl",
-                imagePath: "/assets/exercises/nordic curl.png",
+                imagePath: "/assets/exercises/nordic curl.webp",
                 eachLeg: false,
                 specialInstruction: "Use hands to press back up",
               },
               12: {
                 exerciseName: "Nordic Curl",
-                imagePath: "/assets/exercises/nordic curl.png",
+                imagePath: "/assets/exercises/nordic curl.webp",
                 eachLeg: false,
                 specialInstruction: "Use hands to press back up",
               },
             },
             queen: {
               exerciseName: "Hip Thrust Pulse",
-              imagePath: "/assets/exercises/hip thrust.png",
+              imagePath: "/assets/exercises/hip thrust.webp",
               eachLeg: false,
               reps: 20,
               specialInstruction: "20 pulses — no full lowering",
             },
-            defaultImagePath: "/assets/exercises/hip thrust.png",
+            defaultImagePath: "/assets/exercises/hip thrust.webp",
           },
           // Diamonds — Plyometric Lunge Progression
           Diamonds: {
@@ -3442,22 +3442,22 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Fire Hydrant",
-                imagePath: "/assets/exercises/fire hydrant.png",
+                imagePath: "/assets/exercises/fire hydrant.webp",
                 eachSide: true,
               },
               7: {
                 exerciseName: "Fire Hydrant",
-                imagePath: "/assets/exercises/fire hydrant.png",
+                imagePath: "/assets/exercises/fire hydrant.webp",
                 eachSide: true,
               },
               8: {
                 exerciseName: "Fire Hydrant",
-                imagePath: "/assets/exercises/fire hydrant.png",
+                imagePath: "/assets/exercises/fire hydrant.webp",
                 eachSide: true,
               },
               9: {
                 exerciseName: "Fire Hydrant",
-                imagePath: "/assets/exercises/fire hydrant.png",
+                imagePath: "/assets/exercises/fire hydrant.webp",
                 eachSide: true,
               },
               10: {
@@ -3490,7 +3490,7 @@ const DECK_EXERCISES: Record<
         },
         joker: {
           exerciseName: "Joker Combo",
-          imagePath: "/assets/exercises/combo finisher advanced female.png",
+          imagePath: "/assets/exercises/combo finisher advanced female.webp",
           comboList: [
             {
               reps: 6,
@@ -4105,31 +4105,31 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Lateral Bound",
-                imagePath: "/assets/exercises/lateral bound.png",
+                imagePath: "/assets/exercises/lateral bound.webp",
                 eachSide: true,
                 reps: 8,
               },
               11: {
                 exerciseName: "Lateral Bound",
-                imagePath: "/assets/exercises/lateral bound.png",
+                imagePath: "/assets/exercises/lateral bound.webp",
                 eachSide: true,
                 reps: 8,
               },
               12: {
                 exerciseName: "Lateral Bound",
-                imagePath: "/assets/exercises/lateral bound.png",
+                imagePath: "/assets/exercises/lateral bound.webp",
                 eachSide: true,
                 reps: 8,
               },
             },
             queen: {
               exerciseName: "Lateral Bound Hold",
-              imagePath: "/assets/exercises/lateral bound.png",
+              imagePath: "/assets/exercises/lateral bound.webp",
               eachSide: true,
               reps: 5,
               specialInstruction: "3 sec hold on landing",
             },
-            defaultImagePath: "/assets/exercises/lateral bound.png",
+            defaultImagePath: "/assets/exercises/lateral bound.webp",
           },
         },
         joker: {
@@ -4692,28 +4692,28 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Bird Dog",
-                imagePath: "/assets/exercises/bird dog.png",
+                imagePath: "/assets/exercises/bird dog.webp",
                 eachSide: true,
                 reps: 2,
                 specialInstruction: "2 sec hold, each side",
               },
               3: {
                 exerciseName: "Bird Dog",
-                imagePath: "/assets/exercises/bird dog.png",
+                imagePath: "/assets/exercises/bird dog.webp",
                 eachSide: true,
                 reps: 3,
                 specialInstruction: "2 sec hold, each side",
               },
               4: {
                 exerciseName: "Bird Dog",
-                imagePath: "/assets/exercises/bird dog.png",
+                imagePath: "/assets/exercises/bird dog.webp",
                 eachSide: true,
                 reps: 4,
                 specialInstruction: "2 sec hold, each side",
               },
               5: {
                 exerciseName: "Bird Dog",
-                imagePath: "/assets/exercises/bird dog.png",
+                imagePath: "/assets/exercises/bird dog.webp",
                 eachSide: true,
                 reps: 5,
                 specialInstruction: "2 sec hold, each side",
@@ -4776,7 +4776,7 @@ const DECK_EXERCISES: Record<
               specialInstruction:
                 "#QueenChallenge knees 2 cm off floor, hold 30 seconds",
             },
-            defaultImagePath: "/assets/exercises/bird dog.png",
+            defaultImagePath: "/assets/exercises/bird dog.webp",
           },
           // Clubs — Lower Core
           Clubs: {
@@ -4863,12 +4863,12 @@ const DECK_EXERCISES: Record<
               specialInstruction:
                 "#QueenChallenge raise legs to 45 degrees, hold 20 seconds",
             },
-            defaultImagePath: "/assets/exercises/knee tuck.png",
+            defaultImagePath: "/assets/exercises/knee tuck.webp",
           },
         },
         joker: {
           exerciseName: "Core Finisher",
-          imagePath: "/assets/exercises/combo finisher beginner female.png",
+          imagePath: "/assets/exercises/combo finisher beginner female.webp",
           comboList: [
             { reps: 30, exerciseName: "Plank" },
             { reps: 10, exerciseName: "Bicycle Crunch" },
@@ -5462,28 +5462,28 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Spider-Man Plank",
-                imagePath: "/assets/exercises/spiderman plank.png",
+                imagePath: "/assets/exercises/spiderman plank.webp",
                 reps: 10,
                 eachSide: true,
                 specialInstruction: "knee to elbow, each side",
               },
               7: {
                 exerciseName: "Spider-Man Plank",
-                imagePath: "/assets/exercises/spiderman plank.png",
+                imagePath: "/assets/exercises/spiderman plank.webp",
                 reps: 12,
                 eachSide: true,
                 specialInstruction: "knee to elbow, each side",
               },
               8: {
                 exerciseName: "Spider-Man Plank",
-                imagePath: "/assets/exercises/spiderman plank.png",
+                imagePath: "/assets/exercises/spiderman plank.webp",
                 reps: 14,
                 eachSide: true,
                 specialInstruction: "knee to elbow, each side",
               },
               9: {
                 exerciseName: "Spider-Man Plank",
-                imagePath: "/assets/exercises/spiderman plank.png",
+                imagePath: "/assets/exercises/spiderman plank.webp",
                 reps: 16,
                 eachSide: true,
                 specialInstruction: "knee to elbow, each side",
@@ -5546,28 +5546,28 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Hanging Oblique Raise",
-                imagePath: "/assets/exercises/hanging oblique raise.png",
+                imagePath: "/assets/exercises/hanging oblique raise.webp",
                 reps: 8,
                 eachSide: true,
                 specialInstruction: "knees to side, each side",
               },
               7: {
                 exerciseName: "Hanging Oblique Raise",
-                imagePath: "/assets/exercises/hanging oblique raise.png",
+                imagePath: "/assets/exercises/hanging oblique raise.webp",
                 reps: 10,
                 eachSide: true,
                 specialInstruction: "knees to side, each side",
               },
               8: {
                 exerciseName: "Hanging Oblique Raise",
-                imagePath: "/assets/exercises/hanging oblique raise.png",
+                imagePath: "/assets/exercises/hanging oblique raise.webp",
                 reps: 12,
                 eachSide: true,
                 specialInstruction: "knees to side, each side",
               },
               9: {
                 exerciseName: "Hanging Oblique Raise",
-                imagePath: "/assets/exercises/hanging oblique raise.png",
+                imagePath: "/assets/exercises/hanging oblique raise.webp",
                 reps: 14,
                 eachSide: true,
                 specialInstruction: "knees to side, each side",
@@ -5606,7 +5606,7 @@ const DECK_EXERCISES: Record<
         },
         joker: {
           exerciseName: "Combo Finisher",
-          imagePath: "/assets/exercises/combo finisher advanced female.png",
+          imagePath: "/assets/exercises/combo finisher advanced female.webp",
           comboList: [
             { reps: 10, exerciseName: "V-Up" },
             { reps: 10, exerciseName: "Bicycle with Pause" },
@@ -5980,91 +5980,91 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Dragon Flag Negative",
-                imagePath: "/assets/exercises/dragon flag negative.png",
+                imagePath: "/assets/exercises/dragon flag negative.webp",
                 reps: 3,
                 specialInstruction: "5-second descent",
               },
               3: {
                 exerciseName: "Dragon Flag Negative",
-                imagePath: "/assets/exercises/dragon flag negative.png",
+                imagePath: "/assets/exercises/dragon flag negative.webp",
                 reps: 4,
                 specialInstruction: "5-second descent",
               },
               4: {
                 exerciseName: "Dragon Flag Negative",
-                imagePath: "/assets/exercises/dragon flag negative.png",
+                imagePath: "/assets/exercises/dragon flag negative.webp",
                 reps: 5,
                 specialInstruction: "5-second descent",
               },
               5: {
                 exerciseName: "Dragon Flag Negative",
-                imagePath: "/assets/exercises/dragon flag negative.png",
+                imagePath: "/assets/exercises/dragon flag negative.webp",
                 reps: 6,
                 specialInstruction: "5-second descent",
               },
               6: {
                 exerciseName: "Tuck Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 4,
                 specialInstruction:
                   "knees tucked to chest, hold briefly at top",
               },
               7: {
                 exerciseName: "Tuck Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 5,
                 specialInstruction:
                   "knees tucked to chest, hold briefly at top",
               },
               8: {
                 exerciseName: "Tuck Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 6,
                 specialInstruction:
                   "knees tucked to chest, hold briefly at top",
               },
               9: {
                 exerciseName: "Tuck Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 7,
                 specialInstruction:
                   "knees tucked to chest, hold briefly at top",
               },
               10: {
                 exerciseName: "Full Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 3,
                 specialInstruction: "straight body, lower under control",
               },
               11: {
                 exerciseName: "Full Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 4,
                 specialInstruction: "straight body, lower under control",
               },
               12: {
                 exerciseName: "Full Dragon Flag",
-                imagePath: "/assets/exercises/dragon flag.png",
+                imagePath: "/assets/exercises/dragon flag.webp",
                 reps: 5,
                 specialInstruction: "straight body, lower under control",
               },
             },
             queen: {
               exerciseName: "Front Lever Hold",
-              imagePath: "/assets/exercises/front lever.png",
+              imagePath: "/assets/exercises/front lever.webp",
               isIsometric: true,
               holdSeconds: 5,
               specialInstruction:
                 "#QueenChallenge Front Lever Hold — 5-second hold, tuck version acceptable. Show countdown timer.",
             },
-            defaultImagePath: "/assets/exercises/dragon flag.png",
+            defaultImagePath: "/assets/exercises/dragon flag.webp",
           },
           // Hearts — Windshield Wipers (pull-up bar)
           Hearts: {
             cardMap: {
               2: {
                 exerciseName: "Windshield Wipers Tuck",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 5,
                 eachSide: true,
                 specialInstruction:
@@ -6072,7 +6072,7 @@ const DECK_EXERCISES: Record<
               },
               3: {
                 exerciseName: "Windshield Wipers Tuck",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 6,
                 eachSide: true,
                 specialInstruction:
@@ -6080,7 +6080,7 @@ const DECK_EXERCISES: Record<
               },
               4: {
                 exerciseName: "Windshield Wipers Tuck",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 7,
                 eachSide: true,
                 specialInstruction:
@@ -6088,7 +6088,7 @@ const DECK_EXERCISES: Record<
               },
               5: {
                 exerciseName: "Windshield Wipers Tuck",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 8,
                 eachSide: true,
                 specialInstruction:
@@ -6096,7 +6096,7 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Windshield Wipers Straight",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 4,
                 eachSide: true,
                 specialInstruction:
@@ -6104,7 +6104,7 @@ const DECK_EXERCISES: Record<
               },
               7: {
                 exerciseName: "Windshield Wipers Straight",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 5,
                 eachSide: true,
                 specialInstruction:
@@ -6112,7 +6112,7 @@ const DECK_EXERCISES: Record<
               },
               8: {
                 exerciseName: "Windshield Wipers Straight",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 6,
                 eachSide: true,
                 specialInstruction:
@@ -6120,7 +6120,7 @@ const DECK_EXERCISES: Record<
               },
               9: {
                 exerciseName: "Windshield Wipers Straight",
-                imagePath: "/assets/exercises/windshield wipers.png",
+                imagePath: "/assets/exercises/windshield wipers.webp",
                 reps: 7,
                 eachSide: true,
                 specialInstruction:
@@ -6147,90 +6147,90 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Hanging L-hold",
-              imagePath: "/assets/exercises/hanging l hold.png",
+              imagePath: "/assets/exercises/hanging l hold.webp",
               isIsometric: true,
               holdSeconds: 20,
               specialInstruction:
                 "#QueenChallenge Hanging L-hold — 20 seconds, legs extended at 90°. Show countdown timer.",
             },
-            defaultImagePath: "/assets/exercises/windshield wipers.png",
+            defaultImagePath: "/assets/exercises/windshield wipers.webp",
           },
           // Diamonds — Planche Progression (floor)
           Diamonds: {
             cardMap: {
               2: {
                 exerciseName: "Planche Lean",
-                imagePath: "/assets/exercises/planche lean.png",
+                imagePath: "/assets/exercises/planche lean.webp",
                 isIsometric: true,
                 holdSeconds: 15,
                 specialInstruction: "lean shoulders forward over hands",
               },
               3: {
                 exerciseName: "Planche Lean",
-                imagePath: "/assets/exercises/planche lean.png",
+                imagePath: "/assets/exercises/planche lean.webp",
                 isIsometric: true,
                 holdSeconds: 20,
                 specialInstruction: "lean shoulders forward over hands",
               },
               4: {
                 exerciseName: "Planche Lean",
-                imagePath: "/assets/exercises/planche lean.png",
+                imagePath: "/assets/exercises/planche lean.webp",
                 isIsometric: true,
                 holdSeconds: 25,
                 specialInstruction: "lean shoulders forward over hands",
               },
               5: {
                 exerciseName: "Planche Lean",
-                imagePath: "/assets/exercises/planche lean.png",
+                imagePath: "/assets/exercises/planche lean.webp",
                 isIsometric: true,
                 holdSeconds: 30,
                 specialInstruction: "lean shoulders forward over hands",
               },
               6: {
                 exerciseName: "Tuck Planche Hold",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 5,
                 specialInstruction: "5 sec per hold",
               },
               7: {
                 exerciseName: "Tuck Planche Hold",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 6,
                 specialInstruction: "5 sec per hold",
               },
               8: {
                 exerciseName: "Tuck Planche Hold",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 7,
                 specialInstruction: "5 sec per hold",
               },
               9: {
                 exerciseName: "Tuck Planche Hold",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 8,
                 specialInstruction: "5 sec per hold",
               },
               10: {
                 exerciseName: "Straddle Planche Attempt",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 3,
                 specialInstruction: "straddle legs, brief hold attempts",
               },
               11: {
                 exerciseName: "Straddle Planche Attempt",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 4,
                 specialInstruction: "straddle legs, brief hold attempts",
               },
               12: {
                 exerciseName: "Straddle Planche Attempt",
-                imagePath: "/assets/exercises/tuck planche.png",
+                imagePath: "/assets/exercises/tuck planche.webp",
                 isIsometric: true,
                 holdSeconds: 5,
                 specialInstruction: "straddle legs, brief hold attempts",
@@ -6238,47 +6238,47 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Hollow Body Planche Rock",
-              imagePath: "/assets/exercises/planche lean.png",
+              imagePath: "/assets/exercises/planche lean.webp",
               reps: 10,
               specialInstruction:
                 "#QueenChallenge Hollow Body Planche Rock — 10 controlled rocks, maintain hollow body. Show rep counter.",
             },
-            defaultImagePath: "/assets/exercises/planche lean.png",
+            defaultImagePath: "/assets/exercises/planche lean.webp",
           },
           // Clubs — Side Plank & Human Flag (floor / post)
           Clubs: {
             cardMap: {
               2: {
                 exerciseName: "Side Plank with Hip Dip",
-                imagePath: "/assets/exercises/side plank hip dip.png",
+                imagePath: "/assets/exercises/side plank hip dip.webp",
                 reps: 8,
                 eachSide: true,
                 specialInstruction: "dip hips toward floor, each side",
               },
               3: {
                 exerciseName: "Side Plank with Hip Dip",
-                imagePath: "/assets/exercises/side plank hip dip.png",
+                imagePath: "/assets/exercises/side plank hip dip.webp",
                 reps: 10,
                 eachSide: true,
                 specialInstruction: "dip hips toward floor, each side",
               },
               4: {
                 exerciseName: "Side Plank with Hip Dip",
-                imagePath: "/assets/exercises/side plank hip dip.png",
+                imagePath: "/assets/exercises/side plank hip dip.webp",
                 reps: 12,
                 eachSide: true,
                 specialInstruction: "dip hips toward floor, each side",
               },
               5: {
                 exerciseName: "Side Plank with Hip Dip",
-                imagePath: "/assets/exercises/side plank hip dip.png",
+                imagePath: "/assets/exercises/side plank hip dip.webp",
                 reps: 14,
                 eachSide: true,
                 specialInstruction: "dip hips toward floor, each side",
               },
               6: {
                 exerciseName: "Copenhagen Plank",
-                imagePath: "/assets/exercises/copenhagen plank.png",
+                imagePath: "/assets/exercises/copenhagen plank.webp",
                 isIsometric: true,
                 holdSeconds: 5,
                 eachSide: true,
@@ -6286,7 +6286,7 @@ const DECK_EXERCISES: Record<
               },
               7: {
                 exerciseName: "Copenhagen Plank",
-                imagePath: "/assets/exercises/copenhagen plank.png",
+                imagePath: "/assets/exercises/copenhagen plank.webp",
                 isIsometric: true,
                 holdSeconds: 6,
                 eachSide: true,
@@ -6294,7 +6294,7 @@ const DECK_EXERCISES: Record<
               },
               8: {
                 exerciseName: "Copenhagen Plank",
-                imagePath: "/assets/exercises/copenhagen plank.png",
+                imagePath: "/assets/exercises/copenhagen plank.webp",
                 isIsometric: true,
                 holdSeconds: 7,
                 eachSide: true,
@@ -6302,7 +6302,7 @@ const DECK_EXERCISES: Record<
               },
               9: {
                 exerciseName: "Copenhagen Plank",
-                imagePath: "/assets/exercises/copenhagen plank.png",
+                imagePath: "/assets/exercises/copenhagen plank.webp",
                 isIsometric: true,
                 holdSeconds: 8,
                 eachSide: true,
@@ -6310,21 +6310,21 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Human Flag Attempt",
-                imagePath: "/assets/exercises/human flag attempt.png",
+                imagePath: "/assets/exercises/human flag attempt.webp",
                 isIsometric: true,
                 holdSeconds: 3,
                 specialInstruction: "max effort — hold as long as possible",
               },
               11: {
                 exerciseName: "Human Flag Attempt",
-                imagePath: "/assets/exercises/human flag attempt.png",
+                imagePath: "/assets/exercises/human flag attempt.webp",
                 isIsometric: true,
                 holdSeconds: 4,
                 specialInstruction: "max effort — hold as long as possible",
               },
               12: {
                 exerciseName: "Human Flag Attempt",
-                imagePath: "/assets/exercises/human flag attempt.png",
+                imagePath: "/assets/exercises/human flag attempt.webp",
                 isIsometric: true,
                 holdSeconds: 5,
                 specialInstruction: "max effort — hold as long as possible",
@@ -6332,18 +6332,18 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Star Side Plank",
-              imagePath: "/assets/exercises/side plank hip dip.png",
+              imagePath: "/assets/exercises/side plank hip dip.webp",
               reps: 5,
               eachSide: true,
               specialInstruction:
                 "#QueenChallenge Star Side Plank — full side plank, raise top arm and leg simultaneously. 5 each side.",
             },
-            defaultImagePath: "/assets/exercises/side plank hip dip.png",
+            defaultImagePath: "/assets/exercises/side plank hip dip.webp",
           },
         },
         joker: {
           exerciseName: "Combo Finisher",
-          imagePath: "/assets/exercises/combo finisher pro female.png",
+          imagePath: "/assets/exercises/combo finisher pro female.webp",
           comboList: [
             { reps: 3, exerciseName: "Dragon Flag" },
             { reps: 5, exerciseName: "Windshield Wipers Straight" },
@@ -6676,22 +6676,22 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Modified Burpee",
-                imagePath: "/assets/exercises/modified burpee.png",
+                imagePath: "/assets/exercises/modified burpee.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Modified Burpee",
-                imagePath: "/assets/exercises/modified burpee.png",
+                imagePath: "/assets/exercises/modified burpee.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Modified Burpee",
-                imagePath: "/assets/exercises/modified burpee.png",
+                imagePath: "/assets/exercises/modified burpee.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Modified Burpee",
-                imagePath: "/assets/exercises/modified burpee.png",
+                imagePath: "/assets/exercises/modified burpee.webp",
                 eachLeg: false,
               },
               6: {
@@ -6834,39 +6834,39 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Crab Walk",
-                imagePath: "/assets/exercises/crab walk.png",
+                imagePath: "/assets/exercises/crab walk.webp",
                 eachLeg: false,
               },
               7: {
                 exerciseName: "Crab Walk",
-                imagePath: "/assets/exercises/crab walk.png",
+                imagePath: "/assets/exercises/crab walk.webp",
                 eachLeg: false,
               },
               8: {
                 exerciseName: "Crab Walk",
-                imagePath: "/assets/exercises/crab walk.png",
+                imagePath: "/assets/exercises/crab walk.webp",
                 eachLeg: false,
               },
               9: {
                 exerciseName: "Crab Walk",
-                imagePath: "/assets/exercises/crab walk.png",
+                imagePath: "/assets/exercises/crab walk.webp",
                 eachLeg: false,
               },
               10: {
                 exerciseName: "Lateral Shuffle",
-                imagePath: "/assets/exercises/lateral shuffle.png",
+                imagePath: "/assets/exercises/lateral shuffle.webp",
                 eachLeg: false,
                 specialInstruction: "3 right + 3 left = 1 rep",
               },
               11: {
                 exerciseName: "Lateral Shuffle",
-                imagePath: "/assets/exercises/lateral shuffle.png",
+                imagePath: "/assets/exercises/lateral shuffle.webp",
                 eachLeg: false,
                 specialInstruction: "3 right + 3 left = 1 rep",
               },
               12: {
                 exerciseName: "Lateral Shuffle",
-                imagePath: "/assets/exercises/lateral shuffle.png",
+                imagePath: "/assets/exercises/lateral shuffle.webp",
                 eachLeg: false,
                 specialInstruction: "3 right + 3 left = 1 rep",
               },
@@ -6884,22 +6884,22 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Squat to Stand",
-                imagePath: "/assets/exercises/squat to stand.png",
+                imagePath: "/assets/exercises/squat to stand.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Squat to Stand",
-                imagePath: "/assets/exercises/squat to stand.png",
+                imagePath: "/assets/exercises/squat to stand.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Squat to Stand",
-                imagePath: "/assets/exercises/squat to stand.png",
+                imagePath: "/assets/exercises/squat to stand.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Squat to Stand",
-                imagePath: "/assets/exercises/squat to stand.png",
+                imagePath: "/assets/exercises/squat to stand.webp",
                 eachLeg: false,
               },
               6: {
@@ -6945,12 +6945,12 @@ const DECK_EXERCISES: Record<
               specialInstruction:
                 "Drop to plank, jump back to squat, stand. No push-up.",
             },
-            defaultImagePath: "/assets/exercises/squat to stand.png",
+            defaultImagePath: "/assets/exercises/squat to stand.webp",
           },
         },
         joker: {
           exerciseName: "Full Body Combo",
-          imagePath: "/assets/exercises/combo finisher beginner female.png",
+          imagePath: "/assets/exercises/combo finisher beginner female.webp",
           comboList: [
             { reps: 5, exerciseName: "Burpee" },
             { reps: 10, exerciseName: "High Knees" },
@@ -7311,17 +7311,17 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Burpee Box Jump",
-                imagePath: "/assets/exercises/burpee box jump.png",
+                imagePath: "/assets/exercises/burpee box jump.webp",
                 eachLeg: false,
               },
               11: {
                 exerciseName: "Burpee Box Jump",
-                imagePath: "/assets/exercises/burpee box jump.png",
+                imagePath: "/assets/exercises/burpee box jump.webp",
                 eachLeg: false,
               },
               12: {
                 exerciseName: "Burpee Box Jump",
-                imagePath: "/assets/exercises/burpee box jump.png",
+                imagePath: "/assets/exercises/burpee box jump.webp",
                 eachLeg: false,
               },
             },
@@ -7338,22 +7338,22 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Box Jump",
-                imagePath: "/assets/exercises/box jump.png",
+                imagePath: "/assets/exercises/box jump.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Box Jump",
-                imagePath: "/assets/exercises/box jump.png",
+                imagePath: "/assets/exercises/box jump.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Box Jump",
-                imagePath: "/assets/exercises/box jump.png",
+                imagePath: "/assets/exercises/box jump.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Box Jump",
-                imagePath: "/assets/exercises/box jump.png",
+                imagePath: "/assets/exercises/box jump.webp",
                 eachLeg: false,
               },
               6: {
@@ -7394,33 +7394,33 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Box Jump to Squat Hold",
-              imagePath: "/assets/exercises/box jump.png",
+              imagePath: "/assets/exercises/box jump.webp",
               reps: 5,
               specialInstruction: "3 sec hold on landing — 5 reps",
             },
-            defaultImagePath: "/assets/exercises/box jump.png",
+            defaultImagePath: "/assets/exercises/box jump.webp",
           },
           // Diamonds — Push-up family (Spider-Man / Archer / Decline+Climber / Queen=Diamond Push-up to Jump Squat)
           Diamonds: {
             cardMap: {
               2: {
                 exerciseName: "Spider-Man Push-up",
-                imagePath: "/assets/exercises/spiderman push up.png",
+                imagePath: "/assets/exercises/spiderman push up.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Spider-Man Push-up",
-                imagePath: "/assets/exercises/spiderman push up.png",
+                imagePath: "/assets/exercises/spiderman push up.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Spider-Man Push-up",
-                imagePath: "/assets/exercises/spiderman push up.png",
+                imagePath: "/assets/exercises/spiderman push up.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Spider-Man Push-up",
-                imagePath: "/assets/exercises/spiderman push up.png",
+                imagePath: "/assets/exercises/spiderman push up.webp",
                 eachLeg: false,
               },
               6: {
@@ -7464,11 +7464,11 @@ const DECK_EXERCISES: Record<
             },
             queen: {
               exerciseName: "Diamond Push-up to Jump Squat",
-              imagePath: "/assets/exercises/spiderman push up.png",
+              imagePath: "/assets/exercises/spiderman push up.webp",
               reps: 6,
               specialInstruction: "1 diamond push-up + 1 jump squat = 1 rep",
             },
-            defaultImagePath: "/assets/exercises/spiderman push up.png",
+            defaultImagePath: "/assets/exercises/spiderman push up.webp",
           },
           // Clubs — Jump Lunge family (Jump Lunge / Lateral / Jump Squat+Lunge / Queen=Non-stop Jump Lunge)
           Clubs: {
@@ -7887,28 +7887,28 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Explosive Pull-up",
-                imagePath: "/assets/exercises/explosive pull up.png",
+                imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "chest to bar — full dead hang between reps",
               },
               7: {
                 exerciseName: "Explosive Pull-up",
-                imagePath: "/assets/exercises/explosive pull up.png",
+                imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "chest to bar — full dead hang between reps",
               },
               8: {
                 exerciseName: "Explosive Pull-up",
-                imagePath: "/assets/exercises/explosive pull up.png",
+                imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "chest to bar — full dead hang between reps",
               },
               9: {
                 exerciseName: "Explosive Pull-up",
-                imagePath: "/assets/exercises/explosive pull up.png",
+                imagePath: "/assets/exercises/explosive pull up.webp",
                 eachLeg: false,
                 specialInstruction:
                   "chest to bar — full dead hang between reps",
@@ -7948,70 +7948,70 @@ const DECK_EXERCISES: Record<
             cardMap: {
               2: {
                 exerciseName: "Clapping Push-up",
-                imagePath: "/assets/exercises/clapping push up.png",
+                imagePath: "/assets/exercises/clapping push up.webp",
                 eachLeg: false,
               },
               3: {
                 exerciseName: "Clapping Push-up",
-                imagePath: "/assets/exercises/clapping push up.png",
+                imagePath: "/assets/exercises/clapping push up.webp",
                 eachLeg: false,
               },
               4: {
                 exerciseName: "Clapping Push-up",
-                imagePath: "/assets/exercises/clapping push up.png",
+                imagePath: "/assets/exercises/clapping push up.webp",
                 eachLeg: false,
               },
               5: {
                 exerciseName: "Clapping Push-up",
-                imagePath: "/assets/exercises/clapping push up.png",
+                imagePath: "/assets/exercises/clapping push up.webp",
                 eachLeg: false,
               },
               6: {
                 exerciseName: "Plyometric Push-up",
-                imagePath: "/assets/exercises/plyo push up.png",
+                imagePath: "/assets/exercises/plyo push up.webp",
                 eachLeg: false,
               },
               7: {
                 exerciseName: "Plyometric Push-up",
-                imagePath: "/assets/exercises/plyo push up.png",
+                imagePath: "/assets/exercises/plyo push up.webp",
                 eachLeg: false,
               },
               8: {
                 exerciseName: "Plyometric Push-up",
-                imagePath: "/assets/exercises/plyo push up.png",
+                imagePath: "/assets/exercises/plyo push up.webp",
                 eachLeg: false,
               },
               9: {
                 exerciseName: "Plyometric Push-up",
-                imagePath: "/assets/exercises/plyo push up.png",
+                imagePath: "/assets/exercises/plyo push up.webp",
                 eachLeg: false,
               },
               10: {
                 exerciseName: "Archer Plyometric Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/archer push up.webp",
                 eachLeg: false,
                 specialInstruction: "explosive lateral transfer",
               },
               11: {
                 exerciseName: "Archer Plyometric Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/archer push up.webp",
                 eachLeg: false,
                 specialInstruction: "explosive lateral transfer",
               },
               12: {
                 exerciseName: "Archer Plyometric Push-up",
-                imagePath: "/assets/exercises/archer push up.png",
+                imagePath: "/assets/exercises/archer push up.webp",
                 eachLeg: false,
                 specialInstruction: "explosive lateral transfer",
               },
             },
             queen: {
               exerciseName: "Max Clapping Push-ups",
-              imagePath: "/assets/exercises/clapping push up.png",
+              imagePath: "/assets/exercises/clapping push up.webp",
               holdSeconds: 30,
               specialInstruction: "30 sec max reps",
             },
-            defaultImagePath: "/assets/exercises/clapping push up.png",
+            defaultImagePath: "/assets/exercises/clapping push up.webp",
           },
           // Diamonds — Pistol Complex (Pistol Squat / Pistol to Jump / Pistol Burpee / Queen=Pistol Complex)
           Diamonds: {
@@ -8038,37 +8038,37 @@ const DECK_EXERCISES: Record<
               },
               6: {
                 exerciseName: "Pistol Squat to Jump",
-                imagePath: "/assets/exercises/pistol jump.png",
+                imagePath: "/assets/exercises/pistol jump.webp",
                 eachLeg: true,
               },
               7: {
                 exerciseName: "Pistol Squat to Jump",
-                imagePath: "/assets/exercises/pistol jump.png",
+                imagePath: "/assets/exercises/pistol jump.webp",
                 eachLeg: true,
               },
               8: {
                 exerciseName: "Pistol Squat to Jump",
-                imagePath: "/assets/exercises/pistol jump.png",
+                imagePath: "/assets/exercises/pistol jump.webp",
                 eachLeg: true,
               },
               9: {
                 exerciseName: "Pistol Squat to Jump",
-                imagePath: "/assets/exercises/pistol jump.png",
+                imagePath: "/assets/exercises/pistol jump.webp",
                 eachLeg: true,
               },
               10: {
                 exerciseName: "Pistol Burpee",
-                imagePath: "/assets/exercises/pistol burpee.png",
+                imagePath: "/assets/exercises/pistol burpee.webp",
                 eachLeg: false,
               },
               11: {
                 exerciseName: "Pistol Burpee",
-                imagePath: "/assets/exercises/pistol burpee.png",
+                imagePath: "/assets/exercises/pistol burpee.webp",
                 eachLeg: false,
               },
               12: {
                 exerciseName: "Pistol Burpee",
-                imagePath: "/assets/exercises/pistol burpee.png",
+                imagePath: "/assets/exercises/pistol burpee.webp",
                 eachLeg: false,
               },
             },
@@ -8134,17 +8134,17 @@ const DECK_EXERCISES: Record<
               },
               10: {
                 exerciseName: "Typewriter Push-up",
-                imagePath: "/assets/exercises/typewriter push up.png",
+                imagePath: "/assets/exercises/typewriter push up.webp",
                 eachLeg: false,
               },
               11: {
                 exerciseName: "Typewriter Push-up",
-                imagePath: "/assets/exercises/typewriter push up.png",
+                imagePath: "/assets/exercises/typewriter push up.webp",
                 eachLeg: false,
               },
               12: {
                 exerciseName: "Typewriter Push-up",
-                imagePath: "/assets/exercises/typewriter push up.png",
+                imagePath: "/assets/exercises/typewriter push up.webp",
                 eachLeg: false,
               },
             },

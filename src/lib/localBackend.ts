@@ -245,7 +245,7 @@ const mockCard = {
   suit: "Hearts" as Suit,
   exercise: "Normal Push Ups",
   deckId: BigInt(1),
-  imageUrl: "/assets/normal_pushup.png",
+  imageUrl: "/assets/exercises/normal_pushup.webp",
   repSpec: { __kind__: "Fixed", Fixed: BigInt(10) } as RepSpec,
   videoUrl: "https://www.youtube.com/watch?v=IODxDxX7oi4",
 };
@@ -448,7 +448,7 @@ export const localBackend: backendInterface = {
   }),
   getUpperBodyBeginnerJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher beginner .png",
+    imageAsset: "/assets/exercises/combo finisher beginner .webp",
     steps: [
       { exerciseName: "Standard Push-up", reps: BigInt(10) },
       { exerciseName: "Pike Push-up", reps: BigInt(10) },
@@ -472,7 +472,7 @@ export const localBackend: backendInterface = {
   }),
   getUpperBodyProFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher pro female.png",
+    imageAsset: "/assets/exercises/combo finisher pro female.webp",
     steps: [
       { exerciseName: "Archer Push-up", reps: BigInt(5) },
       { exerciseName: "Handstand Push-up Negative", reps: BigInt(5) },
@@ -496,7 +496,7 @@ export const localBackend: backendInterface = {
   }),
   getLowerBodyBeginnerFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher beginner female.png",
+    imageAsset: "/assets/exercises/combo finisher beginner female.webp",
     steps: [
       { exerciseName: "Sumo Squat", reps: BigInt(10) },
       { exerciseName: "Single-Leg Glute Bridge", reps: BigInt(10) },
@@ -520,7 +520,7 @@ export const localBackend: backendInterface = {
   }),
   getLowerBodyAdvancedFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher advanced female.png",
+    imageAsset: "/assets/exercises/combo finisher advanced female.webp",
     steps: [
       { exerciseName: "BSS", reps: BigInt(6) },
       { exerciseName: "Single-Leg Hip Thrust", reps: BigInt(6) },
@@ -544,7 +544,7 @@ export const localBackend: backendInterface = {
   }),
   getLowerBodyProFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher pro female.png",
+    imageAsset: "/assets/exercises/combo finisher pro female.webp",
     steps: [
       { exerciseName: "Full Pistol Squat", reps: BigInt(3) },
       { exerciseName: "Tuck Jump", reps: BigInt(5) },
@@ -568,7 +568,7 @@ export const localBackend: backendInterface = {
   }),
   getCoreBeginnerFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher beginner female.png",
+    imageAsset: "/assets/exercises/combo finisher beginner female.webp",
     steps: [
       { exerciseName: "Plank", reps: BigInt(30) },
       { exerciseName: "Bicycle Crunch", reps: BigInt(10) },
@@ -592,7 +592,7 @@ export const localBackend: backendInterface = {
   }),
   getCoreAdvancedFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher advanced female.png",
+    imageAsset: "/assets/exercises/combo finisher advanced female.webp",
     steps: [
       { exerciseName: "V-Up", reps: BigInt(10) },
       { exerciseName: "Bicycle with Pause", reps: BigInt(10) },
@@ -617,7 +617,7 @@ export const localBackend: backendInterface = {
   }),
   getCoreProFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher pro female.png",
+    imageAsset: "/assets/exercises/combo finisher pro female.webp",
     steps: [
       { exerciseName: "Dragon Flag", reps: BigInt(3) },
       { exerciseName: "Windshield Wipers Straight", reps: BigInt(5) },
@@ -641,7 +641,7 @@ export const localBackend: backendInterface = {
   }),
   getFullBodyBeginnerFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher beginner female.png",
+    imageAsset: "/assets/exercises/combo finisher beginner female.webp",
     steps: [
       { exerciseName: "Burpee", reps: BigInt(5) },
       { exerciseName: "High Knees", reps: BigInt(10) },
@@ -665,7 +665,7 @@ export const localBackend: backendInterface = {
   }),
   getFullBodyAdvancedFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher advanced female.png",
+    imageAsset: "/assets/exercises/combo finisher advanced female.webp",
     steps: [
       { exerciseName: "Plyometric Burpee", reps: BigInt(5) },
       { exerciseName: "Box Jump", reps: BigInt(5) },
@@ -690,7 +690,7 @@ export const localBackend: backendInterface = {
   }),
   getFullBodyProFemaleJokerCombo: async () => ({
     restBetween: false,
-    imageAsset: "/assets/exercises/combo finisher pro female.png",
+    imageAsset: "/assets/exercises/combo finisher pro female.webp",
     steps: [
       { exerciseName: "Muscle-Up", reps: BigInt(3) },
       { exerciseName: "Pistol Squat", reps: BigInt(3) },
