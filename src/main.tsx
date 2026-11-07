@@ -3,6 +3,7 @@ import { Purchases } from "@revenuecat/purchases-capacitor";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { COMING_SOON_ILLUSTRATION } from "./data/exerciseAssets";
 import "./index.css";
 import { applyPalette, getStoredPalette } from "./theme/palettes";
 
@@ -36,6 +37,24 @@ if (Capacitor.isNativePlatform()) {
     );
   }
 }
+
+// Some deck cards name an exercise picture that isn't drawn yet (mostly in
+// the women's decks). A broken image anywhere becomes the honest "coming
+// soon" card instead (error events don't bubble, hence capture).
+document.addEventListener(
+  "error",
+  (event) => {
+    const img = event.target;
+    if (
+      img instanceof HTMLImageElement &&
+      img.src.includes("/assets/exercises/") &&
+      img.src !== COMING_SOON_ILLUSTRATION
+    ) {
+      img.src = COMING_SOON_ILLUSTRATION;
+    }
+  },
+  true,
+);
 
 const queryClient = new QueryClient();
 

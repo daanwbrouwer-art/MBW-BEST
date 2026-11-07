@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { resolveExerciseIllustration } from "@/data/exerciseAssets";
+import { customExerciseImage } from "@/data/genderCatalog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { buildCustomWorkoutSteps } from "@/lib/customWorkoutBuilder";
 import { useCustomWorkoutStore } from "@/store/customWorkout";
@@ -215,7 +215,7 @@ export default function CustomWorkoutSessionPage() {
               }}
             >
               <img
-                src={resolveExerciseIllustration(current.name, gender)}
+                src={customExerciseImage(current.name, gender)}
                 alt={current.name}
                 className="w-full h-full object-cover"
               />

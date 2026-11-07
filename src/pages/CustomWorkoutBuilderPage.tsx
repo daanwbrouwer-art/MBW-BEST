@@ -9,12 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { resolveExerciseIllustration } from "@/data/exerciseAssets";
-import {
-  type BodyRegion,
-  type CatalogExercise,
-  EXERCISE_CATALOG,
-} from "@/data/exerciseCatalog";
+import type { BodyRegion, CatalogExercise } from "@/data/exerciseCatalog";
+import { customExerciseImage, getGenderCatalog } from "@/data/genderCatalog";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { useTier } from "@/hooks/use-tier";
 import { cn } from "@/lib/utils";
@@ -108,12 +104,13 @@ export default function CustomWorkoutBuilderPage() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return EXERCISE_CATALOG.filter((ex) => {
+    // Only this gender's deck exercises (men's or women's decks).
+    return getGenderCatalog(gender).filter((ex) => {
       if (filter !== "All" && ex.bodyRegion !== filter) return false;
       if (q && !ex.name.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [search, filter]);
+  }, [search, filter, gender]);
 
   // Grouped into Upper Body / Lower Body / Core sections when browsing
   // "All" (unfiltered); a single filter selection already narrows to one
@@ -520,7 +517,7 @@ function ExerciseCatalogCard({
         style={{ background: "#fafafa" }}
       >
         <img
-          src={resolveExerciseIllustration(exercise.name, gender)}
+          src={customExerciseImage(exercise.name, gender)}
           alt={exercise.name}
           className="w-full h-full object-contain p-1.5"
           loading="lazy"
