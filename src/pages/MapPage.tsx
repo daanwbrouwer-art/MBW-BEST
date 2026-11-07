@@ -41,7 +41,7 @@ import {
   Users,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Circle,
   MapContainer,
@@ -237,6 +237,8 @@ export default function MapPage() {
   const [showLocationDeniedBanner, setShowLocationDeniedBanner] =
     useState(false);
   const [selectedParkId, setSelectedParkId] = useState<string | null>(null);
+  // Leaflet markers by park id, to return focus to a pin.
+  const markerRefs = useRef(new Map<string, L.Marker>());
   const [showAddSheet, setShowAddSheet] = useState(false);
 
   const {
@@ -587,6 +589,10 @@ export default function MapPage() {
                   key={park.id}
                   position={[park.lat, park.lng]}
                   icon={PARK_ICON}
+                  ref={(marker) => {
+                    if (marker) markerRefs.current.set(park.id, marker);
+                    else markerRefs.current.delete(park.id);
+                  }}
                   // Leaflet gives div-icon pins role="button" but no name;
                   // `title` is re-applied whenever Leaflet (re)creates the
                   // pin, so the name survives re-clustering.
@@ -757,7 +763,15 @@ export default function MapPage() {
         {selectedParkId && (
           <ParkDetailSheet
             parkId={selectedParkId}
-            onClose={() => setSelectedParkId(null)}
+            onClose={() => {
+              const closedId = selectedParkId;
+              setSelectedParkId(null);
+              // Back to the pin that opened the sheet (Leaflet may have
+              // recreated its element meanwhile).
+              requestAnimationFrame(() =>
+                markerRefs.current.get(closedId)?.getElement()?.focus(),
+              );
+            }}
           />
         )}
       </AnimatePresence>

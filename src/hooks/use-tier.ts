@@ -119,6 +119,7 @@ export function useTier() {
     purchasesReady
       .then(() => Purchases.getCustomerInfo())
       .then(({ customerInfo }) => applyCustomerInfo(customerInfo))
+      .catch((err) => console.warn("RevenueCat getCustomerInfo failed:", err))
       .finally(() => {
         if (!cancelled) setIsLoading(false);
       });

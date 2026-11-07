@@ -320,7 +320,9 @@ export default function ProfilePage() {
   // Onboarding stays complete during a retake: OnboardingPage sees
   // ?retake=1, prefills the old answers, and Back or Finish return here.
   const handleRetakeAssessment = () => {
-    navigate({ to: "/onboarding", search: { retake: "1" } });
+    // Replace: Finish replaces the questionnaire with Profile again, so
+    // history doesn't end up with Profile twice.
+    navigate({ to: "/onboarding", search: { retake: "1" }, replace: true });
   };
 
   const handleRestorePurchases = async () => {

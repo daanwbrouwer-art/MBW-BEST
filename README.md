@@ -135,9 +135,9 @@ Review round 3 (DB, client logic, browser) also fixed:
 
 Review round 4 also fixed: a tab reloading after another tab's sign-in no longer writes its old workout/guest mode back; `get_usernames` no longer counts a chat thread as a connection (chat names come from the chat RPCs); guests (anonymous sessions) can't look up usernames or send friend requests; Retake assessment is an explicit `/onboarding?retake=1` (returning guests and system Back no longer open the edit flow); keyboard can open map pins and pin names survive re-clustering; pause and Joker overlays are dialogs; holds show seconds in the pause list too; guest summary copy says what is kept on the phone (streak, records) and what needs an account (history).
 
-Still to do on this branch:
+Review round 5 found nothing above Low in any area (DB, client, browser). Its fixes: starting a chat now needs a reason to know the person (they're discoverable, an accepted friend, or in a party with you), the "same gender only" refusal no longer reveals the recipient's gender, and blocked pairs disappear from the chat list; guests can't start chats or join parties by code; pause sheet keeps focus inside and returns it; focus returns to the map pin after closing a park; Pro preview shows holds in seconds without "0–N" ranges; the guest Achievements banner no longer promises cross-device sync.
 
-- [ ] Review round 5 (independent reviewers), fixing every finding.
+Known Low items left: party invite codes are 6 characters with no attempt limit (pre-existing); `username_available` lets anyone check whether a name exists (needed by the sign-up form); Nominatim requests carry no app contact (add an `email=` parameter with a project address).
 - [ ] Apply the migration, regenerate `src/lib/database.types.ts` from the live DB and compare with the hand-written types.
 - [ ] Re-run the live consumer QA (two accounts: friends, party names, chat, block/report) on a Vercel preview, then merge to `main` and deploy; build a new Android bundle (also carries the new launcher icons).
 

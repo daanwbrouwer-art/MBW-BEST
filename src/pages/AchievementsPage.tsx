@@ -156,8 +156,8 @@ export default function AchievementsPage() {
         >
           <Trophy className="w-5 h-5 shrink-0 text-prestige" />
           <p className="text-sm text-foreground font-body">
-            Your progress is saved on this device. Create an account to keep it
-            safe everywhere you play.
+            Your achievements are saved on this phone. Create a free account
+            to unlock more features and keep your workout history.
           </p>
         </motion.div>
       )}

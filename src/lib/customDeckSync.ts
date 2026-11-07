@@ -223,10 +223,7 @@ export async function pullCustomDecks(scope: AccountScope): Promise<void> {
     const state = useCustomWorkoutStore.getState();
     const deck = state.decks.find((d) => d.id === id);
     if (!deck || state.deletedIds.includes(id)) continue;
-    try {
-      applyResult(scope, id, await writeRemote(deck, scope.userId));
-    } catch (err) {
-      console.warn("Couldn't upload custom deck:", err);
-    }
+    // Through pushDeck's per-deck chain, so a delete waits for this upload.
+    await pushDeck(deck);
   }
 }

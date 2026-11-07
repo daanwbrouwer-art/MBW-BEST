@@ -228,24 +228,48 @@ export default function WorkoutSessionPage() {
   // Escape closes the pause overlay (resumes), like its Resume button.
   useEffect(() => {
     if (!isPaused) return;
+    const opener =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const sheetButtons = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          '[data-ocid="workout-session.pause_dialog"] button:not([disabled])',
+        ),
+      );
     // Move focus into the pause sheet (after it has rendered).
-    const raf = requestAnimationFrame(() =>
-      document
-        .querySelector<HTMLElement>(
-          '[data-ocid="workout-session.pause_dialog"] button',
-        )
-        ?.focus(),
-    );
+    const raf = requestAnimationFrame(() => sheetButtons()[0]?.focus());
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape" || e.defaultPrevented) return;
-      // An alert dialog on top (e.g. Quit) handles its own Escape.
+      if (e.defaultPrevented) return;
+      // An alert dialog on top (e.g. Quit) handles its own keys.
       if (document.querySelector('[role="alertdialog"]')) return;
-      setIsPaused(false);
+      if (e.key === "Escape") {
+        setIsPaused(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      // Keep Tab inside the sheet (it is aria-modal).
+      const items = sheetButtons();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      const inside = items.some((el) => el === active);
+      if (e.shiftKey && (active === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener("keydown", onKey);
+      // Back to whatever opened the pause sheet (e.g. the Pause button).
+      if (opener?.isConnected) opener.focus();
     };
   }, [isPaused]);
   const [isAnimating, setIsAnimating] = useState(false);

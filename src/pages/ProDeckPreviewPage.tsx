@@ -22,8 +22,9 @@ import { useMemo } from "react";
 
 function repLabel(ex: ProPreviewExercise): string {
   if (ex.isChallenge) return "Challenge";
-  if (ex.minReps === ex.maxReps) return `${ex.minReps} reps`;
-  return `${ex.minReps}–${ex.maxReps} reps`;
+  const unit = ex.isHold ? "sec" : "reps";
+  if (ex.minReps === ex.maxReps) return `${ex.minReps} ${unit}`;
+  return `${ex.minReps}–${ex.maxReps} ${unit}`;
 }
 
 export default function ProDeckPreviewPage() {

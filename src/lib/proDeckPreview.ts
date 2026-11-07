@@ -9,6 +9,8 @@ export interface ProPreviewExercise {
   maxReps: number;
   /** True when every occurrence of this exercise is a Queen "challenge" card (no fixed rep count). */
   isChallenge: boolean;
+  /** Timed hold: minReps/maxReps are seconds. */
+  isHold?: boolean;
   suit: string;
   imagePath?: string;
   /** True when no accurate illustration exists for this exercise yet. */
@@ -25,6 +27,7 @@ interface RawEntry {
   imagePath?: string;
   illustrationComingSoon?: boolean;
   requiresEquipment?: keyof EquipmentProfile;
+  holdSeconds?: number;
 }
 
 function upsert(
@@ -35,13 +38,17 @@ function upsert(
   isChallenge: boolean,
 ): void {
   if (!entry.exerciseName) return;
+  // Timed holds count seconds, not the card's rank.
+  const isHold = !isChallenge && (entry.holdSeconds ?? 0) > 0;
+  const amount = isHold ? (entry.holdSeconds as number) : reps;
   const existing = map.get(entry.exerciseName);
   if (!existing) {
     map.set(entry.exerciseName, {
       name: entry.exerciseName,
-      minReps: reps,
-      maxReps: reps,
+      minReps: amount,
+      maxReps: amount,
       isChallenge,
+      isHold,
       suit,
       imagePath: entry.imagePath,
       illustrationComingSoon: entry.illustrationComingSoon,
@@ -49,8 +56,19 @@ function upsert(
     });
     return;
   }
-  existing.minReps = Math.min(existing.minReps, reps);
-  existing.maxReps = Math.max(existing.maxReps, reps);
+  // A challenge card (no fixed count) doesn't widen the range; the first
+  // counted card replaces a challenge-only placeholder.
+  if (!isChallenge) {
+    if (existing.isChallenge) {
+      existing.minReps = amount;
+      existing.maxReps = amount;
+      existing.isHold = isHold;
+    } else {
+      existing.minReps = Math.min(existing.minReps, amount);
+      existing.maxReps = Math.max(existing.maxReps, amount);
+      existing.isHold = existing.isHold || isHold;
+    }
+  }
   existing.isChallenge = existing.isChallenge && isChallenge;
   if (entry.requiresEquipment)
     existing.requiresEquipment = entry.requiresEquipment;
