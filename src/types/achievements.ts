@@ -213,8 +213,8 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   // ─── Special Cards ────────────────────────────────────────────────────
   {
     id: "sc_01",
-    name: "Double or Nothing",
-    description: "Draw your first King card",
+    name: "Cut in Half",
+    description: "Draw your first King card (÷2)",
     rarity: "uncommon",
     category: "special-cards",
     metric: "kingCardsDrawnTotal",
@@ -224,8 +224,8 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: "sc_02",
-    name: "Cut in Half",
-    description: "Draw your first Ace card",
+    name: "Double or Nothing",
+    description: "Draw your first Ace card (×2)",
     rarity: "uncommon",
     category: "special-cards",
     metric: "aceCardsDrawnTotal",
