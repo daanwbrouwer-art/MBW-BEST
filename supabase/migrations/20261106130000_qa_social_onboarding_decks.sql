@@ -177,7 +177,9 @@ as $$
 declare
   me uuid := auth.uid();
 begin
-  if me is null then
+  -- Guests (anonymous sessions) have no social features.
+  if me is null
+     or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
     return;
   end if;
   if cardinality(p_ids) > 200 then
