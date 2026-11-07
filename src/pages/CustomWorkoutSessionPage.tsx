@@ -19,13 +19,16 @@ import { useCustomWorkoutStore } from "@/store/customWorkout";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Trophy, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { recordCustomWorkout } from "@/lib/customWorkoutRecord";
 
 export default function CustomWorkoutSessionPage() {
   const navigate = useNavigate();
   const { deckId } = useParams({ strict: false }) as { deckId?: string };
-  const { gender } = useOnboarding();
+  const { gender, weightKg, age, heightCm } = useOnboarding();
   const { getDeck } = useCustomWorkoutStore();
+  const [startedAt] = useState(() => Date.now());
+  const recorded = useRef(false);
 
   // Deck lookup + step build both computed once per session (lazy
   // initializer) so the Double/Half modifier placement stays stable across
@@ -85,6 +88,20 @@ export default function CustomWorkoutSessionPage() {
   const handleNext = () => {
     if (navigator.vibrate) navigator.vibrate(50);
     if (index >= total - 1) {
+      if (!recorded.current) {
+        recorded.current = true;
+        recordCustomWorkout({
+          deckName: deckName ?? "Custom workout",
+          steps,
+          startedAt,
+          gender,
+          body: {
+            weightKg: weightKg ?? undefined,
+            age: age ?? undefined,
+            heightCm: heightCm ?? undefined,
+          },
+        });
+      }
       setIsDone(true);
       return;
     }

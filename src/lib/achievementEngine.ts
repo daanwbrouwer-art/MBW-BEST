@@ -375,6 +375,14 @@ function readClaimStore(isGuest: boolean): ClaimStore {
   }
 }
 
+/** When each unlocked achievement was earned (ms timestamps), for recaps. */
+export function readAchievementUnlockTimes(isGuest: boolean): number[] {
+  return Object.values(readClaimStore(isGuest))
+    .filter((c) => c.claimed && c.claimedAt)
+    .map((c) => Date.parse(c.claimedAt as string))
+    .filter((t) => !Number.isNaN(t));
+}
+
 function writeClaimStore(isGuest: boolean, store: ClaimStore): void {
   localStorage.setItem(claimStoreKey(isGuest), JSON.stringify(store));
 }

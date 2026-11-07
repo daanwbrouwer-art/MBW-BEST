@@ -573,6 +573,7 @@ export default function WorkoutSummaryPage() {
           reps: isHoldCard(sc) ? 0 : sc.reps,
         })),
         equipmentSnapshot,
+        caloriesBurned: calories,
       });
       const sessionsAfter = recordSession(isGuest, sessionRecord);
       if (sessionsAfter.length === 1 && playedLocalCards.length > 0) {

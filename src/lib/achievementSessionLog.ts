@@ -62,6 +62,8 @@ export interface AchievementSessionRecord {
   dateKey: string;
   dayOfWeek: number;
   hour: number;
+  /** Estimated calories (sessions saved before this field existed: absent). */
+  caloriesBurned?: number;
 }
 
 function storageKey(isGuest: boolean): string {
@@ -107,8 +109,10 @@ export function buildSessionRecord(params: {
   deckGender: "male" | "female";
   playedCards: PlayedCardFact[];
   equipmentSnapshot: EquipmentSnapshot;
+  caloriesBurned?: number;
 }): AchievementSessionRecord {
   const {
+    caloriesBurned,
     id,
     completedAt,
     durationSeconds,
@@ -200,6 +204,7 @@ export function buildSessionRecord(params: {
     dateKey: localDateKey(startedAt),
     dayOfWeek: startDate.getDay(),
     hour: startDate.getHours(),
+    caloriesBurned,
   };
 }
 

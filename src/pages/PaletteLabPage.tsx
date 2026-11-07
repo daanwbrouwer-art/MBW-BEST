@@ -288,9 +288,13 @@ export default function PaletteLabPage() {
                   <p className="text-sm text-muted-foreground font-body leading-snug">
                     {p.tagline}
                   </p>
-                  <p className="text-xs text-muted-foreground font-body mt-1">
-                    Readability {scores[id].score}/100
-                  </p>
+                  {/* A tool for choosing the default theme, like the blind
+                      test below — dev builds only. */}
+                  {import.meta.env.DEV && (
+                    <p className="text-xs text-muted-foreground font-body mt-1">
+                      Readability {scores[id].score}/100
+                    </p>
+                  )}
                 </div>
                 {selected && (
                   <Check

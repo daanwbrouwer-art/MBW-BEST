@@ -32,7 +32,8 @@ import { Capacitor } from "@capacitor/core";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Check, Sparkles } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { RegisterPromptModal } from "@/components/RegisterPromptModal";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -49,7 +50,10 @@ const TEAL = "oklch(var(--prestige))";
 
 export default function SubscribePage() {
   const navigate = useNavigate();
-  const { purchase } = useTier();
+  const { purchase, guestMode: isGuest } = useTier();
+  // A subscription belongs to an account: it follows the user to a new
+  // phone and their workouts are saved. Guests create a free account first.
+  const [showAccountPrompt, setShowAccountPrompt] = useState(false);
   const [selectedTierId, setSelectedTierId] = useState<SubscriptionTierId>(
     ANNUAL_TIER.id,
   );
@@ -74,6 +78,10 @@ export default function SubscribePage() {
   const showTrial = selectedTier.hasTrial && trialEligible;
 
   const handlePurchase = async () => {
+    if (isGuest) {
+      setShowAccountPrompt(true);
+      return;
+    }
     setIsPurchasing(true);
     try {
       const result = await paymentService.purchase(selectedTierId, {
@@ -288,6 +296,16 @@ export default function SubscribePage() {
           </button>
         </p>
       </div>
+
+      <AnimatePresence>
+        {showAccountPrompt && (
+          <RegisterPromptModal
+            title="Create your free account first"
+            body="Your subscription is linked to your account, so it stays with you if you change phones — and every workout is saved to your history. It takes under a minute."
+            onClose={() => setShowAccountPrompt(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

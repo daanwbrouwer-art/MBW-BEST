@@ -12,7 +12,12 @@ import L from "leaflet";
 // OSM's raster tiles are a light basemap with no dark variant, so MapPage
 // applies a CSS invert filter (see the ".map-tiles-osm-dark" class) to
 // approximate the app's dark theme.
-export const TILE_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+// OSM's current address (the old a./b./c. subdomains are deprecated).
+// OSM blocks tile requests that arrive without a Referer header (it serves
+// an "Access blocked" tile instead), so the tile layer sets an explicit
+// referrer policy rather than relying on the WebView's default.
+export const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+export const TILE_REFERRER_POLICY = "strict-origin-when-cross-origin" as const;
 export const TILE_CSS_CLASS = "map-tiles-osm-dark";
 export const TILE_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors';

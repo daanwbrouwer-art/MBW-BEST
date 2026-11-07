@@ -60,6 +60,31 @@ export default function FAQPage() {
         </motion.div>
 
         <div className="flex flex-col gap-3">
+          {/* Recaps */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.03, duration: 0.4 }}
+            className="rounded-2xl p-4"
+            style={{
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+            }}
+            data-ocid="faq.item.recaps"
+          >
+            <p className="font-display font-bold text-sm text-foreground mb-1.5">
+              Do I get a monthly or yearly summary?
+            </p>
+            <p className="text-xs text-muted-foreground font-body leading-relaxed">
+              Yes. Every month you get a Monthly Recap — workouts, training
+              days, reps, time trained, your favourite deck and most-drawn
+              exercises — and every January a Year in Review with your best
+              month, a month-by-month chart and your year's highlights. Find
+              them under Stats Overview on Home (or Profile → Monthly & yearly
+              recaps). Every finished workout counts, custom decks included.
+            </p>
+          </motion.div>
+
           {/* Streak reset */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}

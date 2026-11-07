@@ -100,18 +100,6 @@ function deriveEquipmentProfile(tiers: string[]): EquipmentProfile {
   return profile;
 }
 
-// No shared backend to pull a real total from — use a documented stand-in
-// base plus however many accounts actually exist in this browser.
-function getAthleteCount(): number {
-  try {
-    const raw = localStorage.getItem("mbw_accounts_db");
-    const localAccounts = raw ? Object.keys(JSON.parse(raw)).length : 0;
-    return 1200 + localAccounts;
-  } catch {
-    return 1247;
-  }
-}
-
 const infoCardStyle = {
   background: "oklch(0.17 0.04 var(--primary-h) / 0.35)",
   border: "1px solid oklch(var(--primary) / 0.25)",
@@ -601,7 +589,8 @@ function GoalsStep({
 // ─── Step 4 — Motivation interstitial ─────────────────────────────────────
 
 function MotivationStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
-  const target = useMemo(() => getAthleteCount(), []);
+  // A real number (cards per deck) — not a made-up user count.
+  const target = 52;
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -632,12 +621,13 @@ function MotivationStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
       >
         Alright, let's get fit! 🎉
       </motion.h1>
-      <p className="text-muted-foreground text-sm mt-2">We've helped</p>
+      <p className="text-muted-foreground text-sm mt-2">Every deck holds</p>
       <p className="text-5xl font-display font-black text-primary tabular-nums">
         {count.toLocaleString()}
       </p>
       <p className="text-muted-foreground text-sm max-w-xs">
-        Free Athletes get fit so far. Welcome to the team.
+        cards — each one a new challenge. 4 decks, 3 levels, no equipment
+        needed. Welcome to the team.
       </p>
     </div>
   );
@@ -840,7 +830,8 @@ function WeeklyGoalStep({
   );
 }
 
-// ─── Step 9 — AI Coach chart ──────────────────────────────────────────────
+// ─── Step 9 — "Building your plan" chart (the plan is the deck
+// recommendation from the answers; there is no AI, so it doesn't say so) ──
 
 function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
   useEffect(() => {
@@ -855,7 +846,7 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
         animate={{ opacity: 1, y: 0 }}
         className="text-2xl font-display font-black text-foreground"
       >
-        Your AI Coach is designing your plan…
+        Building your plan from your answers…
       </motion.h1>
 
       <div className="w-full max-w-xs">
@@ -959,8 +950,9 @@ function AiCoachStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
           </text>
         </svg>
         <p className="text-xs text-white/70 mt-2">
-          Get better results, faster.
+          Train consistently and the curve bends your way.
         </p>
+        <p className="text-[10px] text-white/45 mt-1">Illustration, not a prediction.</p>
       </div>
 
       <div className="flex gap-1.5">

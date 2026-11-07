@@ -23,6 +23,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useStreak } from "@/hooks/use-streak";
 import { useTier } from "@/hooks/use-tier";
 import { isLocalNotificationCapable } from "@/lib/localNotifications";
+import { useTrainingTotals } from "@/hooks/use-training-totals";
 import { useWorkoutHistory } from "@/hooks/use-workout-history";
 import {
   DEFAULT_AGE,
@@ -396,15 +397,12 @@ export default function ProfilePage() {
     }
   };
 
-  // From the history, like Home: the account profile carries no totals
-  // (remoteBackend fills them with 0).
-  const totalWorkouts = history?.length ?? 0;
-  const totalCalories = history
-    ? history.reduce((sum, h) => sum + Number(h.caloriesBurned), 0)
-    : 0;
-  const totalReps = history
-    ? history.reduce((sum, h) => sum + Number(h.totalReps), 0)
-    : 0;
+  // Same totals as Home (saved history + workouts logged on this phone).
+  const {
+    workouts: totalWorkouts,
+    calories: totalCalories,
+    reps: totalReps,
+  } = useTrainingTotals();
 
   return (
     <div
@@ -534,6 +532,19 @@ export default function ProfilePage() {
               </p>
             </div>
           ))}
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/recap" })}
+            className="col-span-3 rounded-2xl px-4 py-3 flex items-center justify-between text-sm font-display font-bold text-foreground transition-smooth active:scale-[0.99]"
+            style={{
+              background: "oklch(var(--primary) / 0.1)",
+              border: "1px solid oklch(var(--primary) / 0.3)",
+            }}
+            data-ocid="profile.recaps_button"
+          >
+            <span>📅 Monthly & yearly recaps</span>
+            <span aria-hidden="true">→</span>
+          </button>
         </motion.div>
 
         {/* Equipment Tier — segmented control driving the workout-card

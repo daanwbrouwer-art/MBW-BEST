@@ -1,5 +1,10 @@
 import { openTermsOfUse } from "@/lib/legal";
-import { PARK_ICON, TILE_ATTRIBUTION, TILE_URL } from "@/lib/mapTiles";
+import {
+  PARK_ICON,
+  TILE_ATTRIBUTION,
+  TILE_REFERRER_POLICY,
+  TILE_URL,
+} from "@/lib/mapTiles";
 import { PARK_EQUIPMENT_OPTIONS } from "@/lib/parkEquipment";
 import { ensureSupabaseSession, supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
@@ -214,7 +219,11 @@ export function AddParkSheet({
             }}
           >
             <MapContainer center={position} zoom={15} className="w-full h-full">
-              <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+              <TileLayer
+                url={TILE_URL}
+                attribution={TILE_ATTRIBUTION}
+                referrerPolicy={TILE_REFERRER_POLICY}
+              />
               <Marker
                 position={position}
                 icon={PARK_ICON}

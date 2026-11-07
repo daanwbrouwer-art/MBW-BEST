@@ -16,6 +16,7 @@ import {
   PARK_ICON,
   TILE_ATTRIBUTION,
   TILE_CSS_CLASS,
+  TILE_REFERRER_POLICY,
   TILE_URL,
   USER_LOCATION_ICON,
 } from "@/lib/mapTiles";
@@ -571,6 +572,7 @@ export default function MapPage() {
               url={TILE_URL}
               attribution={TILE_ATTRIBUTION}
               className={TILE_CSS_CLASS}
+              referrerPolicy={TILE_REFERRER_POLICY}
             />
             <FlyToCenter center={mapCenter} zoom={mapZoom} />
             <MapPanTracker

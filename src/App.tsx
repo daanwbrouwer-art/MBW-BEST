@@ -66,6 +66,7 @@ const ForgotPasswordPage = lazy(
 );
 const OnboardingFlowPage = lazy(() => import("@/pages/OnboardingPage"));
 const MyStreakPage = lazy(() => import("@/pages/MyStreakPage"));
+const RecapPage = lazy(() => import("@/pages/RecapPage"));
 const ProDeckPreviewPage = lazy(() => import("@/pages/ProDeckPreviewPage"));
 const SubscribePage = lazy(() => import("@/pages/SubscribePage"));
 const PaletteLabPage = lazy(() => import("@/pages/PaletteLabPage"));
@@ -422,6 +423,16 @@ const myStreakRoute = createRoute({
   ),
 });
 
+const recapRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/recap",
+  component: () => (
+    <OnboardingGuard>
+      <RecapPage />
+    </OnboardingGuard>
+  ),
+});
+
 const proDeckPreviewRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/decks/pro-preview",
@@ -571,6 +582,7 @@ const routeTree = rootRoute.addChildren([
   chatThreadsRoute,
   chatConversationRoute,
   myStreakRoute,
+  recapRoute,
   proDeckPreviewRoute,
   subscribeRoute,
   customWorkoutListRoute,

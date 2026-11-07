@@ -14,7 +14,8 @@ import { useStreak } from "@/hooks/use-streak";
 import { useTier } from "@/hooks/use-tier";
 import { useTrialExpiryModal } from "@/hooks/use-trial";
 import { useWeeklyChallenge } from "@/hooks/use-weekly-challenge";
-import { useWorkoutHistory } from "@/hooks/use-workout-history";
+import { RecapTeaser } from "@/components/RecapTeaser";
+import { useTrainingTotals } from "@/hooks/use-training-totals";
 import {
   type AchievementView,
   drainPendingUnlockAnimations,
@@ -72,7 +73,6 @@ export default function HomePage() {
   const inProgressTotal = useWorkoutStore((s) => s.totalCards);
   const [howToPlayOpen, setHowToPlayOpen] = useState(false);
   const { data: profile } = useProfile();
-  const { data: history } = useWorkoutHistory();
   const { setSelectedCategory, setSelectedDifficulty } = useWorkoutStore();
   const { goals, fitnessLevel, selfAssessment } = useOnboarding();
   const {
@@ -167,11 +167,11 @@ export default function HomePage() {
 
   const username = profile?.username ?? "Athlete";
 
-  const workoutCount = history?.length ?? 0;
-  const totalCards =
-    history?.reduce((acc, e) => acc + Number(e.cardsCompleted), 0) ?? 0;
-  const totalCalories =
-    history?.reduce((acc, e) => acc + Number(e.caloriesBurned), 0) ?? 0;
+  const {
+    workouts: workoutCount,
+    cards: totalCards,
+    calories: totalCalories,
+  } = useTrainingTotals();
 
   const handleSelectCategory = (cat: DeckCategory) => {
     setSelectedCategory(cat);
@@ -556,6 +556,7 @@ export default function HomePage() {
               ocid="home.stats.calories"
             />
           </div>
+          <RecapTeaser />
         </motion.section>
 
         {/* Footer */}
