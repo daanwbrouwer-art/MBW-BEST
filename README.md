@@ -110,7 +110,7 @@ Also: the `join-waitlist` edge function has IP rate limits, a honeypot field and
 
 ## QA fixes for the closed test (branch `fix/qa-closed-test`, in progress)
 
-A consumer-style QA pass on the live site (2026-11-06, 198 checks, report: https://claude.ai/artifact/XqruPTTVo4NU3DmxoCkBMg) found 20 issues. All are fixed on this branch; independent review rounds 1 and 2 found further issues, also fixed. **Nothing is deployed and the migration is not applied yet.**
+A consumer-style QA pass on the live site (2026-11-06, 198 checks, report: https://claude.ai/artifact/XqruPTTVo4NU3DmxoCkBMg) found 20 issues. All are fixed on this branch; independent review rounds 1–5 found further issues, also fixed (round 5 found nothing above Low). The migration was applied on 2026-11-07, `src/lib/database.types.ts` is generated from the live DB, and a live check with two throwaway accounts passed (friend requests, party names, chat send/receive, block/report, onboarding sync, custom deck sync).
 
 What changed:
 
@@ -121,7 +121,7 @@ What changed:
 - **Workouts (H3, H4, M1):** each workout has a uuid; history upsert ignores duplicates and is marked saved only after success (limited retries); real deck id `Category-Difficulty`; an in-progress workout survives a reload with a Home Resume/Discard card; the clock saves training time (`elapsedSeconds`), so pauses and time away don't count.
 - **Custom decks (B2, M4, M5):** Save bar pinned to the bottom; images on a light background; decks sync to `custom_decks` (tombstones, synced flag, 100-deck cap); guests have their own decks.
 - **Other:** "Party not found / ended" screens (M2), Leave party from the owner picker (M3), readable park names/equipment (M6, `src/lib/parkLabels.ts`), styled 404 (L2), help icon instead of the bell (L1), restore-purchases feedback (L5), switch and overlay accessibility labels (L4).
-- **Database:** `supabase/migrations/20261106120000_fix_train_together_policy_recursion.sql` (applied) and `20261106130000_qa_social_onboarding_decks.sql` (**not applied** — apply together with deploying this branch; it renames the 2 reviewer accounts' usernames).
+- **Database:** `supabase/migrations/20261106120000_fix_train_together_policy_recursion.sql` (applied) and `20261106130000_qa_social_onboarding_decks.sql` (applied 2026-11-07; the 2 reviewer accounts are now `reviewer_one` and `reviewer_two`).
 
 Review round 3 (DB, client logic, browser) also fixed:
 
