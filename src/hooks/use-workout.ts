@@ -3,6 +3,7 @@ import {
   UPPER_BODY_BEGINNER_ASSETS,
   resolveExerciseIllustration,
 } from "@/data/exerciseAssets";
+import { isDeckComingSoon, isExerciseHidden } from "@/data/hiddenExercises";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { estimateCardCalories } from "@/lib/calories";
 import type { LocalCard, LocalSessionCard } from "@/store/workout";
@@ -8207,7 +8208,75 @@ export function getDeckExerciseConfig(
   const cfg = (entry as Record<string, DeckExerciseConfig | string[]>)[gender];
   // Empty array (cleared deck) is not a valid DeckExerciseConfig
   if (!cfg || Array.isArray(cfg)) return null;
-  return cfg;
+  if (isDeckComingSoon(category, difficulty, gender)) return null;
+  const key = `${category}:${difficulty}:${gender}`;
+  let visible = VISIBLE_CONFIG_CACHE.get(key);
+  if (visible === undefined) {
+    visible = withoutHiddenExercises(cfg, gender);
+    VISIBLE_CONFIG_CACHE.set(key, visible);
+  }
+  return visible;
+}
+
+const VISIBLE_CONFIG_CACHE = new Map<string, DeckExerciseConfig | null>();
+
+/**
+ * The deck minus exercises hidden until their picture exists
+ * (data/hiddenExercises.ts). A hidden number card takes the next visible
+ * exercise of the same suit (its reps still come from the card rank); a
+ * hidden Queen takes another suit's visible Queen. The deck data itself is
+ * never changed.
+ */
+function withoutHiddenExercises(
+  cfg: DeckExerciseConfig,
+  gender: WorkoutGender,
+): DeckExerciseConfig | null {
+  const hidden = (e?: { exerciseName?: string; substitute?: { exerciseName: string } }) =>
+    !e ||
+    isExerciseHidden(e.exerciseName, gender) ||
+    isExerciseHidden(e.substitute?.exerciseName, gender);
+  const visibleQueens = Object.values(cfg.suits)
+    .map((s) => s.queen)
+    .filter((q) => !hidden(q));
+  const suits: Record<string, SuitConfig2> = {};
+  let changed = false;
+  for (const [suit, s] of Object.entries(cfg.suits)) {
+    const ranks = Object.keys(s.cardMap).map(Number);
+    const pool = ranks.map((r) => s.cardMap[r]!).filter((e) => !hidden(e));
+    if (pool.length === 0 && visibleQueens.length === 0) {
+      changed = true;
+      continue;
+    }
+    const cardMap: Record<number, SuitExerciseEntry> = {};
+    let next = 0;
+    for (const r of ranks) {
+      const e = s.cardMap[r]!;
+      if (!hidden(e)) cardMap[r] = e;
+      else if (pool.length > 0) {
+        cardMap[r] = pool[next++ % pool.length]!;
+        changed = true;
+      } else {
+        changed = true;
+      }
+    }
+    let queen = s.queen;
+    if (hidden(queen)) {
+      changed = true;
+      queen = visibleQueens[0] ?? { ...pool[0]!, reps: 10 };
+    }
+    if (Object.keys(cardMap).length === 0) continue;
+    suits[suit] = { ...s, cardMap, queen };
+  }
+  if (Object.keys(suits).length === 0) return null;
+  let joker = cfg.joker;
+  if (joker?.comboList.some((step) => isExerciseHidden(step.exerciseName, gender))) {
+    changed = true;
+    const comboList = joker.comboList.filter(
+      (step) => !isExerciseHidden(step.exerciseName, gender),
+    );
+    if (comboList.length > 0) joker = { ...joker, comboList };
+  }
+  return changed ? { ...cfg, suits, joker } : cfg;
 }
 
 /** Returns the deduplicated list of unique exercise names for a given deck/gender (for the exclude modal). */

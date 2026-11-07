@@ -1,6 +1,7 @@
 import { Logo } from "@/components/Logo";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { useTier } from "@/hooks/use-tier";
+import { isDeckComingSoon } from "@/data/hiddenExercises";
 import { isDifficultyLocked } from "@/lib/cardLimit";
 import { getRecommendation } from "@/lib/recommendation";
 import { useWorkoutStore } from "@/store/workout";
@@ -38,7 +39,9 @@ export default function DecksPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [lockedDifficulty, setLockedDifficulty] =
     useState<DeckDifficulty | null>(null);
-  const { goals, fitnessLevel, selfAssessment } = useOnboarding();
+  const { goals, fitnessLevel, selfAssessment, gender } = useOnboarding();
+  const comingSoon = (d: DeckDifficulty) =>
+    isDeckComingSoon(selectedCategory, d, gender);
   const recommendation = getRecommendation({
     goals,
     fitnessLevel,
@@ -59,6 +62,7 @@ export default function DecksPage() {
   };
 
   const handleDifficultySelect = (diff: DeckDifficulty) => {
+    if (comingSoon(diff)) return;
     if (isLocked(diff)) {
       setLockedDifficulty(diff);
       setShowUpgradeModal(true);
@@ -161,7 +165,8 @@ export default function DecksPage() {
                 accentColor={DIFFICULTY_COLOR[diff]}
                 onSelect={handleDifficultySelect}
                 recommended={diff === recommendedDifficulty}
-                proPreviewLocked={diff === "Pro" && !isSubscriber}
+                proPreviewLocked={diff === "Pro" && !isSubscriber && !comingSoon(diff)}
+                comingSoon={comingSoon(diff)}
               />
             ))}
           </div>
@@ -210,6 +215,7 @@ function DifficultyCard({
   onSelect,
   recommended,
   proPreviewLocked,
+  comingSoon,
 }: {
   difficulty: DeckDifficulty;
   index: number;
@@ -219,8 +225,10 @@ function DifficultyCard({
   recommended?: boolean;
   /** Pro deck, non-subscriber — visible and tappable (opens a preview, not a paywall), styled distinctly aspirational rather than "locked out". */
   proPreviewLocked?: boolean;
+  /** Deck not playable yet (its pictures aren't ready) — greyed out, not tappable. */
+  comingSoon?: boolean;
 }) {
-  const effectiveLocked = locked;
+  const effectiveLocked = locked || !!comingSoon;
 
   const borderWithOpacity = accentColor.replace(")", " / 0.35)");
   const glowWithOpacity = accentColor.replace(")", " / 0.1)");
@@ -239,6 +247,8 @@ function DifficultyCard({
       }}
       whileTap={{ scale: 0.97 }}
       onClick={() => onSelect(difficulty)}
+      disabled={comingSoon}
+      aria-disabled={comingSoon || undefined}
       className="relative w-full overflow-hidden rounded-3xl border text-left transition-smooth"
       style={{
         background: proPreviewLocked
@@ -270,7 +280,7 @@ function DifficultyCard({
             data-ocid="decks.difficulty.locked_icon"
           >
             <span className="text-xs" aria-hidden="true">
-              🔒
+              {comingSoon ? "⏳" : "🔒"}
             </span>
           </div>
         </>
@@ -353,7 +363,7 @@ function DifficultyCard({
               style={{ color: "oklch(0.55 0.008 var(--neutral-hue))" }}
               data-ocid="decks.difficulty.locked_label"
             >
-              Register free to unlock
+              {comingSoon ? "Coming soon" : "Register free to unlock"}
             </p>
           )}
           <p
