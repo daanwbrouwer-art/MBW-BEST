@@ -6,6 +6,7 @@ import {
 import { purchasesReady } from "@/lib/accountSession";
 import { ENTITLEMENT_ID, tierIdForProductId } from "@/lib/payments";
 import { readStreak } from "@/lib/streak";
+import { isSupabaseConfigured, supabase } from "@/lib/supabaseClient";
 import { activateTrial, getTrialStatus, markTrialConverted } from "@/lib/trial";
 import { useWorkoutStore } from "@/store/workout";
 import type { SubscriptionTierId } from "@/types/subscription";
@@ -107,6 +108,34 @@ export function useTier() {
    * spinner during that beat, never a lock icon or a paywall redirect. */
   const [isLoading, setIsLoading] = useState<boolean>(() => isNative);
 
+  // Premium we grant by hand (Play reviewers, testers): a live row in
+  // `premium_grants` counts as a subscription. RLS lets a user read only
+  // their own row and nobody can write it from the app.
+  const [grant, setGrant] = useState<SubscriptionRecord | null>(null);
+  const userKey = localStorage.getItem("mbw_user");
+  useEffect(() => {
+    setGrant(null);
+    if (!userKey || !isSupabaseConfigured) return;
+    let cancelled = false;
+    supabase
+      .from("premium_grants")
+      .select("granted_at")
+      .gt("expires_at", new Date().toISOString())
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled && data)
+          setGrant({
+            tierId: "annual",
+            purchasedAt: data.granted_at,
+            discountPct: 0,
+            startedTrial: false,
+          });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userKey]);
+
   useEffect(() => {
     if (!isNative) return;
     let cancelled = false;
@@ -162,7 +191,8 @@ export function useTier() {
   // access to a signed-in account: a guest on the same phone after sign-out
   // must not inherit it.
   const trialActive = trialStatus.kind === "active" && isEmailAuth;
-  const subscriber = subscription !== null || FORCE_PREMIUM_FOR_TESTING;
+  const subscriber =
+    subscription !== null || grant !== null || FORCE_PREMIUM_FOR_TESTING;
 
   // "Real" tier — what the account actually is, ignoring any trial.
   const tier: AppTier = subscriber
@@ -214,7 +244,7 @@ export function useTier() {
     tier,
     effectiveTier,
     isSubscriber: subscriber,
-    subscription,
+    subscription: subscription ?? grant,
     trialActive,
     // Guests see no trial banners or "trial ended" prompts either.
     trialStatus: isEmailAuth ? trialStatus : ({ kind: "none" } as TrialStatus),

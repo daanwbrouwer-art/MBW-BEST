@@ -237,6 +237,27 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_grants: {
+        Row: {
+          expires_at: string
+          granted_at: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          expires_at: string
+          granted_at?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          expires_at?: string
+          granted_at?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           ace_cards_drawn: number
