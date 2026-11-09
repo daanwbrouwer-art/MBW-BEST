@@ -7,6 +7,7 @@ describe("deckEquipment", () => {
     expect(deckEquipment("UpperBody", "Pro", "female")).toContain("dip bars");
     expect(deckEquipment("LowerBody", "Beginner", "female")).toEqual(["bench or step"]);
     expect(deckEquipment("Core", "Beginner", "female")).not.toContain("dip bars");
+    expect(deckEquipment("UpperBody", "Beginner", "male")).toContain("pull-up bar"); // rows hang from a bar
   });
   it("prints every level for review", () => {
     for (const g of ["female", "male"] as const)

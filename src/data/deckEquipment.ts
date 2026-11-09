@@ -5,7 +5,7 @@ import type { DeckCategory, DeckDifficulty } from "@/types/workout";
 // per-exercise equipment field for bars/benches); add an explicit field if a
 // name ever misleads these patterns.
 const RULES: { label: string; test: (name: string) => boolean }[] = [
-  { label: "pull-up bar", test: (n) => /pull-up|chin-up|hanging|toes to bar|muscle-up|knee raise|knee tuck/i.test(n) },
+  { label: "pull-up bar", test: (n) => /pull-up|chin-up|hanging|toes to bar|muscle-up|knee raise|knee tuck|\brow\b/i.test(n) },
   { label: "dip bars", test: (n) => /dip/i.test(n) && !/bench|hip dip/i.test(n) },
   { label: "bench or step", test: (n) => /bench|step-up|box|elevated|decline|bss|bulgarian|hip thrust|incline/i.test(n) },
 ];

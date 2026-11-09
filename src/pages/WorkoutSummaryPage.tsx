@@ -124,12 +124,15 @@ const CONFETTI_PIECES = Array.from({ length: 48 }, (_, i) => ({
 function getMotivation(
   selectedCardCount: string | null,
   completionPct: number,
+  difficulty?: string | null,
 ): string {
   if (completionPct === 100) {
     if (selectedCardCount === "FullDeck")
       return "LEGENDARY. You conquered the full 52-card gauntlet!";
     if (selectedCardCount === "Twenty")
       return "BEAST MODE. 20 cards down, you're unstoppable.";
+    if (difficulty === "Pro")
+      return "PRO WORK. This is the level most people never reach.";
     return "SOLID START. Every rep builds the foundation.";
   }
   if (completionPct >= 75) return "SO CLOSE. That's elite-level commitment.";
@@ -528,7 +531,7 @@ export default function WorkoutSummaryPage() {
   const deckLabel = cardCountKey
     ? (CARD_COUNT_LABEL[cardCountKey] ?? cardCountKey)
     : null;
-  const motivationalMsg = getMotivation(cardCountKey, completionPct);
+  const motivationalMsg = getMotivation(cardCountKey, completionPct, selectedDifficulty);
   const { suitGroups, exerciseRows, totalReps, jokerCount } =
     buildBreakdown(playedLocalCards);
 
@@ -898,13 +901,14 @@ export default function WorkoutSummaryPage() {
                       color: suitAccent(row.suit),
                     }}
                   >
-                    {row.reps}
+                    {/* 0 reps = a count-up "max hold" card (freestanding handstand) */}
+                    {!row.hold && row.reps === 0 ? "MAX" : row.reps}
                   </span>
                   <span
                     className="font-body text-xs uppercase tracking-wide"
                     style={{ color: "oklch(0.75 0.008 var(--neutral-hue))" }}
                   >
-                    {row.hold ? "sec" : "reps"}
+                    {row.hold ? "sec" : row.reps === 0 ? "hold" : "reps"}
                   </span>
                 </div>
               </div>
