@@ -17,7 +17,6 @@
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const FOUNDING_MEMBER_CAP = 200;
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -99,21 +98,8 @@ serve(async (req) => {
   }
   await supabase.from("waitlist_attempts").insert({ ip_hash: ipHash });
 
-  // Check cap
-  const { count, error: countError } = await supabase
-    .from("waitlist_emails")
-    .select("*", { count: "exact", head: true });
-
-  if (countError) {
-    console.error("Count error:", countError);
-    return new Response(JSON.stringify({ error: "Server error, try again" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-  }
-
-  if ((count ?? 0) >= FOUNDING_MEMBER_CAP) {
-    return new Response(JSON.stringify({ error: "full", message: "Founding Member spots are full. We will open a standard waitlist soon." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-  }
-
-  // Insert (unique constraint handles duplicates)
+  // Insert (unique constraint handles duplicates). No cap: since 2026-11-09 this is a
+  // plain "notify me at launch" list; the 200-spot Founding Member offer has ended.
   const { data: inserted, error: insertError } = await supabase
     .from("waitlist_emails")
     .insert({ email })
@@ -133,17 +119,18 @@ serve(async (req) => {
   const position = inserted.position;
   const emailHtml = `
 <!DOCTYPE html>
-<html><body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#f5f5f5;">
+<html><body style="margin:0;padding:0;background:#0b0d08;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#eef2e6;">
   <div style="max-width:560px;margin:0 auto;padding:48px 24px;">
-    <div style="text-align:center;font-weight:700;letter-spacing:0.15em;color:#1AD6A0;font-size:14px;margin-bottom:32px;">MYBODYWEIGHT</div>
-    <div style="background:#171717;border-radius:16px;padding:40px 32px;">
-      <h1 style="margin:0 0 24px;font-size:28px;line-height:1.2;color:#fff;">Congrats, you're a Founding Member.</h1>
-      <p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#d4d4d4;">Your Founding Member price of <strong style="color:#1AD6A0;">€4.79/month</strong> is now reserved to this email address (${email}).</p>
-      <p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#d4d4d4;">When the MyBodyWeight app launches, sign up in-app using this <strong>same email</strong>. Your price will be automatically detected and locked in for life, for as long as you stay subscribed. No codes to remember, nothing to paste.</p>
-      <p style="margin:0 0 32px;font-size:16px;line-height:1.6;color:#d4d4d4;">Just sign up with <strong style="color:#1AD6A0;">${email}</strong> and you're done.</p>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#a3a3a3;">Watch for another email from us the moment the app is live. Until then, shuffle a real deck and start drawing.</p>
+    <div style="text-align:center;font-weight:700;font-size:20px;margin-bottom:32px;color:#eef2e6;">My<span style="color:#cdf53c;">Body</span>Weight</div>
+    <div style="background:#151910;border:1px solid rgba(205,245,60,0.25);border-radius:20px;padding:40px 32px;">
+      <h1 style="margin:0 0 20px;font-size:30px;line-height:1.15;color:#eef2e6;">You're on the list.</h1>
+      <p style="margin:0 0 20px;font-size:16px;line-height:1.6;color:#c9cebf;">The day MyBodyWeight goes live on Google Play, we'll send one email to ${email} with the download link.</p>
+      <p style="margin:0 0 8px;font-size:13px;letter-spacing:0.25em;font-weight:700;color:#cdf53c;">LAUNCH OFFER</p>
+      <p style="margin:0 0 8px;font-size:16px;line-height:1.6;color:#eef2e6;"><strong>Annual:</strong> 7 days free.</p>
+      <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#eef2e6;"><strong>Monthly:</strong> 20% off your first 3 months.</p>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:#a4aa9a;">For new subscribers through Google Play. Prices are shown in the app in your local currency. Until launch: shuffle a real deck and start drawing.</p>
     </div>
-    <div style="text-align:center;margin-top:32px;font-size:12px;color:#737373;">— Vasil & Daan · my-bodyweight.com</div>
+    <div style="text-align:center;margin-top:32px;font-size:12px;color:#7d8274;">Vasil &amp; Daan · my-bodyweight.com</div>
   </div>
 </body></html>`;
 
@@ -157,7 +144,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "MyBodyWeight <noreply@my-bodyweight.com>",
         to: [email],
-        subject: "Congrats, you're a Founding Member",
+        subject: "You're on the list: MyBodyWeight is coming to Google Play",
         html: emailHtml,
       }),
     });
