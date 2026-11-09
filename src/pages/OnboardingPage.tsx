@@ -44,7 +44,7 @@ const EQUIPMENT_TIERS = [
   {
     id: "Bodyweight",
     icon: "🏋️",
-    desc: "No equipment needed. Train anywhere with just your body.",
+    desc: "Just your body. Some cards use a pull-up bar, bench or step, like the ones in any park.",
   },
   {
     id: "Basic equipment",
@@ -626,8 +626,8 @@ function MotivationStep({ onAutoAdvance }: { onAutoAdvance: () => void }) {
         {count.toLocaleString()}
       </p>
       <p className="text-muted-foreground text-sm max-w-xs">
-        cards, each one a new challenge. 4 decks, 3 levels, no equipment
-        needed. Welcome to the team.
+        cards, each one a new challenge. 4 decks, 3 levels, mostly just
+        your bodyweight. Welcome to the team.
       </p>
     </div>
   );

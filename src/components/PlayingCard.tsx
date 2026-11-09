@@ -113,6 +113,10 @@ export function PlayingCard({
         compact ? "text-xs" : "text-sm",
       )}
       style={{ color: suitColor }}
+      // Suit is otherwise only a coloured glyph; give screen readers words.
+      role={rotated ? undefined : "img"}
+      aria-label={rotated || isJoker ? undefined : `${valueLabel} of ${suit}`}
+      aria-hidden={rotated || undefined}
     >
       <span
         className={cn(

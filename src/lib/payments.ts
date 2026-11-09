@@ -168,7 +168,14 @@ export interface StorePrice {
   price: string;
   perMonth: string | null;
   perWeek: string | null;
+  /** Free-trial days of the offer Play will actually apply (Play only returns
+   * offers this user is eligible for), or null when there is none. */
+  freeTrialDays: number | null;
+  /** Paid intro phase (e.g. 20% off for 3 months), or null. */
+  intro: { price: string; months: number } | null;
 }
+
+const PERIOD_DAYS: Record<string, number> = { DAY: 1, WEEK: 7, MONTH: 30, YEAR: 365 };
 
 /**
  * Store-localized prices per plan (Google Play requires showing the store's
@@ -184,10 +191,22 @@ export async function getStorePrices(): Promise<
   for (const tierId of ["monthly", "quarterly", "annual"] as const) {
     const product = packageForTier(offering, tierId)?.product;
     if (!product) continue;
+    const option = product.defaultOption;
+    const free = option?.freePhase;
+    const intro = option?.introPhase;
+    const introMonths = intro
+      ? (intro.billingPeriod.unit === "YEAR" ? 12 : intro.billingPeriod.unit === "MONTH" ? 1 : 0) *
+        intro.billingPeriod.value *
+        (intro.billingCycleCount ?? 1)
+      : 0;
     prices[tierId] = {
       price: product.priceString,
       perMonth: product.pricePerMonthString ?? null,
       perWeek: product.pricePerWeekString ?? null,
+      freeTrialDays: free
+        ? (PERIOD_DAYS[free.billingPeriod.unit] ?? 1) * free.billingPeriod.value * (free.billingCycleCount ?? 1)
+        : null,
+      intro: intro && introMonths > 0 ? { price: intro.price.formatted, months: introMonths } : null,
     };
   }
   return prices;

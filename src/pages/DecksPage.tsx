@@ -1,6 +1,7 @@
 import { Logo } from "@/components/Logo";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { useTier } from "@/hooks/use-tier";
+import { deckEquipment } from "@/data/deckEquipment";
 import { isDeckComingSoon } from "@/data/hiddenExercises";
 import { isDifficultyLocked } from "@/lib/cardLimit";
 import { getRecommendation } from "@/lib/recommendation";
@@ -167,6 +168,11 @@ export default function DecksPage() {
                 recommended={diff === recommendedDifficulty}
                 proPreviewLocked={diff === "Pro" && !isSubscriber && !comingSoon(diff)}
                 comingSoon={comingSoon(diff)}
+                equipment={
+                  selectedCategory
+                    ? deckEquipment(selectedCategory, diff, gender === "female" ? "female" : "male")
+                    : undefined
+                }
               />
             ))}
           </div>
@@ -178,7 +184,7 @@ export default function DecksPage() {
             className="text-center text-xs text-muted-foreground font-body mt-5"
           >
             {isSubscriber
-              ? "This deck is open to everyone, no subscription required."
+              ? "You have full access to every deck and level."
               : isGuest
                 ? "Beginner is free. Register to unlock Advanced, or subscribe for Pro."
                 : "Beginner and Advanced are free. Pro is a preview until you subscribe."}
@@ -216,8 +222,11 @@ function DifficultyCard({
   recommended,
   proPreviewLocked,
   comingSoon,
+  equipment,
 }: {
   difficulty: DeckDifficulty;
+  /** What this level needs beyond bodyweight; [] = nothing. */
+  equipment?: string[];
   index: number;
   locked: boolean;
   accentColor: string;
@@ -249,6 +258,11 @@ function DifficultyCard({
       onClick={() => onSelect(difficulty)}
       disabled={comingSoon}
       aria-disabled={comingSoon || undefined}
+      aria-label={
+        comingSoon
+          ? `${DECK_DIFFICULTY_LABEL[difficulty]}: coming soon, illustrations in progress`
+          : undefined
+      }
       className="relative w-full overflow-hidden rounded-3xl border text-left transition-smooth"
       style={{
         background: proPreviewLocked
@@ -374,8 +388,21 @@ function DifficultyCard({
                 : "oklch(0.6 0.01 var(--neutral-hue))",
             }}
           >
-            {DECK_DIFFICULTY_DESCRIPTION[difficulty]}
+            {comingSoon
+              ? "We're drawing the exercises for this level. It unlocks in a future update."
+              : DECK_DIFFICULTY_DESCRIPTION[difficulty]}
           </p>
+          {!comingSoon && equipment && (
+            <p
+              className="text-xs font-body mt-1.5"
+              style={{ color: "oklch(0.7 0.01 var(--neutral-hue))" }}
+              data-ocid="decks.difficulty.equipment"
+            >
+              {equipment.length
+                ? `Needs: ${equipment.join(" · ")}`
+                : "No equipment needed"}
+            </p>
+          )}
           {difficulty === "Advanced" && !effectiveLocked && (
             <p
               className="text-xs font-body italic mt-1.5"

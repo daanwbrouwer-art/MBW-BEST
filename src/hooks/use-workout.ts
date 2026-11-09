@@ -5,7 +5,7 @@ import {
 } from "@/data/exerciseAssets";
 import { isDeckComingSoon, isExerciseHidden } from "@/data/hiddenExercises";
 import { useOnboarding } from "@/hooks/use-onboarding";
-import { estimateCardCalories } from "@/lib/calories";
+import { capCaloriesByTime, estimateCardCalories } from "@/lib/calories";
 import type { LocalCard, LocalSessionCard } from "@/store/workout";
 import { useWorkoutStore } from "@/store/workout";
 import type { EquipmentProfile } from "@/types/user";
@@ -9042,7 +9042,9 @@ function ensureExerciseVarietyBySessionLength(
           poolSize,
           Math.max(
             Math.min(4, poolSize),
-            baseTarget + (Math.floor(Math.random() * 5) - 2),
+            // Jitter only upward: a downward jitter let a 10-card deal drop
+            // to 4-5 distinct exercises, which testers read as repetitive.
+            baseTarget + Math.floor(Math.random() * 3),
           ),
         );
 
@@ -9087,6 +9089,32 @@ function ensureExerciseVarietyBySessionLength(
         }
       }
     }
+  }
+
+  // Cap repeats: no exercise more than 2x per 10 cards in the session window,
+  // swapping extras with later cards of an exercise still under the cap.
+  const cap = Math.max(2, Math.ceil(sessionLength / 5));
+  const end = Math.min(sessionLength, deck.length);
+  const countIn = (name: string) => {
+    let n = 0;
+    for (let i = 0; i < end; i++) {
+      const c = deck[i]!;
+      if (!isModifier(c) && !isJokerCard(c) && c.exerciseName === name) n++;
+    }
+    return n;
+  };
+  for (let i = end - 1; i >= 0; i--) {
+    const c = deck[i]!;
+    if (isModifier(c) || isJokerCard(c) || countIn(c.exerciseName) <= cap) continue;
+    const srcIdx = deck.findIndex(
+      (d, j) =>
+        j >= end &&
+        !isModifier(d) &&
+        !isJokerCard(d) &&
+        countIn(d.exerciseName) < cap,
+    );
+    if (srcIdx === -1) break; // pool too small to go lower; keep the deck full
+    [deck[i], deck[srcIdx]] = [deck[srcIdx]!, deck[i]!];
   }
 
   return deck;
@@ -9437,7 +9465,23 @@ export function buildLocalDeck(
   // pass is what actually guarantees "no exercise repeats back-to-back",
   // the one rule that must never be violated even when category variety is
   // infeasible.
-  full = ensureNoConsecutiveExercises(full);
+  // Run it on the session window and the padding separately: on a hard pool
+  // it reshuffles, and a whole-deck reshuffle undid Rule 4 (testers got the
+  // same exercise 3x in 10 cards). Splitting keeps the window's mix intact.
+  const win = ensureNoConsecutiveExercises(full.slice(0, sessionLength));
+  const rest = ensureNoConsecutiveExercises(full.slice(sessionLength));
+  const nameAt = (c: LocalCard | undefined) => (!c || c.isAce || c.isKing ? "" : c.exerciseName);
+  if (rest.length > 1 && win.length && nameAt(win[win.length - 1]) === nameAt(rest[0])) {
+    const k = rest.findIndex(
+      (c, i) =>
+        i > 0 &&
+        nameAt(c) !== nameAt(rest[0]) &&
+        nameAt(rest[i - 1]) !== nameAt(rest[0]) &&
+        (i + 1 >= rest.length || nameAt(rest[i + 1]) !== nameAt(rest[0])),
+    );
+    if (k > 0) [rest[0], rest[k]] = [rest[k]!, rest[0]!];
+  }
+  full = [...win, ...rest];
 
   const deck = full.slice(0, cardCount);
 
@@ -9756,13 +9800,16 @@ export function useWorkout() {
     // Same per-exercise-type formula (src/lib/calories.ts) the pre-workout
     // estimate on WorkoutSetupPage uses — computed from the cards actually
     // drawn so far, so this stays consistent through to the summary screen.
-    const estimatedCalories = Math.round(
-      estimateSessionCalories(
-        playedCards,
-        weightKg ?? undefined,
-        age ?? undefined,
-        heightCm ?? undefined,
+    const estimatedCalories = capCaloriesByTime(
+      Math.round(
+        estimateSessionCalories(
+          playedCards,
+          weightKg ?? undefined,
+          age ?? undefined,
+          heightCm ?? undefined,
+        ),
       ),
+      elapsedSeconds,
     );
     return {
       elapsedSeconds,

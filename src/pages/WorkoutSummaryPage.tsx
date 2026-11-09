@@ -811,7 +811,8 @@ export default function WorkoutSummaryPage() {
             className="font-body text-xs leading-snug"
             style={{ color: "oklch(var(--prestige))" }}
           >
-            This session was completed too quickly to count toward achievements.
+            That was fast! Take your time on each card next time and the
+            session will count toward your achievements.
           </p>
         </motion.div>
       )}
@@ -834,7 +835,13 @@ export default function WorkoutSummaryPage() {
         <StatCard
           icon={<Flame className="w-5 h-5" />}
           label="Est. Calories"
-          value={hasSummary ? `${calories} kcal` : ", "}
+          value={
+            !hasSummary
+              ? ", "
+              : (sessionValidity?.isValid ?? isSessionValid(duration, completedCards))
+                ? `${calories} kcal`
+                : "–"
+          }
           delay={0.54}
         />
         <StatCard

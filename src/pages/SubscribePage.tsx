@@ -31,7 +31,7 @@ import {
 import { Capacitor } from "@capacitor/core";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { RegisterPromptModal } from "@/components/RegisterPromptModal";
 import { useState } from "react";
@@ -73,7 +73,11 @@ export default function SubscribePage() {
   const priceOf = (tier: SubscriptionTier) =>
     storePrices[tier.id]?.price ?? formatEUR(tier.price);
 
-  const trialEligible = !hasEverHadTrial();
+  // On the store, trust what Play reports for this user (a reinstall clears
+  // the local flag but not Play's record); the local flag is the web fallback.
+  const trialEligible = storePrices.annual
+    ? (storePrices.annual.freeTrialDays ?? 0) > 0
+    : !hasEverHadTrial();
   const selectedTier = SUBSCRIPTION_TIERS.find((t) => t.id === selectedTierId)!;
   const showTrial = selectedTier.hasTrial && trialEligible;
 
@@ -151,32 +155,10 @@ export default function SubscribePage() {
             Unlock full access
           </h1>
           <p className="text-sm text-muted-foreground font-body mt-1.5 leading-relaxed">
-            Unlimited cards, every Pro deck, achievements, and your full streak
-            history.
+            Unlimited cards, every deck and level as it's released,
+            achievements, and your full streak history.
           </p>
         </motion.div>
-
-        {discountPct > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl px-4 py-3 mb-5 flex items-center gap-2.5"
-            style={{
-              background: "oklch(0.17 0.04 var(--prestige-h) / 0.3)",
-              border: "1px solid oklch(var(--prestige) / 0.35)",
-            }}
-            data-ocid="subscribe.referral_banner"
-          >
-            <Sparkles className="w-4 h-4 shrink-0" style={{ color: TEAL }} />
-            <p className="text-xs text-foreground font-body leading-snug">
-              You pay the regular store price shown below. Your{" "}
-              <span className="font-display font-bold" style={{ color: TEAL }}>
-                {discountPct}% referral reward
-              </span>{" "}
-              is a separate credit added to your account after purchase.
-            </p>
-          </motion.div>
-        )}
 
         <div className="flex flex-col gap-3 mb-6">
           {SUBSCRIPTION_TIERS.map((tier, i) => (
@@ -214,19 +196,19 @@ export default function SubscribePage() {
             {selectedTier.billingPeriodLabel} · charged to your{" "}
             {storeAccountLabel}
           </p>
-          {discountPct > 0 && (
+          {selectedTier.id === "monthly" && storePrices.monthly?.intro && (
             <p
-              className="text-xs font-body mt-2 pt-2 flex items-center gap-1.5"
+              className="text-xs font-body mt-2 pt-2"
               style={{
                 borderTop:
                   "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
                 color: TEAL,
               }}
-              data-ocid="subscribe.summary.referral_benefit"
+              data-ocid="subscribe.summary.intro_price"
             >
-              <Sparkles className="w-3 h-3 shrink-0" />
-              Referral benefit, {discountPct}% credited to your account
-              separately, not deducted from this charge
+              Launch offer: {storePrices.monthly.intro.price} a month for your
+              first {storePrices.monthly.intro.months} months, then{" "}
+              {priceOf(selectedTier)} {selectedTier.billingPeriodLabel}.
             </p>
           )}
         </motion.div>
@@ -444,6 +426,19 @@ function PlanCard({
             </span>
           </div>
 
+          {/* Intro offers (launch offer: 20% off 3 months) exist only on Monthly. */}
+          {isMonthly && storePrice?.intro && (
+            <p
+              className="text-xs font-body mt-0.5"
+              style={{ color: TEAL }}
+              data-ocid="subscribe.intro_price"
+            >
+              {storePrice.intro.price} a month for your first{" "}
+              {storePrice.intro.months}{" "}
+              {storePrice.intro.months === 1 ? "month" : "months"}, then{" "}
+              {storePrice.price} {tier.billingPeriodLabel}
+            </p>
+          )}
           {!isMonthly && (
             <p className="text-xs text-muted-foreground/80 font-body mt-0.5">
               ≈ {storePrice?.perMonth ?? formatEUR(tier.perMonthEquivalent)}

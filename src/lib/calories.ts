@@ -24,6 +24,15 @@ const NORMAL_BMI = 22;
  * a rep count into a duration when estimating calories. */
 const SECONDS_PER_REP = 3;
 
+/** Upper bound for real elapsed time: even all-out bodyweight work stays
+ * under ~14 kcal/min, so a rep-based estimate can't outrun the clock
+ * (a 28-second tap-through used to show 50 kcal). */
+const MAX_KCAL_PER_MINUTE = 14;
+
+export function capCaloriesByTime(kcal: number, elapsedSeconds: number): number {
+  return Math.min(kcal, Math.floor((Math.max(0, elapsedSeconds) / 60) * MAX_KCAL_PER_MINUTE));
+}
+
 /**
  * MET (Metabolic Equivalent of Task) per movement category — rough,
  * well-established averages for bodyweight calisthenics performed at
