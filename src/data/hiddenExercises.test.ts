@@ -29,6 +29,21 @@ describe("hidden exercises", () => {
     expect(missing).toEqual([]);
   });
 
+  it("every visible men's card has a real picture (no coming-soon placeholder)", () => {
+    const missing: string[] = [];
+    for (const c of CATS)
+      for (const l of LEVELS) {
+        const deck = buildLocalDeck("t", 52, c, l, "male") as any[];
+        for (const card of deck) {
+          if (card.isAce || card.isKing) continue;
+          const src = card.imagePath ?? resolveExerciseIllustration(card.exerciseName, "male");
+          if (card.illustrationComingSoon || src === COMING_SOON_ILLUSTRATION || !fileExists(src))
+            missing.push(`${c} ${l}: ${card.exerciseName}`);
+        }
+      }
+    expect([...new Set(missing)]).toEqual([]);
+  });
+
   it("no hidden exercise ends up in a built deck, and decks stay full", () => {
     for (const c of CATS)
       for (const l of LEVELS) {

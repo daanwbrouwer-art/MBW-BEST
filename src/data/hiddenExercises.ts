@@ -16,6 +16,8 @@ export const HIDDEN_EXERCISES: Record<Gender, ReadonlySet<string>> = {
     "Archer Push-up",
     "Burpee Broad Jump",
     "Commando Pull-up",
+    // Only an underhand chin-up picture exists; the card showed "coming soon".
+    "Close Grip Pull-up",
     // The only men's picture shows the hands on a bench (incline), not a
     // floor mountain climber.
     "Mountain Climber",
