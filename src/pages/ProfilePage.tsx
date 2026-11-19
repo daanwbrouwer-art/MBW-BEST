@@ -260,6 +260,7 @@ export default function ProfilePage() {
   };
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const handleLogout = async () => {
     if (isLoggingOut) return;
     setIsLoggingOut(true);
@@ -434,7 +435,7 @@ export default function ProfilePage() {
           <button
             type="button"
             className="w-9 h-9 rounded-xl bg-card/80 border border-border/60 flex items-center justify-center text-muted-foreground hover:border-destructive/50 hover:text-destructive transition-smooth"
-            onClick={handleLogout}
+            onClick={() => setIsLogoutDialogOpen(true)}
             disabled={isLoggingOut}
             data-ocid="profile.logout_button"
             aria-label="Log out"
@@ -1533,6 +1534,37 @@ export default function ProfilePage() {
             </span>
             <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
           </button>
+          <button
+            type="button"
+            onClick={() =>
+              navigate({ to: "/welcome-tips", search: { from: "profile" } })
+            }
+            className="w-full mt-2 rounded-2xl flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
+            style={{
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+            }}
+            data-ocid="profile.app_tour_link"
+          >
+            <span className="font-display font-bold text-sm text-foreground">
+              How MyBodyWeight works
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+          </button>
+          <a
+            href="mailto:mybodyweight@outlook.com?subject=MyBodyWeight%20problem%20report"
+            className="w-full mt-2 rounded-2xl flex items-center justify-between gap-3 px-5 py-3.5 transition-smooth hover:opacity-80"
+            style={{
+              background: "oklch(0.16 0.01 var(--neutral-hue))",
+              border: "1px solid oklch(0.26 0.01 var(--neutral-hue) / 0.5)",
+            }}
+            data-ocid="profile.report_problem_link"
+          >
+            <span className="font-display font-bold text-sm text-foreground">
+              Report a problem
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+          </a>
         </motion.div>
 
         {/* Legal */}
@@ -1702,6 +1734,32 @@ export default function ProfilePage() {
               data-ocid="profile.delete_account_confirm_button"
             >
               {isDeleting ? "Deleting…" : "Delete permanently"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={isLogoutDialogOpen}
+        onOpenChange={(open) => !isLoggingOut && setIsLogoutDialogOpen(open)}
+      >
+        <AlertDialogContent data-ocid="profile.logout_dialog">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Log out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress is saved to your account. Sign in again to pick up
+              where you left off.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isLoggingOut}>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              data-ocid="profile.logout_confirm_button"
+            >
+              {isLoggingOut ? "Logging out…" : "Log out"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -145,21 +145,32 @@ export function useTier() {
 
     // Wait until the signed-in account is linked to RevenueCat, so a paying
     // user isn't shown the anonymous (free) state first.
+    const stopLoading = () => {
+      if (!cancelled) setIsLoading(false);
+    };
     purchasesReady
       .then(() => Purchases.getCustomerInfo())
       .then(({ customerInfo }) => applyCustomerInfo(customerInfo))
       .catch((err) => console.warn("RevenueCat getCustomerInfo failed:", err))
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
+      .finally(stopLoading);
+    // Testers reported premium buttons doing nothing: every premium action
+    // waits for isLoading, and getCustomerInfo can hang (offline, store not
+    // ready). Stop waiting after a few seconds; the listener below still
+    // applies the answer when it arrives.
+    const loadingTimeout = setTimeout(stopLoading, 8000);
 
     let listenerId: string | undefined;
-    Purchases.addCustomerInfoUpdateListener(applyCustomerInfo).then((id) => {
-      listenerId = id;
-    });
+    Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
+      .then((id) => {
+        listenerId = id;
+      })
+      .catch((err) =>
+        console.warn("RevenueCat listener failed:", err),
+      );
 
     return () => {
       cancelled = true;
+      clearTimeout(loadingTimeout);
       if (listenerId) {
         Purchases.removeCustomerInfoUpdateListener({
           listenerToRemove: listenerId,

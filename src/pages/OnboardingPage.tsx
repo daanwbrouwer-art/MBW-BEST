@@ -210,7 +210,13 @@ export default function OnboardingPage() {
     const isEmailAuth = localStorage.getItem("mbw_user") !== null;
     setWeeklyGoalLib(guestMode && !isEmailAuth, weeklyGoal);
     // Replace: system Back must not reopen the finished questionnaire.
-    navigate({ to: isRetake ? "/profile" : "/home", replace: true });
+    // New users get the app tour once (testers said they never saw it: it
+    // only showed after a first sign-in).
+    const seenTour = localStorage.getItem("mbw_first_login") !== null;
+    navigate({
+      to: isRetake ? "/profile" : seenTour ? "/home" : "/welcome-tips",
+      replace: true,
+    });
   };
 
   const canProceed = (() => {
