@@ -1,3 +1,4 @@
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { Button } from "@/components/ui/button";
 import { useActor } from "@/hooks/use-local-actor";
 import { completeSignIn } from "@/lib/accountSession";
@@ -257,6 +258,8 @@ export default function AuthPage() {
                 "Continue"
               )}
             </Button>
+
+            <GoogleSignInButton ocid="onboarding-auth.google_button" />
 
             <p className="font-body text-sm text-white/40 text-center mt-4">
               Don't have an account?{" "}

@@ -2,16 +2,12 @@ import { Button } from "@/components/ui/button";
 import { useActor } from "@/hooks/use-local-actor";
 import {
   hasCompletedOnboarding,
-  migrateGuestAchievements,
-  migrateGuestOnboarding,
-  migrateGuestStreak,
-  migrateGuestWeeklyChallenge,
+  migrateGuestProgress,
 } from "@/lib/completeSignup";
 import { completeSignIn } from "@/lib/accountSession";
 import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
 import { ensureReferralCode, redeemReferralCode } from "@/lib/referral";
 import { supabase } from "@/lib/supabaseClient";
-import { migrateGuestCustomDecks } from "@/store/customWorkout";
 import { useWorkoutStore } from "@/store/workout";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -116,13 +112,7 @@ export default function EmailSignUpPage() {
           // (so the copied onboarding answers are uploaded right away).
           await completeSignIn(loginResult.ok, {
             isNewAccount: true,
-            afterLocalSetup: () => {
-              migrateGuestOnboarding();
-              migrateGuestStreak();
-              migrateGuestAchievements();
-              migrateGuestWeeklyChallenge();
-              migrateGuestCustomDecks();
-            },
+            afterLocalSetup: migrateGuestProgress,
           });
           ensureReferralCode(email);
           if (referralCode.trim()) redeemReferralCode(email, referralCode);

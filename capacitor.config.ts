@@ -8,6 +8,10 @@ const config: CapacitorConfig = {
     androidScheme: "https",
   },
   plugins: {
+    // MainActivity handles the back button itself (src/lib/androidBack.ts).
+    App: {
+      disableBackButtonHandler: true,
+    },
     // Android shows only the shape of the status-bar icon, so it must be a
     // white logo on transparent (res/drawable-*/ic_stat_mbw.png); the full
     // colour app icon shows up as an empty square. iconColor tints it in the

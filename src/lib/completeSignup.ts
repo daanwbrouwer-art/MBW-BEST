@@ -1,10 +1,11 @@
 // Shared post-registration logic used by every sign-up entry point
-// (email form, and eventually social buttons once real OAuth exists).
+// (email form, Google).
 // Keeps "what happens right after an account is created" in one place
 // instead of duplicated across pages.
 import { migrateGuestAchievementClaims } from "@/lib/achievementEngine";
 import { migrateGuestAchievementData } from "@/lib/achievementSessionLog";
 import { migrateGuestChallenge } from "@/lib/challenge";
+import { migrateGuestCustomDecks } from "@/store/customWorkout";
 
 const GUEST_ONBOARDING_KEY = "mbw_guest_onboarding";
 const USER_ONBOARDING_KEY = "mbw_onboarding";
@@ -48,6 +49,15 @@ export function migrateGuestAchievements(): void {
 /** Copies a guest's in-progress weekly challenge onto the new account so an already-started week's progress isn't lost on registration. */
 export function migrateGuestWeeklyChallenge(): void {
   migrateGuestChallenge();
+}
+
+/** Everything a guest made on this device, copied onto their new account. */
+export function migrateGuestProgress(): void {
+  migrateGuestOnboarding();
+  migrateGuestStreak();
+  migrateGuestAchievements();
+  migrateGuestWeeklyChallenge();
+  migrateGuestCustomDecks();
 }
 
 /** Reads the (possibly just-migrated) onboarding completion flag for the now-logged-in account. */

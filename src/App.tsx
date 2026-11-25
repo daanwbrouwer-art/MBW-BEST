@@ -7,6 +7,7 @@ import { getPositionIfPermitted } from "@/hooks/use-location";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { resumeSignedInSession, watchOtherTabs } from "@/lib/accountSession";
 import { recordAppOpen } from "@/lib/achievementSessionLog";
+import { GOOGLE_CALLBACK_PATH, installAuthLinks } from "@/lib/googleSignIn";
 import { updateActivityPing } from "@/lib/remoteBackend";
 import { useWorkoutStore } from "@/store/workout";
 import { queryClient } from "@/lib/queryClient";
@@ -45,6 +46,9 @@ const CreateAccountPage = lazy(
 );
 const EmailSignUpPage = lazy(
   () => import("@/pages/onboarding/EmailSignUpPage"),
+);
+const GoogleCallbackPage = lazy(
+  () => import("@/pages/onboarding/GoogleCallbackPage"),
 );
 const NotificationPermissionPage = lazy(
   () => import("@/pages/onboarding/NotificationPermissionPage"),
@@ -318,6 +322,14 @@ const onboardingCreateAccountEmailRoute = createRoute({
   component: EmailSignUpPage,
 });
 
+const onboardingGoogleRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: GOOGLE_CALLBACK_PATH,
+  component: GoogleCallbackPage,
+  validateSearch: (search: Record<string, unknown>): { code?: string } =>
+    search.code ? { code: String(search.code) } : {},
+});
+
 const onboardingNotificationsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/onboarding/notifications",
@@ -569,6 +581,7 @@ const routeTree = rootRoute.addChildren([
   onboardingAuthRoute,
   onboardingCreateAccountRoute,
   onboardingCreateAccountEmailRoute,
+  onboardingGoogleRoute,
   onboardingNotificationsRoute,
   profileRoute,
   faqRoute,
@@ -611,6 +624,14 @@ declare module "@tanstack/react-router" {
 
 installAndroidBack((to) => {
   void router.navigate({ to });
+});
+
+installAuthLinks((code) => {
+  void router.navigate({
+    to: GOOGLE_CALLBACK_PATH,
+    search: { code },
+    replace: true,
+  });
 });
 
 

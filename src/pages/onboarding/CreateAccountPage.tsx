@@ -1,3 +1,4 @@
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { openPrivacyPolicy, openTermsOfUse } from "@/lib/legal";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
@@ -87,11 +88,6 @@ export default function CreateAccountPage() {
             </p>
           </div>
 
-          {/* TODO: Sign in with Apple + Google are post-launch milestone
-              work, not cosmetic — once either ships, Apple requires Sign in
-              with Apple to be offered within 6 months as an equivalent
-              option (Guideline 4.8). Submitting email-only for now avoids
-              committing to that clock before either is actually built. */}
           <div className="flex flex-col gap-3">
             <SocialButton
               icon="✉️"
@@ -101,6 +97,7 @@ export default function CreateAccountPage() {
               }
               ocid="create-account.email_button"
             />
+            <GoogleSignInButton ocid="create-account.google_button" />
           </div>
 
           <p className="font-body text-xs text-white/30 text-center mt-4">
